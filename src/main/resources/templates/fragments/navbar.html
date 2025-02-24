@@ -1,0 +1,53 @@
+<!-- navbar.html -->
+<div th:fragment="navbar">
+    <nav class="navbar navbar-expand-lg navbar-light py-3">
+        <div class="container d-flex justify-content-center align-items-center position-relative">
+            <!-- Website Logo -->
+            <a class="navbar-brand d-flex align-items-center me-4 position-absolute start-0" href="/">
+				<img th:src="@{/images/parentGeniusAI_logo.jpg}" alt="Parent Genius AI Logo" style="height: 130px; width: 130px; border-radius: 50%;">
+            </a>
+
+            <!-- Centered Navbar Menu -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav fs-3 d-flex align-items-center" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+                    <li class="nav-item"><a class="nav-link active" href="/vision" th:text="#{navbar_vision}">Vision</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" th:text="#{navbar_functions}">
+                            Functions
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="#" th:text="#{navbar_func1}">Emotional Development</a></li>
+                            <li><a class="dropdown-item" href="#" th:text="#{navbar_func2}">School & Social Life</a></li>
+                            <li><a class="dropdown-item" href="#" th:text="#{navbar_func3}">Growth & Milestones</a></li>
+                            <li><a class="dropdown-item" href="#" th:text="#{navbar_func4}">Parenting Resources</a></li>
+                            <li><a class="dropdown-item" href="#" th:text="#{navbar_func5}">Child Experts</a></li>
+                            <li><a class="dropdown-item" href="#" th:text="#{navbar_func6}">Nutrition for Kids</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownFAQ" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            FAQ
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownFAQ">
+                            <li><a class="dropdown-item" href="#">Parents</a></li>
+                            <li><a class="dropdown-item" href="#">Feedback</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownSupport" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Support
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownSupport">
+                            <li><a class="dropdown-item" href="#">Funding</a></li>
+                            <li><a class="dropdown-item" href="#">Join Us</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="#">Language</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
