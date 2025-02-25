@@ -41,23 +41,7 @@ public class HomeController {
         System.out.println("Vision endpoint hit!");
         return "vision";
     }
-
-    // Other mappings unchanged, but add lang support where needed
-    @GetMapping("/vision/about")
-    public String about() {
-        return "about";
-    }
-
-    @GetMapping("/vision/mission")
-    public String mission() {
-        return "mission";
-    }
-
-    @GetMapping("/vision/contact")
-    public String contact() {
-        return "contact";
-    }
-
+    
     @GetMapping("/functions")
     public String functions() {
         return "functions";
@@ -96,31 +80,6 @@ public class HomeController {
     @GetMapping("/faq")
     public String faq() {
         return "faq";
-    }
-
-    @GetMapping("/faq/parents")
-    public String faqParents() {
-        return "faqParents";
-    }
-
-    @GetMapping("/faq/feedback")
-    public String faqFeedback() {
-        return "faqFeedback";
-    }
-
-    @GetMapping("/support")
-    public String support() {
-        return "support";
-    }
-
-    @GetMapping("/support/funding")
-    public String funding() {
-        return "funding";
-    }
-
-    @GetMapping("/support/join-us")
-    public String joinUs() {
-        return "joinUs";
     }
 
     @GetMapping("/language")

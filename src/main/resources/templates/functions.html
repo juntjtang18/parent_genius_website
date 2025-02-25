@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{functions.title}">Functions - Parent Genius AI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link th:href="@{/css/style.css}" rel="stylesheet" />
+    <style>
+        .carousel-item img {
+            width: 100%;
+            height: 93.6vh;
+            object-fit: cover;
+        }
+        .carousel-caption {
+            top: 60%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .carousel-caption h2 {
+            font-size: 5rem;
+            font-weight: bold;
+            color: #0F2A24;
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.6);
+        }
+        .carousel-caption ul {
+            list-style: none;
+            padding: 0;
+            font-size: 1.2rem;
+        }
+        .carousel-caption ul li a {
+            color: white;
+            text-decoration: none;
+        }
+        .carousel-caption ul li a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div id="functionsCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#functionsCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#functionsCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#functionsCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            <button type="button" data-bs-target="#functionsCarousel" data-bs-slide-to="3" aria-label="Slide 4"></button>
+            <button type="button" data-bs-target="#functionsCarousel" data-bs-slide-to="4" aria-label="Slide 5"></button>
+            <button type="button" data-bs-target="#functionsCarousel" data-bs-slide-to="5" aria-label="Slide 6"></button>
+        </div>
+        <div class="carousel-inner">
+            <div class="carousel-item active" id="emotional-development">
+                <img th:src="@{/images/emotional-development.jpg}" alt="Emotional Development" class="d-block w-100">
+                <div class="carousel-caption">
+                    <h2 th:text="#{navbar_func1}">Emotional Development</h2>
+                    <ul>
+                        <li><a href="#">Post 1</a></li>
+                        <li><a href="#">Post 2</a></li>
+                        <li><a href="#">Post 3</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="carousel-item" id="school-social-life">
+                <img th:src="@{/images/school-social-life.jpg}" alt="School & Social Life" class="d-block w-100">
+                <div class="carousel-caption">
+                    <h2 th:text="#{navbar_func2}">School & Social Life</h2>
+                    <ul>
+                        <li><a href="#">Post 1</a></li>
+                        <li><a href="#">Post 2</a></li>
+                        <li><a href="#">Post 3</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="carousel-item" id="growth-milestones">
+                <img th:src="@{/images/growth-milestones.jpg}" alt="Growth & Milestones" class="d-block w-100">
+                <div class="carousel-caption">
+                    <h2 th:text="#{navbar_func3}">Growth & Milestones</h2>
+                    <ul>
+                        <li><a href="#">Post 1</a></li>
+                        <li><a href="#">Post 2</a></li>
+                        <li><a href="#">Post 3</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="carousel-item" id="parenting-resources">
+                <img th:src="@{/images/parenting-resources.jpg}" alt="Parenting Resources" class="d-block w-100">
+                <div class="carousel-caption">
+                    <h2 th:text="#{navbar_func4}">Parenting Resources</h2>
+                    <ul>
+                        <li><a href="#">Post 1</a></li>
+                        <li><a href="#">Post 2</a></li>
+                        <li><a href="#">Post 3</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="carousel-item" id="child-experts">
+                <img th:src="@{/images/child-experts.jpg}" alt="Child Experts" class="d-block w-100">
+                <div class="carousel-caption">
+                    <h2 th:text="#{navbar_func5}">Child Experts</h2>
+                    <ul>
+                        <li><a href="#">Post 1</a></li>
+                        <li><a href="#">Post 2</a></li>
+                        <li><a href="#">Post 3</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="carousel-item" id="nutrition-for-kids">
+                <img th:src="@{/images/nutrition-for-kids.jpg}" alt="Nutrition for Kids" class="d-block w-100">
+                <div class="carousel-caption">
+                    <h2 th:text="#{navbar_func6}">Nutrition for Kids</h2>
+                    <ul>
+                        <li><a href="#">Post 1</a></li>
+                        <li><a href="#">Post 2</a></li>
+                        <li><a href="#">Post 3</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#functionsCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#functionsCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            const myCarousel = document.querySelector('#functionsCarousel');
+            const carousel = new bootstrap.Carousel(myCarousel, {
+                interval: 5000,
+                ride: 'carousel'
+            });
+
+            // Map fragment IDs to carousel indices
+            const fragmentToIndex = {
+                'emotional-development': 0,
+                'school-social-life': 1,
+                'growth-milestones': 2,
+                'parenting-resources': 3,
+                'child-experts': 4,
+                'nutrition-for-kids': 5
+            };
+
+            // Get hash and slide to item
+            const hash = window.location.hash.substring(1); // Remove '#'
+            if (hash && fragmentToIndex[hash]) {
+                carousel.to(fragmentToIndex[hash]); // Slide to the correct item
+            }
+
+            // Handle dropdown clicks dynamically
+            document.querySelectorAll('#functionsDropDown .dropdown-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').split('#')[1];
+                    const index = fragmentToIndex[targetId];
+                    if (index !== undefined) {
+                        carousel.to(index);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

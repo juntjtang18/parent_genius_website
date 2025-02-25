@@ -11,15 +11,15 @@
             <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
                 <ul class="navbar-nav fs-3 d-flex align-items-center" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
                     <li class="nav-item"><a class="nav-link active" href="/vision" th:text="#{navbar_vision}">Vision</a></li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" th:text="#{navbar_functions}">Functions</a>
+                    <li class="nav-item dropdown" id="functionsDropDown">
+                        <a class="nav-link dropdown-toggle" href="/functions" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" th:text="#{navbar_functions}">Functions</a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="#" th:text="#{navbar_func1}">Emotional Development</a></li>
-                            <li><a class="dropdown-item" href="#" th:text="#{navbar_func2}">School & Social Life</a></li>
-                            <li><a class="dropdown-item" href="#" th:text="#{navbar_func3}">Growth & Milestones</a></li>
-                            <li><a class="dropdown-item" href="#" th:text="#{navbar_func4}">Parenting Resources</a></li>
-                            <li><a class="dropdown-item" href="#" th:text="#{navbar_func5}">Child Experts</a></li>
-                            <li><a class="dropdown-item" href="#" th:text="#{navbar_func6}">Nutrition for Kids</a></li>
+                            <li><a class="dropdown-item" href="/functions#emotional-development" th:text="#{navbar_func1}">Emotional Development</a></li>
+                            <li><a class="dropdown-item" href="/functions#school-social-life" th:text="#{navbar_func2}">School & Social Life</a></li>
+                            <li><a class="dropdown-item" href="/functions#growth-milestones" th:text="#{navbar_func3}">Growth & Milestones</a></li>
+                            <li><a class="dropdown-item" href="/functions#parenting-resources" th:text="#{navbar_func4}">Parenting Resources</a></li>
+                            <li><a class="dropdown-item" href="/functions#child-experts" th:text="#{navbar_func5}">Child Experts</a></li>
+                            <li><a class="dropdown-item" href="/functions#nutrition-for-kids" th:text="#{navbar_func6}">Nutrition for Kids</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
@@ -44,11 +44,17 @@
             </div>
         </div>
     </nav>
-<script th:inline="javascript">
+    <style>
+        @media (max-width: 767.98px) {
+            .navbar-nav.fs-3 {
+                font-size: 1.5rem !important; /* Smaller font for iPhone */
+            }
+        }
+    </style>
+    <script th:inline="javascript">
         document.addEventListener('DOMContentLoaded', function() {
             const languageList = document.getElementById('languageList');
             const dropdown = document.getElementById('languageDropdown');
-
             dropdown.addEventListener('shown.bs.dropdown', function() {
                 if (languageList.children.length === 0) {
                     fetch('/api/languages')
@@ -58,9 +64,8 @@
                                 const listItem = document.createElement('li');
                                 const link = document.createElement('a');
                                 link.className = 'dropdown-item';
-                                // Replace or set lang parameter
                                 const url = new URL(window.location.href);
-                                url.searchParams.set('lang', code); // Overwrites existing lang
+                                url.searchParams.set('lang', code);
                                 link.href = url.toString();
                                 link.textContent = name;
                                 listItem.appendChild(link);
@@ -71,4 +76,5 @@
                 }
             });
         });
-    </script></div>
+    </script>
+</div>
