@@ -1,128 +1,133 @@
 package ca.parentgeniusai.website.controller;
 
 import java.util.Locale;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.support.RequestContextUtils;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Controller
 public class HomeController {
 
-    // Home page route
-	@GetMapping("/")
-	public String home(@RequestParam(name = "lang", required = false) String lang, Model model) {
-	    return "index";
-	}
-
-    // Vision page route
-    @GetMapping("/vision")
-    public String vision() {
-    	System.out.println("Vision endpoint hit!");
-        return "vision";  // Return the view name for Vision page
+    @GetMapping("/")
+    public String home(@RequestParam(name = "lang", required = false) String lang, 
+                       HttpServletRequest request, HttpServletResponse response) {
+    	System.out.printf("passed in param lang=%s\n", lang);
+        if (lang != null) {
+            LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(request);
+            if (localeResolver != null) {
+                Locale locale = new Locale(lang);
+                localeResolver.setLocale(request, response, locale);
+            }
+        }
+        return "index";
     }
 
-    // About Us page route (under Vision)
+    @GetMapping("/vision")
+    public String vision(HttpServletRequest request, HttpServletResponse response, 
+                         @RequestParam(name = "lang", required = false) String lang) {
+    	System.out.printf("passed in param lang=%s\n", lang);
+        if (lang != null) {
+            LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(request);
+            if (localeResolver != null) {
+                Locale locale = new Locale(lang);
+                localeResolver.setLocale(request, response, locale);
+            }
+        }
+        System.out.println("Vision endpoint hit!");
+        return "vision";
+    }
+
+    // Other mappings unchanged, but add lang support where needed
     @GetMapping("/vision/about")
     public String about() {
-        return "about";  // Return the view name for About Us page
+        return "about";
     }
 
-    // Mission Statement page route (under Vision)
     @GetMapping("/vision/mission")
     public String mission() {
-        return "mission";  // Return the view name for Mission Statement page
+        return "mission";
     }
 
-    // Contact Us page route (under Vision)
     @GetMapping("/vision/contact")
     public String contact() {
-        return "contact";  // Return the view name for Contact Us page
+        return "contact";
     }
 
-    // Functions page route
     @GetMapping("/functions")
     public String functions() {
-        return "functions";  // Return the view name for Functions page
+        return "functions";
     }
 
-    // Submenu routes under Functions
     @GetMapping("/functions/emotional-development")
     public String emotionalDevelopment() {
-        return "emotionalDevelopment";  // Return the view name for Emotional Development page
+        return "emotionalDevelopment";
     }
 
     @GetMapping("/functions/school-social-life")
     public String schoolSocialLife() {
-        return "schoolSocialLife";  // Return the view name for School & Social Life page
+        return "schoolSocialLife";
     }
 
     @GetMapping("/functions/growth-milestones")
     public String growthMilestones() {
-        return "growthMilestones";  // Return the view name for Growth & Milestones page
+        return "growthMilestones";
     }
 
     @GetMapping("/functions/parenting-resources")
     public String parentingResources() {
-        return "parentingResources";  // Return the view name for Parenting Resources page
+        return "parentingResources";
     }
 
     @GetMapping("/functions/child-experts")
     public String childExperts() {
-        return "childExperts";  // Return the view name for Child Experts page
+        return "childExperts";
     }
 
     @GetMapping("/functions/nutrition-for-kids")
     public String nutritionForKids() {
-        return "nutritionForKids";  // Return the view name for Nutrition for Kids page
+        return "nutritionForKids";
     }
 
-    // FAQ page route
     @GetMapping("/faq")
     public String faq() {
-        return "faq";  // Return the view name for FAQ page
+        return "faq";
     }
 
-    // Submenu routes under FAQ
     @GetMapping("/faq/parents")
     public String faqParents() {
-        return "faqParents";  // Return the view name for Parents FAQ page
+        return "faqParents";
     }
 
     @GetMapping("/faq/feedback")
     public String faqFeedback() {
-        return "faqFeedback";  // Return the view name for Feedback FAQ page
+        return "faqFeedback";
     }
 
-    // Support page route
     @GetMapping("/support")
     public String support() {
-        return "support";  // Return the view name for Support page
+        return "support";
     }
 
-    // Submenu routes under Support
     @GetMapping("/support/funding")
     public String funding() {
-        return "funding";  // Return the view name for Funding page
+        return "funding";
     }
 
     @GetMapping("/support/join-us")
     public String joinUs() {
-        return "joinUs";  // Return the view name for Join Us page
+        return "joinUs";
     }
 
-    // Language options (could be configured later for i18n)
     @GetMapping("/language")
     public String language() {
-        return "language";  // Return the view name for Language page
+        return "language";
     }
-    
+
     @GetMapping("/change-language")
     public String changeLanguage(@RequestParam("lang") String lang, HttpServletRequest request, HttpServletResponse response) {
         LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(request);
@@ -132,9 +137,9 @@ public class HomeController {
         }
         return "redirect:/";
     }
-    
+
     @GetMapping("/privacy-policy")
     public String privacyPolicy() {
-    	return "privacy-policy";
+        return "privacy-policy";
     }
 }
