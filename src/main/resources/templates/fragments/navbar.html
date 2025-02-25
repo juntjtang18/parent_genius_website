@@ -1,15 +1,19 @@
 <!-- navbar.html -->
 <div th:fragment="navbar">
     <nav class="navbar navbar-expand-lg navbar-light py-3">
-        <div class="container d-flex justify-content-center align-items-center position-relative">
-            <a class="navbar-brand d-flex align-items-center me-4 position-absolute start-0" href="/">
-                <img th:src="@{/images/parentGeniusAI_logo.jpg}" alt="Parent Genius AI Logo" style="height: 130px; width: 130px; border-radius: 50%;">
+        <div class="container-xxl d-flex align-items-center">
+            <!-- Logo with slight left padding -->
+            <a class="navbar-brand ms-4" href="/">
+                <img th:src="@{/images/logo4.jpg}" alt="Parent Genius AI Logo" class="navbar-logo">
             </a>
+            <!-- Toggler for mobile -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-                <ul class="navbar-nav fs-3 d-flex align-items-center" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+            <!-- Collapsible content -->
+            <div class="collapse navbar-collapse flex-grow-1" id="navbarNav">
+                <!-- Centered menu items -->
+                <ul class="navbar-nav fs-3 d-flex justify-content-center w-100 menu-nav">
                     <li class="nav-item"><a class="nav-link active" href="/vision" th:text="#{navbar_vision}">Vision</a></li>
                     <li class="nav-item dropdown" id="functionsDropDown">
                         <a class="nav-link dropdown-toggle" href="/functions" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" th:text="#{navbar_functions}">Functions</a>
@@ -41,13 +45,24 @@
                         <ul class="dropdown-menu" aria-labelledby="languageDropdown" id="languageList"></ul>
                     </li>
                 </ul>
+                <!-- Right-aligned login and avatar -->
+                <ul class="navbar-nav ms-auto d-flex align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/profile">
+                            <img th:src="@{/images/avatar-girl.jpg}" alt="User Avatar" class="navbar-avatar">
+                        </a>
+                    </li>
+                </ul>
             </div>
         </div>
     </nav>
     <style>
         @media (max-width: 767.98px) {
             .navbar-nav.fs-3 {
-                font-size: 1.5rem !important; /* Smaller font for iPhone */
+                font-size: 1.5rem !important;
             }
         }
     </style>

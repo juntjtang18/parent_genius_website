@@ -10,64 +10,73 @@ body {
 
 /* Navbar */
 .navbar {
-    background-color: #4C9ED9;
+    background-color: #008000;
     position: fixed;
     top: 0;
     width: 100%;
     height: 150px;
     z-index: 1000;
+    padding: 0 !important;
 }
 
-.navbar-brand {
-    color: white !important;
-    font-weight: bold;
+/* Logo styling */
+.navbar-logo {
+    height: 130px;
+    width: 130px;
+    border-radius: 50%;
+    margin-left: 0;
 }
 
+/* Avatar styling */
+.navbar-avatar {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    margin-right: 0;
+}
+
+/* Container adjustments */
+.container-xxl {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    width: 100%;
+    max-width: none;
+}
+
+/* Navbar items */
+.navbar-nav {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Center the menu items */
+.navbar-nav.d-flex.justify-content-center.w-100 {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    flex-grow: 0 !important; /* Override any inherited flex-grow */
+}
+
+/* Right-aligned items */
+.navbar-nav.ms-auto {
+    margin-right: 0 !important;
+}
+
+/* Navbar link styling */
 .nav-link {
     color: white !important;
 }
 
-.navbar-toggler-icon {
-    background-color: white;
+/* Menu items spacing */
+.menu-nav {
+    gap: 30px; /* Adjust this value to increase or decrease space between menu items */
 }
 
-.nav-item:hover .nav-link {
-    background-color: #8BC34A;
-    border-radius: 5px;
+/* Ensure the menu items are centered properly */
+.menu-nav {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap; /* Allows items to wrap if needed */
 }
 
-/* Home Section */
-.home-section {
-    background-color: #8BC34A;
-    color: white;
-    padding: 50px 0;
-    text-align: center;
-}
-
-.home-section h1 {
-    font-size: 3em;
-    font-weight: bold;
-}
-
-.home-section p {
-    font-size: 1.2em;
-    margin-bottom: 20px;
-}
-
-.home-section .btn-cta {
-    background-color: #4C9ED9;
-    color: white;
-    padding: 15px 30px;
-    font-size: 1.1em;
-    border: none;
-    border-radius: 5px;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
-}
-
-.home-section .btn-cta:hover {
-    background-color: #8BC34A;
-}
 
 /* Footer */
 footer {
@@ -83,70 +92,5 @@ footer a {
 }
 
 footer a:hover {
-    text-decoration: underline;
-}
-
-/* Dropdown Menu */
-.dropdown-menu {
-    background-color: #F9F9F9;
-    border: 1px solid #E0E0E0;
-}
-
-.dropdown-item:hover {
-    background-color: #8BC34A;
-    color: white;
-}
-
-.scrollable-dropdown {
-    max-height: 200px;
-    overflow-y: auto;
-}
-
-/* Section (General) */
-section {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    padding: 20px;
-    box-sizing: border-box;
-    margin: 0;
-}
-
-/* Avoid overriding specific section images */
-section:not(.carousel):not(:has(.section-img)) img {
-    max-width: 50%;
-    height: auto;
-}
-
-section .content {
-    max-width: 50%;
-}
-
-/* Carousel Specific Styles */
-.carousel-item img {
-    width: 100%;
-    height: 60vh;
-    object-fit: cover;
-}
-
-.carousel-caption h2 {
-    font-size: 4rem;
-    font-weight: bold;
-    color: white;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-}
-
-.carousel-caption ul {
-    list-style: none;
-    padding: 0;
-    font-size: 1.2rem;
-}
-
-.carousel-caption ul li a {
-    color: white;
-    text-decoration: none;
-}
-
-.carousel-caption ul li a:hover {
     text-decoration: underline;
 }
