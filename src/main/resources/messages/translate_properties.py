@@ -16,6 +16,10 @@ TARGET_LANGUAGES = {
 # Regular expression to match files with language suffixes (e.g., *_fr.properties)
 LANG_SUFFIX_PATTERN = re.compile(r'.*_[a-z]{2}(-[A-Z]{2})?\.properties$')
 
+def to_unicode_escape(text):
+    """Convert text to Unicode escape sequences."""
+    return text.encode('unicode_escape').decode('ascii')
+    
 def translate_properties_file(input_file, lang_code):
     """Translate a single .properties file to the target language."""
     output_file = f"{os.path.splitext(input_file)[0]}_{lang_code}.properties"

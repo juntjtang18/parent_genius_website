@@ -96,6 +96,11 @@ footer a:hover {
     color: white;
 }
 
+.scrollable-dropdown {
+    max-height: 200px; /* Adjust this value as needed */
+    overflow-y: auto;
+}
+
 section {
     width: 100%; /* Make each section take the full width of the screen */
     display: flex; /* Use flexbox to layout content in a flexible way */
