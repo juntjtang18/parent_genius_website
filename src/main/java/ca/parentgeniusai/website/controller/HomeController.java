@@ -76,6 +76,11 @@ public class HomeController {
     public String nutritionForKids() {
         return "nutritionForKids";
     }
+    
+    @GetMapping("/new-article")
+    public String newArticle() {
+    	return "new-article";
+    }
 
     @GetMapping("/faq")
     public String faq() {
