@@ -81,7 +81,7 @@
             border-bottom-right-radius: 10px;
         }
         #functionCheckboxList, #categoryCheckboxList {
-            height: 150px; /* Fixed height for consistency */
+            height: 150px;
             overflow-y: auto;
             border: 1px solid #ced4da;
             border-radius: 5px;
@@ -89,6 +89,61 @@
         }
         .form-check {
             margin-bottom: 5px;
+        }
+        #function-home-banner {
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+            padding: 5px 0;
+        }
+        #functionListContainer {
+            flex-grow: 1;
+            position: relative;
+            overflow: hidden;
+            margin: 0 5px;
+        }
+        #functionList {
+            display: flex;
+            white-space: nowrap;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+        .function-item {
+            display: inline-block;
+            padding: 5px 15px;
+            margin-right: 10px;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .function-item:hover {
+            background-color: #007bff;
+            color: white;
+        }
+        #btn_new {
+            flex-shrink: 0;
+        }
+        .scroll-btn {
+            width: 30px;
+            height: 30px;
+            background: none;
+            border: none;
+            color: #007bff;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.3s;
+        }
+        .scroll-btn:hover {
+            color: #0056b3;
+        }
+        .scroll-btn.hidden {
+            display: none;
         }
     </style>
 </head>
@@ -99,6 +154,11 @@
     <div id="function-panel" class="container mt-4">
         <!-- Function Home Banner -->
         <div id="function-home-banner" class="d-flex justify-content-end p-3 border">
+            <button id="scrollLeft" class="scroll-btn">&lt;</button>
+            <div id="functionListContainer">
+                <div id="functionList" class="function-list"></div>
+            </div>
+            <button id="scrollRight" class="scroll-btn">&gt;</button>
             <button id="btn_new" class="btn btn-primary rounded-circle" data-bs-toggle="modal" data-bs-target="#addArticleModal">+</button>
         </div>
         <!-- Main Content -->
@@ -200,6 +260,7 @@
             let currentPage = 1;
             let isLoading = false;
             const pageSize = 25;
+            let functionData = [];
 
             // Initialize Summernote
             $('#articleContent').summernote({
@@ -233,7 +294,7 @@
                 console.log('Modal form reset completed');
             }
 
-            // Fetch functions and categories for checkboxes
+            // Fetch functions and categories for checkboxes and banner
             function loadDropdowns() {
                 $.ajax({
                     url: `${STRAPI_URL}functions`,
@@ -241,16 +302,10 @@
                     headers: { 'Authorization': AUTH_TOKEN, 'Accept': 'application/json' },
                     success: function(response) {
                         console.log('Functions fetched:', response);
-                        const functions = response.data;
-                        $('#functionCheckboxList').empty();
-                        functions.forEach(func => {
-                            $('#functionCheckboxList').append(`
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="functions" value="${func.id}" id="func_${func.id}">
-                                    <label class="form-check-label" for="func_${func.id}">${func.attributes.name}</label>
-                                </div>
-                            `);
-                        });
+                        functionData = response.data;
+                        populateFunctionList(functionData);
+                        populateFunctionCheckboxes(functionData);
+                        setTimeout(updateScrollButtons, 100);
                     },
                     error: function(xhr) {
                         console.error('Error fetching functions:', xhr);
@@ -279,6 +334,92 @@
                     }
                 });
             }
+
+            // Populate banner function list
+            function populateFunctionList(functions) {
+                $('#functionList').empty();
+                functions.forEach(func => {
+                    $('#functionList').append(`
+                        <span class="function-item" data-id="${func.id}">${func.attributes.name}</span>
+                    `);
+                });
+                console.log('Function list populated in banner');
+            }
+
+            // Populate modal function checkboxes
+            function populateFunctionCheckboxes(functions) {
+                $('#functionCheckboxList').empty();
+                functions.forEach(func => {
+                    $('#functionCheckboxList').append(`
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="functions" value="${func.id}" id="func_${func.id}">
+                            <label class="form-check-label" for="func_${func.id}">${func.attributes.name}</label>
+                        </div>
+                    `);
+                });
+                console.log('Function checkboxes populated in modal');
+            }
+
+            // Scroll function list
+            function scrollFunctionList(direction) {
+                const list = document.getElementById('functionList');
+                const scrollAmount = 200;
+                if (direction === 'left') {
+                    list.scrollLeft -= scrollAmount;
+                    console.log('Scrolled left, new scrollLeft:', list.scrollLeft);
+                } else {
+                    list.scrollLeft += scrollAmount;
+                    console.log('Scrolled right, new scrollLeft:', list.scrollLeft);
+                }
+                updateScrollButtons();
+            }
+
+            // Update scroll button visibility
+            function updateScrollButtons() {
+                const list = document.getElementById('functionList');
+                const leftBtn = document.getElementById('scrollLeft');
+                const rightBtn = document.getElementById('scrollRight');
+                const hasOverflow = list.scrollWidth > list.clientWidth;
+                const canScrollLeft = list.scrollLeft > 0;
+                const canScrollRight = list.scrollLeft < list.scrollWidth - list.clientWidth;
+
+                if (hasOverflow) {
+                    leftBtn.classList.toggle('hidden', !canScrollLeft);
+                    rightBtn.classList.toggle('hidden', !canScrollRight);
+                } else {
+                    leftBtn.classList.add('hidden');
+                    rightBtn.classList.add('hidden');
+                }
+
+                console.log('Scroll bounds - scrollLeft:', list.scrollLeft, 
+                           'scrollWidth:', list.scrollWidth, 
+                           'clientWidth:', list.clientWidth, 
+                           'hasOverflow:', hasOverflow, 
+                           'canScrollLeft:', canScrollLeft, 
+                           'canScrollRight:', canScrollRight);
+            }
+
+            // Button click handlers
+            $('#scrollLeft').on('click', function() {
+                if (!$(this).hasClass('hidden')) {
+                    scrollFunctionList('left');
+                } else {
+                    console.log('Left button clicked but hidden');
+                }
+            });
+            $('#scrollRight').on('click', function() {
+                if (!$(this).hasClass('hidden')) {
+                    scrollFunctionList('right');
+                } else {
+                    console.log('Right button clicked but hidden');
+                }
+            });
+
+            // Update buttons on window resize
+            window.addEventListener('resize', function() {
+                updateScrollButtons();
+                console.log('Window resized, updating scroll buttons');
+            });
 
             // Upload media to Strapi
             function uploadMedia(file, type) {
