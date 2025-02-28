@@ -8,6 +8,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Summernote CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet" />
     <!-- Custom stylesheet -->
     <link rel="stylesheet" href="/css/style.css">
     <style>
@@ -46,10 +48,6 @@
             border-radius: 5px;
             background-color: #f9f9f9;
         }
-        .article-title {
-            font-size: 1.2rem;
-            margin-bottom: 10px;
-        }
         .article-content {
             font-size: 1rem;
             line-height: 1.5;
@@ -68,6 +66,30 @@
             padding: 10px;
             display: none;
         }
+        .modal-content {
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .modal-header {
+            background-color: #007bff;
+            color: white;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+        .modal-footer {
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+        #functionCheckboxList, #categoryCheckboxList {
+            height: 150px; /* Fixed height for consistency */
+            overflow-y: auto;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            padding: 10px;
+        }
+        .form-check {
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 <body>
@@ -76,9 +98,9 @@
 
     <div id="function-panel" class="container mt-4">
         <!-- Function Home Banner -->
-		<div id="function-home-banner" class="d-flex justify-content-end p-3 border">
-		    <button id="btn_new" class="btn btn-primary rounded-circle" data-bs-toggle="modal" data-bs-target="#addArticleModal">+</button>
-		</div>
+        <div id="function-home-banner" class="d-flex justify-content-end p-3 border">
+            <button id="btn_new" class="btn btn-primary rounded-circle" data-bs-toggle="modal" data-bs-target="#addArticleModal">+</button>
+        </div>
         <!-- Main Content -->
         <div class="row mt-3">
             <div id="category-panel" class="col-md-3 p-3">
@@ -98,248 +120,309 @@
                 <div id="loading" class="loading">Loading more articles...</div>
             </div>
         </div>
-		<div class="modal fade" id="addArticleModal" tabindex="-1" aria-labelledby="addArticleModalLabel" aria-hidden="true">
-		    <div class="modal-dialog">
-		        <div class="modal-content">
-		            <div class="modal-header">
-		                <h5 class="modal-title" id="addArticleModalLabel">New Article</h5>
-		                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-		            </div>
-		            <div class="modal-body">
-		                <!-- Your form here -->
-		            </div>
-		            <div class="modal-footer">
-		                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-		                <button type="button" class="btn btn-primary">Save</button>
-		            </div>
-		        </div>
-		    </div>
-		</div>
+        <!-- Add Article Modal -->
+        <div class="modal fade" id="addArticleModal" tabindex="-1" aria-labelledby="addArticleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addArticleModalLabel">New Article</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addArticleForm">
+                            <div class="mb-3">
+                                <label for="articleContent" class="form-label">Content</label>
+                                <textarea class="form-control" id="articleContent" name="content"></textarea>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Functions</label>
+                                    <div id="functionCheckboxList" class="form-check-container"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Categories</label>
+                                    <div id="categoryCheckboxList" class="form-check-container"></div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="saveArticleBtn">Save Article</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Footer -->
     <div th:replace="~{fragments/footer :: footer}"></div>
-    
+
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-	<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="style">
-	<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
-	<script src="/js/marked.min.js"></script>
-	<script>
-	    document.addEventListener('DOMContentLoaded', function() {
-	    	
-	        // Check if marked is loaded
-	        if (typeof marked === 'undefined') {
-	            console.error('marked.js failed to load');
-	            function parseContent(content) {
-	                return content.replace(/\n/g, '<br>');
-	            }
-	        } else {
-	            marked.setOptions({
-	                renderer: new marked.Renderer(),
-	                gfm: true,
-	                breaks: true,
-	                sanitize: false
-	            });
-	            function parseContent(content) {
-	                try {
-	                    return marked.parse(content);
-	                } catch (e) {
-	                    console.error('Error parsing content:', e);
-	                    return content.replace(/\n/g, '<br>');
-	                }
-	            }
-	        }
-	
-	        const STRAPI_URL = "http://localhost:8080/api/";
-	        const AUTH_TOKEN = "Bearer 4ce79caf486d02a1f1d56690e10edb120172038193626d7e7eec0ba7679e219dd616c1a9a6908f079576f0d73d55ffda5fe6b057c2fdf9c19017f802f735d72ca2434a62b3398b4bdea42d84a2a4aab1657a2a3616e6f70c9ac12f80428259fd86dea64d7192e05eafcd90bfc6bbce606453e2e07048d608d52840f242524e41";
-	        let currentPage = 1;
-	        let isLoading = false;
-	        const pageSize = 25;
-	
-	        // Initialize Summernote
-	        $('#articleContent').summernote({
-	            height: 300,
-	            toolbar: [
-	                ['style', ['style']],
-	                ['font', ['bold', 'underline', 'clear']],
-	                ['color', ['color']],
-	                ['para', ['ul', 'ol', 'paragraph']],
-	                ['table', ['table']],
-	                ['insert', ['link', 'picture', 'video']],
-	                ['view', ['fullScreen', 'codeView', 'help']]
-	            ],
-	            callbacks: {
-	                onImageUpload: function(files) {
-	                    uploadMedia(files[0], 'image');
-	                },
-	                onMediaUpload: function(files) {
-	                    uploadMedia(files[0], 'video');
-	                }
-	            }
-	        });
-	
-	        // Fetch functions and categories for dropdowns
-	        function loadDropdowns() {
-	            $.ajax({
-	                url: `${STRAPI_URL}functions`,
-	                method: 'GET',
-	                headers: { 'Authorization': AUTH_TOKEN, 'Accept': 'application/json' },
-	                success: function(response) {
-	                    const functions = response.data;
-	                    $('#functionSelect').empty().append('<option value="">Select a Function</option>');
-	                    functions.forEach(func => {
-	                        $('#functionSelect').append(`<option value="${func.id}">${func.attributes.name}</option>`);
-	                    });
-	                },
-	                error: function(xhr) {
-	                    console.error('Error fetching functions:', xhr);
-	                }
-	            });
-	
-	            $.ajax({
-	                url: `${STRAPI_URL}categories`,
-	                method: 'GET',
-	                headers: { 'Authorization': AUTH_TOKEN, 'Accept': 'application/json' },
-	                success: function(response) {
-	                    const categories = response.data;
-	                    $('#categorySelect').empty().append('<option value="">Select a Category</option>');
-	                    categories.forEach(category => {
-	                        $('#categorySelect').append(`<option value="${category.id}">${category.attributes.name}</option>`);
-	                    });
-	                },
-	                error: function(xhr) {
-	                    console.error('Error fetching categories:', xhr);
-	                }
-	            });
-	        }
-	
-	        // Upload media to Strapi
-	        function uploadMedia(file, type) {
-	            const formData = new FormData();
-	            formData.append('files', file);
-	
-	            $.ajax({
-	                url: `${STRAPI_URL}upload`,
-	                method: 'POST',
-	                headers: { 'Authorization': AUTH_TOKEN },
-	                data: formData,
-	                processData: false,
-	                contentType: false,
-	                success: function(response) {
-	                    const url = response[0].url;
-	                    if (type === 'image') {
-	                        $('#articleContent').summernote('insertImage', url);
-	                    } else if (type === 'video') {
-	                        $('#articleContent').summernote('insertVideo', url);
-	                    }
-	                },
-	                error: function(xhr) {
-	                    console.error('Error uploading media:', xhr);
-	                }
-	            });
-	        }
-	
-	        // Save article
-	        $('#saveArticleBtn').on('click', function() {
-	            const functionId = $('#functionSelect').val();
-	            const categoryId = $('#categorySelect').val();
-	            const content = $('#articleContent').summernote('code');
-	            const createTime = new Date().toISOString();
-	
-	            if (!functionId || !categoryId || !content) {
-	                alert('Please fill all fields');
-	                return;
-	            }
-	
-	            const articleData = {
-	                data: {
-	                    content: content,
-	                    function: functionId,
-	                    category: categoryId,
-	                    create_time: createTime,
-	                    published: false,
-	                    quality: 5,
-	                    popularity: 1,
-	                    always_on_top: false
-	                }
-	            };
-	
-	            $.ajax({
-	                url: `${STRAPI_URL}articles`,
-	                method: 'POST',
-	                headers: {
-	                    'Authorization': AUTH_TOKEN,
-	                    'Content-Type': 'application/json'
-	                },
-	                data: JSON.stringify(articleData),
-	                success: function(response) {
-	                    console.log('Article saved:', response);
-	                    $('#addArticleModal').modal('hide');
-	                    fetchArticles(1);
-	                    $('#article-container').empty();
-	                    currentPage = 1;
-	                },
-	                error: function(xhr) {
-	                    console.error('Error saving article:', xhr);
-	                }
-	            });
-	        });
-	
-	        // Fetch articles from Strapi
-	        function fetchArticles(page) {
-	            if (isLoading) return;
-	            isLoading = true;
-	            $('#loading').show();
-	
-	            $.ajax({
-	                url: `${STRAPI_URL}articles?pagination[page]=${page}&pagination[pageSize]=${pageSize}`,
-	                method: 'GET',
-	                headers: { 'Authorization': AUTH_TOKEN, 'Accept': 'application/json' },
-	                success: function(response) {
-	                    console.log('API Response:', response);
-	                    const articles = response.data;
-	                    const totalPages = response.meta.pagination.pageCount;
-	
-	                    articles.forEach(article => {
-	                        const contentHtml = parseContent(article.attributes.content);
-	                        console.log('Parsed Content:', contentHtml);
-	                        $('#article-container').append(`
-	                            <div class="article-card">
-	                                <div class="article-content">${contentHtml}</div>
-	                                <div class="article-meta">Created: ${article.attributes.createdAt}</div>
-	                            </div>
-	                        `);
-	                    });
-	
-	                    isLoading = false;
-	                    $('#loading').hide();
-	
-	                    if (currentPage >= totalPages) {
-	                        $(window).off('scroll');
-	                    } else {
-	                        currentPage++;
-	                    }
-	                },
-	                error: function(xhr) {
-	                    console.error('Error fetching articles:', xhr);
-	                    isLoading = false;
-	                    $('#loading').hide();
-	                }
-	            });
-	        }
-	
-	        // Infinite scroll handler
-	        $(window).on('scroll', function() {
-	            if ($(window).scrollTop() + $(window).height() >= $('#article-list').offset().top + $('#article-list').outerHeight() - 50) {
-	                fetchArticles(currentPage);
-	            }
-	        });
-	
-	        // Load dropdowns and initial articles
-	        loadDropdowns();
-	        fetchArticles(currentPage);
-	    });
-	</script>
+    <!-- jQuery for AJAX -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Summernote JS -->
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+    <!-- marked.js from local static resources -->
+    <script src="/js/marked.min.js"></script>
+    <!-- Custom Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM fully loaded and parsed');
+
+            // Check if marked is loaded
+            if (typeof marked === 'undefined') {
+                console.error('marked.js failed to load');
+                function parseContent(content) {
+                    return content.replace(/\n/g, '<br>');
+                }
+            } else {
+                console.log('marked.js loaded successfully');
+                marked.setOptions({
+                    renderer: new marked.Renderer(),
+                    gfm: true,
+                    breaks: true,
+                    sanitize: false
+                });
+                function parseContent(content) {
+                    try {
+                        return marked.parse(content);
+                    } catch (e) {
+                        console.error('Error parsing content:', e);
+                        return content.replace(/\n/g, '<br>');
+                    }
+                }
+            }
+
+            const STRAPI_URL = "http://localhost:8080/api/";
+            const AUTH_TOKEN = "Bearer 4ce79caf486d02a1f1d56690e10edb120172038193626d7e7eec0ba7679e219dd616c1a9a6908f079576f0d73d55ffda5fe6b057c2fdf9c19017f802f735d72ca2434a62b3398b4bdea42d84a2a4aab1657a2a3616e6f70c9ac12f80428259fd86dea64d7192e05eafcd90bfc6bbce606453e2e07048d608d52840f242524e41";
+            let currentPage = 1;
+            let isLoading = false;
+            const pageSize = 25;
+
+            // Initialize Summernote
+            $('#articleContent').summernote({
+                height: 300,
+                toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'underline', 'clear']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['table', ['table']],
+                    ['insert', ['link', 'picture', 'video']],
+                    ['view', ['fullscreen', 'codeview', 'help']]
+                ],
+                callbacks: {
+                    onImageUpload: function(files) {
+                        uploadMedia(files[0], 'image');
+                    },
+                    onMediaUpload: function(files) {
+                        uploadMedia(files[0], 'video');
+                    }
+                }
+            });
+            console.log('Summernote initialized');
+
+            // Reset modal form fields
+            function resetModalForm() {
+                console.log('Resetting modal form');
+                $('#articleContent').summernote('reset');
+                $('#functionCheckboxList input[type="checkbox"]').prop('checked', false);
+                $('#categoryCheckboxList input[type="checkbox"]').prop('checked', false);
+                console.log('Modal form reset completed');
+            }
+
+            // Fetch functions and categories for checkboxes
+            function loadDropdowns() {
+                $.ajax({
+                    url: `${STRAPI_URL}functions`,
+                    method: 'GET',
+                    headers: { 'Authorization': AUTH_TOKEN, 'Accept': 'application/json' },
+                    success: function(response) {
+                        console.log('Functions fetched:', response);
+                        const functions = response.data;
+                        $('#functionCheckboxList').empty();
+                        functions.forEach(func => {
+                            $('#functionCheckboxList').append(`
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="functions" value="${func.id}" id="func_${func.id}">
+                                    <label class="form-check-label" for="func_${func.id}">${func.attributes.name}</label>
+                                </div>
+                            `);
+                        });
+                    },
+                    error: function(xhr) {
+                        console.error('Error fetching functions:', xhr);
+                    }
+                });
+
+                $.ajax({
+                    url: `${STRAPI_URL}categories`,
+                    method: 'GET',
+                    headers: { 'Authorization': AUTH_TOKEN, 'Accept': 'application/json' },
+                    success: function(response) {
+                        console.log('Categories fetched:', response);
+                        const categories = response.data;
+                        $('#categoryCheckboxList').empty();
+                        categories.forEach(category => {
+                            $('#categoryCheckboxList').append(`
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="categories" value="${category.id}" id="cat_${category.id}">
+                                    <label class="form-check-label" for="cat_${category.id}">${category.attributes.name}</label>
+                                </div>
+                            `);
+                        });
+                    },
+                    error: function(xhr) {
+                        console.error('Error fetching categories:', xhr);
+                    }
+                });
+            }
+
+            // Upload media to Strapi
+            function uploadMedia(file, type) {
+                console.log(`Uploading ${type}:`, file.name);
+                const formData = new FormData();
+                formData.append('files', file);
+
+                $.ajax({
+                    url: `${STRAPI_URL}upload`,
+                    method: 'POST',
+                    headers: { 'Authorization': AUTH_TOKEN },
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        console.log(`${type} uploaded successfully:`, response);
+                        const url = response[0].url;
+                        if (type === 'image') {
+                            $('#articleContent').summernote('insertImage', url);
+                        } else if (type === 'video') {
+                            $('#articleContent').summernote('insertVideo', url);
+                        }
+                    },
+                    error: function(xhr) {
+                        console.error(`Error uploading ${type}:`, xhr);
+                    }
+                });
+            }
+
+            // Save article
+            $('#saveArticleBtn').on('click', function() {
+                console.log('Save button clicked');
+                const functionIds = $('#functionCheckboxList input[type="checkbox"]:checked').map(function() {
+                    return $(this).val();
+                }).get();
+                const categoryIds = $('#categoryCheckboxList input[type="checkbox"]:checked').map(function() {
+                    return $(this).val();
+                }).get();
+                const content = $('#articleContent').summernote('code');
+                const createTime = new Date().toISOString();
+
+                console.log('Function IDs:', functionIds);
+                console.log('Category IDs:', categoryIds);
+                console.log('Content:', content);
+                console.log('Create Time:', createTime);
+
+                if (!functionIds.length || !categoryIds.length || !content) {
+                    alert('Please fill all fields');
+                    console.log('Validation failed: Missing fields');
+                    return;
+                }
+
+                const articleData = {
+                    data: {
+                        content: content,
+                        functions: functionIds,
+                        categories: categoryIds,
+                        create_time: createTime,
+                        publishedAt: createTime
+                    }
+                };
+
+                $.ajax({
+                    url: `${STRAPI_URL}articles`,
+                    method: 'POST',
+                    headers: {
+                        'Authorization': AUTH_TOKEN,
+                        'Content-Type': 'application/json'
+                    },
+                    data: JSON.stringify(articleData),
+                    success: function(response) {
+                        console.log('Article saved successfully:', response);
+                        $('#addArticleModal').modal('hide');
+                        fetchArticles(1);
+                        $('#article-container').empty();
+                        currentPage = 1;
+                    },
+                    error: function(xhr) {
+                        console.error('Error saving article:', xhr);
+                    }
+                });
+            });
+
+            // Fetch articles from Strapi
+            function fetchArticles(page) {
+                if (isLoading) return;
+                isLoading = true;
+                $('#loading').show();
+                console.log('Fetching articles, page:', page);
+
+                $.ajax({
+                    url: `${STRAPI_URL}articles?pagination[page]=${page}&pagination[pageSize]=${pageSize}&populate=functions,categories`,
+                    method: 'GET',
+                    headers: { 'Authorization': AUTH_TOKEN, 'Accept': 'application/json' },
+                    success: function(response) {
+                        console.log('API Response:', response);
+                        const articles = response.data;
+                        const totalPages = response.meta.pagination.pageCount;
+
+                        articles.forEach(article => {
+                            const contentHtml = parseContent(article.attributes.content);
+                            console.log('Parsed Content:', contentHtml);
+                            $('#article-container').append(`
+                                <div class="article-card">
+                                    <div class="article-content">${contentHtml}</div>
+                                    <div class="article-meta">Created: ${article.attributes.createdAt}</div>
+                                </div>
+                            `);
+                        });
+
+                        isLoading = false;
+                        $('#loading').hide();
+
+                        if (currentPage >= totalPages) {
+                            $(window).off('scroll');
+                        } else {
+                            currentPage++;
+                        }
+                    },
+                    error: function(xhr) {
+                        console.error('Error fetching articles:', xhr);
+                        isLoading = false;
+                        $('#loading').hide();
+                    }
+                });
+            }
+
+            // Infinite scroll handler
+            $(window).on('scroll', function() {
+                if ($(window).scrollTop() + $(window).height() >= $('#article-list').offset().top + $('#article-list').outerHeight() - 50) {
+                    fetchArticles(currentPage);
+                }
+            });
+
+            // Reset form when modal is shown
+            $('#addArticleModal').on('show.bs.modal', function() {
+                resetModalForm();
+            });
+
+            // Load dropdowns and initial articles
+            console.log('Loading dropdowns and initial articles');
+            loadDropdowns();
+            fetchArticles(currentPage);
+        });
+    </script>
 </body>
 </html>
