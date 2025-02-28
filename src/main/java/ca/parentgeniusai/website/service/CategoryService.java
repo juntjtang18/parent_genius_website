@@ -1,54 +1,131 @@
 package ca.parentgeniusai.website.service;
 
 import ca.parentgeniusai.website.model.Category;
-
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
-@Service // Ensure this is present
+@Service
 public class CategoryService {
     private final RestTemplate restTemplate = new RestTemplate();
-    private final String STRAPI_URL = "http://strapi.geniusParentingAI.ca:8080/api/categories";
-    private final String AUTH_TOKEN = "Bearer 7fc113003fb842937914c7ed3cbe98084667e09537cf0103e05d01c72d4c571011523d001e5aab45bab26da12fc27a59c44d680a0164c801c2273540cf75dabf5279a643c1ed902b98f10b64a7df37d40e6ee3ffc2474303f5e4e9d8865b127177603a829748bfc8bf8a203bcfc97bb371333a9e29373adeab8b29caa89e68fb";
+    private final String STRAPI_URL = "http://localhost:8080/api/categories";
+    private final String AUTH_TOKEN = "Bearer 4ce79caf486d02a1f1d56690e10edb120172038193626d7e7eec0ba7679e219dd616c1a9a6908f079576f0d73d55ffda5fe6b057c2fdf9c19017f802f735d72ca2434a62b3398b4bdea42d84a2a4aab1657a2a3616e6f70c9ac12f80428259fd86dea64d7192e05eafcd90bfc6bbce606453e2e07048d608d52840f242524e41";
 
-    public List<Category> getCategories() {
-    	System.out.println("getCategories() called.");
-    	
-        String url = "http://strapi.geniusParentingAI.ca:8080/api/categories";
-        
-        // Set up headers with Authorization
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer 7fc113003fb842937914c7ed3cbe98084667e09537cf0103e05d01c72d4c571011523d001e5aab45bab26da12fc27a59c44d680a0164c801c2273540cf75dabf5279a643c1ed902b98f10b64a7df37d40e6ee3ffc2474303f5e4e9d8865b127177603a829748bfc8bf8a203bcfc97bb371333a9e29373adeab8b29caa89e68fb");
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-        
-        try {
-            // Make the REST call and capture the response
-            ResponseEntity<Map<String, List<Category>>> response = restTemplate.exchange(url, HttpMethod.GET, entity, new ParameterizedTypeReference<Map<String, List<Category>>>() {});
-            
-            // Debug print: Log the raw JSON response
-            System.out.println("Raw response body: " + response.getBody());
-            
-            // Check if the response contains the expected structure
-            if (response.getBody() != null && response.getBody().containsKey("data")) {
-                System.out.println("Categories data: " + response.getBody().get("data"));
-            } else {
-                System.out.println("No 'data' field found in the response.");
-            }
+    // Nested static class for the full API response
+    private static class ApiResponse {
+        private List<CategoryResponse> data;
+        private Meta meta;
 
-            // Return the categories if available
-            return response.getBody() != null ? response.getBody().get("data") : Collections.emptyList();
-        } catch (Exception e) {
-            // Print any exception that occurs
-            e.printStackTrace();
-            return Collections.emptyList();  // Return empty list in case of error
-        }
+        public List<CategoryResponse> getData() { return data; }
+        public void setData(List<CategoryResponse> data) { this.data = data; }
+        public Meta getMeta() { return meta; }
+        public void setMeta(Meta meta) { this.meta = meta; }
     }
 
+    // Nested static class for each category item in "data"
+    private static class CategoryResponse {
+        private Long id;
+        private CategoryAttributes attributes;
 
+        public Long getId() { return id; }
+        public void setId(Long id) { this.id = id; }
+        public CategoryAttributes getAttributes() { return attributes; }
+        public void setAttributes(CategoryAttributes attributes) { this.attributes = attributes; }
+    }
+
+    // Nested static class for the "attributes" object
+    private static class CategoryAttributes {
+        private String name;
+        private Integer order;
+        private String icon_name;
+        private String createdAt;
+        private String updatedAt;
+        private String publishedAt;
+        private String locale;
+
+        public String getName() { return name; }
+        public void setName(String name) { this.name = name; }
+        public Integer getOrder() { return order; }
+        public void setOrder(Integer order) { this.order = order; }
+        public String getIcon_name() { return icon_name; }
+        public void setIcon_name(String icon_name) { this.icon_name = icon_name; }
+        public String getCreatedAt() { return createdAt; }
+        public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
+        public String getUpdatedAt() { return updatedAt; }
+        public void setUpdatedAt(String updatedAt) { this.updatedAt = updatedAt; }
+        public String getPublishedAt() { return publishedAt; }
+        public void setPublishedAt(String publishedAt) { this.publishedAt = publishedAt; }
+        public String getLocale() { return locale; }
+        public void setLocale(String locale) { this.locale = locale; }
+    }
+
+    // Nested static class for "meta"
+    private static class Meta {
+        private Pagination pagination;
+
+        public Pagination getPagination() { return pagination; }
+        public void setPagination(Pagination pagination) { this.pagination = pagination; }
+    }
+
+    // Nested static class for "pagination"
+    private static class Pagination {
+        private Integer page;
+        private Integer pageSize;
+        private Integer pageCount;
+        private Integer total;
+
+        public Integer getPage() { return page; }
+        public void setPage(Integer page) { this.page = page; }
+        public Integer getPageSize() { return pageSize; }
+        public void setPageSize(Integer pageSize) { this.pageSize = pageSize; }
+        public Integer getPageCount() { return pageCount; }
+        public void setPageCount(Integer pageCount) { this.pageCount = pageCount; }
+        public Integer getTotal() { return total; }
+        public void setTotal(Integer total) { this.total = total; }
+    }
+
+    // Method to fetch and map categories
+    public List<Category> getCategories() {
+        System.out.println("getCategories() called.");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", AUTH_TOKEN);
+        headers.set("Accept", "application/json");
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        try {
+            ResponseEntity<ApiResponse> response = restTemplate.exchange(
+                STRAPI_URL,
+                HttpMethod.GET,
+                entity,
+                ApiResponse.class
+            );
+
+            System.out.println("Raw response body: " + response.getBody());
+
+            if (response.getBody() != null && response.getBody().getData() != null) {
+                List<CategoryResponse> responses = response.getBody().getData();
+                System.out.println("Categories data: " + responses);
+                // Map CategoryResponse to Category
+                return responses.stream()
+                    .map(resp -> new Category(
+                        resp.getId(),
+                        resp.getAttributes().getName(),
+                        resp.getAttributes().getOrder(),
+                        resp.getAttributes().getIcon_name()
+                    ))
+                    .collect(Collectors.toList());
+            } else {
+                System.out.println("No 'data' field found in the response.");
+                return Collections.emptyList();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
 }
