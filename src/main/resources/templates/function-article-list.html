@@ -13,28 +13,44 @@
     <!-- Custom stylesheet -->
     <link rel="stylesheet" href="/css/style.css">
     <style>
-        .category-card {
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease-in-out;
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-        }
-        .category-card:hover {
-            transform: scale(1.05);
-        }
-        .category-icon {
-            font-size: 2rem;
-            margin-right: 15px;
-        }
-        .category-name {
-            font-size: 1.25rem;
-            flex-grow: 1;
-        }
+.category-list {
+    padding: 10px 0; /* Add some padding around the list */
+}
+
+.category-item {
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.category-item:hover {
+    background-color: #007bff; /* Hover turns blue */
+    color: white;
+}
+
+.category-item.selected {
+    background-color: #007bff; /* Persistent selected state */
+    color: white;
+    border-color: #0056b3; /* Slightly darker border for selected */
+}
+
+/* Ensure selected state takes precedence over hover when not hovering */
+.category-item.selected:hover {
+    background-color: #007bff; /* Maintain selected color on hover */
+    color: white;
+}
+
+.category-icon {
+    font-size: 1.5rem; /* Slightly smaller icon size */
+    margin-right: 10px;
+}
+
+.category-name {
+    font-size: 1.1rem; /* Slightly smaller font size */
+    flex-grow: 1;
+}
         #article-list {
             max-height: 600px; /* Restore scrolling */
             overflow-y: auto;
@@ -158,6 +174,38 @@
         .scroll-btn.hidden {
             display: none;
         }
+        /* Styles for activity buttons */
+        .like-btn {
+            margin-left: 5px;
+            padding: 2px 8px;
+            font-size: 0.8rem;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .like-btn:hover {
+            background-color: #0056b3;
+        }
+		.btn-new-article {
+		    width: 100%; /* Matches the width of category items */
+		    padding: 10px 15px; /* Same padding as category items */
+		    background-color: #f8f9fa; /* Default background similar to function-item */
+		    border: 1px solid #ddd; /* Same border style */
+		    border-radius: 5px; /* Slightly rounded corners for a button feel */
+		    text-align: left; /* Align text like category items */
+		    font-size: 1.1rem; /* Matches category-name font size */
+		    color: #000; /* Default text color */
+		    cursor: pointer; /* Hand cursor like category items */
+		    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition like category items */
+		    margin-top: 10px; /* Spacing from the category list */
+		}
+		
+		.btn-new-article:hover {
+		    background-color: #007bff; /* Same hover effect as category items */
+		    color: white; /* White text on hover */
+		}
     </style>
 </head>
 <body>
@@ -165,35 +213,38 @@
     <div th:replace="~{fragments/navbar :: navbar}"></div>
 
     <div id="function-panel" class="container mt-4">
-        <!-- Function Home Banner -->
-        <div id="function-home-banner" class="d-flex justify-content-end p-3 border">
-            <button id="scrollLeft" class="scroll-btn"><</button>
-            <div id="functionListContainer">
-                <div id="functionList" class="function-list"></div>
-            </div>
-            <button id="scrollRight" class="scroll-btn">></button>
-            <button id="btn_new" class="btn btn-primary rounded-circle" data-bs-toggle="modal" data-bs-target="#addArticleModal">+</button>
-        </div>
-        <!-- Main Content -->
-        <div class="row mt-3">
-            <div id="category-panel" class="col-md-3 p-3">
-                <h5 th:text="#{article-list.Categories}">Categories</h5>
-                <div class="row">
-                    <div th:each="category : ${categories}" class="col-12">
-                        <div th:classappend="${category.id.toString() == selectedCategoryId} ? 'category-card selected' : 'category-card'" 
-                             th:data-id="${category.id}">
-                            <i th:class="${category.iconClass} + ' category-icon'" aria-hidden="true"></i>
-                            <span th:text="${category.name}" class="category-name">Category Name</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="article-list" class="col-md-9">
-                <h5>Articles</h5>
-                <div id="article-container"></div>
-                <div id="loading" class="loading">Loading more articles...</div>
-            </div>
-        </div>
+		<div class="row">
+	        <!-- Category Panel (1/3 width) -->
+	        <div id="category-panel" class="col-md-3 p-3">
+	            <h5 th:text="#{article-list.Categories}">Categories</h5>
+	            <div class="category-list">
+	                <div th:each="category : ${categories}" 
+	                     th:class="'category-item' + (${category.id.toString() == selectedCategoryId} ? ' selected' : '')" 
+	                     th:data-id="${category.id}">
+	                    <i th:class="${category.iconClass} + ' category-icon'" aria-hidden="true"></i>
+	                    <span th:text="${category.name}" class="category-name">Category Name</span>
+	                </div>
+	            </div>
+                <button id="btn_new" class="btn-new-article" data-bs-toggle="modal" data-bs-target="#addArticleModal">New Article</button>
+	        </div>
+	
+	        <!-- Article Panel (2/3 width) -->
+	        <div id="artical-panel" class="col-md-9">
+	            <div id="function-home-banner" class="d-flex justify-content-end p-3 border">
+	                <button id="scrollLeft" class="scroll-btn"><</button>
+	                <div id="functionListContainer">
+	                    <div id="functionList" class="function-list"></div>
+	                </div>
+	                <button id="scrollRight" class="scroll-btn">></button>
+	            </div>
+	            <div id="article-list" class="p-3">
+	                <h5>Articles</h5>
+	                <div id="article-container"></div>
+	                <div id="loading" class="loading">Loading more articles...</div>
+	            </div>
+	        </div>
+	    </div>
+        
         <!-- Add Article Modal -->
         <div class="modal fade" id="addArticleModal" tabindex="-1" aria-labelledby="addArticleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
@@ -276,7 +327,7 @@
         const pageSize = 10;
         let totalPages = 1;
         let totalArticles = 0;
-        let functionData = [];
+        let functionData = []; // Store function data globally
         const maxVisibleArticles = 30;
         let articleBuffer = [];
         let lastScrollTop = 0;
@@ -312,12 +363,18 @@
         });
         console.log('Summernote initialized');
 
-        // Reset modal form fields
+        // Reset modal form fields and populate function checkboxes
         function resetModalForm() {
             console.log('Resetting modal form');
             $('#articleContent').summernote('reset');
             $('#functionCheckboxList input[type="checkbox"]').prop('checked', false);
             $('#categoryCheckboxList input[type="checkbox"]').prop('checked', false);
+            if (functionData.length > 0) {
+                populateFunctionCheckboxes(functionData); // Populate functions when modal opens
+            } else {
+                console.warn('Function data not yet loaded, retrying fetch...');
+                loadFunctionsForModal(); // Retry fetching if data isn’t available
+            }
             console.log('Modal form reset completed');
         }
 
@@ -327,6 +384,23 @@
                 updateSelections();
                 fetchArticles(1);
             }
+        }
+
+        // Fetch functions explicitly for modal if needed
+        function loadFunctionsForModal() {
+            $.ajax({
+                url: `${STRAPI_URL}functions`,
+                method: 'GET',
+                headers: { 'Authorization': AUTH_TOKEN, 'Accept': 'application/json' },
+                success: function(response) {
+                    console.log('Functions fetched for modal:', response);
+                    functionData = response.data;
+                    populateFunctionCheckboxes(functionData);
+                },
+                error: function(xhr) {
+                    console.error('Error fetching functions for modal:', xhr);
+                }
+            });
         }
 
         // Fetch functions and categories for checkboxes and banner
@@ -345,7 +419,7 @@
                 },
                 error: function(xhr) {
                     console.error('Error fetching functions:', xhr);
-                    functionsLoaded = true; // Proceed even on error
+                    functionsLoaded = true; // Mark as loaded to proceed, but log error
                     checkAndUpdateSelections();
                 }
             });
@@ -372,7 +446,7 @@
                 },
                 error: function(xhr) {
                     console.error('Error fetching categories:', xhr);
-                    categoriesLoaded = true; // Proceed even on error
+                    categoriesLoaded = true;
                     checkAndUpdateSelections();
                 }
             });
@@ -393,7 +467,7 @@
                 const newFunctionId = $(this).data('id').toString();
                 if (newFunctionId !== selectedFunctionId) {
                     selectedFunctionId = newFunctionId;
-                    selectedCategoryId = /*[[${categories[0].id}]]*/ null; // Default to first category
+                    selectedCategoryId = /*[[${categories[0].id}]]*/ "7"; // Default to first category, ensure string
                     console.log('New function selected:', selectedFunctionId, 'Default category:', selectedCategoryId);
                     updateSelections();
                     fetchArticles(1);
@@ -404,6 +478,11 @@
         // Populate modal function checkboxes
         function populateFunctionCheckboxes(functions) {
             $('#functionCheckboxList').empty();
+            if (!functions || functions.length === 0) {
+                console.error('No functions available to populate checkboxes');
+                $('#functionCheckboxList').append('<p>No functions available</p>');
+                return;
+            }
             functions.forEach(func => {
                 $('#functionCheckboxList').append(`
                     <div class="form-check">
@@ -417,7 +496,7 @@
 
         // Set up category click handlers
         function setupCategoryClickHandlers(categories) {
-            $('.category-card').on('click', function() {
+            $('.category-item').on('click', function() {
                 const newCategoryId = $(this).data('id').toString();
                 if (newCategoryId !== selectedCategoryId) {
                     selectedCategoryId = newCategoryId;
@@ -428,27 +507,23 @@
             });
         }
 
-function updateSelections() {
-    $('.function-item').each(function() {
-        const id = $(this).data('id') ? $(this).data('id').toString() : null;
-        const isSelected = id === selectedFunctionId;
-        $(this).toggleClass('selected', isSelected);
-        console.log('Function item:', id, 'Selected:', isSelected);
-    });
+        // Update UI selections
+        function updateSelections() {
+            $('.function-item').each(function() {
+                const id = $(this).data('id') ? $(this).data('id').toString() : null;
+                const isSelected = id === selectedFunctionId;
+                $(this).toggleClass('selected', isSelected);
+                console.log('Function item:', id, 'Selected:', isSelected);
+            });
 
-    console.log("selectedCategoryId=", selectedCategoryId);
-
-    // Ensure selectedCategoryId is a string
-    const selectedCategoryIdStr = selectedCategoryId ? selectedCategoryId.toString() : null;
-
-    $('.category-card').each(function() {
-        const id = $(this).data('id') ? $(this).data('id').toString() : null;
-        const isSelected = id === selectedCategoryIdStr;
-        $(this).toggleClass('selected', isSelected);
-        console.log('Category item:', id, 'Selected:', isSelected);
-    });
-    console.log('Selections updated - Function:', selectedFunctionId, 'Category:', selectedCategoryId);
-}
+            $('.category-item').each(function() {
+                const id = $(this).data('id') ? $(this).data('id').toString() : null;
+                const isSelected = id === selectedCategoryId;
+                $(this).toggleClass('selected', isSelected);
+                console.log('Category item:', id, 'Selected:', isSelected);
+            });
+            console.log('Selections updated - Function:', selectedFunctionId, 'Category:', selectedCategoryId);
+        }
 
         // Scroll function list
         function scrollFunctionList(direction) {
@@ -527,21 +602,75 @@ function updateSelections() {
             console.log('Article list height updated - container:', containerHeight, 'categoryPanel:', categoryPanelHeight);
         }
 
-        // Render articles in DOM
+        // Render articles with activity tracking
         function renderArticles() {
             const container = $('#article-container');
             container.empty();
             articleBuffer.forEach(article => {
                 const contentHtml = parseContent(article.attributes.content);
+                const likeCount = article.attributes.like_count || 0;
+                const visitCount = article.attributes.visit_count || 0;
                 container.append(`
-                    <div class="article-card">
+                    <div class="article-card" data-id="${article.id}">
                         <div class="article-content">${contentHtml}</div>
-                        <div class="article-meta">Created: ${article.attributes.createdAt}</div>
+                        <div class="article-meta">
+                            Created: ${article.attributes.createdAt}
+                            <span> | Likes: <span class="like-count">${likeCount}</span> <button class="like-btn">Like</button></span>
+                            <span> | Views: <span class="view-count">${visitCount}</span></span>
+                        </div>
                     </div>
                 `);
             });
 
+            // Add event listeners for activity buttons
+            $('.like-btn').on('click', function() {
+                const articleId = $(this).closest('.article-card').data('id');
+                updateActivity(articleId, 'like_count', 1);
+            });
+
+            // Increment view count on load (once per render)
+            articleBuffer.forEach(article => updateActivity(article.id, 'visit_count', 1));
+
             updateArticleListHeight();
+        }
+
+        // Update activity counts via Strapi PUT endpoint
+        function updateActivity(articleId, field, increment) {
+            const url = `${STRAPI_URL}articles/${articleId}`;
+            // Fetch current article data
+            $.ajax({
+                url: url,
+                method: 'GET',
+                headers: { 'Authorization': AUTH_TOKEN },
+                success: function(response) {
+                    const currentCount = response.data.attributes[field] || 0;
+                    // Update article with PUT request
+                    $.ajax({
+                        url: url,
+                        method: 'PUT',
+                        headers: { 
+                            'Authorization': AUTH_TOKEN,
+                            'Content-Type': 'application/json'
+                        },
+                        data: JSON.stringify({
+                            data: {
+                                [field]: currentCount + increment
+                            }
+                        }),
+                        success: function(updatedResponse) {
+                            console.log(`${field} updated for article ${articleId}:`, updatedResponse);
+                            const card = $(`.article-card[data-id="${articleId}"]`);
+                            card.find(`.${field.split('_')[0]}-count`).text(updatedResponse.data.attributes[field]);
+                        },
+                        error: function(xhr) {
+                            console.error(`Error updating ${field}:`, xhr);
+                        }
+                    });
+                },
+                error: function(xhr) {
+                    console.error(`Error fetching article ${articleId}:`, xhr);
+                }
+            });
         }
 
         // Fetch articles from Strapi with filters
@@ -643,7 +772,7 @@ function updateSelections() {
             checkScroll();
         });
 
-        // Reset form when modal is shown
+        // Reset form and populate checkboxes when modal is shown
         $('#addArticleModal').on('show.bs.modal', function() {
             resetModalForm();
         });
