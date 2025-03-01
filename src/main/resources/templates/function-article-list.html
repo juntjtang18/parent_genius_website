@@ -22,6 +22,7 @@
             transition: transform 0.3s ease-in-out;
             display: flex;
             align-items: center;
+            cursor: pointer;
         }
         .category-card:hover {
             transform: scale(1.05);
@@ -35,11 +36,13 @@
             flex-grow: 1;
         }
         #article-list {
-            max-height: 600px;
+            max-height: 600px; /* Restore scrolling */
             overflow-y: auto;
             padding: 15px;
             border: 1px solid #ddd;
             border-radius: 10px;
+            position: relative;
+            min-height: 200px; /* Minimum fallback */
         }
         .article-card {
             margin-bottom: 15px;
@@ -123,6 +126,16 @@
             background-color: #007bff;
             color: white;
         }
+        .function-item.selected {
+            background-color: #007bff;
+            color: white;
+            border-color: #0056b3;
+        }
+        .category-card.selected {
+            background-color: #007bff;
+            color: white;
+            border-color: #0056b3;
+        }
         #btn_new {
             flex-shrink: 0;
         }
@@ -154,11 +167,11 @@
     <div id="function-panel" class="container mt-4">
         <!-- Function Home Banner -->
         <div id="function-home-banner" class="d-flex justify-content-end p-3 border">
-            <button id="scrollLeft" class="scroll-btn">&lt;</button>
+            <button id="scrollLeft" class="scroll-btn"><</button>
             <div id="functionListContainer">
                 <div id="functionList" class="function-list"></div>
             </div>
-            <button id="scrollRight" class="scroll-btn">&gt;</button>
+            <button id="scrollRight" class="scroll-btn">></button>
             <button id="btn_new" class="btn btn-primary rounded-circle" data-bs-toggle="modal" data-bs-target="#addArticleModal">+</button>
         </div>
         <!-- Main Content -->
@@ -167,7 +180,8 @@
                 <h5 th:text="#{article-list.Categories}">Categories</h5>
                 <div class="row">
                     <div th:each="category : ${categories}" class="col-12">
-                        <div class="category-card">
+                        <div th:classappend="${category.id.toString() == selectedCategoryId} ? 'category-card selected' : 'category-card'" 
+                             th:data-id="${category.id}">
                             <i th:class="${category.iconClass} + ' category-icon'" aria-hidden="true"></i>
                             <span th:text="${category.name}" class="category-name">Category Name</span>
                         </div>
@@ -227,343 +241,417 @@
     <!-- marked.js from local static resources -->
     <script src="/js/marked.min.js"></script>
     <!-- Custom Script -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM fully loaded and parsed');
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM fully loaded and parsed');
 
-            // Check if marked is loaded
-            if (typeof marked === 'undefined') {
-                console.error('marked.js failed to load');
-                function parseContent(content) {
+        // Check if marked is loaded
+        if (typeof marked === 'undefined') {
+            console.error('marked.js failed to load');
+            function parseContent(content) {
+                return content.replace(/\n/g, '<br>');
+            }
+        } else {
+            console.log('marked.js loaded successfully');
+            marked.setOptions({
+                renderer: new marked.Renderer(),
+                gfm: true,
+                breaks: true,
+                sanitize: false
+            });
+            function parseContent(content) {
+                try {
+                    return marked.parse(content);
+                } catch (e) {
+                    console.error('Error parsing content:', e);
                     return content.replace(/\n/g, '<br>');
                 }
-            } else {
-                console.log('marked.js loaded successfully');
-                marked.setOptions({
-                    renderer: new marked.Renderer(),
-                    gfm: true,
-                    breaks: true,
-                    sanitize: false
-                });
-                function parseContent(content) {
-                    try {
-                        return marked.parse(content);
-                    } catch (e) {
-                        console.error('Error parsing content:', e);
-                        return content.replace(/\n/g, '<br>');
-                    }
+            }
+        }
+
+        const STRAPI_URL = "http://localhost:8080/api/";
+        const AUTH_TOKEN = "Bearer 4ce79caf486d02a1f1d56690e10edb120172038193626d7e7eec0ba7679e219dd616c1a9a6908f079576f0d73d55ffda5fe6b057c2fdf9c19017f802f735d72ca2434a62b3398b4bdea42d84a2a4aab1657a2a3616e6f70c9ac12f80428259fd86dea64d7192e05eafcd90bfc6bbce606453e2e07048d608d52840f242524e41";
+        let currentPage = 1;
+        let isLoading = false;
+        const pageSize = 10;
+        let totalPages = 1;
+        let totalArticles = 0;
+        let functionData = [];
+        const maxVisibleArticles = 30;
+        let articleBuffer = [];
+        let lastScrollTop = 0;
+        let categoriesLoaded = false;
+        let functionsLoaded = false;
+
+        // Get initial parameters from Thymeleaf
+        let selectedFunctionId = /*[[${selectedFunctionId}]]*/ null;
+        let selectedCategoryId = /*[[${selectedCategoryId}]]*/ null;
+        console.log('Initial Selected Function ID:', selectedFunctionId);
+        console.log('Initial Selected Category ID:', selectedCategoryId);
+
+        // Initialize Summernote
+        $('#articleContent').summernote({
+            height: 300,
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'underline', 'clear']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['table', ['table']],
+                ['insert', ['link', 'picture', 'video']],
+                ['view', ['fullscreen', 'codeview', 'help']]
+            ],
+            callbacks: {
+                onImageUpload: function(files) {
+                    uploadMedia(files[0], 'image');
+                },
+                onMediaUpload: function(files) {
+                    uploadMedia(files[0], 'video');
                 }
             }
-
-            const STRAPI_URL = "http://localhost:8080/api/";
-            const AUTH_TOKEN = "Bearer 4ce79caf486d02a1f1d56690e10edb120172038193626d7e7eec0ba7679e219dd616c1a9a6908f079576f0d73d55ffda5fe6b057c2fdf9c19017f802f735d72ca2434a62b3398b4bdea42d84a2a4aab1657a2a3616e6f70c9ac12f80428259fd86dea64d7192e05eafcd90bfc6bbce606453e2e07048d608d52840f242524e41";
-            let currentPage = 1;
-            let isLoading = false;
-            const pageSize = 25;
-            let functionData = [];
-
-            // Initialize Summernote
-            $('#articleContent').summernote({
-                height: 300,
-                toolbar: [
-                    ['style', ['style']],
-                    ['font', ['bold', 'underline', 'clear']],
-                    ['color', ['color']],
-                    ['para', ['ul', 'ol', 'paragraph']],
-                    ['table', ['table']],
-                    ['insert', ['link', 'picture', 'video']],
-                    ['view', ['fullscreen', 'codeview', 'help']]
-                ],
-                callbacks: {
-                    onImageUpload: function(files) {
-                        uploadMedia(files[0], 'image');
-                    },
-                    onMediaUpload: function(files) {
-                        uploadMedia(files[0], 'video');
-                    }
-                }
-            });
-            console.log('Summernote initialized');
-
-            // Reset modal form fields
-            function resetModalForm() {
-                console.log('Resetting modal form');
-                $('#articleContent').summernote('reset');
-                $('#functionCheckboxList input[type="checkbox"]').prop('checked', false);
-                $('#categoryCheckboxList input[type="checkbox"]').prop('checked', false);
-                console.log('Modal form reset completed');
-            }
-
-            // Fetch functions and categories for checkboxes and banner
-            function loadDropdowns() {
-                $.ajax({
-                    url: `${STRAPI_URL}functions`,
-                    method: 'GET',
-                    headers: { 'Authorization': AUTH_TOKEN, 'Accept': 'application/json' },
-                    success: function(response) {
-                        console.log('Functions fetched:', response);
-                        functionData = response.data;
-                        populateFunctionList(functionData);
-                        populateFunctionCheckboxes(functionData);
-                        setTimeout(updateScrollButtons, 100);
-                    },
-                    error: function(xhr) {
-                        console.error('Error fetching functions:', xhr);
-                    }
-                });
-
-                $.ajax({
-                    url: `${STRAPI_URL}categories`,
-                    method: 'GET',
-                    headers: { 'Authorization': AUTH_TOKEN, 'Accept': 'application/json' },
-                    success: function(response) {
-                        console.log('Categories fetched:', response);
-                        const categories = response.data;
-                        $('#categoryCheckboxList').empty();
-                        categories.forEach(category => {
-                            $('#categoryCheckboxList').append(`
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="categories" value="${category.id}" id="cat_${category.id}">
-                                    <label class="form-check-label" for="cat_${category.id}">${category.attributes.name}</label>
-                                </div>
-                            `);
-                        });
-                    },
-                    error: function(xhr) {
-                        console.error('Error fetching categories:', xhr);
-                    }
-                });
-            }
-
-            // Populate banner function list
-            function populateFunctionList(functions) {
-                $('#functionList').empty();
-                functions.forEach(func => {
-                    $('#functionList').append(`
-                        <span class="function-item" data-id="${func.id}">${func.attributes.name}</span>
-                    `);
-                });
-                console.log('Function list populated in banner');
-            }
-
-            // Populate modal function checkboxes
-            function populateFunctionCheckboxes(functions) {
-                $('#functionCheckboxList').empty();
-                functions.forEach(func => {
-                    $('#functionCheckboxList').append(`
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="functions" value="${func.id}" id="func_${func.id}">
-                            <label class="form-check-label" for="func_${func.id}">${func.attributes.name}</label>
-                        </div>
-                    `);
-                });
-                console.log('Function checkboxes populated in modal');
-            }
-
-            // Scroll function list
-            function scrollFunctionList(direction) {
-                const list = document.getElementById('functionList');
-                const scrollAmount = 200;
-                if (direction === 'left') {
-                    list.scrollLeft -= scrollAmount;
-                    console.log('Scrolled left, new scrollLeft:', list.scrollLeft);
-                } else {
-                    list.scrollLeft += scrollAmount;
-                    console.log('Scrolled right, new scrollLeft:', list.scrollLeft);
-                }
-                updateScrollButtons();
-            }
-
-            // Update scroll button visibility
-            function updateScrollButtons() {
-                const list = document.getElementById('functionList');
-                const leftBtn = document.getElementById('scrollLeft');
-                const rightBtn = document.getElementById('scrollRight');
-                const hasOverflow = list.scrollWidth > list.clientWidth;
-                const canScrollLeft = list.scrollLeft > 0;
-                const canScrollRight = list.scrollLeft < list.scrollWidth - list.clientWidth;
-
-                if (hasOverflow) {
-                    leftBtn.classList.toggle('hidden', !canScrollLeft);
-                    rightBtn.classList.toggle('hidden', !canScrollRight);
-                } else {
-                    leftBtn.classList.add('hidden');
-                    rightBtn.classList.add('hidden');
-                }
-
-                console.log('Scroll bounds - scrollLeft:', list.scrollLeft, 
-                           'scrollWidth:', list.scrollWidth, 
-                           'clientWidth:', list.clientWidth, 
-                           'hasOverflow:', hasOverflow, 
-                           'canScrollLeft:', canScrollLeft, 
-                           'canScrollRight:', canScrollRight);
-            }
-
-            // Button click handlers
-            $('#scrollLeft').on('click', function() {
-                if (!$(this).hasClass('hidden')) {
-                    scrollFunctionList('left');
-                } else {
-                    console.log('Left button clicked but hidden');
-                }
-            });
-            $('#scrollRight').on('click', function() {
-                if (!$(this).hasClass('hidden')) {
-                    scrollFunctionList('right');
-                } else {
-                    console.log('Right button clicked but hidden');
-                }
-            });
-
-            // Update buttons on window resize
-            window.addEventListener('resize', function() {
-                updateScrollButtons();
-                console.log('Window resized, updating scroll buttons');
-            });
-
-            // Upload media to Strapi
-            function uploadMedia(file, type) {
-                console.log(`Uploading ${type}:`, file.name);
-                const formData = new FormData();
-                formData.append('files', file);
-
-                $.ajax({
-                    url: `${STRAPI_URL}upload`,
-                    method: 'POST',
-                    headers: { 'Authorization': AUTH_TOKEN },
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function(response) {
-                        console.log(`${type} uploaded successfully:`, response);
-                        const url = response[0].url;
-                        if (type === 'image') {
-                            $('#articleContent').summernote('insertImage', url);
-                        } else if (type === 'video') {
-                            $('#articleContent').summernote('insertVideo', url);
-                        }
-                    },
-                    error: function(xhr) {
-                        console.error(`Error uploading ${type}:`, xhr);
-                    }
-                });
-            }
-
-            // Save article
-            $('#saveArticleBtn').on('click', function() {
-                console.log('Save button clicked');
-                const functionIds = $('#functionCheckboxList input[type="checkbox"]:checked').map(function() {
-                    return $(this).val();
-                }).get();
-                const categoryIds = $('#categoryCheckboxList input[type="checkbox"]:checked').map(function() {
-                    return $(this).val();
-                }).get();
-                const content = $('#articleContent').summernote('code');
-                const createTime = new Date().toISOString();
-
-                console.log('Function IDs:', functionIds);
-                console.log('Category IDs:', categoryIds);
-                console.log('Content:', content);
-                console.log('Create Time:', createTime);
-
-                if (!functionIds.length || !categoryIds.length || !content) {
-                    alert('Please fill all fields');
-                    console.log('Validation failed: Missing fields');
-                    return;
-                }
-
-                const articleData = {
-                    data: {
-                        content: content,
-                        functions: functionIds,
-                        categories: categoryIds,
-                        create_time: createTime,
-                        publishedAt: createTime
-                    }
-                };
-
-                $.ajax({
-                    url: `${STRAPI_URL}articles`,
-                    method: 'POST',
-                    headers: {
-                        'Authorization': AUTH_TOKEN,
-                        'Content-Type': 'application/json'
-                    },
-                    data: JSON.stringify(articleData),
-                    success: function(response) {
-                        console.log('Article saved successfully:', response);
-                        $('#addArticleModal').modal('hide');
-                        fetchArticles(1);
-                        $('#article-container').empty();
-                        currentPage = 1;
-                    },
-                    error: function(xhr) {
-                        console.error('Error saving article:', xhr);
-                    }
-                });
-            });
-
-            // Fetch articles from Strapi
-            function fetchArticles(page) {
-                if (isLoading) return;
-                isLoading = true;
-                $('#loading').show();
-                console.log('Fetching articles, page:', page);
-
-                $.ajax({
-                    url: `${STRAPI_URL}articles?pagination[page]=${page}&pagination[pageSize]=${pageSize}&populate=functions,categories`,
-                    method: 'GET',
-                    headers: { 'Authorization': AUTH_TOKEN, 'Accept': 'application/json' },
-                    success: function(response) {
-                        console.log('API Response:', response);
-                        const articles = response.data;
-                        const totalPages = response.meta.pagination.pageCount;
-
-                        articles.forEach(article => {
-                            const contentHtml = parseContent(article.attributes.content);
-                            console.log('Parsed Content:', contentHtml);
-                            $('#article-container').append(`
-                                <div class="article-card">
-                                    <div class="article-content">${contentHtml}</div>
-                                    <div class="article-meta">Created: ${article.attributes.createdAt}</div>
-                                </div>
-                            `);
-                        });
-
-                        isLoading = false;
-                        $('#loading').hide();
-
-                        if (currentPage >= totalPages) {
-                            $(window).off('scroll');
-                        } else {
-                            currentPage++;
-                        }
-                    },
-                    error: function(xhr) {
-                        console.error('Error fetching articles:', xhr);
-                        isLoading = false;
-                        $('#loading').hide();
-                    }
-                });
-            }
-
-            // Infinite scroll handler
-            $(window).on('scroll', function() {
-                if ($(window).scrollTop() + $(window).height() >= $('#article-list').offset().top + $('#article-list').outerHeight() - 50) {
-                    fetchArticles(currentPage);
-                }
-            });
-
-            // Reset form when modal is shown
-            $('#addArticleModal').on('show.bs.modal', function() {
-                resetModalForm();
-            });
-
-            // Load dropdowns and initial articles
-            console.log('Loading dropdowns and initial articles');
-            loadDropdowns();
-            fetchArticles(currentPage);
         });
-    </script>
+        console.log('Summernote initialized');
+
+        // Reset modal form fields
+        function resetModalForm() {
+            console.log('Resetting modal form');
+            $('#articleContent').summernote('reset');
+            $('#functionCheckboxList input[type="checkbox"]').prop('checked', false);
+            $('#categoryCheckboxList input[type="checkbox"]').prop('checked', false);
+            console.log('Modal form reset completed');
+        }
+
+        // Check if all data is loaded and update UI
+        function checkAndUpdateSelections() {
+            if (functionsLoaded && categoriesLoaded) {
+                updateSelections();
+                fetchArticles(1);
+            }
+        }
+
+        // Fetch functions and categories for checkboxes and banner
+        function loadDropdowns() {
+            $.ajax({
+                url: `${STRAPI_URL}functions`,
+                method: 'GET',
+                headers: { 'Authorization': AUTH_TOKEN, 'Accept': 'application/json' },
+                success: function(response) {
+                    console.log('Functions fetched:', response);
+                    functionData = response.data;
+                    populateFunctionList(functionData);
+                    functionsLoaded = true;
+                    checkAndUpdateSelections();
+                    setTimeout(updateScrollButtons, 100);
+                },
+                error: function(xhr) {
+                    console.error('Error fetching functions:', xhr);
+                    functionsLoaded = true; // Proceed even on error
+                    checkAndUpdateSelections();
+                }
+            });
+
+            $.ajax({
+                url: `${STRAPI_URL}categories`,
+                method: 'GET',
+                headers: { 'Authorization': AUTH_TOKEN, 'Accept': 'application/json' },
+                success: function(response) {
+                    console.log('Categories fetched:', response);
+                    const categories = response.data;
+                    $('#categoryCheckboxList').empty();
+                    categories.forEach(category => {
+                        $('#categoryCheckboxList').append(`
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="categories" value="${category.id}" id="cat_${category.id}">
+                                <label class="form-check-label" for="cat_${category.id}">${category.attributes.name}</label>
+                            </div>
+                        `);
+                    });
+                    setupCategoryClickHandlers(categories);
+                    categoriesLoaded = true;
+                    checkAndUpdateSelections();
+                },
+                error: function(xhr) {
+                    console.error('Error fetching categories:', xhr);
+                    categoriesLoaded = true; // Proceed even on error
+                    checkAndUpdateSelections();
+                }
+            });
+        }
+
+        // Populate banner function list
+        function populateFunctionList(functions) {
+            $('#functionList').empty();
+            functions.forEach(func => {
+                const isSelected = func.id.toString() === selectedFunctionId;
+                $('#functionList').append(`
+                    <span class="function-item ${isSelected ? 'selected' : ''}" data-id="${func.id}">${func.attributes.name}</span>
+                `);
+            });
+            console.log('Function list populated in banner, selected ID:', selectedFunctionId);
+
+            $('.function-item').on('click', function() {
+                const newFunctionId = $(this).data('id').toString();
+                if (newFunctionId !== selectedFunctionId) {
+                    selectedFunctionId = newFunctionId;
+                    selectedCategoryId = /*[[${categories[0].id}]]*/ null; // Default to first category
+                    console.log('New function selected:', selectedFunctionId, 'Default category:', selectedCategoryId);
+                    updateSelections();
+                    fetchArticles(1);
+                }
+            });
+        }
+
+        // Populate modal function checkboxes
+        function populateFunctionCheckboxes(functions) {
+            $('#functionCheckboxList').empty();
+            functions.forEach(func => {
+                $('#functionCheckboxList').append(`
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="functions" value="${func.id}" id="func_${func.id}">
+                        <label class="form-check-label" for="func_${func.id}">${func.attributes.name}</label>
+                    </div>
+                `);
+            });
+            console.log('Function checkboxes populated in modal');
+        }
+
+        // Set up category click handlers
+        function setupCategoryClickHandlers(categories) {
+            $('.category-card').on('click', function() {
+                const newCategoryId = $(this).data('id').toString();
+                if (newCategoryId !== selectedCategoryId) {
+                    selectedCategoryId = newCategoryId;
+                    console.log('New category selected:', selectedCategoryId, 'Function:', selectedFunctionId);
+                    updateSelections();
+                    fetchArticles(1);
+                }
+            });
+        }
+
+function updateSelections() {
+    $('.function-item').each(function() {
+        const id = $(this).data('id') ? $(this).data('id').toString() : null;
+        const isSelected = id === selectedFunctionId;
+        $(this).toggleClass('selected', isSelected);
+        console.log('Function item:', id, 'Selected:', isSelected);
+    });
+
+    console.log("selectedCategoryId=", selectedCategoryId);
+
+    // Ensure selectedCategoryId is a string
+    const selectedCategoryIdStr = selectedCategoryId ? selectedCategoryId.toString() : null;
+
+    $('.category-card').each(function() {
+        const id = $(this).data('id') ? $(this).data('id').toString() : null;
+        const isSelected = id === selectedCategoryIdStr;
+        $(this).toggleClass('selected', isSelected);
+        console.log('Category item:', id, 'Selected:', isSelected);
+    });
+    console.log('Selections updated - Function:', selectedFunctionId, 'Category:', selectedCategoryId);
+}
+
+        // Scroll function list
+        function scrollFunctionList(direction) {
+            const list = document.getElementById('functionList');
+            const scrollAmount = 200;
+            if (direction === 'left') {
+                list.scrollLeft -= scrollAmount;
+                console.log('Scrolled left, new scrollLeft:', list.scrollLeft);
+            } else {
+                list.scrollLeft += scrollAmount;
+                console.log('Scrolled right, new scrollLeft:', list.scrollLeft);
+            }
+            updateScrollButtons();
+        }
+
+        // Update scroll button visibility
+        function updateScrollButtons() {
+            const list = document.getElementById('functionList');
+            const leftBtn = document.getElementById('scrollLeft');
+            const rightBtn = document.getElementById('scrollRight');
+            const hasOverflow = list.scrollWidth > list.clientWidth;
+            const canScrollLeft = list.scrollLeft > 0;
+            const canScrollRight = list.scrollLeft < list.scrollWidth - list.clientWidth;
+
+            if (hasOverflow) {
+                leftBtn.classList.toggle('hidden', !canScrollLeft);
+                rightBtn.classList.toggle('hidden', !canScrollRight);
+            } else {
+                leftBtn.classList.add('hidden');
+                rightBtn.classList.add('hidden');
+            }
+
+            console.log('Scroll bounds - scrollLeft:', list.scrollLeft, 
+                       'scrollWidth:', list.scrollWidth, 
+                       'clientWidth:', list.clientWidth, 
+                       'hasOverflow:', hasOverflow, 
+                       'canScrollLeft:', canScrollLeft, 
+                       'canScrollRight:', canScrollRight);
+        }
+
+        // Button click handlers
+        $('#scrollLeft').on('click', function() {
+            if (!$(this).hasClass('hidden')) {
+                scrollFunctionList('left');
+            } else {
+                console.log('Left button clicked but hidden');
+            }
+        });
+        $('#scrollRight').on('click', function() {
+            if (!$(this).hasClass('hidden')) {
+                scrollFunctionList('right');
+            } else {
+                console.log('Right button clicked but hidden');
+            }
+        });
+
+        // Update buttons on window resize
+        window.addEventListener('resize', function() {
+            updateScrollButtons();
+            updateArticleListHeight();
+            console.log('Window resized, updating scroll buttons and article list height');
+        });
+
+        // Update article list height dynamically
+        function updateArticleListHeight() {
+            const categoryPanelHeight = $('#category-panel').outerHeight(true) || 200;
+            const articleList = $('#article-list');
+            const containerHeight = $('#article-container').outerHeight(true) || 0;
+
+            if (containerHeight < categoryPanelHeight) {
+                articleList.css('min-height', `${categoryPanelHeight}px`);
+            } else {
+                articleList.css('min-height', '');
+            }
+
+            console.log('Article list height updated - container:', containerHeight, 'categoryPanel:', categoryPanelHeight);
+        }
+
+        // Render articles in DOM
+        function renderArticles() {
+            const container = $('#article-container');
+            container.empty();
+            articleBuffer.forEach(article => {
+                const contentHtml = parseContent(article.attributes.content);
+                container.append(`
+                    <div class="article-card">
+                        <div class="article-content">${contentHtml}</div>
+                        <div class="article-meta">Created: ${article.attributes.createdAt}</div>
+                    </div>
+                `);
+            });
+
+            updateArticleListHeight();
+        }
+
+        // Fetch articles from Strapi with filters
+        function fetchArticles(page) {
+            if (isLoading) return;
+            isLoading = true;
+            $('#loading').show();
+            console.log('Fetching articles, page:', page, 'function:', selectedFunctionId, 'category:', selectedCategoryId);
+
+            let url = `${STRAPI_URL}articles?pagination[page]=${page}&pagination[pageSize]=${pageSize}&populate=functions,categories`;
+            if (selectedFunctionId) {
+                url += `&filters[functions][id][$in]=${selectedFunctionId}`;
+            }
+            if (selectedCategoryId) {
+                url += `&filters[categories][id][$in]=${selectedCategoryId}`;
+            }
+
+            $.ajax({
+                url: url,
+                method: 'GET',
+                headers: { 'Authorization': AUTH_TOKEN, 'Accept': 'application/json' },
+                success: function(response) {
+                    console.log('API Response:', response);
+                    const articles = response.data;
+                    totalPages = response.meta.pagination.pageCount;
+                    totalArticles = response.meta.pagination.total;
+
+                    if (page === 1) {
+                        articleBuffer = articles;
+                    } else {
+                        articleBuffer = articleBuffer.concat(articles);
+                    }
+
+                    if (articleBuffer.length > maxVisibleArticles) {
+                        articleBuffer = articleBuffer.slice(-maxVisibleArticles);
+                    }
+
+                    renderArticles();
+
+                    isLoading = false;
+                    $('#loading').hide();
+
+                    console.log('Current page:', page, 'Total pages:', totalPages, 'Total articles:', totalArticles, 'Buffer length:', articleBuffer.length);
+                    if (page < totalPages && articleBuffer.length < totalArticles) {
+                        currentPage = page + 1;
+                    } else {
+                        console.log('Reached end of articles');
+                        $(document).off('scroll', checkScroll);
+                    }
+                },
+                error: function(xhr) {
+                    console.error('Error fetching articles:', xhr);
+                    isLoading = false;
+                    $('#loading').hide();
+                }
+            });
+        }
+
+        // Infinite scroll handler
+        function checkScroll() {
+            const articleList = $('#article-list');
+            const scrollTop = articleList.scrollTop();
+            const listHeight = articleList[0].scrollHeight;
+            const clientHeight = articleList.height();
+            const triggerPointBottom = listHeight - clientHeight - 50;
+            const triggerPointTop = 50;
+
+            console.log('Scroll check - scrollTop:', scrollTop, 'triggerPointBottom:', triggerPointBottom, 
+                        'triggerPointTop:', triggerPointTop, 'isLoading:', isLoading, 
+                        'currentPage:', currentPage, 'totalPages:', totalPages);
+
+            if (scrollTop >= triggerPointBottom && !isLoading && currentPage <= totalPages && articleBuffer.length < totalArticles) {
+                fetchArticles(currentPage);
+            } else if (scrollTop <= triggerPointTop && !isLoading && currentPage > 1) {
+                currentPage = Math.max(1, currentPage - 1);
+                fetchArticles(currentPage);
+            }
+
+            const container = $('#article-container');
+            const articles = container.children('.article-card');
+            if (articles.length > maxVisibleArticles) {
+                const articleHeight = articles.first().outerHeight(true);
+                const visibleStart = Math.floor(scrollTop / articleHeight);
+                if (scrollTop > lastScrollTop && visibleStart > 0) {
+                    articleBuffer = articleBuffer.slice(visibleStart);
+                    renderArticles();
+                    articleList.scrollTop(scrollTop - (visibleStart * articleHeight));
+                } else if (scrollTop < lastScrollTop && visibleStart < articleBuffer.length - maxVisibleArticles) {
+                    articleBuffer = articleBuffer.slice(0, maxVisibleArticles);
+                    renderArticles();
+                    articleList.scrollTop(scrollTop + (articleBuffer.length - visibleStart - maxVisibleArticles) * articleHeight);
+                }
+            }
+
+            lastScrollTop = scrollTop;
+        }
+
+        $('#article-list').on('scroll', function() {
+            checkScroll();
+        });
+
+        // Reset form when modal is shown
+        $('#addArticleModal').on('show.bs.modal', function() {
+            resetModalForm();
+        });
+
+        // Load dropdowns and initial articles
+        console.log('Loading dropdowns and initial articles');
+        loadDropdowns();
+    });
+</script>
 </body>
 </html>
