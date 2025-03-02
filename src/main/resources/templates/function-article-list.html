@@ -52,13 +52,13 @@
     flex-grow: 1;
 }
         #article-list {
-            max-height: 600px; /* Restore scrolling */
+            max-height: 600px;
             overflow-y: auto;
             padding: 15px;
             border: 1px solid #ddd;
             border-radius: 10px;
             position: relative;
-            min-height: 200px; /* Minimum fallback */
+            min-height: 200px;
         }
         .article-card {
             margin-bottom: 15px;
@@ -66,7 +66,7 @@
             border: 1px solid #e0e0e0;
             border-radius: 5px;
             background-color: #f9f9f9;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Added shadow for fancy look */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
         .article-content {
             font-size: 1rem;
@@ -175,7 +175,6 @@
         .scroll-btn.hidden {
             display: none;
         }
-        /* Styles for activity buttons */
         .like-btn {
             margin-left: 5px;
             padding: 2px 8px;
@@ -190,108 +189,96 @@
             background-color: #0056b3;
         }
 .btn-new-article {
-    width: 100%; /* Matches the width of category items */
-    padding: 10px 15px; /* Same padding as category items */
-    background-color: #f8f9fa; /* Default background similar to function-item */
-    border: 1px solid #ddd; /* Same border style */
-    border-radius: 5px; /* Slightly rounded corners for a button feel */
-    text-align: left; /* Align text like category items */
-    font-size: 1.1rem; /* Matches category-name font size */
-    color: #000; /* Default text color */
-    cursor: pointer; /* Hand cursor like category items */
-    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition like category items */
-    margin-top: 10px; /* Spacing from the category list */
-    display: flex; /* Use flex to align icon and text */
-    align-items: center; /* Vertically center icon and text */
+    width: 100%;
+    padding: 10px 15px;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    text-align: left;
+    font-size: 1.1rem;
+    color: #000;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
 }
 
 .btn-new-article:hover {
-    background-color: #007bff; /* Same hover effect as category items */
-    color: white; /* White text on hover */
+    background-color: #007bff;
+    color: white;
 }
 
 .btn-new-article .new-icon {
-    font-size: 1.5rem; /* Matches category-icon size */
-    margin-right: 10px; /* Matches category-icon gap */
-    color: #000; /* Default color matches text */
+    font-size: 1.5rem;
+    margin-right: 10px;
+    color: #000;
 }
 
 .btn-new-article:hover .new-icon {
-    color: #ffffff; /* White on hover to match text */
+    color: #ffffff;
 }
-		.article-header {
-		    display: flex;
-		    align-items: center;
-		    margin-bottom: 10px;
-		    font-size: 0.95rem;
-		    color: #333;
-		}
-		
-		.article-header .avatar-icon {
-		    font-size: 1.2rem;
-		    margin-right: 8px;
-		    color: #007bff; /* Blue color to match theme */
-		}
-		
-		.article-header .author-name {
-		    font-weight: bold;
-		    margin-right: 10px;
-		}
-		
-		.article-header .time-ago {
-		    color: #666;
-		}
-
-		.like-icon {
-		    color: #ff0000; /* Red color */
-		    margin-right: 5px;
-		}
-		
-		.like-icon:hover {
-		    color: #cc0000; /* Darker red on hover */
-		}		
+        .article-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+            color: #333;
+        }
+        .article-header .avatar-icon {
+            font-size: 1.2rem;
+            margin-right: 8px;
+            color: #007bff;
+        }
+        .article-header .author-name {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .article-header .time-ago {
+            color: #666;
+        }
+        .like-icon {
+            color: #ff0000;
+            margin-right: 5px;
+        }
+        .like-icon:hover {
+            color: #cc0000;
+        }
     </style>
 </head>
 <body>
-    <!-- Navigation Bar -->
     <div th:replace="~{fragments/navbar :: navbar}"></div>
 
     <div id="function-panel" class="container mt-4">
-		<div class="row">
-	        <!-- Category Panel (1/3 width) -->
-	        <div id="category-panel" class="col-md-3 p-3">
-	            <div class="category-list">
-	                <div th:each="category : ${categories}" 
-	                     th:class="'category-item' + (${category.id.toString() == selectedCategoryId} ? ' selected' : '')" 
-	                     th:data-id="${category.id}">
-	                    <i th:class="${category.iconClass} + ' category-icon'" aria-hidden="true"></i>
-	                    <span th:text="${category.name}" class="category-name">Category Name</span>
-	                </div>
-	            </div>
-				<button id="btn_new" class="btn-new-article" data-bs-toggle="modal" data-bs-target="#addArticleModal">
-			        <i class="fas fa-plus new-icon"></i>
-			        <span>New Article</span>
-			    </button>
-   	        </div>
-	
-	        <!-- Article Panel (2/3 width) -->
-	        <div id="artical-panel" class="col-md-9">
-	            <div id="function-home-banner" class="d-flex justify-content-end p-3 border">
-	                <button id="scrollLeft" class="scroll-btn"><</button>
-	                <div id="functionListContainer">
-	                    <div id="functionList" class="function-list"></div>
-	                </div>
-	                <button id="scrollRight" class="scroll-btn">></button>
-	            </div>
-	            <div id="article-list" class="p-3">
-	                <!-- <h5>Articles</h5> -->
-	                <div id="article-container"></div>
-	                <div id="loading" class="loading">Loading more articles...</div>
-	            </div>
-	        </div>
-	    </div>
-        
-        <!-- Add Article Modal -->
+        <div class="row">
+            <div id="category-panel" class="col-md-3 p-3">
+                <div class="category-list">
+                    <div th:each="category : ${categories}" 
+                         th:class="'category-item' + (${category.id.toString() == selectedCategoryId} ? ' selected' : '')" 
+                         th:data-id="${category.id}">
+                        <i th:class="${category.iconName} + ' category-icon'" aria-hidden="true"></i>
+                        <span th:text="${category.name}" class="category-name">Category Name</span>
+                    </div>
+                </div>
+                <button id="btn_new" class="btn-new-article" data-bs-toggle="modal" data-bs-target="#addArticleModal">
+                    <i class="fas fa-plus new-icon"></i>
+                    <span>New Article</span>
+                </button>
+            </div>
+            <div id="artical-panel" class="col-md-9">
+                <div id="function-home-banner" class="d-flex justify-content-end p-3 border">
+                    <button id="scrollLeft" class="scroll-btn"><</button>
+                    <div id="functionListContainer">
+                        <div id="functionList" class="function-list"></div>
+                    </div>
+                    <button id="scrollRight" class="scroll-btn">></button>
+                </div>
+                <div id="article-list" class="p-3">
+                    <div id="article-container"></div>
+                    <div id="loading" class="loading">Loading more articles...</div>
+                </div>
+            </div>
+        </div>
         <div class="modal fade" id="addArticleModal" tabindex="-1" aria-labelledby="addArticleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
@@ -326,391 +313,357 @@
         </div>
     </div>
 
-    <!-- Footer -->
-    <!-- <div th:replace="~{fragments/footer :: footer}"></div>  -->
-
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- jQuery for AJAX -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- Summernote JS -->
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
-    <!-- marked.js from local static resources -->
     <script src="/js/marked.min.js"></script>
-    <!-- Custom Script -->
-	<script th:inline="javascript">
-	    document.addEventListener('DOMContentLoaded', function() {
-	        console.log('DOM fully loaded and parsed');
-	
-	        // Check if marked is loaded
-	        if (typeof marked === 'undefined') {
-	            console.error('marked.js failed to load');
-	            function parseContent(content) {
-	                return content.replace(/\n/g, '<br>');
-	            }
-	        } else {
-	            console.log('marked.js loaded successfully');
-	            marked.setOptions({
-	                renderer: new marked.Renderer(),
-	                gfm: true,
-	                breaks: true,
-	                sanitize: false
-	            });
-	            function parseContent(content) {
-	                try {
-	                    return marked.parse(content);
-	                } catch (e) {
-	                    console.error('Error parsing content:', e);
-	                    return content.replace(/\n/g, '<br>');
-	                }
-	            }
-	        }
-	
-	        const STRAPI_URL = "http://localhost:8080/api/";
-	        const AUTH_TOKEN = "Bearer 4ce79caf486d02a1f1d56690e10edb120172038193626d7e7eec0ba7679e219dd616c1a9a6908f079576f0d73d55ffda5fe6b057c2fdf9c19017f802f735d72ca2434a62b3398b4bdea42d84a2a4aab1657a2a3616e6f70c9ac12f80428259fd86dea64d7192e05eafcd90bfc6bbce606453e2e07048d608d52840f242524e41";
-	        let currentPage = 1;
-	        let isLoading = false;
-	        const pageSize = 10;
-	        let totalPages = 1;
-	        let totalArticles = 0;
-			let totalLoadedArticles = 0; // Track total articles actually loaded
-	        let functionData = []; // Store function data globally
-	        const maxVisibleArticles = 30;
-	        let articleBuffer = [];
-	        let lastScrollTop = 0;
-	        let categoriesLoaded = false;
-	        let functionsLoaded = false;
-			let oldestDate = null; // Store oldest date for sortScore calculation
-	
-	        // Get initial parameters from Thymeleaf
-	        let selectedFunctionId = /*[[${selectedFunctionId}]]*/ null;
-	        let selectedCategoryId = /*[[${selectedCategoryId}]]*/ null;
-	        console.log('Initial Selected Function ID:', selectedFunctionId);
-	        console.log('Initial Selected Category ID:', selectedCategoryId);
-	
-	        // Initialize Summernote
-	        $('#articleContent').summernote({
-	            height: 300,
-	            toolbar: [
-	                ['style', ['style']],
-	                ['font', ['bold', 'underline', 'clear']],
-	                ['color', ['color']],
-	                ['para', ['ul', 'ol', 'paragraph']],
-	                ['table', ['table']],
-	                ['insert', ['link', 'picture', 'video']],
-	                ['view', ['fullscreen', 'codeview', 'help']]
-	            ],
-	            callbacks: {
-	                onImageUpload: function(files) {
-	                    uploadMedia(files[0], 'image');
-	                },
-	                onMediaUpload: function(files) {
-	                    uploadMedia(files[0], 'video');
-	                }
-	            }
-	        });
-	        console.log('Summernote initialized');
-	
-	        // Reset modal form fields and populate function checkboxes
-	        function resetModalForm() {
-	            console.log('Resetting modal form');
-	            $('#articleContent').summernote('reset');
-	            $('#functionCheckboxList input[type="checkbox"]').prop('checked', false);
-	            $('#categoryCheckboxList input[type="checkbox"]').prop('checked', false);
-	            if (functionData.length > 0) {
-	                populateFunctionCheckboxes(functionData); // Populate functions when modal opens
-	            } else {
-	                console.warn('Function data not yet loaded, retrying fetch...');
-	                loadFunctionsForModal(); // Retry fetching if data isn’t available
-	            }
-	            console.log('Modal form reset completed');
-	        }
-	
-	        // Check if all data is loaded and update UI
-	        function checkAndUpdateSelections() {
-	            if (functionsLoaded && categoriesLoaded) {
-	                updateSelections();
-	                fetchArticles(1);
-	            }
-	        }
-	
-	        // Fetch functions explicitly for modal if needed
-	        function loadFunctionsForModal() {
-	            $.ajax({
-	                url: `${STRAPI_URL}functions`,
-	                method: 'GET',
-	                headers: { 'Authorization': AUTH_TOKEN, 'Accept': 'application/json' },
-	                success: function(response) {
-	                    console.log('Functions fetched for modal:', response);
-	                    functionData = response.data;
-	                    populateFunctionCheckboxes(functionData);
-	                },
-	                error: function(xhr) {
-	                    console.error('Error fetching functions for modal:', xhr);
-	                }
-	            });
-	        }
-	
-	        // Fetch functions and categories for checkboxes and banner
-	        function loadDropdowns() {
-	            $.ajax({
-	                url: `${STRAPI_URL}functions`,
-	                method: 'GET',
-	                headers: { 'Authorization': AUTH_TOKEN, 'Accept': 'application/json' },
-	                success: function(response) {
-	                    console.log('Functions fetched:', response);
-	                    functionData = response.data;
-	                    populateFunctionList(functionData);
-	                    functionsLoaded = true;
-	                    checkAndUpdateSelections();
-	                    setTimeout(updateScrollButtons, 100);
-	                },
-	                error: function(xhr) {
-	                    console.error('Error fetching functions:', xhr);
-	                    functionsLoaded = true; // Mark as loaded to proceed, but log error
-	                    checkAndUpdateSelections();
-	                }
-	            });
-	
-	            $.ajax({
-	                url: `${STRAPI_URL}categories`,
-	                method: 'GET',
-	                headers: { 'Authorization': AUTH_TOKEN, 'Accept': 'application/json' },
-	                success: function(response) {
-	                    console.log('Categories fetched:', response);
-	                    const categories = response.data;
-	                    $('#categoryCheckboxList').empty();
-	                    categories.forEach(category => {
-	                        $('#categoryCheckboxList').append(`
-	                            <div class="form-check">
-	                                <input class="form-check-input" type="checkbox" name="categories" value="${category.id}" id="cat_${category.id}">
-	                                <label class="form-check-label" for="cat_${category.id}">${category.attributes.name}</label>
-	                            </div>
-	                        `);
-	                    });
-	                    setupCategoryClickHandlers(categories);
-	                    categoriesLoaded = true;
-	                    checkAndUpdateSelections();
-	                },
-	                error: function(xhr) {
-	                    console.error('Error fetching categories:', xhr);
-	                    categoriesLoaded = true;
-	                    checkAndUpdateSelections();
-	                }
-	            });
-	        }
-	
-	        // Populate banner function list
-	        function populateFunctionList(functions) {
-	            $('#functionList').empty();
-	            functions.forEach(func => {
-	                const isSelected = func.id.toString() === selectedFunctionId;
-	                $('#functionList').append(`
-	                    <span class="function-item ${isSelected ? 'selected' : ''}" data-id="${func.id}">${func.attributes.name}</span>
-	                `);
-	            });
-	            console.log('Function list populated in banner, selected ID:', selectedFunctionId);
-	
-	            $('.function-item').on('click', function() {
-	                const newFunctionId = $(this).data('id').toString();
-	                if (newFunctionId !== selectedFunctionId) {
-	                    selectedFunctionId = newFunctionId;
-	                    selectedCategoryId = /*[[${categories[0].id}]]*/ "7"; // Default to first category, ensure string
-	                    console.log('New function selected:', selectedFunctionId, 'Default category:', selectedCategoryId);
-	                    updateSelections();
-	                    fetchArticles(1);
-	                }
-	            });
-	        }
-	
-	        // Populate modal function checkboxes
-	        function populateFunctionCheckboxes(functions) {
-	            $('#functionCheckboxList').empty();
-	            if (!functions || functions.length === 0) {
-	                console.error('No functions available to populate checkboxes');
-	                $('#functionCheckboxList').append('<p>No functions available</p>');
-	                return;
-	            }
-	            functions.forEach(func => {
-	                $('#functionCheckboxList').append(`
-	                    <div class="form-check">
-	                        <input class="form-check-input" type="checkbox" name="functions" value="${func.id}" id="func_${func.id}">
-	                        <label class="form-check-label" for="func_${func.id}">${func.attributes.name}</label>
-	                    </div>
-	                `);
-	            });
-	            console.log('Function checkboxes populated in modal');
-	        }
-	
-	        // Set up category click handlers
-	        function setupCategoryClickHandlers(categories) {
-	            $('.category-item').on('click', function() {
-	                const newCategoryId = $(this).data('id').toString();
-	                if (newCategoryId !== selectedCategoryId) {
-	                    selectedCategoryId = newCategoryId;
-	                    console.log('New category selected:', selectedCategoryId, 'Function:', selectedFunctionId);
-	                    updateSelections();
-	                    fetchArticles(1);
-	                }
-	            });
-	        }
-	
-	        // Update UI selections
-	        function updateSelections() {
-	            $('.function-item').each(function() {
-	                const id = $(this).data('id') ? $(this).data('id').toString() : null;
-	                const isSelected = id === selectedFunctionId;
-	                $(this).toggleClass('selected', isSelected);
-	                console.log('Function item:', id, 'Selected:', isSelected);
-	            });
-	
-	            $('.category-item').each(function() {
-	                const id = $(this).data('id') ? $(this).data('id').toString() : null;
-	                const isSelected = id === selectedCategoryId;
-	                $(this).toggleClass('selected', isSelected);
-	                console.log('Category item:', id, 'Selected:', isSelected);
-	            });
-	            console.log('Selections updated - Function:', selectedFunctionId, 'Category:', selectedCategoryId);
-	        }
-	
-	        // Scroll function list
-	        function scrollFunctionList(direction) {
-	            const list = document.getElementById('functionList');
-	            const scrollAmount = 200;
-	            if (direction === 'left') {
-	                list.scrollLeft -= scrollAmount;
-	                console.log('Scrolled left, new scrollLeft:', list.scrollLeft);
-	            } else {
-	                list.scrollLeft += scrollAmount;
-	                console.log('Scrolled right, new scrollLeft:', list.scrollLeft);
-	            }
-	            updateScrollButtons();
-	        }
-	
-	        // Update scroll button visibility
-	        function updateScrollButtons() {
-	            const list = document.getElementById('functionList');
-	            const leftBtn = document.getElementById('scrollLeft');
-	            const rightBtn = document.getElementById('scrollRight');
-	            const hasOverflow = list.scrollWidth > list.clientWidth;
-	            const canScrollLeft = list.scrollLeft > 0;
-	            const canScrollRight = list.scrollLeft < list.scrollWidth - list.clientWidth;
-	
-	            if (hasOverflow) {
-	                leftBtn.classList.toggle('hidden', !canScrollLeft);
-	                rightBtn.classList.toggle('hidden', !canScrollRight);
-	            } else {
-	                leftBtn.classList.add('hidden');
-	                rightBtn.classList.add('hidden');
-	            }
-	
-	            console.log('Scroll bounds - scrollLeft:', list.scrollLeft, 
-	                       'scrollWidth:', list.scrollWidth, 
-	                       'clientWidth:', list.clientWidth, 
-	                       'hasOverflow:', hasOverflow, 
-	                       'canScrollLeft:', canScrollLeft, 
-	                       'canScrollRight:', canScrollRight);
-	        }
-	
-	        // Button click handlers
-	        $('#scrollLeft').on('click', function() {
-	            if (!$(this).hasClass('hidden')) {
-	                scrollFunctionList('left');
-	            } else {
-	                console.log('Left button clicked but hidden');
-	            }
-	        });
-	        $('#scrollRight').on('click', function() {
-	            if (!$(this).hasClass('hidden')) {
-	                scrollFunctionList('right');
-	            } else {
-	                console.log('Right button clicked but hidden');
-	            }
-	        });
-	
-	        // Update buttons on window resize
-	        window.addEventListener('resize', function() {
-	            updateScrollButtons();
-	            updateArticleListHeight();
-	            console.log('Window resized, updating scroll buttons and article list height');
-	        });
-	
-	        // Update article list height dynamically
-	        function updateArticleListHeight() {
-	            const categoryPanelHeight = $('#category-panel').outerHeight(true) || 200;
-	            const articleList = $('#article-list');
-	            const containerHeight = $('#article-container').outerHeight(true) || 0;
-	
-	            if (containerHeight < categoryPanelHeight) {
-	                articleList.css('min-height', `${categoryPanelHeight}px`);
-	            } else {
-	                articleList.css('min-height', '');
-	            }
-	
-	            console.log('Article list height updated - container:', containerHeight, 'categoryPanel:', categoryPanelHeight);
-	        }
-	
-			// Render articles with activity tracking and author header
-			function renderArticles() {
-			    const container = $('#article-container');
-			    container.empty();
-			    const now = new Date(); // Current time for time difference calculation
-			
-			    articleBuffer.forEach(article => {
-			        const contentHtml = parseContent(article.attributes.content);
-			        const likeCount = article.attributes.like_count || 0;
-			        const visitCount = article.attributes.visit_count || 0;
-			        const createdAt = new Date(article.attributes.createdAt); // Parse creation time
-			        const timeDiffMs = now - createdAt; // Difference in milliseconds
-			        let timeAgo;
-			
-			        // Calculate time ago in hours or days
-			        const hoursDiff = Math.floor(timeDiffMs / (1000 * 60 * 60));
-			        if (hoursDiff < 24) {
-			            timeAgo = `${hoursDiff} hour${hoursDiff !== 1 ? 's' : ''} ago`;
-			        } else {
-			            const daysDiff = Math.floor(hoursDiff / 24);
-			            timeAgo = `${daysDiff} day${daysDiff !== 1 ? 's' : ''} ago`;
-			        }
-			
-			        // Use "GeniusParentingAI" if author is not present
-			        const authorName = article.attributes.author || 'GeniusParentingAI';
-			
-			        container.append(`
-			            <div class="article-card" data-id="${article.id}">
-			                <div class="article-header">
-			                    <i class="fas fa-user-circle avatar-icon"></i>
-			                    <span class="author-name">${authorName}</span>
-			                    <span class="time-ago">${timeAgo}</span>
-			                </div>
-			                <div class="article-content">${contentHtml}</div>
-			                <div class="article-meta">
-			                    <!-- Created: ${article.attributes.createdAt} -->
-			                    <span><i class="fas fa-thumbs-up like-icon" style="cursor: pointer;"></i> <span class="like-count">${likeCount}</span></span>
-			                    <span> | Views: <span class="view-count">${visitCount}</span></span>
-			                </div>
-			            </div>
-			        `);
-			    });
-			
-			    // Add event listeners for like icons
-			    $('.like-icon').on('click', function() {
-			        const articleId = $(this).closest('.article-card').data('id');
-			        updateActivity(articleId, 'like_count', 1);
-			    });
-			
-			    // Increment view count on load (once per render)
-				articleBuffer.forEach(article => {
-					if (!article.viewed) { // Only increment if not already viewed this render
-						updateActivity(article.id, 'visit_count', 1);
-						article.viewed = true; // Mark as viewed
-					}
-				});
-				
-			    updateArticleListHeight();
-			}
-	
-            // Fetch oldest date for sortScore calculation
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM fully loaded and parsed');
+
+            if (typeof marked === 'undefined') {
+                console.error('marked.js failed to load');
+                function parseContent(content) { return content.replace(/\n/g, '<br>'); }
+            } else {
+                console.log('marked.js loaded successfully');
+                marked.setOptions({ renderer: new marked.Renderer(), gfm: true, breaks: true, sanitize: false });
+                function parseContent(content) {
+                    try { return marked.parse(content); } catch (e) {
+                        console.error('Error parsing content:', e);
+                        return content.replace(/\n/g, '<br>');
+                    }
+                }
+            }
+
+            const STRAPI_URL = "http://localhost:8080/api/";
+            const AUTH_TOKEN = "Bearer 4ce79caf486d02a1f1d56690e10edb120172038193626d7e7eec0ba7679e219dd616c1a9a6908f079576f0d73d55ffda5fe6b057c2fdf9c19017f802f735d72ca2434a62b3398b4bdea42d84a2a4aab1657a2a3616e6f70c9ac12f80428259fd86dea64d7192e05eafcd90bfc6bbce606453e2e07048d608d52840f242524e41";
+            let currentPage = 1;
+            let isLoading = false;
+            const pageSize = 10;
+            let totalPages = 1;
+            let totalArticles = 0;
+            let totalLoadedArticles = 0;
+            let functionData = [];
+            const maxVisibleArticles = 30;
+            let articleBuffer = [];
+            let lastScrollTop = 0;
+            let categoriesLoaded = false;
+            let functionsLoaded = false;
+            let oldestDate = null;
+            let reachedTop = false; // Flag to track if we've reached the top
+            let reachedBottom = false; // Flag to track if we've reached the bottom
+
+            let selectedFunctionId = /*[[${selectedFunctionId}]]*/ null;
+            let selectedCategoryId = /*[[${selectedCategoryId}]]*/ null;
+            let selectedArticleId = /*[[${selectedArticleId}]]*/ null;
+            console.log('Initial Selected Function ID:', selectedFunctionId);
+            console.log('Initial Selected Category ID:', selectedCategoryId);
+            console.log('Initial Selected Article ID:', selectedArticleId);
+
+            $('#articleContent').summernote({
+                height: 300,
+                toolbar: [
+                    ['style', ['style']], ['font', ['bold', 'underline', 'clear']], ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']], ['table', ['table']], ['insert', ['link', 'picture', 'video']],
+                    ['view', ['fullscreen', 'codeview', 'help']]
+                ],
+                callbacks: {
+                    onImageUpload: function(files) { uploadMedia(files[0], 'image'); },
+                    onMediaUpload: function(files) { uploadMedia(files[0], 'video'); }
+                }
+            });
+            console.log('Summernote initialized');
+
+            function resetModalForm() {
+                console.log('Resetting modal form');
+                $('#articleContent').summernote('reset');
+                $('#functionCheckboxList input[type="checkbox"]').prop('checked', false);
+                $('#categoryCheckboxList input[type="checkbox"]').prop('checked', false);
+                if (functionData.length > 0) {
+                    populateFunctionCheckboxes(functionData);
+                } else {
+                    console.warn('Function data not yet loaded, retrying fetch...');
+                    loadFunctionsForModal();
+                }
+                console.log('Modal form reset completed');
+            }
+
+            function checkAndUpdateSelections() {
+                if (functionsLoaded && categoriesLoaded) {
+                    updateSelections();
+                    fetchArticles(1);
+                }
+            }
+
+            function loadFunctionsForModal() {
+                $.ajax({
+                    url: `${STRAPI_URL}functions`,
+                    method: 'GET',
+                    headers: { 'Authorization': AUTH_TOKEN, 'Accept': 'application/json' },
+                    success: function(response) {
+                        console.log('Functions fetched for modal:', response);
+                        functionData = response.data;
+                        populateFunctionCheckboxes(functionData);
+                    },
+                    error: function(xhr) { console.error('Error fetching functions for modal:', xhr); }
+                });
+            }
+
+            function loadDropdowns() {
+                $.ajax({
+                    url: `${STRAPI_URL}functions`,
+                    method: 'GET',
+                    headers: { 'Authorization': AUTH_TOKEN, 'Accept': 'application/json' },
+                    success: function(response) {
+                        console.log('Functions fetched:', response);
+                        functionData = response.data;
+                        populateFunctionList(functionData);
+                        functionsLoaded = true;
+                        checkAndUpdateSelections();
+                        setTimeout(updateScrollButtons, 100);
+                    },
+                    error: function(xhr) {
+                        console.error('Error fetching functions:', xhr);
+                        functionsLoaded = true;
+                        checkAndUpdateSelections();
+                    }
+                });
+
+                $.ajax({
+                    url: `${STRAPI_URL}categories?sort[0]=order:asc`,
+                    method: 'GET',
+                    headers: { 'Authorization': AUTH_TOKEN, 'Accept': 'application/json' },
+                    success: function(response) {
+                        console.log('Categories fetched:', response);
+                        const categories = response.data;
+                        $('#categoryCheckboxList').empty();
+                        categories.forEach(category => {
+                            $('#categoryCheckboxList').append(`
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="categories" value="${category.id}" id="cat_${category.id}">
+                                    <label class="form-check-label" for="cat_${category.id}">${category.attributes.name}</label>
+                                </div>
+                            `);
+                        });
+                        setupCategoryClickHandlers(categories);
+                        categoriesLoaded = true;
+                        checkAndUpdateSelections();
+                    },
+                    error: function(xhr) {
+                        console.error('Error fetching categories:', xhr);
+                        categoriesLoaded = true;
+                        checkAndUpdateSelections();
+                    }
+                });
+            }
+
+            function populateFunctionList(functions) {
+                $('#functionList').empty();
+                functions.forEach(func => {
+                    const isSelected = func.id.toString() === selectedFunctionId;
+                    $('#functionList').append(`
+                        <span class="function-item ${isSelected ? 'selected' : ''}" data-id="${func.id}">${func.attributes.name}</span>
+                    `);
+                });
+                console.log('Function list populated in banner, selected ID:', selectedFunctionId);
+
+                $('.function-item').on('click', function() {
+                    const newFunctionId = $(this).data('id').toString();
+                    if (newFunctionId !== selectedFunctionId) {
+                        selectedFunctionId = newFunctionId;
+                        selectedCategoryId = /*[[${categories[0].id}]]*/ "7";
+                        console.log('New function selected:', selectedFunctionId, 'Default category:', selectedCategoryId);
+                        updateSelections();
+                        fetchArticles(1);
+                    }
+                });
+            }
+
+            function populateFunctionCheckboxes(functions) {
+                $('#functionCheckboxList').empty();
+                if (!functions || functions.length === 0) {
+                    console.error('No functions available to populate checkboxes');
+                    $('#functionCheckboxList').append('<p>No functions available</p>');
+                    return;
+                }
+                functions.forEach(func => {
+                    $('#functionCheckboxList').append(`
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="functions" value="${func.id}" id="func_${func.id}">
+                            <label class="form-check-label" for="func_${func.id}">${func.attributes.name}</label>
+                        </div>
+                    `);
+                });
+                console.log('Function checkboxes populated in modal');
+            }
+
+            function setupCategoryClickHandlers(categories) {
+                $('.category-item').on('click', function() {
+                    const newCategoryId = $(this).data('id').toString();
+                    if (newCategoryId !== selectedCategoryId) {
+                        selectedCategoryId = newCategoryId;
+                        console.log('New category selected:', selectedCategoryId, 'Function:', selectedFunctionId);
+                        updateSelections();
+                        fetchArticles(1);
+                    }
+                });
+            }
+
+            function updateSelections() {
+                $('.function-item').each(function() {
+                    const id = $(this).data('id') ? $(this).data('id').toString() : null;
+                    const isSelected = id === selectedFunctionId;
+                    $(this).toggleClass('selected', isSelected);
+                    console.log('Function item:', id, 'Selected:', isSelected);
+                });
+
+                $('.category-item').each(function() {
+                    const id = $(this).data('id') ? $(this).data('id').toString() : null;
+                    const isSelected = id === selectedCategoryId;
+                    $(this).toggleClass('selected', isSelected);
+                    console.log('Category item:', id, 'Selected:', isSelected);
+                });
+                console.log('Selections updated - Function:', selectedFunctionId, 'Category:', selectedCategoryId);
+            }
+
+            function scrollFunctionList(direction) {
+                const list = document.getElementById('functionList');
+                const scrollAmount = 200;
+                if (direction === 'left') {
+                    list.scrollLeft -= scrollAmount;
+                    console.log('Scrolled left, new scrollLeft:', list.scrollLeft);
+                } else {
+                    list.scrollLeft += scrollAmount;
+                    console.log('Scrolled right, new scrollLeft:', list.scrollLeft);
+                }
+                updateScrollButtons();
+            }
+
+            function updateScrollButtons() {
+                const list = document.getElementById('functionList');
+                const leftBtn = document.getElementById('scrollLeft');
+                const rightBtn = document.getElementById('scrollRight');
+                const hasOverflow = list.scrollWidth > list.clientWidth;
+                const canScrollLeft = list.scrollLeft > 0;
+                const canScrollRight = list.scrollLeft < list.scrollWidth - list.clientWidth;
+
+                if (hasOverflow) {
+                    leftBtn.classList.toggle('hidden', !canScrollLeft);
+                    rightBtn.classList.toggle('hidden', !canScrollRight);
+                } else {
+                    leftBtn.classList.add('hidden');
+                    rightBtn.classList.add('hidden');
+                }
+
+                console.log('Scroll bounds - scrollLeft:', list.scrollLeft, 
+                            'scrollWidth:', list.scrollWidth, 
+                            'clientWidth:', list.clientWidth, 
+                            'hasOverflow:', hasOverflow, 
+                            'canScrollLeft:', canScrollLeft, 
+                            'canScrollRight:', canScrollRight);
+            }
+
+            $('#scrollLeft').on('click', function() {
+                if (!$(this).hasClass('hidden')) scrollFunctionList('left');
+                else console.log('Left button clicked but hidden');
+            });
+            $('#scrollRight').on('click', function() {
+                if (!$(this).hasClass('hidden')) scrollFunctionList('right');
+                else console.log('Right button clicked but hidden');
+            });
+
+            window.addEventListener('resize', function() {
+                updateScrollButtons();
+                updateArticleListHeight();
+                console.log('Window resized, updating scroll buttons and article list height');
+            });
+
+            function updateArticleListHeight() {
+                const categoryPanelHeight = $('#category-panel').outerHeight(true) || 200;
+                const articleList = $('#article-list');
+                const containerHeight = $('#article-container').outerHeight(true) || 0;
+
+                if (containerHeight < categoryPanelHeight) {
+                    articleList.css('min-height', `${categoryPanelHeight}px`);
+                } else {
+                    articleList.css('min-height', '');
+                }
+
+                console.log('Article list height updated - container:', containerHeight, 'categoryPanel:', categoryPanelHeight);
+            }
+
+            function renderArticles() {
+                const container = $('#article-container');
+                container.empty();
+                const now = new Date();
+
+                articleBuffer.forEach(article => {
+                    const contentHtml = parseContent(article.attributes.content);
+                    const likeCount = article.attributes.like_count || 0;
+                    const visitCount = article.attributes.visit_count || 0;
+                    const createdAt = new Date(article.attributes.createdAt);
+                    const timeDiffMs = now - createdAt;
+                    let timeAgo;
+
+                    const hoursDiff = Math.floor(timeDiffMs / (1000 * 60 * 60));
+                    if (hoursDiff < 24) {
+                        timeAgo = `${hoursDiff} hour${hoursDiff !== 1 ? 's' : ''} ago`;
+                    } else {
+                        const daysDiff = Math.floor(hoursDiff / 24);
+                        timeAgo = `${daysDiff} day${daysDiff !== 1 ? 's' : ''} ago`;
+                    }
+
+                    const authorName = article.attributes.author || 'GeniusParentingAI';
+
+                    container.append(`
+                        <div class="article-card" data-id="${article.id}">
+                            <div class="article-header">
+                                <i class="fas fa-user-circle avatar-icon"></i>
+                                <span class="author-name">${authorName}</span>
+                                <span class="time-ago">${timeAgo}</span>
+                            </div>
+                            <div class="article-content">${contentHtml}</div>
+                            <div class="article-meta">
+                                <span><i class="fas fa-thumbs-up like-icon" style="cursor: pointer;"></i> <span class="like-count">${likeCount}</span></span>
+                                <span> | Views: <span class="view-count">${visitCount}</span></span>
+                            </div>
+                        </div>
+                    `);
+                });
+
+                $('.like-icon').on('click', function() {
+                    const articleId = $(this).closest('.article-card').data('id');
+                    updateActivity(articleId, 'like_count', 1);
+                });
+
+                articleBuffer.forEach(article => {
+                    if (!article.viewed) {
+                        updateActivity(article.id, 'visit_count', 1);
+                        article.viewed = true;
+                    }
+                });
+
+                updateArticleListHeight();
+
+                if (selectedArticleId) {
+                    const targetArticle = $(`.article-card[data-id="${selectedArticleId}"]`);
+                    if (targetArticle.length) {
+                        $('#article-list').scrollTop(targetArticle.offset().top - $('#article-list').offset().top + $('#article-list').scrollTop());
+                        console.log('Scrolled to article:', selectedArticleId);
+                    } else {
+                        console.warn('Article not found:', selectedArticleId);
+                    }
+                }
+
+                // Re-attach scroll listener only if not at both top and bottom
+                if (!reachedTop || !reachedBottom) {
+                    $('#article-list').off('scroll', checkScroll).on('scroll', checkScroll);
+                    console.log('Scroll listener re-attached', 'reachedTop:', reachedTop, 'reachedBottom:', reachedBottom);
+                } else {
+                    console.log('Scroll listener not re-attached - at limit', 'reachedTop:', reachedTop, 'reachedBottom:', reachedBottom);
+                }
+            }
+
             function fetchOldestDate() {
                 $.ajax({
                     url: `${STRAPI_URL}articles?pagination[pageSize]=1&sort[0]=createdAt:asc`,
@@ -724,210 +677,197 @@
                     },
                     error: function(xhr) {
                         console.error('Error fetching oldest date:', xhr);
-                        oldestDate = new Date('2020-01-01').setHours(0, 0, 0, 0); // Fallback
+                        oldestDate = new Date('2020-01-01').setHours(0, 0, 0, 0);
                     }
                 });
             }
 
-			// Update activity counts via Strapi PUT endpoint
-			function updateActivity(articleId, field, increment) {
-				const url = `${STRAPI_URL}articles/${articleId}`;
-				$.ajax({
-					url: url,
-					method: 'GET',
-					headers: { 'Authorization': AUTH_TOKEN },
-					success: function(response) {
-						const currentCount = response.data.attributes[field] || 0;
-						let updateData = { [field]: currentCount + increment };
+            function updateActivity(articleId, field, increment) {
+                const url = `${STRAPI_URL}articles/${articleId}`;
+                $.ajax({
+                    url: url,
+                    method: 'GET',
+                    headers: { 'Authorization': AUTH_TOKEN },
+                    success: function(response) {
+                        const currentCount = response.data.attributes[field] || 0;
+                        let updateData = { [field]: currentCount + increment };
 
-						// Update sortScore when liking, but don't refresh immediately
-						if (field === 'like_count' && oldestDate !== null) {
-							const ONE_DAY_MS = 24 * 60 * 60 * 1000;
-							const createdAt = new Date(response.data.attributes.createdAt).setHours(0, 0, 0, 0);
-							const daysDiff = Math.floor((createdAt - oldestDate) / ONE_DAY_MS);
-							const newLikeCount = currentCount + increment;
-							updateData.sortScore = 1 + daysDiff + 50 * newLikeCount;
-						}
+                        if (field === 'like_count' && oldestDate !== null) {
+                            const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+                            const createdAt = new Date(response.data.attributes.createdAt).setHours(0, 0, 0, 0);
+                            const daysDiff = Math.floor((createdAt - oldestDate) / ONE_DAY_MS);
+                            const newLikeCount = currentCount + increment;
+                            updateData.sortScore = 1 + daysDiff + 50 * newLikeCount;
+                        }
 
-						$.ajax({
-							url: url,
-							method: 'PUT',
-							headers: { 'Authorization': AUTH_TOKEN, 'Content-Type': 'application/json' },
-							data: JSON.stringify({ data: updateData }),
-							success: function(updatedResponse) {
-								console.log(`${field} updated for article ${articleId}:`, updatedResponse);
-								// Update UI locally without fetching
-								const card = $(`.article-card[data-id="${articleId}"]`);
-								if (card.length) {
-									card.find(`.${field.split('_')[0]}-count`).text(updatedResponse.data.attributes[field]);
-								}
-							},
-							error: function(xhr) { console.error(`Error updating ${field}:`, xhr); }
-						});
-					},
-					error: function(xhr) { console.error(`Error fetching article ${articleId}:`, xhr); }
-				});
-			}
-	
-			// Fetch articles from Strapi with filters
-			function fetchArticles(page) {
-				if (isLoading) return;
-				isLoading = true;
-				$('#loading').show();
-				console.log('Fetching articles, page:', page, 'function:', selectedFunctionId, 'category:', selectedCategoryId);
+                        $.ajax({
+                            url: url,
+                            method: 'PUT',
+                            headers: { 'Authorization': AUTH_TOKEN, 'Content-Type': 'application/json' },
+                            data: JSON.stringify({ data: updateData }),
+                            success: function(updatedResponse) {
+                                console.log(`${field} updated for article ${articleId}:`, updatedResponse);
+                                const card = $(`.article-card[data-id="${articleId}"]`);
+                                if (card.length) {
+                                    card.find(`.${field.split('_')[0]}-count`).text(updatedResponse.data.attributes[field]);
+                                }
+                            },
+                            error: function(xhr) { console.error(`Error updating ${field}:`, xhr); }
+                        });
+                    },
+                    error: function(xhr) { console.error(`Error fetching article ${articleId}:`, xhr); }
+                });
+            }
 
-				let url = `${STRAPI_URL}articles?pagination[page]=${page}&pagination[pageSize]=${pageSize}&populate=functions,categories&sort[0]=always_on_top:desc&sort[1]=sortScore:desc`;
-				if (selectedFunctionId) {
-					url += `&filters[functions][id][$in]=${selectedFunctionId}`;
-				}
-				if (selectedCategoryId) {
-					url += `&filters[categories][id][$in]=${selectedCategoryId}`;
-				}
+            function fetchArticles(page) {
+                if (isLoading) return;
+                isLoading = true;
+                $('#loading').show();
+                console.log('Fetching articles, page:', page, 'function:', selectedFunctionId, 'category:', selectedCategoryId);
 
-				$.ajax({
-					url: url,
-					method: 'GET',
-					headers: { 'Authorization': AUTH_TOKEN, 'Accept': 'application/json' },
-					success: function(response) {
-						console.log('API Response:', response);
-						const articles = response.data;
-						totalPages = response.meta.pagination.pageCount;
-						totalArticles = response.meta.pagination.total;
+                let url = `${STRAPI_URL}articles?pagination[page]=${page}&pagination[pageSize]=${pageSize}&populate=functions,categories&sort[0]=always_on_top:desc&sort[1]=sortScore:desc`;
+                if (selectedFunctionId) url += `&filters[functions][id][$in]=${selectedFunctionId}`;
+                if (selectedCategoryId) url += `&filters[categories][id][$in]=${selectedCategoryId}`;
 
-						// Reset viewed flags for new fetch
-						articles.forEach(article => article.viewed = false);
+                $.ajax({
+                    url: url,
+                    method: 'GET',
+                    headers: { 'Authorization': AUTH_TOKEN, 'Accept': 'application/json' },
+                    success: function(response) {
+                        console.log('API Response:', response);
+                        const articles = response.data;
+                        totalPages = response.meta.pagination.pageCount;
+                        totalArticles = response.meta.pagination.total;
 
-						if (page === 1) {
-							articleBuffer = articles;
-							totalLoadedArticles = articles.length; // Reset loaded count
-						} else {
-							articleBuffer = articleBuffer.concat(articles);
-							totalLoadedArticles += articles.length; // Increment loaded count
-						}
+                        articles.forEach(article => article.viewed = false);
 
-						// Trim buffer to maxVisibleArticles, keeping newest articles
-						if (articleBuffer.length > maxVisibleArticles) {
-							articleBuffer = articleBuffer.slice(-maxVisibleArticles);
-						}
+                        if (page === 1) {
+                            articleBuffer = articles;
+                            totalLoadedArticles = articles.length;
+                            reachedTop = true; // Starting at page 1 means we're at the top
+                            reachedBottom = (totalLoadedArticles >= totalArticles || page >= totalPages);
+                        } else {
+                            articleBuffer = articleBuffer.concat(articles);
+                            totalLoadedArticles += articles.length;
+                            reachedBottom = (totalLoadedArticles >= totalArticles || page >= totalPages);
+                            reachedTop = (page === 1); // Update reachedTop based on page
+                        }
 
-						renderArticles();
+                        if (articleBuffer.length > maxVisibleArticles) {
+                            articleBuffer = articleBuffer.slice(-maxVisibleArticles);
+                        }
 
-						isLoading = false;
-						$('#loading').hide();
+                        renderArticles();
 
-						console.log('Current page:', page, 'Total pages:', totalPages, 'Total articles:', totalArticles, 'Loaded articles:', totalLoadedArticles, 'Buffer length:', articleBuffer.length);
-						// Stop fetching if all articles are loaded or no more pages
-						if (totalLoadedArticles >= totalArticles || page >= totalPages) {
-							console.log('All articles loaded or reached end of pages');
-							$(document).off('scroll', checkScroll); // Remove scroll event if all loaded
-						} else if (page < totalPages) {
-							currentPage = page + 1; // Prepare next page
-						}
-					},
-					error: function(xhr) {
-						console.error('Error fetching articles:', xhr);
-						isLoading = false;
-						$('#loading').hide();
-					}
-				});
-			}
+                        isLoading = false;
+                        $('#loading').hide();
 
-			// Infinite scroll handler
-			function checkScroll() {
-				const articleList = $('#article-list');
-				const scrollTop = articleList.scrollTop();
-				const listHeight = articleList[0].scrollHeight;
-				const clientHeight = articleList.height();
-				const triggerPointBottom = listHeight - clientHeight - 50;
-				const triggerPointTop = 50;
+                        console.log('Current page:', page, 'Total pages:', totalPages, 'Total articles:', totalArticles, 'Loaded articles:', totalLoadedArticles, 'Buffer length:', articleBuffer.length);
+                        if (reachedBottom) {
+                            console.log('All articles loaded or reached end of pages');
+                        }
+                    },
+                    error: function(xhr) {
+                        console.error('Error fetching articles:', xhr);
+                        isLoading = false;
+                        $('#loading').hide();
+                    }
+                });
+            }
 
-				console.log('Scroll check - scrollTop:', scrollTop, 'triggerPointBottom:', triggerPointBottom, 
-							'triggerPointTop:', triggerPointTop, 'isLoading:', isLoading, 
-							'currentPage:', currentPage, 'totalPages:', totalPages, 
-							'totalLoadedArticles:', totalLoadedArticles, 'totalArticles:', totalArticles);
+            function checkScroll() {
+                const articleList = $('#article-list');
+                const scrollTop = articleList.scrollTop();
+                const listHeight = articleList[0].scrollHeight;
+                const clientHeight = articleList.height();
+                const triggerPointBottom = listHeight - clientHeight - 50;
+                const triggerPointTop = 50;
 
-				if (scrollTop >= triggerPointBottom && !isLoading && totalLoadedArticles < totalArticles && currentPage <= totalPages) {
-					fetchArticles(currentPage);
-				} else if (scrollTop <= triggerPointTop && !isLoading && currentPage > 1) {
-					currentPage = Math.max(1, currentPage - 1);
-					fetchArticles(currentPage);
-				}
+                console.log('Scroll check - scrollTop:', scrollTop, 'triggerPointBottom:', triggerPointBottom, 
+                            'triggerPointTop:', triggerPointTop, 'isLoading:', isLoading, 
+                            'currentPage:', currentPage, 'totalPages:', totalPages, 
+                            'totalLoadedArticles:', totalLoadedArticles, 'totalArticles:', totalArticles, 
+                            'reachedTop:', reachedTop, 'reachedBottom:', reachedBottom);
 
-				const container = $('#article-container');
-				const articles = container.children('.article-card');
-				if (articles.length > maxVisibleArticles) {
-					const articleHeight = articles.first().outerHeight(true);
-					const visibleStart = Math.floor(scrollTop / articleHeight);
-					if (scrollTop > lastScrollTop && visibleStart > 0) {
-						articleBuffer = articleBuffer.slice(visibleStart);
-						renderArticles();
-						articleList.scrollTop(scrollTop - (visibleStart * articleHeight));
-					} else if (scrollTop < lastScrollTop && visibleStart < articleBuffer.length - maxVisibleArticles) {
-						articleBuffer = articleBuffer.slice(0, maxVisibleArticles);
-						renderArticles();
-						articleList.scrollTop(scrollTop + (articleBuffer.length - visibleStart - maxVisibleArticles) * articleHeight);
-					}
-				}
+                // Scroll down: Fetch next page if not at bottom
+                if (!reachedBottom && scrollTop >= triggerPointBottom && !isLoading && totalLoadedArticles < totalArticles && currentPage < totalPages) {
+                    currentPage = Math.min(totalPages, currentPage + 1);
+                    fetchArticles(currentPage);
+                }
+                // Scroll up: Fetch previous page if not at top
+                else if (!reachedTop && scrollTop <= triggerPointTop && !isLoading && currentPage > 1) {
+                    currentPage = Math.max(1, currentPage - 1);
+                    fetchArticles(currentPage);
+                }
 
-				lastScrollTop = scrollTop;
-			}
+                const container = $('#article-container');
+                const articles = container.children('.article-card');
+                if (articles.length > maxVisibleArticles) {
+                    const articleHeight = articles.first().outerHeight(true);
+                    const visibleStart = Math.floor(scrollTop / articleHeight);
+                    if (scrollTop > lastScrollTop && visibleStart > 0) {
+                        articleBuffer = articleBuffer.slice(visibleStart);
+                        renderArticles();
+                        articleList.scrollTop(scrollTop - (visibleStart * articleHeight));
+                    } else if (scrollTop < lastScrollTop && visibleStart < articleBuffer.length - maxVisibleArticles) {
+                        articleBuffer = articleBuffer.slice(0, maxVisibleArticles);
+                        renderArticles();
+                        articleList.scrollTop(scrollTop + (articleBuffer.length - visibleStart - maxVisibleArticles) * articleHeight);
+                    }
+                }
 
-			$('#article-list').on('scroll', function() {
-				checkScroll();
-			});
+                lastScrollTop = scrollTop;
+            }
 
-			$('#addArticleModal').on('show.bs.modal', function() {
-				resetModalForm();
-			});
+            $('#article-list').on('scroll', function() { checkScroll(); });
 
-			// Save new article with initial sortScore
-			$('#saveArticleBtn').on('click', function() {
-				const content = $('#articleContent').summernote('code');
-				const functions = $('#functionCheckboxList input:checked').map(function() { return $(this).val(); }).get();
-				const categories = $('#categoryCheckboxList input:checked').map(function() { return $(this).val(); }).get();
+            $('#addArticleModal').on('show.bs.modal', function() { resetModalForm(); });
 
-				if (!oldestDate) {
-					console.error('Oldest date not fetched yet, cannot calculate sortScore');
-					return;
-				}
+            $('#saveArticleBtn').on('click', function() {
+                const content = $('#articleContent').summernote('code');
+                const functions = $('#functionCheckboxList input:checked').map(function() { return $(this).val(); }).get();
+                const categories = $('#categoryCheckboxList input:checked').map(function() { return $(this).val(); }).get();
 
-				const ONE_DAY_MS = 24 * 60 * 60 * 1000;
-				const createdAt = new Date().setHours(0, 0, 0, 0);
-				const daysDiff = Math.floor((createdAt - oldestDate) / ONE_DAY_MS);
-				const initialSortScore = 1 + daysDiff; // Initial likes = 0
+                if (!oldestDate) {
+                    console.error('Oldest date not fetched yet, cannot calculate sortScore');
+                    return;
+                }
 
-				const articleData = {
-					data: {
-						content: content,
-						functions: functions,
-						categories: categories,
-						like_count: 0,
-						visit_count: 0,
-						sortScore: initialSortScore,
-						always_on_top: false // Default to false unless specified
-					}
-				};
+                const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+                const createdAt = new Date().setHours(0, 0, 0, 0);
+                const daysDiff = Math.floor((createdAt - oldestDate) / ONE_DAY_MS);
+                const initialSortScore = 1 + daysDiff;
 
-				$.ajax({
-					url: `${STRAPI_URL}articles`,
-					method: 'POST',
-					headers: { 'Authorization': AUTH_TOKEN, 'Content-Type': 'application/json' },
-					data: JSON.stringify(articleData),
-					success: function(response) {
-						console.log('Article saved:', response);
-						$('#addArticleModal').modal('hide');
-						fetchArticles(1); // Refresh article list starting from page 1
-					},
-					error: function(xhr) {
-						console.error('Error saving article:', xhr);
-					}
-				});
-			});
+                const articleData = {
+                    data: {
+                        content: content,
+                        functions: functions,
+                        categories: categories,
+                        like_count: 0,
+                        visit_count: 0,
+                        sortScore: initialSortScore,
+                        always_on_top: false
+                    }
+                };
 
-			console.log('Fetching oldest date and loading dropdowns');
-			fetchOldestDate();
-			loadDropdowns();
-		});
-	</script>
+                $.ajax({
+                    url: `${STRAPI_URL}articles`,
+                    method: 'POST',
+                    headers: { 'Authorization': AUTH_TOKEN, 'Content-Type': 'application/json' },
+                    data: JSON.stringify(articleData),
+                    success: function(response) {
+                        console.log('Article saved:', response);
+                        $('#addArticleModal').modal('hide');
+                        fetchArticles(1);
+                    },
+                    error: function(xhr) { console.error('Error saving article:', xhr); }
+                });
+            });
+
+            console.log('Fetching oldest date and loading dropdowns');
+            fetchOldestDate();
+            loadDropdowns();
+        });
+    </script>
 </body>
 </html>

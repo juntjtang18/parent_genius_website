@@ -26,31 +26,32 @@ public class ArticleController {
     public String showArticleList(
             @RequestParam(value = "function", required = false) String functionId,
             @RequestParam(value = "category", required = false) String categoryId,
+            @RequestParam(value = "article", required = false) String articleId, // New parameter
             Model model) {
-        System.out.println("/function-article-list called with function=" + functionId + ", category=" + categoryId);
+        System.out.println("/function-article-list called with function=" + functionId + ", category=" + categoryId + ", article=" + articleId);
 
-        // Fetch all functions and categories
         List<Function> functions = functionService.getFunctions();
         List<Category> categories = categoryService.getCategories();
 
         System.out.println("Fetched functions: " + (functions != null ? functions.size() : "null") + " items");
         System.out.println("Fetched categories: " + (categories != null ? categories.size() : "null") + " items");
 
-        // Default to first function/category if not provided
         String selectedFunctionId = (functionId != null && !functionId.isEmpty()) ? 
-            functionId : (functions != null && !functions.isEmpty() ? functions.get(0).getId().toString() : "1"); // Fallback to "1" if empty
+            functionId : (functions != null && !functions.isEmpty() ? functions.get(0).getId().toString() : "1");
         String selectedCategoryId = (categoryId != null && !categoryId.isEmpty()) ? 
-            categoryId : (categories != null && !categories.isEmpty() ? categories.get(0).getId().toString() : "7"); // Fallback to "7" if empty
+            categoryId : (categories != null && !functions.isEmpty() ? categories.get(0).getId().toString() : "7");
 
         System.out.println("Selected Function ID: " + selectedFunctionId);
         System.out.println("Selected Category ID: " + selectedCategoryId);
 
-        // Add to model
         model.addAttribute("functions", functions != null ? functions : Collections.emptyList());
         model.addAttribute("categories", categories != null ? categories : Collections.emptyList());
         model.addAttribute("selectedFunctionId", selectedFunctionId);
         model.addAttribute("selectedCategoryId", selectedCategoryId);
-        System.out.println("selectedFunctionId=" + model.getAttribute("selectedCategoryId"));
+        model.addAttribute("selectedArticleId", articleId); // Pass articleId to view
+        System.out.println("selectedFunctionId=" + model.getAttribute("selectedFunctionId"));
+        System.out.println("selectedCategoryId=" + model.getAttribute("selectedCategoryId"));
+        System.out.println("selectedArticleId=" + model.getAttribute("selectedArticleId"));
         return "function-article-list";
     }
 }

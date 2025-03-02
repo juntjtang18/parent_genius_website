@@ -15,7 +15,6 @@ public class CategoryService {
     private final String STRAPI_URL = "http://localhost:8080/api/categories";
     private final String AUTH_TOKEN = "Bearer 4ce79caf486d02a1f1d56690e10edb120172038193626d7e7eec0ba7679e219dd616c1a9a6908f079576f0d73d55ffda5fe6b057c2fdf9c19017f802f735d72ca2434a62b3398b4bdea42d84a2a4aab1657a2a3616e6f70c9ac12f80428259fd86dea64d7192e05eafcd90bfc6bbce606453e2e07048d608d52840f242524e41";
 
-    // Nested static class for the full API response
     private static class ApiResponse {
         private List<CategoryResponse> data;
         private Meta meta;
@@ -26,7 +25,6 @@ public class CategoryService {
         public void setMeta(Meta meta) { this.meta = meta; }
     }
 
-    // Nested static class for each category item in "data"
     private static class CategoryResponse {
         private Long id;
         private CategoryAttributes attributes;
@@ -37,7 +35,6 @@ public class CategoryService {
         public void setAttributes(CategoryAttributes attributes) { this.attributes = attributes; }
     }
 
-    // Nested static class for the "attributes" object
     private static class CategoryAttributes {
         private String name;
         private Integer order;
@@ -63,7 +60,6 @@ public class CategoryService {
         public void setLocale(String locale) { this.locale = locale; }
     }
 
-    // Nested static class for "meta"
     private static class Meta {
         private Pagination pagination;
 
@@ -71,7 +67,6 @@ public class CategoryService {
         public void setPagination(Pagination pagination) { this.pagination = pagination; }
     }
 
-    // Nested static class for "pagination"
     private static class Pagination {
         private Integer page;
         private Integer pageSize;
@@ -88,7 +83,6 @@ public class CategoryService {
         public void setTotal(Integer total) { this.total = total; }
     }
 
-    // Method to fetch and map categories
     public List<Category> getCategories() {
         System.out.println("getCategories() called.");
 
@@ -99,7 +93,7 @@ public class CategoryService {
 
         try {
             ResponseEntity<ApiResponse> response = restTemplate.exchange(
-                STRAPI_URL,
+                STRAPI_URL + "?sort[0]=order:asc", // Sort by order ascending
                 HttpMethod.GET,
                 entity,
                 ApiResponse.class
@@ -110,7 +104,6 @@ public class CategoryService {
             if (response.getBody() != null && response.getBody().getData() != null) {
                 List<CategoryResponse> responses = response.getBody().getData();
                 System.out.println("Categories data: " + responses);
-                // Map CategoryResponse to Category
                 return responses.stream()
                     .map(resp -> new Category(
                         resp.getId(),
