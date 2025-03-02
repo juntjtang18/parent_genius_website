@@ -6,8 +6,47 @@
     <title th:text="#{title.function.articlelist}">Parent Genius AI</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-bs5.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/function-article-list.css">
+    <style>
+        .error-message {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+        .toggle-switch {
+            display: flex;
+            width: 80px;
+            height: 30px;
+            border: 1px solid #ccc;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        .toggle-btn {
+            flex: 1;
+            text-align: center;
+            line-height: 28px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: background-color 0.3s, color 0.3s;
+            background-color: #d3d3d3; /* Grey for unselected */
+            color: #666; /* Darker text for contrast */
+        }
+        .toggle-btn.true.active {
+            background-color: #28a745; /* Green for selected true */
+            color: white;
+        }
+        .toggle-btn.false.active {
+            background-color: #dc3545; /* Red for selected false */
+            color: white;
+        }
+        .toggle-btn.active {
+            font-weight: bold;
+            border: 1px solid #000; /* Highlight with border */
+        }
+    </style>
 </head>
 <body>
     <div th:replace="~{fragments/navbar :: navbar}"></div>
@@ -22,8 +61,12 @@
                         <i th:class="${category.iconName} + ' category-icon'" aria-hidden="true"></i>
                         <span th:text="${category.name}" class="category-name">Category Name</span>
                     </div>
+                    <div class="mt-4">
+                        <button id="btn_new" class="btn btn-primary w-100">
+                            <i class="fas fa-plus me-2"></i>New Article
+                        </button>
+                    </div>
                 </div>
-                <!-- Removed btn_new button as it triggered Add Article modal -->
             </div>
             <div id="artical-panel" class="col-md-9">
                 <div id="function-home-banner" class="d-flex justify-content-end p-3 border">
@@ -41,9 +84,53 @@
         </div>
     </div>
 
+    <!-- Modal for New Article -->
+    <div class="modal fade" id="newArticleModal" tabindex="-1" aria-labelledby="newArticleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newArticleModalLabel">New Article</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="newArticleForm">
+                        <div class="mb-3">
+                            <div id="summernote"></div>
+                            <div id="contentError" class="error-message">Please enter some content for the article.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Always On Top</label>
+                            <div id="alwaysOnTopToggle" class="toggle-switch">
+                                <span class="toggle-btn true" data-value="true">True</span>
+                                <span class="toggle-btn false active" data-value="false">False</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Functions</label>
+                                <div id="functionCheckboxes" class="checkbox-list"></div>
+                                <div id="functionError" class="error-message">Please select at least one function.</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Categories</label>
+                                <div id="categoryCheckboxes" class="checkbox-list"></div>
+                                <div id="categoryError" class="error-message">Please select at least one category.</div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="saveArticleBtn">Save Article</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/js/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-bs5.min.js"></script>
     <script th:inline="javascript">
         $(document).ready(function() {
             console.log('jQuery ready');
@@ -71,6 +158,7 @@
             let totalArticles = 0;
             let totalLoadedArticles = 0;
             let functionData = [];
+            let categoryData = [];
             const maxVisibleArticles = 30;
             let articleBuffer = [];
             let lastScrollTop = 0;
@@ -87,10 +175,18 @@
             console.log('Initial Selected Category ID:', selectedCategoryId);
             console.log('Initial Selected Article ID:', selectedArticleId);
 
+            // Initialize Summernote
+            $('#summernote').summernote({
+                placeholder: 'Enter article content here...',
+                tabsize: 2,
+                height: 300
+            });
+
             function checkAndUpdateSelections() {
                 if (functionsLoaded && categoriesLoaded) {
                     updateSelections();
                     fetchArticles(1);
+                    populateModalCheckboxes();
                 }
             }
 
@@ -120,10 +216,10 @@
                     headers: { 'Authorization': AUTH_TOKEN, 'Accept': 'application/json' },
                     success: function(response) {
                         console.log('Categories fetched:', response);
-                        const categories = response.data;
+                        categoryData = response.data;
                         categoriesLoaded = true;
                         checkAndUpdateSelections();
-                        setupCategoryClickHandlers(categories);
+                        setupCategoryClickHandlers(categoryData);
                     },
                     error: function(xhr) {
                         console.error('Error fetching categories:', xhr);
@@ -167,6 +263,30 @@
                 });
             }
 
+            function populateModalCheckboxes() {
+                const functionCheckboxes = $('#functionCheckboxes');
+                functionCheckboxes.empty();
+                functionData.forEach(func => {
+                    functionCheckboxes.append(`
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="${func.id}" id="func_${func.id}">
+                            <label class="form-check-label" for="func_${func.id}">${func.attributes.name}</label>
+                        </div>
+                    `);
+                });
+
+                const categoryCheckboxes = $('#categoryCheckboxes');
+                categoryCheckboxes.empty();
+                categoryData.forEach(category => {
+                    categoryCheckboxes.append(`
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="${category.id}" id="cat_${category.id}">
+                            <label class="form-check-label" for="cat_${category.id}">${category.attributes.name}</label>
+                        </div>
+                    `);
+                });
+            }
+
             function updateSelections() {
                 $('.function-item').each(function() {
                     const id = $(this).data('id') ? $(this).data('id').toString() : null;
@@ -189,10 +309,8 @@
                 const scrollAmount = 200;
                 if (direction === 'left') {
                     list.scrollLeft -= scrollAmount;
-                    console.log('Scrolled left, new scrollLeft:', list.scrollLeft);
                 } else {
                     list.scrollLeft += scrollAmount;
-                    console.log('Scrolled right, new scrollLeft:', list.scrollLeft);
                 }
                 updateScrollButtons();
             }
@@ -212,28 +330,18 @@
                     leftBtn.classList.add('hidden');
                     rightBtn.classList.add('hidden');
                 }
-
-                console.log('Scroll bounds - scrollLeft:', list.scrollLeft, 
-                            'scrollWidth:', list.scrollWidth, 
-                            'clientWidth:', list.clientWidth, 
-                            'hasOverflow:', hasOverflow, 
-                            'canScrollLeft:', canScrollLeft, 
-                            'canScrollRight:', canScrollRight);
             }
 
             $('#scrollLeft').on('click', function() {
                 if (!$(this).hasClass('hidden')) scrollFunctionList('left');
-                else console.log('Left button clicked but hidden');
             });
             $('#scrollRight').on('click', function() {
                 if (!$(this).hasClass('hidden')) scrollFunctionList('right');
-                else console.log('Right button clicked but hidden');
             });
 
             window.addEventListener('resize', function() {
                 updateScrollButtons();
                 updateArticleListHeight();
-                console.log('Window resized, updating scroll buttons and article list height');
             });
 
             function updateArticleListHeight() {
@@ -246,8 +354,6 @@
                 } else {
                     articleList.css('min-height', '');
                 }
-
-                console.log('Article list height updated - container:', containerHeight, 'categoryPanel:', categoryPanelHeight);
             }
 
             function renderArticles() {
@@ -307,9 +413,6 @@
                     const targetArticle = $(`.article-card[data-id="${selectedArticleId}"]`);
                     if (targetArticle.length) {
                         $('#article-list').scrollTop(targetArticle.offset().top - $('#article-list').offset().top + $('#article-list').scrollTop());
-                        console.log('Scrolled to article:', selectedArticleId);
-                    } else {
-                        console.warn('Article not found:', selectedArticleId);
                     }
                 }
             }
@@ -322,7 +425,6 @@
                     success: function(response) {
                         if (response.data.length > 0) {
                             oldestDate = new Date(response.data[0].attributes.createdAt).setHours(0, 0, 0, 0);
-                            console.log('Oldest date fetched:', oldestDate);
                         }
                     },
                     error: function(xhr) {
@@ -425,6 +527,76 @@
                 });
             }
 
+            function saveNewArticle() {
+                const content = $('#summernote').summernote('code');
+                const selectedFunctions = $('#functionCheckboxes .form-check-input:checked').map(function() {
+                    return parseInt($(this).val());
+                }).get();
+                const selectedCategories = $('#categoryCheckboxes .form-check-input:checked').map(function() {
+                    return parseInt($(this).val());
+                }).get();
+                const alwaysOnTop = $('#alwaysOnTopToggle .toggle-btn.active').data('value') === 'true';
+
+                let isValid = true;
+                $('#contentError, #functionError, #categoryError').hide();
+
+                if (!content || content === '<p><br></p>') {
+                    $('#contentError').show();
+                    isValid = false;
+                }
+                if (selectedFunctions.length === 0) {
+                    $('#functionError').show();
+                    isValid = false;
+                }
+                if (selectedCategories.length === 0) {
+                    $('#categoryError').show();
+                    isValid = false;
+                }
+
+                if (!isValid) return;
+
+                const articleData = {
+                    data: {
+                        content: content,
+                        published: true,
+                        always_on_top: alwaysOnTop,
+                        like_count: 0,
+                        visit_count: 0,
+                        sortScore: 1,
+                        functions: selectedFunctions,
+                        categories: selectedCategories
+                    }
+                };
+
+                console.log('Sending articleData to Strapi:', articleData);
+
+                $.ajax({
+                    url: `${STRAPI_URL}articles`,
+                    method: 'POST',
+                    headers: {
+                        'Authorization': AUTH_TOKEN,
+                        'Content-Type': 'application/json'
+                    },
+                    data: JSON.stringify(articleData),
+                    success: function(response) {
+                        console.log('Article saved:', response);
+                        $('#newArticleModal').modal('hide');
+                        $('#summernote').summernote('reset');
+                        $('#functionCheckboxes .form-check-input').prop('checked', false);
+                        $('#categoryCheckboxes .form-check-input').prop('checked', false);
+                        $('#alwaysOnTopToggle .toggle-btn').removeClass('active');
+                        $('#alwaysOnTopToggle .toggle-btn.false').addClass('active');
+                        $('#contentError, #functionError, #categoryError').hide();
+                        fetchArticles(1); // Refresh article list
+                    },
+                    error: function(xhr) {
+                        console.error('Error saving article:', xhr);
+                        console.log('Response:', xhr.responseText);
+                        alert('Failed to save article. Please try again.');
+                    }
+                });
+            }
+
             function checkScroll() {
                 const articleList = $('#article-list');
                 const scrollTop = articleList.scrollTop();
@@ -468,9 +640,23 @@
 
             $('#article-list').on('scroll', function() { checkScroll(); });
 
+            // Event Listeners
+            $('#btn_new').on('click', function() {
+                $('#newArticleModal').modal('show');
+            });
+
+            $('#saveArticleBtn').on('click', function() {
+                saveNewArticle();
+            });
+
             console.log('Fetching oldest date and loading dropdowns');
             fetchOldestDate();
             loadDropdowns();
+
+            $('.toggle-btn').on('click', function() {
+                $('.toggle-btn').removeClass('active');
+                $(this).addClass('active');
+            });
         });
     </script>
 </body>
