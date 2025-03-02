@@ -10,6 +10,40 @@
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/function-article-list.css">
     <style>
+.function-list { padding: 10px 0; }
+.function-item { padding: 10px 15px; display: flex; align-items: center; cursor: pointer; transition: background-color 0.3s ease, color 0.3s ease; }
+.function-item:hover { background-color: #007bff; color: white; }
+.function-item.selected { background-color: #007bff; color: white; border-color: #0056b3; }
+.function-item.selected:hover { background-color: #007bff; color: white; }
+.function-icon { font-size: 1.5rem; margin-right: 10px; }
+.function-name { font-size: 1.1rem; flex-grow: 1; }
+#article-list { max-height: 600px; overflow-y: auto; padding: 15px; border: 1px solid #ddd; border-radius: 10px; position: relative; min-height: 200px; }
+.article-card { margin-bottom: 15px; padding: 15px; border: 1px solid #e0e0e0; border-radius: 5px; background-color: #f9f9f9; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); position: relative; }
+.article-content { font-size: 1rem; line-height: 1.5; }
+.article-content img, .article-content video { max-width: 100%; margin: 10px 0; }
+.article-meta { font-size: 0.9rem; color: #666; margin-top: 10px; }
+.loading { text-align: center; padding: 10px; display: none; }
+#category-panel { display: flex; align-items: center; overflow: hidden; position: relative; padding: 5px 0; }
+#categoryListContrainer { flex-grow: 1; position: relative; overflow: hidden; margin: 0 5px; }
+#categoryList { display: flex; white-space: nowrap; overflow-x: hidden; scroll-behavior: smooth; }
+.category-item { display: inline-block; padding: 5px 15px; margin-right: 10px; background-color: #f8f9fa; border: 1px solid #ddd; border-radius: 20px; cursor: pointer; transition: background-color 0.3s; }
+.category-item:hover { background-color: #007bff; color: white; }
+.category-item.selected { background-color: #007bff; color: white; border-color: #0056b3; }
+.scroll-btn { width: 30px; height: 30px; background: none; border: none; color: #007bff; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: color 0.3s; }
+.scroll-btn:hover { color: #0056b3; }
+.scroll-btn.hidden { display: none; }
+.like-btn { margin-left: 5px; padding: 2px 8px; font-size: 0.8rem; background-color: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; }
+.like-btn:hover { background-color: #0056b3; }
+.btn-new-article { width: 100%; padding: 10px 15px; background-color: #f8f9fa; border: 1px solid #ddd; border-radius: 5px; text-align: left; font-size: 1.1rem; color: #000; cursor: pointer; transition: background-color 0.3s ease, color 0.3s ease; margin-top: 10px; display: flex; align-items: center; }
+.btn-new-article:hover { background-color: #007bff; color: white; }
+.btn-new-article .new-icon { font-size: 1.5rem; margin-right: 10px; color: #000; }
+.btn-new-article:hover .new-icon { color: #ffffff; }
+.article-header { display: flex; align-items: center; margin-bottom: 10px; font-size: 0.95rem; color: #333; }
+.article-header .avatar-icon { font-size: 1.2rem; margin-right: 8px; color: #007bff; }
+.article-header .author-name { font-weight: bold; margin-right: 10px; }
+.article-header .time-ago { color: #666; }
+.like-icon { color: #ff0000; margin-right: 5px; }
+.like-icon:hover { color: #cc0000; }
         .error-message {
             color: #dc3545;
             font-size: 0.875rem;
@@ -31,57 +65,88 @@
             cursor: pointer;
             font-size: 0.75rem;
             transition: background-color 0.3s, color 0.3s;
-            background-color: #d3d3d3; /* Grey for unselected */
-            color: #666; /* Darker text for contrast */
+            background-color: #d3d3d3;
+            color: #666;
         }
         .toggle-btn.true.active {
-            background-color: #28a745; /* Green for selected true */
+            background-color: #28a745;
             color: white;
         }
         .toggle-btn.false.active {
-            background-color: #dc3545; /* Red for selected false */
+            background-color: #dc3545;
             color: white;
         }
         .toggle-btn.active {
             font-weight: bold;
-            border: 1px solid #000; /* Highlight with border */
+            border: 1px solid #000;
+        }
+        .article-header {
+            position: relative;
+        }
+        .edit-icon {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            cursor: pointer;
+            color: #007bff;
+        }
+        .edit-icon:hover {
+            color: #0056b3;
+        }
+        #btn_new {
+            text-align: left;
+            justify-content: flex-start;
+            padding-left: 10px;
+        }
+        #btn_new .fas {
+            margin-right: 8px;
+        }
+        .function-item {
+            display: flex;
+            align-items: center;
+        }
+        .function-item i {
+            margin-right: 8px;
         }
     </style>
 </head>
 <body>
     <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-    <div id="function-panel" class="container mt-4">
-        <div class="row">
-            <div id="category-panel" class="col-md-3 p-3">
-                <div class="category-list">
-                    <div th:each="category : ${categories}" 
-                         th:class="'category-item' + (${category.id.toString() == selectedCategoryId} ? ' selected' : '')" 
-                         th:data-id="${category.id}">
-                        <i th:class="${category.iconName} + ' category-icon'" aria-hidden="true"></i>
-                        <span th:text="${category.name}" class="category-name">Category Name</span>
-                    </div>
-                    <div class="mt-4">
-                        <button id="btn_new" class="btn btn-primary w-100">
-                            <i class="fas fa-plus me-2"></i>New Article
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div id="artical-panel" class="col-md-9">
-                <div id="function-home-banner" class="d-flex justify-content-end p-3 border">
-                    <button id="scrollLeft" class="scroll-btn"><</button>
-                    <div id="functionListContainer">
-                        <div id="functionList" class="function-list"></div>
-                    </div>
-                    <button id="scrollRight" class="scroll-btn">></button>
-                </div>
-                <div id="article-list" class="p-3">
-                    <div id="article-container"></div>
-                    <div id="loading" class="loading">Loading more articles...</div>
-                </div>
-            </div>
-        </div>
+	<div id="panel" class="container mt-4">
+		<div class="row">
+			<div id="function-panel" class="col-md-3 p-3">
+		         <div class="function-list"> 
+		             <div th:each="func : ${functions}" 
+		                  th:class="'function-item' + (${func.id.toString() == selectedFunctionId} ? ' selected' : '')" 
+		                  th:data-id="${func.id}">
+		                 <i class="fas fa-brain"></i>
+		                 <span th:text="${func.name}" class="function-name">Function Name</span>
+		             </div>
+		             <div class="mt-4">
+		                 <button id="btn_new" class="btn btn-primary w-100">
+		                     <i class="fas fa-plus"></i> New Article
+		                 </button>
+		             </div>
+		         </div>
+		     </div>
+		     <div id="right-panel" class="col-md-9">
+			     <div id="category-panel" class="d-flex justify-content-end p-3">
+			         <button id="scrollLeft" class="scroll-btn"><</button>
+			         <div id="categoryListContrainer">
+			             <div id="categoryList" class="category-list"></div>
+			         </div>
+			         <button id="scrollRight" class="scroll-btn">></button>
+			     </div>
+		        <div id="article-panel" class="col-md-9">
+		            <div id="article-list" class="p-3">
+		                <div id="article-container"></div>
+		                <div id="loading" class="loading">Loading more articles...</div>
+		            </div>
+		        </div>
+		     </div>
+			
+		</div>
     </div>
 
     <!-- Modal for New Article -->
@@ -105,6 +170,7 @@
                                 <span class="toggle-btn false active" data-value="false">False</span>
                             </div>
                         </div>
+                        <input type="hidden" id="sortScore" name="sortScore">
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Functions</label>
@@ -122,6 +188,51 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-primary" id="saveArticleBtn">Save Article</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Edit Article -->
+    <div class="modal fade" id="editArticleModal" tabindex="-1" aria-labelledby="editArticleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editArticleModalLabel" th:text="#{function-article-list.edit-article}">Edit Article</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editArticleForm">
+                        <input type="hidden" id="editArticleId">
+                        <div class="mb-3">
+                            <div id="editSummernote"></div>
+                            <div id="editContentError" class="error-message" th:text="#{function-article-list.hint1}">Please enter some content for the article.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" th:text="#{function-article-list.caption1}">Always On Top</label>
+                            <div id="editAlwaysOnTopToggle" class="toggle-switch">
+                                <span class="toggle-btn true" data-value="true" th:text="#{function-article-list.caption2}">True</span>
+                                <span class="toggle-btn false" data-value="false" th:text="#{function-article-list.caption3}">False</span>
+                            </div>
+                        </div>
+                        <input type="hidden" id="editSortScore" name="sortScore">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label" th:text="#{function-article-list.caption4}">Functions</label>
+                                <div id="editFunctionCheckboxes" class="checkbox-list"></div>
+                                <div id="editFunctionError" class="error-message">Please select at least one function.</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label" th:text="#{function-article-list.caption5}">Categories</label>
+                                <div id="editCategoryCheckboxes" class="checkbox-list"></div>
+                                <div id="editCategoryError" class="error-message">Please select at least one category.</div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" th:text="#{function-article-list.button-clouse}">Close</button>
+                    <button type="button" class="btn btn-primary" id="updateArticleBtn" th:text="#{function-article-list.button-update-article}">Update Article</button>
                 </div>
             </div>
         </div>
@@ -171,13 +282,20 @@
             let selectedFunctionId = /*[[${selectedFunctionId}]]*/ null;
             let selectedCategoryId = /*[[${selectedCategoryId}]]*/ null;
             let selectedArticleId = /*[[${selectedArticleId}]]*/ null;
-            console.log('Initial Selected Function ID:', selectedFunctionId);
-            console.log('Initial Selected Category ID:', selectedCategoryId);
-            console.log('Initial Selected Article ID:', selectedArticleId);
+            //console.log('Initial Selected Function ID:', selectedFunctionId);
+            //console.log('Initial Selected Category ID:', selectedCategoryId);
+            //console.log('Initial Selected Article ID:', selectedArticleId);
 
-            // Initialize Summernote
+            // Initialize Summernote for New Article
             $('#summernote').summernote({
                 placeholder: 'Enter article content here...',
+                tabsize: 2,
+                height: 300
+            });
+
+            // Initialize Summernote for Edit Article
+            $('#editSummernote').summernote({
+                placeholder: 'Edit article content here...',
                 tabsize: 2,
                 height: 300
             });
@@ -187,6 +305,7 @@
                     updateSelections();
                     fetchArticles(1);
                     populateModalCheckboxes();
+                    populateEditModalCheckboxes();
                 }
             }
 
@@ -217,6 +336,7 @@
                     success: function(response) {
                         console.log('Categories fetched:', response);
                         categoryData = response.data;
+                        populateCategoryList(categoryData);
                         categoriesLoaded = true;
                         checkAndUpdateSelections();
                         setupCategoryClickHandlers(categoryData);
@@ -230,14 +350,22 @@
             }
 
             function populateFunctionList(functions) {
-                $('#functionList').empty();
-                functions.forEach(func => {
+                const functionList = $('#function-panel .function-list');
+                functionList.empty(); // Clear existing items
+                const functionIcons = [
+                    'fa-brain', 'fa-book', 'fa-chart-line', 'fa-comment', 'fa-cogs', 'fa-search', 'fa-user'
+                ];
+                functions.forEach((func, index) => {
                     const isSelected = func.id.toString() === selectedFunctionId;
-                    $('#functionList').append(`
-                        <span class="function-item ${isSelected ? 'selected' : ''}" data-id="${func.id}">${func.attributes.name}</span>
+                    const iconClass = functionIcons[index % functionIcons.length]; // Cycle through icons if fewer than 7
+                    functionList.append(`
+                        <div class="function-item ${isSelected ? 'selected' : ''}" data-id="${func.id}">
+                            <i class="fas ${iconClass}"></i>
+                            <span class="function-name">${func.attributes.name}</span>
+                        </div>
                     `);
                 });
-                console.log('Function list populated in banner, selected ID:', selectedFunctionId);
+                console.log('Function list populated in sidebar, selected ID:', selectedFunctionId);
 
                 $('.function-item').on('click', function() {
                     const newFunctionId = $(this).data('id').toString();
@@ -249,6 +377,32 @@
                         fetchArticles(1);
                     }
                 });
+
+                // Append the New Article button after functions
+                functionList.append(`
+                    <div class="mt-4">
+                        <button id="btn_new" class="btn btn-primary w-100">
+                            <i class="fas fa-plus"></i><span th:text="#{function-article-list.button-new-article}"> New Article</span>
+                        </button>
+                    </div>
+                `);
+                $('#btn_new').on('click', function() {
+                    $('#newArticleModal').modal('show');
+                });
+            }
+
+            function populateCategoryList(categories) {
+                const categoryList = $('#categoryList');
+                categoryList.empty();
+                categories.forEach(category => {
+                    const isSelected = category.id.toString() === selectedCategoryId;
+                    categoryList.append(`
+                        <span class="category-item ${isSelected ? 'selected' : ''}" data-id="${category.id}">
+                            ${category.attributes.name}
+                        </span>
+                    `);
+                });
+                console.log('Category list populated in banner, selected ID:', selectedCategoryId);
             }
 
             function setupCategoryClickHandlers(categories) {
@@ -287,6 +441,30 @@
                 });
             }
 
+            function populateEditModalCheckboxes() {
+                const functionCheckboxes = $('#editFunctionCheckboxes');
+                functionCheckboxes.empty();
+                functionData.forEach(func => {
+                    functionCheckboxes.append(`
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="${func.id}" id="edit_func_${func.id}">
+                            <label class="form-check-label" for="edit_func_${func.id}">${func.attributes.name}</label>
+                        </div>
+                    `);
+                });
+
+                const categoryCheckboxes = $('#editCategoryCheckboxes');
+                categoryCheckboxes.empty();
+                categoryData.forEach(category => {
+                    categoryCheckboxes.append(`
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="${category.id}" id="edit_cat_${category.id}">
+                            <label class="form-check-label" for="edit_cat_${category.id}">${category.attributes.name}</label>
+                        </div>
+                    `);
+                });
+            }
+
             function updateSelections() {
                 $('.function-item').each(function() {
                     const id = $(this).data('id') ? $(this).data('id').toString() : null;
@@ -305,7 +483,7 @@
             }
 
             function scrollFunctionList(direction) {
-                const list = document.getElementById('functionList');
+                const list = document.getElementById('categoryList'); // Updated to categoryList
                 const scrollAmount = 200;
                 if (direction === 'left') {
                     list.scrollLeft -= scrollAmount;
@@ -316,7 +494,7 @@
             }
 
             function updateScrollButtons() {
-                const list = document.getElementById('functionList');
+                const list = document.getElementById('categoryList'); // Updated to categoryList
                 const leftBtn = document.getElementById('scrollLeft');
                 const rightBtn = document.getElementById('scrollRight');
                 const hasOverflow = list.scrollWidth > list.clientWidth;
@@ -345,12 +523,12 @@
             });
 
             function updateArticleListHeight() {
-                const categoryPanelHeight = $('#category-panel').outerHeight(true) || 200;
+                const functionPanelHeight = $('#function-panel').outerHeight(true) || 200; // Updated to category-panel
                 const articleList = $('#article-list');
                 const containerHeight = $('#article-container').outerHeight(true) || 0;
 
-                if (containerHeight < categoryPanelHeight) {
-                    articleList.css('min-height', `${categoryPanelHeight}px`);
+                if (containerHeight < functionPanelHeight) {
+                    articleList.css('min-height', `${functionPanelHeight}px`);
                 } else {
                     articleList.css('min-height', '');
                 }
@@ -385,6 +563,7 @@
                                 <i class="fas fa-user-circle avatar-icon"></i>
                                 <span class="author-name">${authorName}</span>
                                 <span class="time-ago">${timeAgo}</span>
+                                <i class="fas fa-edit edit-icon" data-id="${article.id}"></i>
                             </div>
                             <div class="article-content">${contentHtml}</div>
                             <div class="article-meta">
@@ -398,6 +577,11 @@
                 $('.like-icon').on('click', function() {
                     const articleId = $(this).closest('.article-card').data('id');
                     updateActivity(articleId, 'like_count', 1);
+                });
+
+                $('.edit-icon').on('click', function() {
+                    const articleId = $(this).data('id');
+                    editArticle(articleId);
                 });
 
                 articleBuffer.forEach(article => {
@@ -481,17 +665,29 @@
                 if (selectedFunctionId) url += `&filters[functions][id][$in]=${selectedFunctionId}`;
                 if (selectedCategoryId) url += `&filters[categories][id][$in]=${selectedCategoryId}`;
 
+                console.log('Fetching URL:', url);
+
                 $.ajax({
                     url: url,
                     method: 'GET',
                     headers: { 'Authorization': AUTH_TOKEN, 'Accept': 'application/json' },
                     success: function(response) {
-                        console.log('API Response:', response);
+                        console.log('Raw API Response:', response);
                         const articles = response.data;
-                        totalPages = response.meta.pagination.pageCount;
-                        totalArticles = response.meta.pagination.total;
+                        if (!articles || !Array.isArray(articles)) {
+                            console.error('Invalid response data:', articles);
+                            isLoading = false;
+                            $('#loading').hide();
+                            return;
+                        }
 
-                        articles.forEach(article => article.viewed = false);
+                        totalPages = response.meta.pagination.pageCount || 1;
+                        totalArticles = response.meta.pagination.total || 0;
+
+                        articles.forEach(article => {
+                            article.viewed = false;
+                            console.log(`Article ID: ${article.id}, always_on_top: ${article.attributes.always_on_top}, sortScore: ${article.attributes.sortScore}`);
+                        });
 
                         if (page === 1) {
                             articleBuffer = articles;
@@ -521,10 +717,19 @@
                     },
                     error: function(xhr) {
                         console.error('Error fetching articles:', xhr);
+                        console.log('Response:', xhr.responseText);
                         isLoading = false;
                         $('#loading').hide();
                     }
                 });
+            }
+
+            function calculateSortScore() {
+                const now = new Date();
+                const referenceDate = new Date('2025-01-01');
+                const timeDiffMs = now - referenceDate;
+                const daysDiff = Math.floor(timeDiffMs / (1000 * 60 * 60 * 24));
+                return daysDiff;
             }
 
             function saveNewArticle() {
@@ -535,7 +740,8 @@
                 const selectedCategories = $('#categoryCheckboxes .form-check-input:checked').map(function() {
                     return parseInt($(this).val());
                 }).get();
-                const alwaysOnTop = $('#alwaysOnTopToggle .toggle-btn.active').data('value') === 'true';
+                const alwaysOnTop = $('#alwaysOnTopToggle .toggle-btn.active').data('value') === 'true' ? true : false;
+                const sortScore = calculateSortScore();
 
                 let isValid = true;
                 $('#contentError, #functionError, #categoryError').hide();
@@ -560,9 +766,9 @@
                         content: content,
                         published: true,
                         always_on_top: alwaysOnTop,
+                        sortScore: sortScore,
                         like_count: 0,
                         visit_count: 0,
-                        sortScore: 1,
                         functions: selectedFunctions,
                         categories: selectedCategories
                     }
@@ -587,12 +793,109 @@
                         $('#alwaysOnTopToggle .toggle-btn').removeClass('active');
                         $('#alwaysOnTopToggle .toggle-btn.false').addClass('active');
                         $('#contentError, #functionError, #categoryError').hide();
-                        fetchArticles(1); // Refresh article list
+                        fetchArticles(1);
                     },
                     error: function(xhr) {
                         console.error('Error saving article:', xhr);
                         console.log('Response:', xhr.responseText);
                         alert('Failed to save article. Please try again.');
+                    }
+                });
+            }
+
+            function editArticle(articleId) {
+                const article = articleBuffer.find(a => a.id === articleId);
+                if (!article) {
+                    console.error('Article not found in buffer:', articleId);
+                    return;
+                }
+
+                $('#editArticleId').val(articleId);
+                const formattedContent = parseContent(article.attributes.content);
+                $('#editSummernote').summernote('code', formattedContent);
+                $('#editSortScore').val(article.attributes.sortScore);
+
+                $('#editAlwaysOnTopToggle .toggle-btn').removeClass('active');
+                if (article.attributes.always_on_top) {
+                    $('#editAlwaysOnTopToggle .toggle-btn.true').addClass('active');
+                } else {
+                    $('#editAlwaysOnTopToggle .toggle-btn.false').addClass('active');
+                }
+
+                $('#editFunctionCheckboxes .form-check-input').prop('checked', false);
+                const articleFunctions = article.attributes.functions.data.map(f => f.id);
+                articleFunctions.forEach(funcId => {
+                    $(`#edit_func_${funcId}`).prop('checked', true);
+                });
+
+                $('#editCategoryCheckboxes .form-check-input').prop('checked', false);
+                const articleCategories = article.attributes.categories.data.map(c => c.id);
+                articleCategories.forEach(catId => {
+                    $(`#edit_cat_${catId}`).prop('checked', true);
+                });
+
+                $('#editArticleModal').modal('show');
+            }
+
+            function updateArticle() {
+                const articleId = $('#editArticleId').val();
+                const content = $('#editSummernote').summernote('code');
+                const selectedFunctions = $('#editFunctionCheckboxes .form-check-input:checked').map(function() {
+                    return parseInt($(this).val());
+                }).get();
+                const selectedCategories = $('#editCategoryCheckboxes .form-check-input:checked').map(function() {
+                    return parseInt($(this).val());
+                }).get();
+                const alwaysOnTop = $('#editAlwaysOnTopToggle .toggle-btn.active').data('value') === 'true' ? true : false;
+                const sortScore = parseInt($('#editSortScore').val()) || calculateSortScore();
+
+                let isValid = true;
+                $('#editContentError, #editFunctionError, #editCategoryError').hide();
+
+                if (!content || content === '<p><br></p>') {
+                    $('#editContentError').show();
+                    isValid = false;
+                }
+                if (selectedFunctions.length === 0) {
+                    $('#editFunctionError').show();
+                    isValid = false;
+                }
+                if (selectedCategories.length === 0) {
+                    $('#editCategoryError').show();
+                    isValid = false;
+                }
+
+                if (!isValid) return;
+
+                const articleData = {
+                    data: {
+                        content: content,
+                        always_on_top: alwaysOnTop,
+                        sortScore: sortScore,
+                        functions: selectedFunctions,
+                        categories: selectedCategories
+                    }
+                };
+
+                console.log('Updating articleData to Strapi:', articleData);
+
+                $.ajax({
+                    url: `${STRAPI_URL}articles/${articleId}`,
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': AUTH_TOKEN,
+                        'Content-Type': 'application/json'
+                    },
+                    data: JSON.stringify(articleData),
+                    success: function(response) {
+                        console.log('Article updated:', response);
+                        $('#editArticleModal').modal('hide');
+                        fetchArticles(1);
+                    },
+                    error: function(xhr) {
+                        console.error('Error updating article:', xhr);
+                        console.log('Response:', xhr.responseText);
+                        alert('Failed to update article. Please try again.');
                     }
                 });
             }
@@ -640,7 +943,6 @@
 
             $('#article-list').on('scroll', function() { checkScroll(); });
 
-            // Event Listeners
             $('#btn_new').on('click', function() {
                 $('#newArticleModal').modal('show');
             });
@@ -649,12 +951,16 @@
                 saveNewArticle();
             });
 
-            console.log('Fetching oldest date and loading dropdowns');
-            fetchOldestDate();
+            $('#updateArticleBtn').on('click', function() {
+                updateArticle();
+            });
+
+            //console.log('Fetching oldest date and loading dropdowns');
+            //fetchOldestDate();
             loadDropdowns();
 
             $('.toggle-btn').on('click', function() {
-                $('.toggle-btn').removeClass('active');
+                $(this).closest('.toggle-switch').find('.toggle-btn').removeClass('active');
                 $(this).addClass('active');
             });
         });
