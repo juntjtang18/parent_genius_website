@@ -66,6 +66,7 @@
             border: 1px solid #e0e0e0;
             border-radius: 5px;
             background-color: #f9f9f9;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Added shadow for fancy look */
         }
         .article-content {
             font-size: 1rem;
@@ -259,7 +260,6 @@
 		<div class="row">
 	        <!-- Category Panel (1/3 width) -->
 	        <div id="category-panel" class="col-md-3 p-3">
-	            <h5 th:text="#{article-list.Categories}">Categories</h5>
 	            <div class="category-list">
 	                <div th:each="category : ${categories}" 
 	                     th:class="'category-item' + (${category.id.toString() == selectedCategoryId} ? ' selected' : '')" 
@@ -327,7 +327,7 @@
     </div>
 
     <!-- Footer -->
-    <div th:replace="~{fragments/footer :: footer}"></div>
+    <!-- <div th:replace="~{fragments/footer :: footer}"></div>  -->
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
@@ -373,12 +373,14 @@
 	        const pageSize = 10;
 	        let totalPages = 1;
 	        let totalArticles = 0;
+			let totalLoadedArticles = 0; // Track total articles actually loaded
 	        let functionData = []; // Store function data globally
 	        const maxVisibleArticles = 30;
 	        let articleBuffer = [];
 	        let lastScrollTop = 0;
 	        let categoriesLoaded = false;
 	        let functionsLoaded = false;
+			let oldestDate = null; // Store oldest date for sortScore calculation
 	
 	        // Get initial parameters from Thymeleaf
 	        let selectedFunctionId = /*[[${selectedFunctionId}]]*/ null;
@@ -698,158 +700,234 @@
 			    });
 			
 			    // Increment view count on load (once per render)
-			    articleBuffer.forEach(article => updateActivity(article.id, 'visit_count', 1));
-			
+				articleBuffer.forEach(article => {
+					if (!article.viewed) { // Only increment if not already viewed this render
+						updateActivity(article.id, 'visit_count', 1);
+						article.viewed = true; // Mark as viewed
+					}
+				});
+				
 			    updateArticleListHeight();
 			}
 	
-	        // Update activity counts via Strapi PUT endpoint
-	        function updateActivity(articleId, field, increment) {
-	            const url = `${STRAPI_URL}articles/${articleId}`;
-	            // Fetch current article data
-	            $.ajax({
-	                url: url,
-	                method: 'GET',
-	                headers: { 'Authorization': AUTH_TOKEN },
-	                success: function(response) {
-	                    const currentCount = response.data.attributes[field] || 0;
-	                    // Update article with PUT request
-	                    $.ajax({
-	                        url: url,
-	                        method: 'PUT',
-	                        headers: { 
-	                            'Authorization': AUTH_TOKEN,
-	                            'Content-Type': 'application/json'
-	                        },
-	                        data: JSON.stringify({
-	                            data: {
-	                                [field]: currentCount + increment
-	                            }
-	                        }),
-	                        success: function(updatedResponse) {
-	                            console.log(`${field} updated for article ${articleId}:`, updatedResponse);
-	                            const card = $(`.article-card[data-id="${articleId}"]`);
-	                            card.find(`.${field.split('_')[0]}-count`).text(updatedResponse.data.attributes[field]);
-	                        },
-	                        error: function(xhr) {
-	                            console.error(`Error updating ${field}:`, xhr);
-	                        }
-	                    });
-	                },
-	                error: function(xhr) {
-	                    console.error(`Error fetching article ${articleId}:`, xhr);
-	                }
-	            });
-	        }
+            // Fetch oldest date for sortScore calculation
+            function fetchOldestDate() {
+                $.ajax({
+                    url: `${STRAPI_URL}articles?pagination[pageSize]=1&sort[0]=createdAt:asc`,
+                    method: 'GET',
+                    headers: { 'Authorization': AUTH_TOKEN, 'Accept': 'application/json' },
+                    success: function(response) {
+                        if (response.data.length > 0) {
+                            oldestDate = new Date(response.data[0].attributes.createdAt).setHours(0, 0, 0, 0);
+                            console.log('Oldest date fetched:', oldestDate);
+                        }
+                    },
+                    error: function(xhr) {
+                        console.error('Error fetching oldest date:', xhr);
+                        oldestDate = new Date('2020-01-01').setHours(0, 0, 0, 0); // Fallback
+                    }
+                });
+            }
+
+			// Update activity counts via Strapi PUT endpoint
+			function updateActivity(articleId, field, increment) {
+				const url = `${STRAPI_URL}articles/${articleId}`;
+				$.ajax({
+					url: url,
+					method: 'GET',
+					headers: { 'Authorization': AUTH_TOKEN },
+					success: function(response) {
+						const currentCount = response.data.attributes[field] || 0;
+						let updateData = { [field]: currentCount + increment };
+
+						// Update sortScore when liking, but don't refresh immediately
+						if (field === 'like_count' && oldestDate !== null) {
+							const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+							const createdAt = new Date(response.data.attributes.createdAt).setHours(0, 0, 0, 0);
+							const daysDiff = Math.floor((createdAt - oldestDate) / ONE_DAY_MS);
+							const newLikeCount = currentCount + increment;
+							updateData.sortScore = 1 + daysDiff + 50 * newLikeCount;
+						}
+
+						$.ajax({
+							url: url,
+							method: 'PUT',
+							headers: { 'Authorization': AUTH_TOKEN, 'Content-Type': 'application/json' },
+							data: JSON.stringify({ data: updateData }),
+							success: function(updatedResponse) {
+								console.log(`${field} updated for article ${articleId}:`, updatedResponse);
+								// Update UI locally without fetching
+								const card = $(`.article-card[data-id="${articleId}"]`);
+								if (card.length) {
+									card.find(`.${field.split('_')[0]}-count`).text(updatedResponse.data.attributes[field]);
+								}
+							},
+							error: function(xhr) { console.error(`Error updating ${field}:`, xhr); }
+						});
+					},
+					error: function(xhr) { console.error(`Error fetching article ${articleId}:`, xhr); }
+				});
+			}
 	
-	        // Fetch articles from Strapi with filters
-	        function fetchArticles(page) {
-	            if (isLoading) return;
-	            isLoading = true;
-	            $('#loading').show();
-	            console.log('Fetching articles, page:', page, 'function:', selectedFunctionId, 'category:', selectedCategoryId);
-	
-	            let url = `${STRAPI_URL}articles?pagination[page]=${page}&pagination[pageSize]=${pageSize}&populate=functions,categories`;
-	            if (selectedFunctionId) {
-	                url += `&filters[functions][id][$in]=${selectedFunctionId}`;
-	            }
-	            if (selectedCategoryId) {
-	                url += `&filters[categories][id][$in]=${selectedCategoryId}`;
-	            }
-	
-	            $.ajax({
-	                url: url,
-	                method: 'GET',
-	                headers: { 'Authorization': AUTH_TOKEN, 'Accept': 'application/json' },
-	                success: function(response) {
-	                    console.log('API Response:', response);
-	                    const articles = response.data;
-	                    totalPages = response.meta.pagination.pageCount;
-	                    totalArticles = response.meta.pagination.total;
-	
-	                    if (page === 1) {
-	                        articleBuffer = articles;
-	                    } else {
-	                        articleBuffer = articleBuffer.concat(articles);
-	                    }
-	
-	                    if (articleBuffer.length > maxVisibleArticles) {
-	                        articleBuffer = articleBuffer.slice(-maxVisibleArticles);
-	                    }
-	
-	                    renderArticles();
-	
-	                    isLoading = false;
-	                    $('#loading').hide();
-	
-	                    console.log('Current page:', page, 'Total pages:', totalPages, 'Total articles:', totalArticles, 'Buffer length:', articleBuffer.length);
-	                    if (page < totalPages && articleBuffer.length < totalArticles) {
-	                        currentPage = page + 1;
-	                    } else {
-	                        console.log('Reached end of articles');
-	                        $(document).off('scroll', checkScroll);
-	                    }
-	                },
-	                error: function(xhr) {
-	                    console.error('Error fetching articles:', xhr);
-	                    isLoading = false;
-	                    $('#loading').hide();
-	                }
-	            });
-	        }
-	
-	        // Infinite scroll handler
-	        function checkScroll() {
-	            const articleList = $('#article-list');
-	            const scrollTop = articleList.scrollTop();
-	            const listHeight = articleList[0].scrollHeight;
-	            const clientHeight = articleList.height();
-	            const triggerPointBottom = listHeight - clientHeight - 50;
-	            const triggerPointTop = 50;
-	
-	            console.log('Scroll check - scrollTop:', scrollTop, 'triggerPointBottom:', triggerPointBottom, 
-	                        'triggerPointTop:', triggerPointTop, 'isLoading:', isLoading, 
-	                        'currentPage:', currentPage, 'totalPages:', totalPages);
-	
-	            if (scrollTop >= triggerPointBottom && !isLoading && currentPage <= totalPages && articleBuffer.length < totalArticles) {
-	                fetchArticles(currentPage);
-	            } else if (scrollTop <= triggerPointTop && !isLoading && currentPage > 1) {
-	                currentPage = Math.max(1, currentPage - 1);
-	                fetchArticles(currentPage);
-	            }
-	
-	            const container = $('#article-container');
-	            const articles = container.children('.article-card');
-	            if (articles.length > maxVisibleArticles) {
-	                const articleHeight = articles.first().outerHeight(true);
-	                const visibleStart = Math.floor(scrollTop / articleHeight);
-	                if (scrollTop > lastScrollTop && visibleStart > 0) {
-	                    articleBuffer = articleBuffer.slice(visibleStart);
-	                    renderArticles();
-	                    articleList.scrollTop(scrollTop - (visibleStart * articleHeight));
-	                } else if (scrollTop < lastScrollTop && visibleStart < articleBuffer.length - maxVisibleArticles) {
-	                    articleBuffer = articleBuffer.slice(0, maxVisibleArticles);
-	                    renderArticles();
-	                    articleList.scrollTop(scrollTop + (articleBuffer.length - visibleStart - maxVisibleArticles) * articleHeight);
-	                }
-	            }
-	
-	            lastScrollTop = scrollTop;
-	        }
-	
-	        $('#article-list').on('scroll', function() {
-	            checkScroll();
-	        });
-	
-	        // Reset form and populate checkboxes when modal is shown
-	        $('#addArticleModal').on('show.bs.modal', function() {
-	            resetModalForm();
-	        });
-	
-	        // Load dropdowns and initial articles
-	        console.log('Loading dropdowns and initial articles');
-	        loadDropdowns();
-	    });
+			// Fetch articles from Strapi with filters
+			function fetchArticles(page) {
+				if (isLoading) return;
+				isLoading = true;
+				$('#loading').show();
+				console.log('Fetching articles, page:', page, 'function:', selectedFunctionId, 'category:', selectedCategoryId);
+
+				let url = `${STRAPI_URL}articles?pagination[page]=${page}&pagination[pageSize]=${pageSize}&populate=functions,categories&sort[0]=always_on_top:desc&sort[1]=sortScore:desc`;
+				if (selectedFunctionId) {
+					url += `&filters[functions][id][$in]=${selectedFunctionId}`;
+				}
+				if (selectedCategoryId) {
+					url += `&filters[categories][id][$in]=${selectedCategoryId}`;
+				}
+
+				$.ajax({
+					url: url,
+					method: 'GET',
+					headers: { 'Authorization': AUTH_TOKEN, 'Accept': 'application/json' },
+					success: function(response) {
+						console.log('API Response:', response);
+						const articles = response.data;
+						totalPages = response.meta.pagination.pageCount;
+						totalArticles = response.meta.pagination.total;
+
+						// Reset viewed flags for new fetch
+						articles.forEach(article => article.viewed = false);
+
+						if (page === 1) {
+							articleBuffer = articles;
+							totalLoadedArticles = articles.length; // Reset loaded count
+						} else {
+							articleBuffer = articleBuffer.concat(articles);
+							totalLoadedArticles += articles.length; // Increment loaded count
+						}
+
+						// Trim buffer to maxVisibleArticles, keeping newest articles
+						if (articleBuffer.length > maxVisibleArticles) {
+							articleBuffer = articleBuffer.slice(-maxVisibleArticles);
+						}
+
+						renderArticles();
+
+						isLoading = false;
+						$('#loading').hide();
+
+						console.log('Current page:', page, 'Total pages:', totalPages, 'Total articles:', totalArticles, 'Loaded articles:', totalLoadedArticles, 'Buffer length:', articleBuffer.length);
+						// Stop fetching if all articles are loaded or no more pages
+						if (totalLoadedArticles >= totalArticles || page >= totalPages) {
+							console.log('All articles loaded or reached end of pages');
+							$(document).off('scroll', checkScroll); // Remove scroll event if all loaded
+						} else if (page < totalPages) {
+							currentPage = page + 1; // Prepare next page
+						}
+					},
+					error: function(xhr) {
+						console.error('Error fetching articles:', xhr);
+						isLoading = false;
+						$('#loading').hide();
+					}
+				});
+			}
+
+			// Infinite scroll handler
+			function checkScroll() {
+				const articleList = $('#article-list');
+				const scrollTop = articleList.scrollTop();
+				const listHeight = articleList[0].scrollHeight;
+				const clientHeight = articleList.height();
+				const triggerPointBottom = listHeight - clientHeight - 50;
+				const triggerPointTop = 50;
+
+				console.log('Scroll check - scrollTop:', scrollTop, 'triggerPointBottom:', triggerPointBottom, 
+							'triggerPointTop:', triggerPointTop, 'isLoading:', isLoading, 
+							'currentPage:', currentPage, 'totalPages:', totalPages, 
+							'totalLoadedArticles:', totalLoadedArticles, 'totalArticles:', totalArticles);
+
+				if (scrollTop >= triggerPointBottom && !isLoading && totalLoadedArticles < totalArticles && currentPage <= totalPages) {
+					fetchArticles(currentPage);
+				} else if (scrollTop <= triggerPointTop && !isLoading && currentPage > 1) {
+					currentPage = Math.max(1, currentPage - 1);
+					fetchArticles(currentPage);
+				}
+
+				const container = $('#article-container');
+				const articles = container.children('.article-card');
+				if (articles.length > maxVisibleArticles) {
+					const articleHeight = articles.first().outerHeight(true);
+					const visibleStart = Math.floor(scrollTop / articleHeight);
+					if (scrollTop > lastScrollTop && visibleStart > 0) {
+						articleBuffer = articleBuffer.slice(visibleStart);
+						renderArticles();
+						articleList.scrollTop(scrollTop - (visibleStart * articleHeight));
+					} else if (scrollTop < lastScrollTop && visibleStart < articleBuffer.length - maxVisibleArticles) {
+						articleBuffer = articleBuffer.slice(0, maxVisibleArticles);
+						renderArticles();
+						articleList.scrollTop(scrollTop + (articleBuffer.length - visibleStart - maxVisibleArticles) * articleHeight);
+					}
+				}
+
+				lastScrollTop = scrollTop;
+			}
+
+			$('#article-list').on('scroll', function() {
+				checkScroll();
+			});
+
+			$('#addArticleModal').on('show.bs.modal', function() {
+				resetModalForm();
+			});
+
+			// Save new article with initial sortScore
+			$('#saveArticleBtn').on('click', function() {
+				const content = $('#articleContent').summernote('code');
+				const functions = $('#functionCheckboxList input:checked').map(function() { return $(this).val(); }).get();
+				const categories = $('#categoryCheckboxList input:checked').map(function() { return $(this).val(); }).get();
+
+				if (!oldestDate) {
+					console.error('Oldest date not fetched yet, cannot calculate sortScore');
+					return;
+				}
+
+				const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+				const createdAt = new Date().setHours(0, 0, 0, 0);
+				const daysDiff = Math.floor((createdAt - oldestDate) / ONE_DAY_MS);
+				const initialSortScore = 1 + daysDiff; // Initial likes = 0
+
+				const articleData = {
+					data: {
+						content: content,
+						functions: functions,
+						categories: categories,
+						like_count: 0,
+						visit_count: 0,
+						sortScore: initialSortScore,
+						always_on_top: false // Default to false unless specified
+					}
+				};
+
+				$.ajax({
+					url: `${STRAPI_URL}articles`,
+					method: 'POST',
+					headers: { 'Authorization': AUTH_TOKEN, 'Content-Type': 'application/json' },
+					data: JSON.stringify(articleData),
+					success: function(response) {
+						console.log('Article saved:', response);
+						$('#addArticleModal').modal('hide');
+						fetchArticles(1); // Refresh article list starting from page 1
+					},
+					error: function(xhr) {
+						console.error('Error saving article:', xhr);
+					}
+				});
+			});
+
+			console.log('Fetching oldest date and loading dropdowns');
+			fetchOldestDate();
+			loadDropdowns();
+		});
 	</script>
 </body>
 </html>
