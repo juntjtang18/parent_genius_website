@@ -1,7 +1,7 @@
 <!-- footer.html -->
 <div th:fragment="footer">
     <footer>
-        <p>&copy; 2025 Parent Genius AI. All rights reserved.</p>
-        <p><a href="/privacy-policy">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+        <p>&copy; <span th:text="#{footer.caption1}">2025 Parent Genius AI. All rights reserved.</span></p>
+        <p><a href="/privacy-policy" th:text="#{footer.caption2}">Privacy Policy</a> | <a href="#" th:text="#{footer.caption3}">Terms of Service</a></p>
     </footer>
 </div>

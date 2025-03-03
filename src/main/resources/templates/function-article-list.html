@@ -125,7 +125,7 @@
 		             </div>
 		             <div class="mt-4">
 		                 <button id="btn_new" class="btn btn-primary w-100">
-		                     <i class="fas fa-plus"></i> New Article
+		                     <i class="fas fa-plus"></i><span th:text="#{function-article-list.caption1}">New Article</span>
 		                 </button>
 		             </div>
 		         </div>
@@ -141,7 +141,7 @@
 		        <div id="article-panel" class="col-md-9">
 		            <div id="article-list" class="p-3">
 		                <div id="article-container"></div>
-		                <div id="loading" class="loading">Loading more articles...</div>
+		                <div id="loading" class="loading" th:text="#{function-article-list.caption2}">Loading more articles...</div>
 		            </div>
 		        </div>
 		     </div>
@@ -154,40 +154,40 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="newArticleModalLabel">New Article</h5>
+                    <h5 class="modal-title" id="newArticleModalLabel" th:text="#{function-article-list.caption3}">New Article</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="newArticleForm">
                         <div class="mb-3">
                             <div id="summernote"></div>
-                            <div id="contentError" class="error-message">Please enter some content for the article.</div>
+                            <div id="contentError" class="error-message" th:text="#{function-article-list.caption4}">Please enter some content for the article.</div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Always On Top</label>
+                            <label class="form-label" th:text="#{function-article-list.caption5}">Always On Top</label>
                             <div id="alwaysOnTopToggle" class="toggle-switch">
-                                <span class="toggle-btn true" data-value="true">True</span>
-                                <span class="toggle-btn false active" data-value="false">False</span>
+                                <span class="toggle-btn true" data-value="true" th:text="#{function-article-list.caption6}">True</span>
+                                <span class="toggle-btn false active" data-value="false" th:text="#{function-article-list.caption7}">False</span>
                             </div>
                         </div>
                         <input type="hidden" id="sortScore" name="sortScore">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Functions</label>
+                                <label class="form-label" th:text="#{function-article-list.caption8}">Functions</label>
                                 <div id="functionCheckboxes" class="checkbox-list"></div>
-                                <div id="functionError" class="error-message">Please select at least one function.</div>
+                                <div id="functionError" class="error-message" th:text="#{function-article-list.caption9}">Please select at least one function.</div>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Categories</label>
+                                <label class="form-label" th:text="#{function-article-list.caption10}">Categories</label>
                                 <div id="categoryCheckboxes" class="checkbox-list"></div>
-                                <div id="categoryError" class="error-message">Please select at least one category.</div>
+                                <div id="categoryError" class="error-message" th:text="#{function-article-list.caption11}">Please select at least one category.</div>
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="saveArticleBtn">Save Article</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" th:text="#{function-article-list.caption12}">Close</button>
+                    <button type="button" class="btn btn-primary" id="saveArticleBtn" th:text="#{function-article-list.caption13}">Save Article</button>
                 </div>
             </div>
         </div>
@@ -198,7 +198,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editArticleModalLabel" th:text="#{function-article-list.edit-article}">Edit Article</h5>
+                    <h5 class="modal-title" id="editArticleModalLabel" th:text="#{function-article-list.edit-article}" th:text="#{function-article-list.caption14}">Edit Article</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -206,26 +206,26 @@
                         <input type="hidden" id="editArticleId">
                         <div class="mb-3">
                             <div id="editSummernote"></div>
-                            <div id="editContentError" class="error-message" th:text="#{function-article-list.hint1}">Please enter some content for the article.</div>
+                            <div id="editContentError" class="error-message" th:text="#{function-article-list.hint1}" th:text="#{function-article-list.caption15}">Please enter some content for the article.</div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label" th:text="#{function-article-list.caption1}">Always On Top</label>
+                            <label class="form-label" th:text="#{function-article-list.caption1}" th:text="#{function-article-list.caption16}">Always On Top</label>
                             <div id="editAlwaysOnTopToggle" class="toggle-switch">
-                                <span class="toggle-btn true" data-value="true" th:text="#{function-article-list.caption2}">True</span>
-                                <span class="toggle-btn false" data-value="false" th:text="#{function-article-list.caption3}">False</span>
+                                <span class="toggle-btn true" data-value="true" th:text="#{function-article-list.caption2}" th:text="#{function-article-list.caption17}">True</span>
+                                <span class="toggle-btn false" data-value="false" th:text="#{function-article-list.caption3}" th:text="#{function-article-list.caption18}">False</span>
                             </div>
                         </div>
                         <input type="hidden" id="editSortScore" name="sortScore">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label" th:text="#{function-article-list.caption4}">Functions</label>
+                                <label class="form-label" th:text="#{function-article-list.caption4}" th:text="#{function-article-list.caption19}">Functions</label>
                                 <div id="editFunctionCheckboxes" class="checkbox-list"></div>
-                                <div id="editFunctionError" class="error-message">Please select at least one function.</div>
+                                <div id="editFunctionError" class="error-message" th:text="#{function-article-list.caption20}">Please select at least one function.</div>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label" th:text="#{function-article-list.caption5}">Categories</label>
+                                <label class="form-label" th:text="#{function-article-list.caption5}" th:text="#{function-article-list.caption21}">Categories</label>
                                 <div id="editCategoryCheckboxes" class="checkbox-list"></div>
-                                <div id="editCategoryError" class="error-message">Please select at least one category.</div>
+                                <div id="editCategoryError" class="error-message" th:text="#{function-article-list.caption22}">Please select at least one category.</div>
                             </div>
                         </div>
                     </form>

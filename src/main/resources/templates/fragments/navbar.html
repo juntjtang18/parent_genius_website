@@ -27,29 +27,29 @@
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownFAQ" role="button" data-bs-toggle="dropdown" aria-expanded="false">FAQ</a>
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownFAQ" role="button" data-bs-toggle="dropdown" aria-expanded="false" th:text="#{navbar_faq}">FAQ</a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdownFAQ">
-                            <li><a class="dropdown-item" href="#">Parents</a></li>
-                            <li><a class="dropdown-item" href="#">Feedback</a></li>
+                            <li><a class="dropdown-item" href="#" th:text="#{navbar_faq.caption1}">Parents</a></li>
+                            <li><a class="dropdown-item" href="#" th:text="#{navbar_faq.caption2}">Feedback</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownSupport" role="button" data-bs-toggle="dropdown" aria-expanded="false">Support</a>
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownSupport" role="button" data-bs-toggle="dropdown" aria-expanded="false" th:text="#{navbar.caption3}">Support</a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdownSupport">
-                            <li><a class="dropdown-item" href="/new-article" th:text="#{navbar.new-article}">New Article</a></li>
-                            <li><a class="dropdown-item" href="#">Funding</a></li>
-                            <li><a class="dropdown-item" href="#">Join Us</a></li>
+                            <li><a class="dropdown-item" href="/new-article" th:text="#{navbar.new-article}" th:text="#{navbar.caption4}">New Article</a></li>
+                            <li><a class="dropdown-item" href="#" th:text="#{navbar.caption5}">Funding</a></li>
+                            <li><a class="dropdown-item" href="#" th:text="#{navbar.caption6}">Join Us</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Language</a>
+                        <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" th:text="#{navbar.caption7}">Language</a>
                         <ul class="dropdown-menu" aria-labelledby="languageDropdown" id="languageList"></ul>
                     </li>
                 </ul>
                 <!-- Right-aligned login and avatar -->
                 <ul class="navbar-nav fs-3 ms-auto d-flex align-items-center">
                     <li class="nav-item">
-                        <a class="nav-link" href="/login">Login</a>
+                        <a class="nav-link" href="/login" th:text="#{navbar.caption8}">Login</a>
                     </li>
                     <li class="nav-item">
                         <a href="/profile" class="nav-link">

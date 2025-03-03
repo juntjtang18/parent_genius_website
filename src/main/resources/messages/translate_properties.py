@@ -9,8 +9,11 @@ TARGET_LANGUAGES = {
     'es': 'Spanish',
     'zh-CN': 'Chinese (Simplified)',
     'de': 'German',
+    'ko': 'Korean',
     'ja': 'Japanese',
-    # Extendable list
+    'si': 'Sinhala',  # Official language of Sri Lanka
+    'hi': 'Hindi',    # Widely spoken in India
+    'bn': 'Bengali',  # Also widely spoken in India
 }
 
 # Regular expression to match files with language suffixes (e.g., *_fr.properties)
@@ -19,10 +22,11 @@ LANG_SUFFIX_PATTERN = re.compile(r'.*_[a-z]{2}(-[A-Z]{2})?\.properties$')
 def to_unicode_escape(text):
     """Convert text to Unicode escape sequences."""
     return text.encode('unicode_escape').decode('ascii')
-    
+
 def translate_properties_file(input_file, lang_code):
     """Translate a single .properties file to the target language."""
     output_file = f"{os.path.splitext(input_file)[0]}_{lang_code}.properties"
+    is_chinese = lang_code == 'zh-CN'  # Flag for Chinese-specific handling
 
     with codecs.open(input_file, 'r', 'utf-8') as infile, \
          codecs.open(output_file, 'w', 'utf-8') as outfile:
@@ -36,7 +40,14 @@ def translate_properties_file(input_file, lang_code):
                 key, value = line.strip().split('=', 1)
                 try:
                     translated_text = GoogleTranslator(source='auto', target=lang_code).translate(value)
-                    outfile.write(f"{key}={translated_text}\n")
+                    if translated_text:  # Ensure translation succeeded
+                        if is_chinese:
+                            # For Chinese, convert to Unicode escape sequences
+                            translated_text = to_unicode_escape(translated_text)
+                        outfile.write(f"{key}={translated_text}\n")
+                    else:
+                        # Fallback to original value if translation fails
+                        outfile.write(f"{key}={value}\n")
                 except Exception as e:
                     print(f"⚠️ Error translating line '{line.strip()}': {e}")
                     outfile.write(f"{key}={value}\n")
