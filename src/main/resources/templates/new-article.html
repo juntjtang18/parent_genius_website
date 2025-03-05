@@ -81,7 +81,7 @@
                 const content = $('#articleContent').summernote('code');
                 const articleData = { data: { content: content, like_count: 0, visit_count: 0, sortScore: 1, always_on_top: false } };
                 $.ajax({
-                    url: 'http://localhost:8080/api/articles',
+                    url: 'https://strapi.geniusParentingAI.ca/api/articles',
                     method: 'POST',
                     headers: { 'Authorization': 'Bearer 4ce79caf486d02a1f1d56690e10edb120172038193626d7e7eec0ba7679e219dd616c1a9a6908f079576f0d73d55ffda5fe6b057c2fdf9c19017f802f735d72ca2434a62b3398b4bdea42d84a2a4aab1657a2a3616e6f70c9ac12f80428259fd86dea64d7192e05eafcd90bfc6bbce606453e2e07048d608d52840f242524e41', 'Content-Type': 'application/json' },
                     data: JSON.stringify(articleData),

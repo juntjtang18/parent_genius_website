@@ -198,7 +198,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editArticleModalLabel" th:text="#{function-article-list.edit-article}" th:text="#{function-article-list.caption14}">Edit Article</h5>
+                    <h5 class="modal-title" id="editArticleModalLabel" th:text="#{function-article-list.caption14}">Edit Article</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -206,24 +206,24 @@
                         <input type="hidden" id="editArticleId">
                         <div class="mb-3">
                             <div id="editSummernote"></div>
-                            <div id="editContentError" class="error-message" th:text="#{function-article-list.hint1}" th:text="#{function-article-list.caption15}">Please enter some content for the article.</div>
+                            <div id="editContentError" class="error-message" th:text="#{function-article-list.caption15}">Please enter some content for the article.</div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label" th:text="#{function-article-list.caption1}" th:text="#{function-article-list.caption16}">Always On Top</label>
+                            <label class="form-label" th:text="#{function-article-list.caption16}">Always On Top</label>
                             <div id="editAlwaysOnTopToggle" class="toggle-switch">
-                                <span class="toggle-btn true" data-value="true" th:text="#{function-article-list.caption2}" th:text="#{function-article-list.caption17}">True</span>
-                                <span class="toggle-btn false" data-value="false" th:text="#{function-article-list.caption3}" th:text="#{function-article-list.caption18}">False</span>
+                                <span class="toggle-btn true" data-value="true" th:text="#{function-article-list.caption17}">True</span>
+                                <span class="toggle-btn false" data-value="false" th:text="#{function-article-list.caption18}">False</span>
                             </div>
                         </div>
                         <input type="hidden" id="editSortScore" name="sortScore">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label" th:text="#{function-article-list.caption4}" th:text="#{function-article-list.caption19}">Functions</label>
+                                <label class="form-label" th:text="#{function-article-list.caption19}">Functions</label>
                                 <div id="editFunctionCheckboxes" class="checkbox-list"></div>
                                 <div id="editFunctionError" class="error-message" th:text="#{function-article-list.caption20}">Please select at least one function.</div>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label" th:text="#{function-article-list.caption5}" th:text="#{function-article-list.caption21}">Categories</label>
+                                <label class="form-label" th:text="#{function-article-list.caption21}">Categories</label>
                                 <div id="editCategoryCheckboxes" class="checkbox-list"></div>
                                 <div id="editCategoryError" class="error-message" th:text="#{function-article-list.caption22}">Please select at least one category.</div>
                             </div>
@@ -260,8 +260,8 @@
                 }
             }
 
-            const STRAPI_URL = "http://localhost:8080/api/";
-            const AUTH_TOKEN = "Bearer 4ce79caf486d02a1f1d56690e10edb120172038193626d7e7eec0ba7679e219dd616c1a9a6908f079576f0d73d55ffda5fe6b057c2fdf9c19017f802f735d72ca2434a62b3398b4bdea42d84a2a4aab1657a2a3616e6f70c9ac12f80428259fd86dea64d7192e05eafcd90bfc6bbce606453e2e07048d608d52840f242524e41";
+            const STRAPI_URL = "https://my-strapi-app-852311377699.us-west1.run.app/api/";
+            const AUTH_TOKEN = "Bearer e4365927003ec9b79235e8b88d144f2abb78282aef39033e296a17260d79fa0096fec5f8b8534469edded57a396073725cb1dc7ab906dc7714ee8669f14fbb289a795e237c739da922d8cb3f150dca4d7db08f1eeeba9f26e42d92f022dac878d36a05e7aedf64d4188b4e6f4be1fa70e338a523c52a2153f713e4167db3766f";
             let currentPage = 1;
             let isLoading = false;
             const pageSize = 10;

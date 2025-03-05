@@ -1,6 +1,8 @@
 package ca.parentgeniusai.website.service;
 
 import ca.parentgeniusai.website.model.Function;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -12,9 +14,11 @@ import java.util.stream.Collectors;
 @Service
 public class FunctionService {
     private final RestTemplate restTemplate = new RestTemplate();
-    private final String STRAPI_URL = "http://localhost:8080/api/functions";
-    private final String AUTH_TOKEN = "Bearer 4ce79caf486d02a1f1d56690e10edb120172038193626d7e7eec0ba7679e219dd616c1a9a6908f079576f0d73d55ffda5fe6b057c2fdf9c19017f802f735d72ca2434a62b3398b4bdea42d84a2a4aab1657a2a3616e6f70c9ac12f80428259fd86dea64d7192e05eafcd90bfc6bbce606453e2e07048d608d52840f242524e41";
-
+    @Value("${strapi.url}")
+    private String STRAPI_ROOTURL;
+    @Value("${strapi.auth-token}")
+    private String AUTH_TOKEN;
+    
     // Nested static class for the full API response
     private static class ApiResponse {
         private List<FunctionResponse> data;
@@ -91,7 +95,9 @@ public class FunctionService {
     // Method to fetch and map functions
     public List<Function> getFunctions() {
         System.out.println("getFunctions() called.");
-
+        System.out.println("Auth_toke=" + AUTH_TOKEN);
+        System.out.println("Strapi_rooturl=" + STRAPI_ROOTURL);
+        
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", AUTH_TOKEN);
         headers.set("Accept", "application/json");
@@ -99,7 +105,7 @@ public class FunctionService {
 
         try {
             ResponseEntity<ApiResponse> response = restTemplate.exchange(
-                STRAPI_URL,
+            		STRAPI_ROOTURL + "functions",
                 HttpMethod.GET,
                 entity,
                 ApiResponse.class
