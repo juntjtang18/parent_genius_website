@@ -5,7 +5,7 @@ body {
     color: #333333;
     margin: 0;
     padding: 0;
-    padding-top: 150px;
+    padding-top: 100px;
 }
 
 /* Navbar */
@@ -14,17 +14,17 @@ body {
     position: fixed;
     top: 0;
     width: 100%;
-    height: 150px;
+    height: 100px;
     z-index: 1000;
     padding: 0 !important;
 }
 
 /* Logo styling */
 .navbar-logo {
-    height: 130px;
-    width: 130px;
+    height: 80px;
+    width: 80px;
     border-radius: 50%;
-    margin-left: 0;
+    margin-left: 40px;
 }
 
 /* Avatar styling */

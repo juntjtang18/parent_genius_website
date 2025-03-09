@@ -2,28 +2,24 @@
 <div th:fragment="navbar">
     <nav class="navbar navbar-expand-lg navbar-light py-3">
         <div class="container-xxl d-flex align-items-center">
-            <!-- Logo with slight left padding -->
             <a class="navbar-brand ms-4" href="/">
-                <img th:src="@{/images/logo4.jpg}" alt="Parent Genius AI Logo" class="navbar-logo">
+                <img th:src="@{/images/gpa-logo.jpg}" alt="Parent Genius AI Logo" class="navbar-logo">
             </a>
-            <!-- Toggler for mobile -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <!-- Collapsible content -->
             <div class="collapse navbar-collapse flex-grow-1" id="navbarNav">
-                <!-- Centered menu items -->
                 <ul class="navbar-nav fs-3 d-flex justify-content-center w-100 menu-nav">
                     <li class="nav-item"><a class="nav-link active" href="/vision" th:text="#{navbar_vision}">Vision</a></li>
                     <li class="nav-item dropdown" id="functionsDropDown">
                         <a class="nav-link dropdown-toggle" href="/functions" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" th:text="#{navbar_functions}">Functions</a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="/functions#emotional-development" th:text="#{navbar_func1}">Emotional Development</a></li>
-                            <li><a class="dropdown-item" href="/functions#school-social-life" th:text="#{navbar_func2}">School & Social Life</a></li>
-                            <li><a class="dropdown-item" href="/functions#growth-milestones" th:text="#{navbar_func3}">Growth & Milestones</a></li>
-                            <li><a class="dropdown-item" href="/functions#parenting-resources" th:text="#{navbar_func4}">Parenting Resources</a></li>
-                            <li><a class="dropdown-item" href="/functions#child-experts" th:text="#{navbar_func5}">Child Experts</a></li>
-                            <li><a class="dropdown-item" href="/functions#nutrition-for-kids" th:text="#{navbar_func6}">Nutrition for Kids</a></li>
+                            <li><a class="dropdown-item" th:href="@{/functions(function=1)}" th:text="#{navbar_func1}">Emotional Development</a></li>
+                            <li><a class="dropdown-item" th:href="@{/functions(function=2)}" th:text="#{navbar_func2}">School & Social Life</a></li>
+                            <li><a class="dropdown-item" th:href="@{/functions(function=3)}" th:text="#{navbar_func3}">Growth & Milestones</a></li>
+                            <li><a class="dropdown-item" th:href="@{/functions(function=4)}" th:text="#{navbar_func4}">Parenting Resources</a></li>
+                            <li><a class="dropdown-item" th:href="@{/functions(function=5)}" th:text="#{navbar_func5}">Child Experts</a></li>
+                            <li><a class="dropdown-item" th:href="@{/functions(function=6)}" th:text="#{navbar_func6}">Nutrition for Kids</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
@@ -45,7 +41,6 @@
                         <ul class="dropdown-menu" aria-labelledby="languageDropdown" id="languageList"></ul>
                     </li>
                 </ul>
-                <!-- Right-aligned login and avatar -->
                 <ul class="navbar-nav fs-3 ms-auto d-flex align-items-center">
                     <li class="nav-item">
                         <a class="nav-link" href="/login" th:text="#{navbar.caption8}">Login</a>
@@ -62,11 +57,11 @@
     <style>
         @media (max-width: 767.98px) {
             .navbar-nav.fs-3 {
-                font-size: 1.5rem !important;
+                font-size: 1.20rem !important;
             }
         }
         .navbar-avatar-icon {
-            font-size: 1.5rem; /* Adjust size as needed */
+            font-size: 1.2rem; /* Adjust size as needed */
             color: #fff; /* White to match nav-link color */
             margin-right: 25px; /* Space to the right */
         }

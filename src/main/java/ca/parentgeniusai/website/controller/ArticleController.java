@@ -32,9 +32,9 @@ public class ArticleController {
 
     @GetMapping("/function-article-list")
     public String showArticleList(
-            @RequestParam(value = "function", required = false) String functionId,
-            @RequestParam(value = "category", required = false) String categoryId,
-            @RequestParam(value = "article", required = false) String articleId, // New parameter
+            @RequestParam(value = "function", required = false) Long functionId,
+            @RequestParam(value = "category", required = false) Long categoryId,
+            @RequestParam(value = "article", required = false) Long articleId,
             Model model) {
         System.out.println("/function-article-list called with function=" + functionId + ", category=" + categoryId + ", article=" + articleId);
 
@@ -44,10 +44,10 @@ public class ArticleController {
         System.out.println("Fetched functions: " + (functions != null ? functions.size() : "null") + " items");
         System.out.println("Fetched categories: " + (categories != null ? categories.size() : "null") + " items");
 
-        String selectedFunctionId = (functionId != null && !functionId.isEmpty()) ? 
-            functionId : (functions != null && !functions.isEmpty() ? functions.get(0).getId().toString() : "1");
-        String selectedCategoryId = (categoryId != null && !categoryId.isEmpty()) ? 
-            categoryId : (categories != null && !functions.isEmpty() ? categories.get(0).getId().toString() : "7");
+        Long selectedFunctionId = (functionId != null) ? 
+            functionId : (functions != null && !functions.isEmpty() ? functions.get(0).getId() : 1L);
+        Long selectedCategoryId = (categoryId != null) ? 
+            categoryId : (categories != null && !categories.isEmpty() ? categories.get(0).getId() : 7L);
 
         System.out.println("Selected Function ID: " + selectedFunctionId);
         System.out.println("Selected Category ID: " + selectedCategoryId);
@@ -56,13 +56,13 @@ public class ArticleController {
         model.addAttribute("categories", categories != null ? categories : Collections.emptyList());
         model.addAttribute("selectedFunctionId", selectedFunctionId);
         model.addAttribute("selectedCategoryId", selectedCategoryId);
-        model.addAttribute("selectedArticleId", articleId); // Pass articleId to view
+        model.addAttribute("selectedArticleId", articleId);
         model.addAttribute("strapiUrl", strapiUrl);
-        model.addAttribute("strapiToken", strapiToken); //token has already had Bearer
-        
-        System.out.println("selectedFunctionId=" + model.getAttribute("selectedFunctionId"));
-        System.out.println("selectedCategoryId=" + model.getAttribute("selectedCategoryId"));
-        System.out.println("selectedArticleId=" + model.getAttribute("selectedArticleId"));
+        model.addAttribute("strapiToken", strapiToken);
+
+        System.out.println("Model attributes - selectedFunctionId=" + model.getAttribute("selectedFunctionId"));
+        System.out.println("Model attributes - selectedCategoryId=" + model.getAttribute("selectedCategoryId"));
+        System.out.println("Model attributes - selectedArticleId=" + model.getAttribute("selectedArticleId"));
         
         return "function-article-list";
     }

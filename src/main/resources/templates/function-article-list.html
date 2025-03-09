@@ -15,11 +15,10 @@
             background-color: #f8f9fa; 
             border-bottom: 1px solid #ddd; 
             position: sticky; 
-            top: 150px; 
-             
+            top: 100px; 
         }
         #function-title h2 {
-            margin: 0;
+            margin-left: 40px;
             font-family: 'Roboto Slab', serif;
             font-size: 2rem;
             color: #333;
@@ -60,7 +59,7 @@
         const STRAPI_URL = /*[[${strapiUrl}]]*/ 'http://localhost:8080/api/';
         const AUTH_TOKEN = /*[[${strapiToken}]]*/ 'Bearer default-token';
         const FUNCTION_ID = /*[[${selectedFunctionId}]]*/ '1';
-        const CATEGORY_ID = /*[[${selectedCategoryId}]]*/ '';
+        const CATEGORY_ID = /*[[${selectedCategoryId}]]*/ '7';
         const ROWS_PER_FETCH = 4;
         const ROWS_PER_DISPLAY = 2;
         const CACHE_LIMIT = 10;
@@ -74,12 +73,14 @@
 
         function getNextImage() {
             const image = `/images/article-icons/article-image-${String(imageIndex).padStart(2, '0')}.jpg`;
-            imageIndex = (imageIndex % 12) + 1; // Cycle 1-10
+            imageIndex = (imageIndex % 12) + 1;
             return image;
         }
 
         async function fetchArticles(page) {
-            const url = `${STRAPI_URL}articles?filters[functions][id][$in]=${FUNCTION_ID}${CATEGORY_ID ? `&filters[categories][id][$in]=${CATEGORY_ID}` : ''}&pagination[page]=${page}&pagination[pageSize]=${ROWS_PER_FETCH * ARTICLES_PER_ROW}&sort[0]=sortScore:desc&populate=icon_image`;
+            // START PERFORMANCE CHANGES
+            const url = `${STRAPI_URL}articles?filters[functions][id][$in]=${FUNCTION_ID}${CATEGORY_ID ? `&filters[categories][id][$in]=${CATEGORY_ID}` : ''}&pagination[page]=${page}&pagination[pageSize]=${ROWS_PER_FETCH * ARTICLES_PER_ROW}&sort[0]=sortScore:desc&populate=icon_image.formats.thumbnail`;
+            // END PERFORMANCE CHANGES
             console.log(`Fetching: ${url}`);
             const response = await fetch(url, { headers: { 'Authorization': AUTH_TOKEN } });
             if (!response.ok) throw new Error(`Fetch failed: ${response.status}`);
@@ -109,15 +110,27 @@
             rowDiv.className = 'article-row';
             articles.forEach(article => {
                 const media = article.attributes.icon_image?.data;
-                const mediaUrl = media ? `${STRAPI_URL}${media.attributes.url}` : getNextImage();
-                const isVideo = media && media.attributes.mime.startsWith('video');
+                let mediaUrl;
+                // START PERFORMANCE CHANGES
+                if (media && media.attributes.formats?.thumbnail?.url) {
+                    const url = media.attributes.formats.thumbnail.url;
+                    mediaUrl = (url.startsWith('http://') || url.startsWith('https://')) ? url : `${STRAPI_URL}${url}`;
+                } else if (media && media.attributes.url) {
+                    const url = media.attributes.url;
+                    mediaUrl = (url.startsWith('http://') || url.startsWith('https://')) ? url : `${STRAPI_URL}${url}`;
+                } else {
+                    mediaUrl = getNextImage();
+                }
+                const isVideo = media && media.attributes.mime?.startsWith('video');
                 const title = article.attributes.title || 'Untitled';
+                const loadingAttr = (cachedRows.indexOf(articles) === 0 && currentPage === 2) ? 'eager' : 'lazy';
                 rowDiv.innerHTML += `
                     <div class="article-item">
-                        ${isVideo ? `<video src="${mediaUrl}" controls></video>` : `<img src="${mediaUrl}" alt="${title}" />`}
+                        ${isVideo ? `<video src="${mediaUrl}" controls></video>` : `<img src="${mediaUrl}" alt="${title}" loading="${loadingAttr}" />`}
                         <h5>${title}</h5>
                     </div>
                 `;
+                // END PERFORMANCE CHANGES
             });
             return rowDiv;
         }
@@ -133,6 +146,26 @@
                 for (let i = 0; i < articles.length; i += ARTICLES_PER_ROW) {
                     rows.push(articles.slice(i, i + ARTICLES_PER_ROW));
                 }
+
+                // START PERFORMANCE CHANGES
+                if (currentPage === 1 && rows.length > 0) {
+                    rows[0].forEach(article => {
+                        const media = article.attributes.icon_image?.data;
+                        let mediaUrl = media && media.attributes.formats?.thumbnail?.url ? 
+                            (media.attributes.formats.thumbnail.url.startsWith('http://') || media.attributes.formats.thumbnail.url.startsWith('https://') ? 
+                                media.attributes.formats.thumbnail.url : `${STRAPI_URL}${media.attributes.formats.thumbnail.url}`) :
+                            (media && media.attributes.url ? 
+                                (media.attributes.url.startsWith('http://') || media.attributes.url.startsWith('https://') ? 
+                                    media.attributes.url : `${STRAPI_URL}${media.attributes.url}`) : 
+                                getNextImage());
+                        const link = document.createElement('link');
+                        link.rel = 'preload';
+                        link.href = mediaUrl;
+                        link.as = 'image';
+                        document.head.appendChild(link);
+                    });
+                }
+                // END PERFORMANCE CHANGES
 
                 cachedRows.push(...rows);
                 currentPage++;
