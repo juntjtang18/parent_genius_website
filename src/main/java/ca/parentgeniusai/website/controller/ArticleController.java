@@ -4,6 +4,8 @@ import ca.parentgeniusai.website.model.Category;
 import ca.parentgeniusai.website.model.Function;
 import ca.parentgeniusai.website.service.CategoryService;
 import ca.parentgeniusai.website.service.FunctionService;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +19,12 @@ public class ArticleController {
     private final CategoryService categoryService;
     private final FunctionService functionService;
 
+    @Value("${strapi.url:http://localhost:8081/api/}")
+    private String strapiUrl;
+
+    @Value("${strapi.auth-token}")
+    private String strapiToken;
+    
     public ArticleController(CategoryService categoryService, FunctionService functionService) {
         this.categoryService = categoryService;
         this.functionService = functionService;
@@ -49,9 +57,13 @@ public class ArticleController {
         model.addAttribute("selectedFunctionId", selectedFunctionId);
         model.addAttribute("selectedCategoryId", selectedCategoryId);
         model.addAttribute("selectedArticleId", articleId); // Pass articleId to view
+        model.addAttribute("strapiUrl", strapiUrl);
+        model.addAttribute("strapiToken", strapiToken); //token has already had Bearer
+        
         System.out.println("selectedFunctionId=" + model.getAttribute("selectedFunctionId"));
         System.out.println("selectedCategoryId=" + model.getAttribute("selectedCategoryId"));
         System.out.println("selectedArticleId=" + model.getAttribute("selectedArticleId"));
+        
         return "function-article-list";
     }
 }

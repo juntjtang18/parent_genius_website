@@ -14,10 +14,8 @@ import java.util.stream.Collectors;
 @Service
 public class FunctionService {
     private final RestTemplate restTemplate = new RestTemplate();
-    @Value("${strapi.url}")
-    private String STRAPI_ROOTURL;
-    @Value("${strapi.auth-token}")
-    private String AUTH_TOKEN;
+    @Value("${strapi.url}") String STRAPI_ROOTURL;
+    @Value("${strapi.auth-token}") String AUTH_TOKEN;
     
     // Nested static class for the full API response
     private static class ApiResponse {
@@ -94,9 +92,12 @@ public class FunctionService {
 
     // Method to fetch and map functions
     public List<Function> getFunctions() {
-        System.out.println("getFunctions() called.");
+    	String requestUrl=STRAPI_ROOTURL + "functions";
+        
+    	System.out.println("getFunctions() called.");
         System.out.println("Auth_toke=" + AUTH_TOKEN);
         System.out.println("Strapi_rooturl=" + STRAPI_ROOTURL);
+        System.out.println("requestURL=" + requestUrl);
         
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", AUTH_TOKEN);
@@ -105,7 +106,7 @@ public class FunctionService {
 
         try {
             ResponseEntity<ApiResponse> response = restTemplate.exchange(
-            		STRAPI_ROOTURL + "functions",
+            		requestUrl,
                 HttpMethod.GET,
                 entity,
                 ApiResponse.class

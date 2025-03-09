@@ -7,963 +7,192 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-bs5.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="/css/function-article-list.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet" />
     <style>
-.function-list { padding: 10px 0; }
-.function-item { padding: 10px 15px; display: flex; align-items: center; cursor: pointer; transition: background-color 0.3s ease, color 0.3s ease; }
-.function-item:hover { background-color: #007bff; color: white; }
-.function-item.selected { background-color: #007bff; color: white; border-color: #0056b3; }
-.function-item.selected:hover { background-color: #007bff; color: white; }
-.function-icon { font-size: 1.5rem; margin-right: 10px; }
-.function-name { font-size: 1.1rem; flex-grow: 1; }
-#article-list { max-height: 600px; overflow-y: auto; padding: 15px; border: 1px solid #ddd; border-radius: 10px; position: relative; min-height: 200px; }
-.article-card { margin-bottom: 15px; padding: 15px; border: 1px solid #e0e0e0; border-radius: 5px; background-color: #f9f9f9; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); position: relative; }
-.article-content { font-size: 1rem; line-height: 1.5; }
-.article-content img, .article-content video { max-width: 100%; margin: 10px 0; }
-.article-meta { font-size: 0.9rem; color: #666; margin-top: 10px; }
-.loading { text-align: center; padding: 10px; display: none; }
-#category-panel { display: flex; align-items: center; overflow: hidden; position: relative; padding: 5px 0; }
-#categoryListContrainer { flex-grow: 1; position: relative; overflow: hidden; margin: 0 5px; }
-#categoryList { display: flex; white-space: nowrap; overflow-x: hidden; scroll-behavior: smooth; }
-.category-item { display: inline-block; padding: 5px 15px; margin-right: 10px; background-color: #f8f9fa; border: 1px solid #ddd; border-radius: 20px; cursor: pointer; transition: background-color 0.3s; }
-.category-item:hover { background-color: #007bff; color: white; }
-.category-item.selected { background-color: #007bff; color: white; border-color: #0056b3; }
-.scroll-btn { width: 30px; height: 30px; background: none; border: none; color: #007bff; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: color 0.3s; }
-.scroll-btn:hover { color: #0056b3; }
-.scroll-btn.hidden { display: none; }
-.like-btn { margin-left: 5px; padding: 2px 8px; font-size: 0.8rem; background-color: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; }
-.like-btn:hover { background-color: #0056b3; }
-.btn-new-article { width: 100%; padding: 10px 15px; background-color: #f8f9fa; border: 1px solid #ddd; border-radius: 5px; text-align: left; font-size: 1.1rem; color: #000; cursor: pointer; transition: background-color 0.3s ease, color 0.3s ease; margin-top: 10px; display: flex; align-items: center; }
-.btn-new-article:hover { background-color: #007bff; color: white; }
-.btn-new-article .new-icon { font-size: 1.5rem; margin-right: 10px; color: #000; }
-.btn-new-article:hover .new-icon { color: #ffffff; }
-.article-header { display: flex; align-items: center; margin-bottom: 10px; font-size: 0.95rem; color: #333; }
-.article-header .avatar-icon { font-size: 1.2rem; margin-right: 8px; color: #007bff; }
-.article-header .author-name { font-weight: bold; margin-right: 10px; }
-.article-header .time-ago { color: #666; }
-.like-icon { color: #ff0000; margin-right: 5px; }
-.like-icon:hover { color: #cc0000; }
-        .error-message {
-            color: #dc3545;
-            font-size: 0.875rem;
-            margin-top: 0.25rem;
-            display: none;
+        #function-title { 
+            padding: 15px 20px; 
+            background-color: #f8f9fa; 
+            border-bottom: 1px solid #ddd; 
+            position: sticky; 
+            top: 150px; 
+             
         }
-        .toggle-switch {
-            display: flex;
-            width: 80px;
-            height: 30px;
-            border: 1px solid #ccc;
-            border-radius: 15px;
-            overflow: hidden;
+        #function-title h2 {
+            margin: 0;
+            font-family: 'Roboto Slab', serif;
+            font-size: 2rem;
+            color: #333;
         }
-        .toggle-btn {
-            flex: 1;
-            text-align: center;
-            line-height: 28px;
-            cursor: pointer;
-            font-size: 0.75rem;
-            transition: background-color 0.3s, color 0.3s;
-            background-color: #d3d3d3;
-            color: #666;
+        #article-list { 
+            padding: 60px; 
+            height: calc(100vh - 170px); 
+            overflow-y: auto; 
         }
-        .toggle-btn.true.active {
-            background-color: #28a745;
-            color: white;
+        .article-row { display: flex; justify-content: space-between; margin-bottom: 60px; }
+        .article-item { width: 32%; text-align: center; padding: 10px; overflow: hidden; }
+        .article-item img, .article-item video { width: 300px; height: 200px; object-fit: cover; }
+        .article-item h5 { 
+            font-size: 1.2rem; 
+            font-family: 'Roboto Slab', serif; 
+            margin: 10px 0; 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
         }
-        .toggle-btn.false.active {
-            background-color: #dc3545;
-            color: white;
-        }
-        .toggle-btn.active {
-            font-weight: bold;
-            border: 1px solid #000;
-        }
-        .article-header {
-            position: relative;
-        }
-        .edit-icon {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            cursor: pointer;
-            color: #007bff;
-        }
-        .edit-icon:hover {
-            color: #0056b3;
-        }
-        #btn_new {
-            text-align: left;
-            justify-content: flex-start;
-            padding-left: 10px;
-        }
-        #btn_new .fas {
-            margin-right: 8px;
-        }
-        .function-item {
-            display: flex;
-            align-items: center;
-        }
-        .function-item i {
-            margin-right: 8px;
-        }
+        .loading { text-align: center; padding: 20px; display: none; }
     </style>
 </head>
 <body>
     <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-	<div id="panel" class="container mt-4">
-		<div class="row">
-			<div id="function-panel" class="col-md-3 p-3">
-		         <div class="function-list"> 
-		             <div th:each="func : ${functions}" 
-		                  th:class="'function-item' + (${func.id.toString() == selectedFunctionId} ? ' selected' : '')" 
-		                  th:data-id="${func.id}">
-		                 <i class="fas fa-brain"></i>
-		                 <span th:text="${func.name}" class="function-name">Function Name</span>
-		             </div>
-		             <div class="mt-4">
-		                 <button id="btn_new" class="btn btn-primary w-100">
-		                     <i class="fas fa-plus"></i><span th:text="#{function-article-list.caption1}">New Article</span>
-		                 </button>
-		             </div>
-		         </div>
-		     </div>
-		     <div id="right-panel" class="col-md-9">
-			     <div id="category-panel" class="d-flex justify-content-end p-3">
-			         <button id="scrollLeft" class="scroll-btn"><</button>
-			         <div id="categoryListContrainer">
-			             <div id="categoryList" class="category-list"></div>
-			         </div>
-			         <button id="scrollRight" class="scroll-btn">></button>
-			     </div>
-		        <div id="article-panel" class="col-md-9">
-		            <div id="article-list" class="p-3">
-		                <div id="article-container"></div>
-		                <div id="loading" class="loading" th:text="#{function-article-list.caption2}">Loading more articles...</div>
-		            </div>
-		        </div>
-		     </div>
-			
-		</div>
+    <div id="function-title">
+        <h2 id="function-name"></h2>
     </div>
 
-    <!-- Modal for New Article -->
-    <div class="modal fade" id="newArticleModal" tabindex="-1" aria-labelledby="newArticleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="newArticleModalLabel" th:text="#{function-article-list.caption3}">New Article</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="newArticleForm">
-                        <div class="mb-3">
-                            <div id="summernote"></div>
-                            <div id="contentError" class="error-message" th:text="#{function-article-list.caption4}">Please enter some content for the article.</div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" th:text="#{function-article-list.caption5}">Always On Top</label>
-                            <div id="alwaysOnTopToggle" class="toggle-switch">
-                                <span class="toggle-btn true" data-value="true" th:text="#{function-article-list.caption6}">True</span>
-                                <span class="toggle-btn false active" data-value="false" th:text="#{function-article-list.caption7}">False</span>
-                            </div>
-                        </div>
-                        <input type="hidden" id="sortScore" name="sortScore">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label" th:text="#{function-article-list.caption8}">Functions</label>
-                                <div id="functionCheckboxes" class="checkbox-list"></div>
-                                <div id="functionError" class="error-message" th:text="#{function-article-list.caption9}">Please select at least one function.</div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label" th:text="#{function-article-list.caption10}">Categories</label>
-                                <div id="categoryCheckboxes" class="checkbox-list"></div>
-                                <div id="categoryError" class="error-message" th:text="#{function-article-list.caption11}">Please select at least one category.</div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" th:text="#{function-article-list.caption12}">Close</button>
-                    <button type="button" class="btn btn-primary" id="saveArticleBtn" th:text="#{function-article-list.caption13}">Save Article</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div id="article-list"></div>
+    <div id="loading" class="loading">Loading...</div>
+    <div th:replace="~{fragments/footer :: footer}"></div>
 
-    <!-- Modal for Edit Article -->
-    <div class="modal fade" id="editArticleModal" tabindex="-1" aria-labelledby="editArticleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editArticleModalLabel" th:text="#{function-article-list.caption14}">Edit Article</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="editArticleForm">
-                        <input type="hidden" id="editArticleId">
-                        <div class="mb-3">
-                            <div id="editSummernote"></div>
-                            <div id="editContentError" class="error-message" th:text="#{function-article-list.caption15}">Please enter some content for the article.</div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" th:text="#{function-article-list.caption16}">Always On Top</label>
-                            <div id="editAlwaysOnTopToggle" class="toggle-switch">
-                                <span class="toggle-btn true" data-value="true" th:text="#{function-article-list.caption17}">True</span>
-                                <span class="toggle-btn false" data-value="false" th:text="#{function-article-list.caption18}">False</span>
-                            </div>
-                        </div>
-                        <input type="hidden" id="editSortScore" name="sortScore">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label" th:text="#{function-article-list.caption19}">Functions</label>
-                                <div id="editFunctionCheckboxes" class="checkbox-list"></div>
-                                <div id="editFunctionError" class="error-message" th:text="#{function-article-list.caption20}">Please select at least one function.</div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label" th:text="#{function-article-list.caption21}">Categories</label>
-                                <div id="editCategoryCheckboxes" class="checkbox-list"></div>
-                                <div id="editCategoryError" class="error-message" th:text="#{function-article-list.caption22}">Please select at least one category.</div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" th:text="#{function-article-list.button-clouse}">Close</button>
-                    <button type="button" class="btn btn-primary" id="updateArticleBtn" th:text="#{function-article-list.button-update-article}">Update Article</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/js/marked.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-bs5.min.js"></script>
     <script th:inline="javascript">
-        $(document).ready(function() {
-            console.log('jQuery ready');
+        /*<![CDATA[*/
+        const STRAPI_URL = /*[[${strapiUrl}]]*/ 'http://localhost:8080/api/';
+        const AUTH_TOKEN = /*[[${strapiToken}]]*/ 'Bearer default-token';
+        const FUNCTION_ID = /*[[${selectedFunctionId}]]*/ '1';
+        const CATEGORY_ID = /*[[${selectedCategoryId}]]*/ '';
+        const ROWS_PER_FETCH = 4;
+        const ROWS_PER_DISPLAY = 2;
+        const CACHE_LIMIT = 10;
+        const ARTICLES_PER_ROW = 3;
 
-            if (typeof marked === 'undefined') {
-                console.error('marked.js failed to load');
-                function parseContent(content) { return content.replace(/\n/g, '<br>'); }
-            } else {
-                console.log('marked.js loaded successfully');
-                marked.setOptions({ renderer: new marked.Renderer(), gfm: true, breaks: true, sanitize: false });
-                function parseContent(content) {
-                    try { return marked.parse(content); } catch (e) {
-                        console.error('Error parsing content:', e);
-                        return content.replace(/\n/g, '<br>');
-                    }
-                }
-            }
+        let cachedRows = [];
+        let currentPage = 1;
+        let isLoading = false;
+        let totalArticles = 0;
+        let imageIndex = 1;
 
-            const STRAPI_URL = "https://my-strapi-app-852311377699.us-west1.run.app/api/";
-            const AUTH_TOKEN = "Bearer e4365927003ec9b79235e8b88d144f2abb78282aef39033e296a17260d79fa0096fec5f8b8534469edded57a396073725cb1dc7ab906dc7714ee8669f14fbb289a795e237c739da922d8cb3f150dca4d7db08f1eeeba9f26e42d92f022dac878d36a05e7aedf64d4188b4e6f4be1fa70e338a523c52a2153f713e4167db3766f";
-            let currentPage = 1;
-            let isLoading = false;
-            const pageSize = 10;
-            let totalPages = 1;
-            let totalArticles = 0;
-            let totalLoadedArticles = 0;
-            let functionData = [];
-            let categoryData = [];
-            const maxVisibleArticles = 30;
-            let articleBuffer = [];
-            let lastScrollTop = 0;
-            let categoriesLoaded = false;
-            let functionsLoaded = false;
-            let oldestDate = null;
-            let reachedTop = false;
-            let reachedBottom = false;
+        function getNextImage() {
+            const image = `/images/article-icons/article-image-${String(imageIndex).padStart(2, '0')}.jpg`;
+            imageIndex = (imageIndex % 12) + 1; // Cycle 1-10
+            return image;
+        }
 
-            let selectedFunctionId = /*[[${selectedFunctionId}]]*/ null;
-            let selectedCategoryId = /*[[${selectedCategoryId}]]*/ null;
-            let selectedArticleId = /*[[${selectedArticleId}]]*/ null;
-            //console.log('Initial Selected Function ID:', selectedFunctionId);
-            //console.log('Initial Selected Category ID:', selectedCategoryId);
-            //console.log('Initial Selected Article ID:', selectedArticleId);
+        async function fetchArticles(page) {
+            const url = `${STRAPI_URL}articles?filters[functions][id][$in]=${FUNCTION_ID}${CATEGORY_ID ? `&filters[categories][id][$in]=${CATEGORY_ID}` : ''}&pagination[page]=${page}&pagination[pageSize]=${ROWS_PER_FETCH * ARTICLES_PER_ROW}&sort[0]=sortScore:desc&populate=icon_image`;
+            console.log(`Fetching: ${url}`);
+            const response = await fetch(url, { headers: { 'Authorization': AUTH_TOKEN } });
+            if (!response.ok) throw new Error(`Fetch failed: ${response.status}`);
+            const data = await response.json();
+            totalArticles = data.meta.pagination.total;
+            return data.data;
+        }
 
-            // Initialize Summernote for New Article
-            $('#summernote').summernote({
-                placeholder: 'Enter article content here...',
-                tabsize: 2,
-                height: 300
-            });
+        async function fetchFunctionName(functionId) {
+            const url = `${STRAPI_URL}functions/${functionId}`;
+            const response = await fetch(url, { headers: { 'Authorization': AUTH_TOKEN } });
+            if (!response.ok) return `Function ${functionId}`;
+            const data = await response.json();
+            return data.data.attributes.name || `Function ${functionId}`;
+        }
 
-            // Initialize Summernote for Edit Article
-            $('#editSummernote').summernote({
-                placeholder: 'Edit article content here...',
-                tabsize: 2,
-                height: 300
-            });
+        async function fetchCategoryName(categoryId) {
+            const url = `${STRAPI_URL}categories/${categoryId}`;
+            const response = await fetch(url, { headers: { 'Authorization': AUTH_TOKEN } });
+            if (!response.ok) return `Category ${categoryId}`;
+            const data = await response.json();
+            return data.data.attributes.name || `Category ${categoryId}`;
+        }
 
-            function checkAndUpdateSelections() {
-                if (functionsLoaded && categoriesLoaded) {
-                    updateSelections();
-                    fetchArticles(1);
-                    populateModalCheckboxes();
-                    populateEditModalCheckboxes();
-                }
-            }
-
-            function loadDropdowns() {
-                $.ajax({
-                    url: `${STRAPI_URL}functions`,
-                    method: 'GET',
-                    headers: { 'Authorization': AUTH_TOKEN, 'Accept': 'application/json' },
-                    success: function(response) {
-                        console.log('Functions fetched:', response);
-                        functionData = response.data;
-                        populateFunctionList(functionData);
-                        functionsLoaded = true;
-                        checkAndUpdateSelections();
-                        setTimeout(updateScrollButtons, 100);
-                    },
-                    error: function(xhr) {
-                        console.error('Error fetching functions:', xhr);
-                        functionsLoaded = true;
-                        checkAndUpdateSelections();
-                    }
-                });
-
-                $.ajax({
-                    url: `${STRAPI_URL}categories?sort[0]=order:asc`,
-                    method: 'GET',
-                    headers: { 'Authorization': AUTH_TOKEN, 'Accept': 'application/json' },
-                    success: function(response) {
-                        console.log('Categories fetched:', response);
-                        categoryData = response.data;
-                        populateCategoryList(categoryData);
-                        categoriesLoaded = true;
-                        checkAndUpdateSelections();
-                        setupCategoryClickHandlers(categoryData);
-                    },
-                    error: function(xhr) {
-                        console.error('Error fetching categories:', xhr);
-                        categoriesLoaded = true;
-                        checkAndUpdateSelections();
-                    }
-                });
-            }
-
-            function populateFunctionList(functions) {
-                const functionList = $('#function-panel .function-list');
-                functionList.empty(); // Clear existing items
-                const functionIcons = [
-                    'fa-brain', 'fa-book', 'fa-chart-line', 'fa-comment', 'fa-cogs', 'fa-search', 'fa-user'
-                ];
-                functions.forEach((func, index) => {
-                    const isSelected = func.id.toString() === selectedFunctionId;
-                    const iconClass = functionIcons[index % functionIcons.length]; // Cycle through icons if fewer than 7
-                    functionList.append(`
-                        <div class="function-item ${isSelected ? 'selected' : ''}" data-id="${func.id}">
-                            <i class="fas ${iconClass}"></i>
-                            <span class="function-name">${func.attributes.name}</span>
-                        </div>
-                    `);
-                });
-                console.log('Function list populated in sidebar, selected ID:', selectedFunctionId);
-
-                $('.function-item').on('click', function() {
-                    const newFunctionId = $(this).data('id').toString();
-                    if (newFunctionId !== selectedFunctionId) {
-                        selectedFunctionId = newFunctionId;
-                        selectedCategoryId = /*[[${categories[0].id}]]*/ "7";
-                        console.log('New function selected:', selectedFunctionId, 'Default category:', selectedCategoryId);
-                        updateSelections();
-                        fetchArticles(1);
-                    }
-                });
-
-                // Append the New Article button after functions
-                functionList.append(`
-                    <div class="mt-4">
-                        <button id="btn_new" class="btn btn-primary w-100">
-                            <i class="fas fa-plus"></i><span th:text="#{function-article-list.button-new-article}"> New Article</span>
-                        </button>
+        function renderRow(articles) {
+            const rowDiv = document.createElement('div');
+            rowDiv.className = 'article-row';
+            articles.forEach(article => {
+                const media = article.attributes.icon_image?.data;
+                const mediaUrl = media ? `${STRAPI_URL}${media.attributes.url}` : getNextImage();
+                const isVideo = media && media.attributes.mime.startsWith('video');
+                const title = article.attributes.title || 'Untitled';
+                rowDiv.innerHTML += `
+                    <div class="article-item">
+                        ${isVideo ? `<video src="${mediaUrl}" controls></video>` : `<img src="${mediaUrl}" alt="${title}" />`}
+                        <h5>${title}</h5>
                     </div>
-                `);
-                $('#btn_new').on('click', function() {
-                    $('#newArticleModal').modal('show');
-                });
-            }
-
-            function populateCategoryList(categories) {
-                const categoryList = $('#categoryList');
-                categoryList.empty();
-                categories.forEach(category => {
-                    const isSelected = category.id.toString() === selectedCategoryId;
-                    categoryList.append(`
-                        <span class="category-item ${isSelected ? 'selected' : ''}" data-id="${category.id}">
-                            ${category.attributes.name}
-                        </span>
-                    `);
-                });
-                console.log('Category list populated in banner, selected ID:', selectedCategoryId);
-            }
-
-            function setupCategoryClickHandlers(categories) {
-                $('.category-item').on('click', function() {
-                    const newCategoryId = $(this).data('id').toString();
-                    if (newCategoryId !== selectedCategoryId) {
-                        selectedCategoryId = newCategoryId;
-                        console.log('New category selected:', selectedCategoryId, 'Function:', selectedFunctionId);
-                        updateSelections();
-                        fetchArticles(1);
-                    }
-                });
-            }
-
-            function populateModalCheckboxes() {
-                const functionCheckboxes = $('#functionCheckboxes');
-                functionCheckboxes.empty();
-                functionData.forEach(func => {
-                    functionCheckboxes.append(`
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="${func.id}" id="func_${func.id}">
-                            <label class="form-check-label" for="func_${func.id}">${func.attributes.name}</label>
-                        </div>
-                    `);
-                });
-
-                const categoryCheckboxes = $('#categoryCheckboxes');
-                categoryCheckboxes.empty();
-                categoryData.forEach(category => {
-                    categoryCheckboxes.append(`
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="${category.id}" id="cat_${category.id}">
-                            <label class="form-check-label" for="cat_${category.id}">${category.attributes.name}</label>
-                        </div>
-                    `);
-                });
-            }
-
-            function populateEditModalCheckboxes() {
-                const functionCheckboxes = $('#editFunctionCheckboxes');
-                functionCheckboxes.empty();
-                functionData.forEach(func => {
-                    functionCheckboxes.append(`
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="${func.id}" id="edit_func_${func.id}">
-                            <label class="form-check-label" for="edit_func_${func.id}">${func.attributes.name}</label>
-                        </div>
-                    `);
-                });
-
-                const categoryCheckboxes = $('#editCategoryCheckboxes');
-                categoryCheckboxes.empty();
-                categoryData.forEach(category => {
-                    categoryCheckboxes.append(`
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="${category.id}" id="edit_cat_${category.id}">
-                            <label class="form-check-label" for="edit_cat_${category.id}">${category.attributes.name}</label>
-                        </div>
-                    `);
-                });
-            }
-
-            function updateSelections() {
-                $('.function-item').each(function() {
-                    const id = $(this).data('id') ? $(this).data('id').toString() : null;
-                    const isSelected = id === selectedFunctionId;
-                    $(this).toggleClass('selected', isSelected);
-                    console.log('Function item:', id, 'Selected:', isSelected);
-                });
-
-                $('.category-item').each(function() {
-                    const id = $(this).data('id') ? $(this).data('id').toString() : null;
-                    const isSelected = id === selectedCategoryId;
-                    $(this).toggleClass('selected', isSelected);
-                    console.log('Category item:', id, 'Selected:', isSelected);
-                });
-                console.log('Selections updated - Function:', selectedFunctionId, 'Category:', selectedCategoryId);
-            }
-
-            function scrollFunctionList(direction) {
-                const list = document.getElementById('categoryList'); // Updated to categoryList
-                const scrollAmount = 200;
-                if (direction === 'left') {
-                    list.scrollLeft -= scrollAmount;
-                } else {
-                    list.scrollLeft += scrollAmount;
-                }
-                updateScrollButtons();
-            }
-
-            function updateScrollButtons() {
-                const list = document.getElementById('categoryList'); // Updated to categoryList
-                const leftBtn = document.getElementById('scrollLeft');
-                const rightBtn = document.getElementById('scrollRight');
-                const hasOverflow = list.scrollWidth > list.clientWidth;
-                const canScrollLeft = list.scrollLeft > 0;
-                const canScrollRight = list.scrollLeft < list.scrollWidth - list.clientWidth;
-
-                if (hasOverflow) {
-                    leftBtn.classList.toggle('hidden', !canScrollLeft);
-                    rightBtn.classList.toggle('hidden', !canScrollRight);
-                } else {
-                    leftBtn.classList.add('hidden');
-                    rightBtn.classList.add('hidden');
-                }
-            }
-
-            $('#scrollLeft').on('click', function() {
-                if (!$(this).hasClass('hidden')) scrollFunctionList('left');
+                `;
             });
-            $('#scrollRight').on('click', function() {
-                if (!$(this).hasClass('hidden')) scrollFunctionList('right');
+            return rowDiv;
+        }
+
+        async function loadRows() {
+            if (isLoading) return;
+            isLoading = true;
+            document.getElementById('loading').style.display = 'block';
+
+            try {
+                const articles = await fetchArticles(currentPage);
+                const rows = [];
+                for (let i = 0; i < articles.length; i += ARTICLES_PER_ROW) {
+                    rows.push(articles.slice(i, i + ARTICLES_PER_ROW));
+                }
+
+                cachedRows.push(...rows);
+                currentPage++;
+
+                if (cachedRows.length > CACHE_LIMIT) {
+                    cachedRows = cachedRows.slice(-CACHE_LIMIT);
+                }
+
+                displayRows();
+            } catch (error) {
+                console.error('Load failed:', error);
+            } finally {
+                isLoading = false;
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+
+        function displayRows() {
+            const articleList = document.getElementById('article-list');
+            articleList.innerHTML = '';
+            cachedRows.forEach(row => {
+                articleList.appendChild(renderRow(row));
             });
+        }
 
-            window.addEventListener('resize', function() {
-                updateScrollButtons();
-                updateArticleListHeight();
-            });
-
-            function updateArticleListHeight() {
-                const functionPanelHeight = $('#function-panel').outerHeight(true) || 200; // Updated to category-panel
-                const articleList = $('#article-list');
-                const containerHeight = $('#article-container').outerHeight(true) || 0;
-
-                if (containerHeight < functionPanelHeight) {
-                    articleList.css('min-height', `${functionPanelHeight}px`);
-                } else {
-                    articleList.css('min-height', '');
-                }
+        function scrollToNextRows() {
+            const articleList = document.getElementById('article-list');
+            const rows = articleList.getElementsByClassName('article-row');
+            if (rows.length >= ROWS_PER_DISPLAY) {
+                const nextRow = rows[rows.length - ROWS_PER_DISPLAY];
+                nextRow.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
+        }
 
-            function renderArticles() {
-                const container = $('#article-container');
-                container.empty();
-                const now = new Date();
+        function handleScroll() {
+            const articleList = document.getElementById('article-list');
+            const scrollTop = articleList.scrollTop;
+            const windowHeight = articleList.clientHeight;
+            const docHeight = articleList.scrollHeight;
 
-                articleBuffer.forEach(article => {
-                    const contentHtml = parseContent(article.attributes.content);
-                    const likeCount = article.attributes.like_count || 0;
-                    const visitCount = article.attributes.visit_count || 0;
-                    const createdAt = new Date(article.attributes.createdAt);
-                    const timeDiffMs = now - createdAt;
-                    let timeAgo;
-
-                    const hoursDiff = Math.floor(timeDiffMs / (1000 * 60 * 60));
-                    if (hoursDiff < 24) {
-                        timeAgo = `${hoursDiff} hour${hoursDiff !== 1 ? 's' : ''} ago`;
-                    } else {
-                        const daysDiff = Math.floor(hoursDiff / 24);
-                        timeAgo = `${daysDiff} day${daysDiff !== 1 ? 's' : ''} ago`;
-                    }
-
-                    const authorName = article.attributes.author || 'GeniusParentingAI';
-
-                    container.append(`
-                        <div class="article-card" data-id="${article.id}">
-                            <div class="article-header">
-                                <i class="fas fa-user-circle avatar-icon"></i>
-                                <span class="author-name">${authorName}</span>
-                                <span class="time-ago">${timeAgo}</span>
-                                <i class="fas fa-edit edit-icon" data-id="${article.id}"></i>
-                            </div>
-                            <div class="article-content">${contentHtml}</div>
-                            <div class="article-meta">
-                                <span><i class="fas fa-thumbs-up like-icon" style="cursor: pointer;"></i> <span class="like-count">${likeCount}</span></span>
-                                <span> | Views: <span class="view-count">${visitCount}</span></span>
-                            </div>
-                        </div>
-                    `);
-                });
-
-                $('.like-icon').on('click', function() {
-                    const articleId = $(this).closest('.article-card').data('id');
-                    updateActivity(articleId, 'like_count', 1);
-                });
-
-                $('.edit-icon').on('click', function() {
-                    const articleId = $(this).data('id');
-                    editArticle(articleId);
-                });
-
-                articleBuffer.forEach(article => {
-                    if (!article.viewed) {
-                        updateActivity(article.id, 'visit_count', 1);
-                        article.viewed = true;
-                    }
-                });
-
-                updateArticleListHeight();
-
-                if (selectedArticleId) {
-                    const targetArticle = $(`.article-card[data-id="${selectedArticleId}"]`);
-                    if (targetArticle.length) {
-                        $('#article-list').scrollTop(targetArticle.offset().top - $('#article-list').offset().top + $('#article-list').scrollTop());
-                    }
-                }
-            }
-
-            function fetchOldestDate() {
-                $.ajax({
-                    url: `${STRAPI_URL}articles?pagination[pageSize]=1&sort[0]=createdAt:asc`,
-                    method: 'GET',
-                    headers: { 'Authorization': AUTH_TOKEN, 'Accept': 'application/json' },
-                    success: function(response) {
-                        if (response.data.length > 0) {
-                            oldestDate = new Date(response.data[0].attributes.createdAt).setHours(0, 0, 0, 0);
-                        }
-                    },
-                    error: function(xhr) {
-                        console.error('Error fetching oldest date:', xhr);
-                        oldestDate = new Date('2020-01-01').setHours(0, 0, 0, 0);
-                    }
+            if (scrollTop + windowHeight >= docHeight - 100 && cachedRows.length * ARTICLES_PER_ROW < totalArticles) {
+                loadRows().then(() => {
+                    scrollToNextRows();
                 });
             }
+        }
 
-            function updateActivity(articleId, field, increment) {
-                const url = `${STRAPI_URL}articles/${articleId}`;
-                $.ajax({
-                    url: url,
-                    method: 'GET',
-                    headers: { 'Authorization': AUTH_TOKEN },
-                    success: function(response) {
-                        const currentCount = response.data.attributes[field] || 0;
-                        let updateData = { [field]: currentCount + increment };
+        async function setupFunctionTitle() {
+            const functionName = await fetchFunctionName(FUNCTION_ID);
+            document.getElementById('function-name').textContent = functionName;
+        }
 
-                        if (field === 'like_count' && oldestDate !== null) {
-                            const ONE_DAY_MS = 24 * 60 * 60 * 1000;
-                            const createdAt = new Date(response.data.attributes.createdAt).setHours(0, 0, 0, 0);
-                            const daysDiff = Math.floor((createdAt - oldestDate) / ONE_DAY_MS);
-                            const newLikeCount = currentCount + increment;
-                            updateData.sortScore = 1 + daysDiff + 50 * newLikeCount;
-                        }
-
-                        $.ajax({
-                            url: url,
-                            method: 'PUT',
-                            headers: { 'Authorization': AUTH_TOKEN, 'Content-Type': 'application/json' },
-                            data: JSON.stringify({ data: updateData }),
-                            success: function(updatedResponse) {
-                                console.log(`${field} updated for article ${articleId}:`, updatedResponse);
-                                const card = $(`.article-card[data-id="${articleId}"]`);
-                                if (card.length) {
-                                    card.find(`.${field.split('_')[0]}-count`).text(updatedResponse.data.attributes[field]);
-                                }
-                            },
-                            error: function(xhr) { console.error(`Error updating ${field}:`, xhr); }
-                        });
-                    },
-                    error: function(xhr) { console.error(`Error fetching article ${articleId}:`, xhr); }
-                });
-            }
-
-            function fetchArticles(page) {
-                if (isLoading) return;
-                isLoading = true;
-                $('#loading').show();
-                console.log('Fetching articles, page:', page, 'function:', selectedFunctionId, 'category:', selectedCategoryId);
-
-                let url = `${STRAPI_URL}articles?pagination[page]=${page}&pagination[pageSize]=${pageSize}&populate=functions,categories&sort[0]=always_on_top:desc&sort[1]=sortScore:desc`;
-                if (selectedFunctionId) url += `&filters[functions][id][$in]=${selectedFunctionId}`;
-                if (selectedCategoryId) url += `&filters[categories][id][$in]=${selectedCategoryId}`;
-
-                console.log('Fetching URL:', url);
-
-                $.ajax({
-                    url: url,
-                    method: 'GET',
-                    headers: { 'Authorization': AUTH_TOKEN, 'Accept': 'application/json' },
-                    success: function(response) {
-                        console.log('Raw API Response:', response);
-                        const articles = response.data;
-                        if (!articles || !Array.isArray(articles)) {
-                            console.error('Invalid response data:', articles);
-                            isLoading = false;
-                            $('#loading').hide();
-                            return;
-                        }
-
-                        totalPages = response.meta.pagination.pageCount || 1;
-                        totalArticles = response.meta.pagination.total || 0;
-
-                        articles.forEach(article => {
-                            article.viewed = false;
-                            console.log(`Article ID: ${article.id}, always_on_top: ${article.attributes.always_on_top}, sortScore: ${article.attributes.sortScore}`);
-                        });
-
-                        if (page === 1) {
-                            articleBuffer = articles;
-                            totalLoadedArticles = articles.length;
-                            reachedTop = true;
-                            reachedBottom = (totalLoadedArticles >= totalArticles || page >= totalPages);
-                        } else {
-                            articleBuffer = articleBuffer.concat(articles);
-                            totalLoadedArticles += articles.length;
-                            reachedBottom = (totalLoadedArticles >= totalArticles || page >= totalPages);
-                            reachedTop = (page === 1);
-                        }
-
-                        if (articleBuffer.length > maxVisibleArticles) {
-                            articleBuffer = articleBuffer.slice(-maxVisibleArticles);
-                        }
-
-                        renderArticles();
-
-                        isLoading = false;
-                        $('#loading').hide();
-
-                        console.log('Current page:', page, 'Total pages:', totalPages, 'Total articles:', totalArticles, 'Loaded articles:', totalLoadedArticles, 'Buffer length:', articleBuffer.length);
-                        if (reachedBottom) {
-                            console.log('All articles loaded or reached end of pages');
-                        }
-                    },
-                    error: function(xhr) {
-                        console.error('Error fetching articles:', xhr);
-                        console.log('Response:', xhr.responseText);
-                        isLoading = false;
-                        $('#loading').hide();
-                    }
-                });
-            }
-
-            function calculateSortScore() {
-                const now = new Date();
-                const referenceDate = new Date('2025-01-01');
-                const timeDiffMs = now - referenceDate;
-                const daysDiff = Math.floor(timeDiffMs / (1000 * 60 * 60 * 24));
-                return daysDiff;
-            }
-
-            function saveNewArticle() {
-                const content = $('#summernote').summernote('code');
-                const selectedFunctions = $('#functionCheckboxes .form-check-input:checked').map(function() {
-                    return parseInt($(this).val());
-                }).get();
-                const selectedCategories = $('#categoryCheckboxes .form-check-input:checked').map(function() {
-                    return parseInt($(this).val());
-                }).get();
-                const alwaysOnTop = $('#alwaysOnTopToggle .toggle-btn.active').data('value') === 'true' ? true : false;
-                const sortScore = calculateSortScore();
-
-                let isValid = true;
-                $('#contentError, #functionError, #categoryError').hide();
-
-                if (!content || content === '<p><br></p>') {
-                    $('#contentError').show();
-                    isValid = false;
-                }
-                if (selectedFunctions.length === 0) {
-                    $('#functionError').show();
-                    isValid = false;
-                }
-                if (selectedCategories.length === 0) {
-                    $('#categoryError').show();
-                    isValid = false;
-                }
-
-                if (!isValid) return;
-
-                const articleData = {
-                    data: {
-                        content: content,
-                        published: true,
-                        always_on_top: alwaysOnTop,
-                        sortScore: sortScore,
-                        like_count: 0,
-                        visit_count: 0,
-                        functions: selectedFunctions,
-                        categories: selectedCategories
-                    }
-                };
-
-                console.log('Sending articleData to Strapi:', articleData);
-
-                $.ajax({
-                    url: `${STRAPI_URL}articles`,
-                    method: 'POST',
-                    headers: {
-                        'Authorization': AUTH_TOKEN,
-                        'Content-Type': 'application/json'
-                    },
-                    data: JSON.stringify(articleData),
-                    success: function(response) {
-                        console.log('Article saved:', response);
-                        $('#newArticleModal').modal('hide');
-                        $('#summernote').summernote('reset');
-                        $('#functionCheckboxes .form-check-input').prop('checked', false);
-                        $('#categoryCheckboxes .form-check-input').prop('checked', false);
-                        $('#alwaysOnTopToggle .toggle-btn').removeClass('active');
-                        $('#alwaysOnTopToggle .toggle-btn.false').addClass('active');
-                        $('#contentError, #functionError, #categoryError').hide();
-                        fetchArticles(1);
-                    },
-                    error: function(xhr) {
-                        console.error('Error saving article:', xhr);
-                        console.log('Response:', xhr.responseText);
-                        alert('Failed to save article. Please try again.');
-                    }
-                });
-            }
-
-            function editArticle(articleId) {
-                const article = articleBuffer.find(a => a.id === articleId);
-                if (!article) {
-                    console.error('Article not found in buffer:', articleId);
-                    return;
-                }
-
-                $('#editArticleId').val(articleId);
-                const formattedContent = parseContent(article.attributes.content);
-                $('#editSummernote').summernote('code', formattedContent);
-                $('#editSortScore').val(article.attributes.sortScore);
-
-                $('#editAlwaysOnTopToggle .toggle-btn').removeClass('active');
-                if (article.attributes.always_on_top) {
-                    $('#editAlwaysOnTopToggle .toggle-btn.true').addClass('active');
-                } else {
-                    $('#editAlwaysOnTopToggle .toggle-btn.false').addClass('active');
-                }
-
-                $('#editFunctionCheckboxes .form-check-input').prop('checked', false);
-                const articleFunctions = article.attributes.functions.data.map(f => f.id);
-                articleFunctions.forEach(funcId => {
-                    $(`#edit_func_${funcId}`).prop('checked', true);
-                });
-
-                $('#editCategoryCheckboxes .form-check-input').prop('checked', false);
-                const articleCategories = article.attributes.categories.data.map(c => c.id);
-                articleCategories.forEach(catId => {
-                    $(`#edit_cat_${catId}`).prop('checked', true);
-                });
-
-                $('#editArticleModal').modal('show');
-            }
-
-            function updateArticle() {
-                const articleId = $('#editArticleId').val();
-                const content = $('#editSummernote').summernote('code');
-                const selectedFunctions = $('#editFunctionCheckboxes .form-check-input:checked').map(function() {
-                    return parseInt($(this).val());
-                }).get();
-                const selectedCategories = $('#editCategoryCheckboxes .form-check-input:checked').map(function() {
-                    return parseInt($(this).val());
-                }).get();
-                const alwaysOnTop = $('#editAlwaysOnTopToggle .toggle-btn.active').data('value') === 'true' ? true : false;
-                const sortScore = parseInt($('#editSortScore').val()) || calculateSortScore();
-
-                let isValid = true;
-                $('#editContentError, #editFunctionError, #editCategoryError').hide();
-
-                if (!content || content === '<p><br></p>') {
-                    $('#editContentError').show();
-                    isValid = false;
-                }
-                if (selectedFunctions.length === 0) {
-                    $('#editFunctionError').show();
-                    isValid = false;
-                }
-                if (selectedCategories.length === 0) {
-                    $('#editCategoryError').show();
-                    isValid = false;
-                }
-
-                if (!isValid) return;
-
-                const articleData = {
-                    data: {
-                        content: content,
-                        always_on_top: alwaysOnTop,
-                        sortScore: sortScore,
-                        functions: selectedFunctions,
-                        categories: selectedCategories
-                    }
-                };
-
-                console.log('Updating articleData to Strapi:', articleData);
-
-                $.ajax({
-                    url: `${STRAPI_URL}articles/${articleId}`,
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': AUTH_TOKEN,
-                        'Content-Type': 'application/json'
-                    },
-                    data: JSON.stringify(articleData),
-                    success: function(response) {
-                        console.log('Article updated:', response);
-                        $('#editArticleModal').modal('hide');
-                        fetchArticles(1);
-                    },
-                    error: function(xhr) {
-                        console.error('Error updating article:', xhr);
-                        console.log('Response:', xhr.responseText);
-                        alert('Failed to update article. Please try again.');
-                    }
-                });
-            }
-
-            function checkScroll() {
-                const articleList = $('#article-list');
-                const scrollTop = articleList.scrollTop();
-                const listHeight = articleList[0].scrollHeight;
-                const clientHeight = articleList.height();
-                const triggerPointBottom = listHeight - clientHeight - 50;
-                const triggerPointTop = 50;
-
-                console.log('Scroll check - scrollTop:', scrollTop, 'triggerPointBottom:', triggerPointBottom, 
-                            'triggerPointTop:', triggerPointTop, 'isLoading:', isLoading, 
-                            'currentPage:', currentPage, 'totalPages:', totalPages, 
-                            'totalLoadedArticles:', totalLoadedArticles, 'totalArticles:', totalArticles, 
-                            'reachedTop:', reachedTop, 'reachedBottom:', reachedBottom);
-
-                if (!reachedBottom && scrollTop >= triggerPointBottom && !isLoading && totalLoadedArticles < totalArticles && currentPage < totalPages) {
-                    currentPage = Math.min(totalPages, currentPage + 1);
-                    fetchArticles(currentPage);
-                } else if (!reachedTop && scrollTop <= triggerPointTop && !isLoading && currentPage > 1) {
-                    currentPage = Math.max(1, currentPage - 1);
-                    fetchArticles(currentPage);
-                }
-
-                const container = $('#article-container');
-                const articles = container.children('.article-card');
-                if (articles.length > maxVisibleArticles) {
-                    const articleHeight = articles.first().outerHeight(true);
-                    const visibleStart = Math.floor(scrollTop / articleHeight);
-                    if (scrollTop > lastScrollTop && visibleStart > 0) {
-                        articleBuffer = articleBuffer.slice(visibleStart);
-                        renderArticles();
-                        articleList.scrollTop(scrollTop - (visibleStart * articleHeight));
-                    } else if (scrollTop < lastScrollTop && visibleStart < articleBuffer.length - maxVisibleArticles) {
-                        articleBuffer = articleBuffer.slice(0, maxVisibleArticles);
-                        renderArticles();
-                        articleList.scrollTop(scrollTop + (articleBuffer.length - visibleStart - maxVisibleArticles) * articleHeight);
-                    }
-                }
-
-                lastScrollTop = scrollTop;
-            }
-
-            $('#article-list').on('scroll', function() { checkScroll(); });
-
-            $('#btn_new').on('click', function() {
-                $('#newArticleModal').modal('show');
-            });
-
-            $('#saveArticleBtn').on('click', function() {
-                saveNewArticle();
-            });
-
-            $('#updateArticleBtn').on('click', function() {
-                updateArticle();
-            });
-
-            //console.log('Fetching oldest date and loading dropdowns');
-            //fetchOldestDate();
-            loadDropdowns();
-
-            $('.toggle-btn').on('click', function() {
-                $(this).closest('.toggle-switch').find('.toggle-btn').removeClass('active');
-                $(this).addClass('active');
+        document.addEventListener('DOMContentLoaded', () => {
+            setupFunctionTitle();
+            loadRows().then(() => {
+                displayRows();
+                document.getElementById('article-list').addEventListener('scroll', handleScroll);
             });
         });
+        /*]]>*/
     </script>
 </body>
 </html>
