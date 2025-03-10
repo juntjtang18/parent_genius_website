@@ -18,7 +18,7 @@
             top: 100px; 
         }
         #function-title h2 {
-            margin-left: 40px;
+            margin-left: 120px;
             font-family: 'Roboto Slab', serif;
             font-size: 2rem;
             color: #333;
@@ -30,14 +30,31 @@
         }
         .article-row { display: flex; justify-content: space-between; margin-bottom: 60px; }
         .article-item { width: 32%; text-align: center; padding: 10px; overflow: hidden; }
-        .article-item img, .article-item video { width: 300px; height: 200px; object-fit: cover; }
+        .article-item a { text-decoration: none; color: inherit; }
+        .article-item img, .article-item video { 
+            width: 300px; 
+            height: 200px; 
+            object-fit: cover; 
+            cursor: pointer; 
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .article-item img:hover, .article-item video:hover { 
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
         .article-item h5 { 
             font-size: 1.2rem; 
             font-family: 'Roboto Slab', serif; 
-            margin: 10px 0; 
+            margin-top: 30px;
+            margin-bottom: 30px; 
             white-space: nowrap; 
             overflow: hidden; 
             text-overflow: ellipsis; 
+            cursor: pointer; 
+            transition: color 0.3s ease;
+        }
+        .article-item h5:hover { 
+            color: #007bff;
         }
         .loading { text-align: center; padding: 20px; display: none; }
     </style>
@@ -78,9 +95,7 @@
         }
 
         async function fetchArticles(page) {
-            // START PERFORMANCE CHANGES
             const url = `${STRAPI_URL}articles?filters[functions][id][$in]=${FUNCTION_ID}${CATEGORY_ID ? `&filters[categories][id][$in]=${CATEGORY_ID}` : ''}&pagination[page]=${page}&pagination[pageSize]=${ROWS_PER_FETCH * ARTICLES_PER_ROW}&sort[0]=sortScore:desc&populate=icon_image.formats.thumbnail`;
-            // END PERFORMANCE CHANGES
             console.log(`Fetching: ${url}`);
             const response = await fetch(url, { headers: { 'Authorization': AUTH_TOKEN } });
             if (!response.ok) throw new Error(`Fetch failed: ${response.status}`);
@@ -111,7 +126,6 @@
             articles.forEach(article => {
                 const media = article.attributes.icon_image?.data;
                 let mediaUrl;
-                // START PERFORMANCE CHANGES
                 if (media && media.attributes.formats?.thumbnail?.url) {
                     const url = media.attributes.formats.thumbnail.url;
                     mediaUrl = (url.startsWith('http://') || url.startsWith('https://')) ? url : `${STRAPI_URL}${url}`;
@@ -123,16 +137,22 @@
                 }
                 const isVideo = media && media.attributes.mime?.startsWith('video');
                 const title = article.attributes.title || 'Untitled';
+                const articleId = article.id;
                 const loadingAttr = (cachedRows.indexOf(articles) === 0 && currentPage === 2) ? 'eager' : 'lazy';
                 rowDiv.innerHTML += `
-                    <div class="article-item">
-                        ${isVideo ? `<video src="${mediaUrl}" controls></video>` : `<img src="${mediaUrl}" alt="${title}" loading="${loadingAttr}" />`}
-                        <h5>${title}</h5>
+                    <div class="article-item" data-article-id="${articleId}">
+                        <a href="/article?article=${articleId}&function=${FUNCTION_ID}&category=${CATEGORY_ID}" onclick="storeArticleId(${articleId})">
+                            ${isVideo ? `<video src="${mediaUrl}" controls></video>` : `<img src="${mediaUrl}" alt="${title}" loading="${loadingAttr}" />`}
+                            <h5>${title}</h5>
+                        </a>
                     </div>
                 `;
-                // END PERFORMANCE CHANGES
             });
             return rowDiv;
+        }
+
+        function storeArticleId(articleId) {
+            sessionStorage.setItem('selectedArticleId', articleId);
         }
 
         async function loadRows() {
@@ -147,7 +167,6 @@
                     rows.push(articles.slice(i, i + ARTICLES_PER_ROW));
                 }
 
-                // START PERFORMANCE CHANGES
                 if (currentPage === 1 && rows.length > 0) {
                     rows[0].forEach(article => {
                         const media = article.attributes.icon_image?.data;
@@ -165,7 +184,6 @@
                         document.head.appendChild(link);
                     });
                 }
-                // END PERFORMANCE CHANGES
 
                 cachedRows.push(...rows);
                 currentPage++;
@@ -175,6 +193,13 @@
                 }
 
                 displayRows();
+
+                // Scroll to the article if returning from article.html
+                const selectedArticleId = sessionStorage.getItem('selectedArticleId');
+                if (selectedArticleId && window.location.search.includes(`article=${selectedArticleId}`)) {
+                    scrollToArticle(selectedArticleId);
+                    sessionStorage.removeItem('selectedArticleId'); // Clear after use
+                }
             } catch (error) {
                 console.error('Load failed:', error);
             } finally {
@@ -189,6 +214,18 @@
             cachedRows.forEach(row => {
                 articleList.appendChild(renderRow(row));
             });
+        }
+
+        function scrollToArticle(articleId) {
+            const articleElement = document.querySelector(`.article-item[data-article-id="${articleId}"]`);
+            if (articleElement) {
+                articleElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else {
+                // If article isn’t loaded yet, fetch more rows
+                if (cachedRows.length * ARTICLES_PER_ROW < totalArticles) {
+                    loadRows().then(() => scrollToArticle(articleId));
+                }
+            }
         }
 
         function scrollToNextRows() {

@@ -5,6 +5,8 @@ import ca.parentgeniusai.website.model.Function;
 import ca.parentgeniusai.website.service.CategoryService;
 import ca.parentgeniusai.website.service.FunctionService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +20,7 @@ import java.util.List;
 public class ArticleController {
     private final CategoryService categoryService;
     private final FunctionService functionService;
+    private static final Logger logger = LoggerFactory.getLogger(ArticleController.class);
 
     @Value("${strapi.url:http://localhost:8081/api/}")
     private String strapiUrl;
@@ -30,6 +33,20 @@ public class ArticleController {
         this.functionService = functionService;
     }
 
+    @GetMapping("/article")
+    public String showArticle(
+            @RequestParam(value = "article", required = true) Long articleId,
+            Model model) {
+        logger.info("/article called with articleId={}", articleId);
+        
+        // Add necessary attributes to the model
+        model.addAttribute("articleId", articleId);
+        model.addAttribute("strapiUrl", strapiUrl);
+        model.addAttribute("strapiToken", strapiToken);
+        
+        return "article";
+    }
+    
     @GetMapping("/function-article-list")
     public String showArticleList(
             @RequestParam(value = "function", required = false) Long functionId,
