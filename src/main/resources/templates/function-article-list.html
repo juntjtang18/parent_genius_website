@@ -10,50 +10,64 @@
     <link rel="stylesheet" th:href="@{/css/style.css}" />
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet" />
     <style>
-#function-title { 
+        #function-title { 
             padding: 15px 20px; 
             background-color: #f8f9fa; 
             border-bottom: 1px solid #ddd; 
             position: sticky; 
             top: 100px; 
-            display: flex;              /* Add flexbox */
-            justify-content: space-between; /* Space between h2 and button */
-            align-items: center;        /* Vertically center items */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
         }
         #function-title h2 {
             margin-left: 120px;
             font-family: 'Roboto Slab', serif;
             font-size: 2rem;
             color: #333;
-            margin-bottom: 0;           /* Remove default margin */
+            margin-bottom: 0;
         }
-        /* Styling for the round button */
         .add-article-btn {
             width: 40px;
             height: 40px;
-            background-color: #28a745;   /* Green background */
+            background-color: #28a745;
             color: white;
-            border-radius: 50%;         /* Circular shape */
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;            /* Larger "+" */
-            text-decoration: none;      /* Remove underline */
+            font-size: 24px;
+            text-decoration: none;
             transition: background-color 0.3s ease;
-            margin-right: 20px;         /* Space from edge */
+            margin-right: 20px;
         }
         .add-article-btn:hover {
-            background-color: #218838;  /* Darker green on hover */
-            color: white;               /* Ensure text stays white */
+            background-color: #218838;
+            color: white;
         }
         #article-list { 
             padding: 60px; 
             height: calc(100vh - 170px); 
             overflow-y: auto; 
+            position: relative;
         }
-        .article-row { display: flex; justify-content: space-between; margin-bottom: 60px; }
-        .article-item { width: 32%; text-align: center; padding: 10px; overflow: hidden; }
-        .article-item a { text-decoration: none; color: inherit; }
+        .article-row { 
+            display: flex; 
+            justify-content: space-between; 
+            margin-bottom: 60px; 
+            flex-wrap: wrap;
+        }
+        .article-item { 
+            width: 32%; 
+            text-align: center; 
+            padding: 10px; 
+            overflow: hidden; 
+        }
+        .article-item a { 
+            text-decoration: none; 
+            color: inherit; 
+        }
         .article-item img, .article-item video { 
             width: 300px; 
             height: 200px; 
@@ -79,19 +93,26 @@
         .article-item h5:hover { 
             color: #007bff;
         }
-        .loading { text-align: center; padding: 20px; display: none; }
+        .loading { 
+            text-align: center; 
+            padding: 20px; 
+            display: none; 
+        }
+        .selected-article {
+            background-color: #f0f8ff;
+        }
     </style>
 </head>
 <body>
     <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-	<div id="function-title">
-	    <h2 id="function-name"></h2>
-		<a th:href="@{/new-article(function=${selectedFunctionId}, category=${selectedCategoryId})}" class="add-article-btn">+</a>
-	</div>
+    <div id="function-title">
+        <h2 id="function-name"></h2>
+        <a th:href="@{/new-article(function=${selectedFunctionId})}" class="add-article-btn">+</a>
+    </div>
     <div id="article-list"></div>
     <div id="loading" class="loading">Loading...</div>
-	<div th:replace="~{fragments/chatbot :: chatbot}"></div>
+    <div th:replace="~{fragments/chatbot :: chatbot}"></div>
     <div th:replace="~{fragments/footer :: footer}"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -100,9 +121,8 @@
         const STRAPI_URL = /*[[${strapiUrl}]]*/ 'http://localhost:8080/api/';
         const AUTH_TOKEN = /*[[${strapiToken}]]*/ 'Bearer default-token';
         const FUNCTION_ID = /*[[${selectedFunctionId}]]*/ '1';
-        const CATEGORY_ID = /*[[${selectedCategoryId}]]*/ '7';
+        const SELECTED_ARTICLE_ID = /*[[${selectedArticleId}]]*/ null;
         const ROWS_PER_FETCH = 4;
-        const ROWS_PER_DISPLAY = 2;
         const CACHE_LIMIT = 10;
         const ARTICLES_PER_ROW = 3;
 
@@ -119,7 +139,7 @@
         }
 
         async function fetchArticles(page) {
-            const url = `${STRAPI_URL}articles?filters[functions][id][$in]=${FUNCTION_ID}${CATEGORY_ID ? `&filters[categories][id][$in]=${CATEGORY_ID}` : ''}&pagination[page]=${page}&pagination[pageSize]=${ROWS_PER_FETCH * ARTICLES_PER_ROW}&sort[0]=sortScore:desc&populate=icon_image.formats.thumbnail`;
+            let url = `${STRAPI_URL}articles?filters[functions][id][$in]=${FUNCTION_ID}&pagination[page]=${page}&pagination[pageSize]=${ROWS_PER_FETCH * ARTICLES_PER_ROW}&sort[0]=sortScore:desc&populate=icon_image.formats.thumbnail`;
             console.log(`Fetching: ${url}`);
             const response = await fetch(url, { headers: { 'Authorization': AUTH_TOKEN } });
             if (!response.ok) throw new Error(`Fetch failed: ${response.status}`);
@@ -134,14 +154,6 @@
             if (!response.ok) return `Function ${functionId}`;
             const data = await response.json();
             return data.data.attributes.name || `Function ${functionId}`;
-        }
-
-        async function fetchCategoryName(categoryId) {
-            const url = `${STRAPI_URL}categories/${categoryId}`;
-            const response = await fetch(url, { headers: { 'Authorization': AUTH_TOKEN } });
-            if (!response.ok) return `Category ${categoryId}`;
-            const data = await response.json();
-            return data.data.attributes.name || `Category ${categoryId}`;
         }
 
         function renderRow(articles) {
@@ -162,10 +174,11 @@
                 const isVideo = media && media.attributes.mime?.startsWith('video');
                 const title = article.attributes.title || 'Untitled';
                 const articleId = article.id;
-                const loadingAttr = (cachedRows.indexOf(articles) === 0 && currentPage === 2) ? 'eager' : 'lazy';
+                const loadingAttr = (cachedRows.length === 0 && currentPage === 2) ? 'eager' : 'lazy';
+                const isSelected = articleId == SELECTED_ARTICLE_ID ? 'selected-article' : '';
                 rowDiv.innerHTML += `
-                    <div class="article-item" data-article-id="${articleId}">
-                        <a href="/article?article=${articleId}&function=${FUNCTION_ID}&category=${CATEGORY_ID}" onclick="storeArticleId(${articleId})">
+                    <div class="article-item ${isSelected}" data-article-id="${articleId}">
+                        <a href="/article?article=${articleId}&function=${FUNCTION_ID}" onclick="storeArticleId(${articleId})">
                             ${isVideo ? `<video src="${mediaUrl}" controls></video>` : `<img src="${mediaUrl}" alt="${title}" loading="${loadingAttr}" />`}
                             <h5>${title}</h5>
                         </a>
@@ -179,16 +192,22 @@
             sessionStorage.setItem('selectedArticleId', articleId);
         }
 
-        async function loadRows() {
+        async function loadRows(initialLoad = false) {
             if (isLoading) return;
             isLoading = true;
             document.getElementById('loading').style.display = 'block';
+
+            const articleList = document.getElementById('article-list');
+            const scrollPosition = initialLoad ? 0 : articleList.scrollTop;
 
             try {
                 const articles = await fetchArticles(currentPage);
                 const rows = [];
                 for (let i = 0; i < articles.length; i += ARTICLES_PER_ROW) {
-                    rows.push(articles.slice(i, i + ARTICLES_PER_ROW));
+                    const rowArticles = articles.slice(i, i + ARTICLES_PER_ROW);
+                    if (rowArticles.length > 0) {
+                        rows.push(rowArticles);
+                    }
                 }
 
                 if (currentPage === 1 && rows.length > 0) {
@@ -216,13 +235,17 @@
                     cachedRows = cachedRows.slice(-CACHE_LIMIT);
                 }
 
-                displayRows();
+                if (initialLoad) {
+                    articleList.innerHTML = '';
+                    cachedRows.forEach(row => articleList.appendChild(renderRow(row)));
+                } else {
+                    rows.forEach(row => articleList.appendChild(renderRow(row)));
+                }
 
-                // Scroll to the article if returning from article.html
-                const selectedArticleId = sessionStorage.getItem('selectedArticleId');
-                if (selectedArticleId && window.location.search.includes(`article=${selectedArticleId}`)) {
-                    scrollToArticle(selectedArticleId);
-                    sessionStorage.removeItem('selectedArticleId'); // Clear after use
+                if (initialLoad && SELECTED_ARTICLE_ID) {
+                    scrollToArticle(SELECTED_ARTICLE_ID);
+                } else if (!initialLoad) {
+                    articleList.scrollTop = scrollPosition; // Restore scroll position
                 }
             } catch (error) {
                 console.error('Load failed:', error);
@@ -232,47 +255,34 @@
             }
         }
 
-        function displayRows() {
-            const articleList = document.getElementById('article-list');
-            articleList.innerHTML = '';
-            cachedRows.forEach(row => {
-                articleList.appendChild(renderRow(row));
-            });
-        }
-
         function scrollToArticle(articleId) {
             const articleElement = document.querySelector(`.article-item[data-article-id="${articleId}"]`);
             if (articleElement) {
                 articleElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            } else {
-                // If article isn’t loaded yet, fetch more rows
-                if (cachedRows.length * ARTICLES_PER_ROW < totalArticles) {
-                    loadRows().then(() => scrollToArticle(articleId));
-                }
+                articleElement.classList.add('selected-article');
+            } else if (cachedRows.length * ARTICLES_PER_ROW < totalArticles) {
+                loadRows().then(() => scrollToArticle(articleId));
             }
         }
 
-        function scrollToNextRows() {
-            const articleList = document.getElementById('article-list');
-            const rows = articleList.getElementsByClassName('article-row');
-            if (rows.length >= ROWS_PER_DISPLAY) {
-                const nextRow = rows[rows.length - ROWS_PER_DISPLAY];
-                nextRow.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
+        function debounce(func, wait) {
+            let timeout;
+            return function(...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
         }
 
-        function handleScroll() {
+        const handleScroll = debounce(() => {
             const articleList = document.getElementById('article-list');
             const scrollTop = articleList.scrollTop;
             const windowHeight = articleList.clientHeight;
             const docHeight = articleList.scrollHeight;
 
-            if (scrollTop + windowHeight >= docHeight - 100 && cachedRows.length * ARTICLES_PER_ROW < totalArticles) {
-                loadRows().then(() => {
-                    scrollToNextRows();
-                });
+            if (scrollTop + windowHeight >= docHeight - 100 && cachedRows.length * ARTICLES_PER_ROW < totalArticles && !isLoading) {
+                loadRows();
             }
-        }
+        }, 200);
 
         async function setupFunctionTitle() {
             const functionName = await fetchFunctionName(FUNCTION_ID);
@@ -281,8 +291,7 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             setupFunctionTitle();
-            loadRows().then(() => {
-                displayRows();
+            loadRows(true).then(() => {
                 document.getElementById('article-list').addEventListener('scroll', handleScroll);
             });
         });
