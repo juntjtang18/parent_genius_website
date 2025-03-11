@@ -10,18 +10,41 @@
     <link rel="stylesheet" th:href="@{/css/style.css}" />
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet" />
     <style>
-        #function-title { 
+#function-title { 
             padding: 15px 20px; 
             background-color: #f8f9fa; 
             border-bottom: 1px solid #ddd; 
             position: sticky; 
             top: 100px; 
+            display: flex;              /* Add flexbox */
+            justify-content: space-between; /* Space between h2 and button */
+            align-items: center;        /* Vertically center items */
         }
         #function-title h2 {
             margin-left: 120px;
             font-family: 'Roboto Slab', serif;
             font-size: 2rem;
             color: #333;
+            margin-bottom: 0;           /* Remove default margin */
+        }
+        /* Styling for the round button */
+        .add-article-btn {
+            width: 40px;
+            height: 40px;
+            background-color: #28a745;   /* Green background */
+            color: white;
+            border-radius: 50%;         /* Circular shape */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;            /* Larger "+" */
+            text-decoration: none;      /* Remove underline */
+            transition: background-color 0.3s ease;
+            margin-right: 20px;         /* Space from edge */
+        }
+        .add-article-btn:hover {
+            background-color: #218838;  /* Darker green on hover */
+            color: white;               /* Ensure text stays white */
         }
         #article-list { 
             padding: 60px; 
@@ -62,12 +85,13 @@
 <body>
     <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-    <div id="function-title">
-        <h2 id="function-name"></h2>
-    </div>
-
+	<div id="function-title">
+	    <h2 id="function-name"></h2>
+		<a th:href="@{/new-article(function=${selectedFunctionId}, category=${selectedCategoryId})}" class="add-article-btn">+</a>
+	</div>
     <div id="article-list"></div>
     <div id="loading" class="loading">Loading...</div>
+	<div th:replace="~{fragments/chatbot :: chatbot}"></div>
     <div th:replace="~{fragments/footer :: footer}"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>

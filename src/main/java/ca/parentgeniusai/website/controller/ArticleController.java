@@ -53,21 +53,21 @@ public class ArticleController {
             @RequestParam(value = "category", required = false) Long categoryId,
             @RequestParam(value = "article", required = false) Long articleId,
             Model model) {
-        System.out.println("/function-article-list called with function=" + functionId + ", category=" + categoryId + ", article=" + articleId);
+        logger.info("/function-article-list called with function=" + functionId + ", category=" + categoryId + ", article=" + articleId);
 
         List<Function> functions = functionService.getFunctions();
         List<Category> categories = categoryService.getCategories();
 
-        System.out.println("Fetched functions: " + (functions != null ? functions.size() : "null") + " items");
-        System.out.println("Fetched categories: " + (categories != null ? categories.size() : "null") + " items");
+        //System.out.println("Fetched functions: " + (functions != null ? functions.size() : "null") + " items");
+        //System.out.println("Fetched categories: " + (categories != null ? categories.size() : "null") + " items");
 
         Long selectedFunctionId = (functionId != null) ? 
             functionId : (functions != null && !functions.isEmpty() ? functions.get(0).getId() : 1L);
         Long selectedCategoryId = (categoryId != null) ? 
             categoryId : (categories != null && !categories.isEmpty() ? categories.get(0).getId() : 7L);
 
-        System.out.println("Selected Function ID: " + selectedFunctionId);
-        System.out.println("Selected Category ID: " + selectedCategoryId);
+        //System.out.println("Selected Function ID: " + selectedFunctionId);
+        //System.out.println("Selected Category ID: " + selectedCategoryId);
 
         model.addAttribute("functions", functions != null ? functions : Collections.emptyList());
         model.addAttribute("categories", categories != null ? categories : Collections.emptyList());
@@ -77,10 +77,24 @@ public class ArticleController {
         model.addAttribute("strapiUrl", strapiUrl);
         model.addAttribute("strapiToken", strapiToken);
 
-        System.out.println("Model attributes - selectedFunctionId=" + model.getAttribute("selectedFunctionId"));
-        System.out.println("Model attributes - selectedCategoryId=" + model.getAttribute("selectedCategoryId"));
-        System.out.println("Model attributes - selectedArticleId=" + model.getAttribute("selectedArticleId"));
+        //System.out.println("Model attributes - selectedFunctionId=" + model.getAttribute("selectedFunctionId"));
+        //System.out.println("Model attributes - selectedCategoryId=" + model.getAttribute("selectedCategoryId"));
+        //System.out.println("Model attributes - selectedArticleId=" + model.getAttribute("selectedArticleId"));
         
         return "function-article-list";
+    }
+    
+    @GetMapping("/new-article")
+    public String newArticle(
+            @RequestParam("function") String functionId,
+            @RequestParam(value = "category", required = false) String categoryId,
+            Model model) {
+        model.addAttribute("functionId", functionId);
+        model.addAttribute("categoryId", categoryId);
+        model.addAttribute("returnUrl", "/function-article-list?function=" + functionId + 
+                (categoryId != null ? "&category=" + categoryId : ""));
+        model.addAttribute("strapiUrl", strapiUrl); // Adjust as needed
+        model.addAttribute("strapiToken", strapiToken);   // Adjust as needed
+        return "new-article"; // Maps to new-article.html
     }
 }

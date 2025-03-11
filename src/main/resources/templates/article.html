@@ -8,7 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
     <!-- Link to your custom stylesheet -->
     <link rel="stylesheet" href="/css/style.css">
-    <!-- Optional: Summernote CSS if you want to style the rich text similarly -->
+    <!-- Optional: Summernote CSS -->
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
     <style>
         body {
@@ -87,7 +87,6 @@
             flex-shrink: 0;
         }
 
-        /* Back button styling */
         .back-button {
             display: inline-block;
             margin: 10px 0 20px 0;
@@ -104,123 +103,6 @@
         .back-button:hover {
             background-color: #4A90E2;
             color: white;
-        }
-
-        /* Floating Chatbot Icon */
-        .chatbot-icon {
-            position: fixed;
-            bottom: 150px;
-            right: 100px;
-            width: 60px;
-            height: 60px;
-            cursor: pointer;
-            z-index: 1000;
-        }
-
-        /* Modal Window */
-        .chat-modal {
-            display: none; /* Hidden by default */
-            position: fixed;
-            bottom: 210px;
-            right: 160px;
-            width: 600px;
-            height: 600px;
-            background-color: rgba(240, 240, 240, 0.95); /* Light grey, 95% opacity */
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            z-index: 1001;
-            flex-direction: column;
-        }
-
-        .chat-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            background-color: #FF9AA2;
-            border-bottom: 1px solid #ccc;
-            border-radius: 10px 10px 0 0;
-        }
-
-        .chat-header .close-btn {
-            cursor: pointer;
-            font-size: 20px;
-            color: #333;
-        }
-
-        .chat-body {
-            flex: 1;
-            padding: 10px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .chat-message {
-            display: flex;
-            margin: 10px 0;
-            align-items: center;
-            width: 100%;
-        }
-
-        .chat-message.bot {
-            justify-content: flex-start; /* Align bot message to left */
-        }
-
-        .chat-message.user {
-            justify-content: flex-end; /* Align user message to right */
-        }
-
-        .chat-message img {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            margin: 0 10px;
-        }
-
-        .chat-message .text {
-            max-width: 70%;
-            padding: 8px 12px;
-            border-radius: 8px;
-        }
-
-        .chat-message.bot .text {
-            background-color: white; /* Bot response in white */
-            text-align: left; /* Bot text aligned left */
-        }
-
-        .chat-message.user .text {
-            background-color: #8BC34A; /* User text in light green */
-            color: white;
-            text-align: right; /* User text aligned right */
-        }
-
-        .chat-footer {
-            display: flex;
-            padding: 10px;
-            border-top: 1px solid #ccc;
-        }
-
-        .chat-footer input {
-            flex: 1;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            margin-right: 10px;
-        }
-
-        .chat-footer button {
-            padding: 8px 16px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .chat-footer button:hover {
-            background-color: #0056b3;
         }
     </style>
 </head>
@@ -242,23 +124,8 @@
         </div>
     </div>
 
-    <!-- Floating Chatbot Icon -->
-    <img src="images/chatbot01.png" alt="Chatbot" class="chatbot-icon" id="chatbot-icon">
-
-    <!-- Chat Modal (Hidden by Default) -->
-    <div class="chat-modal" id="chat-modal">
-        <div class="chat-header">
-            <span>Chat with Bot</span>
-            <span class="close-btn" id="close-modal">×</span>
-        </div>
-        <div class="chat-body" id="chat-body">
-            <!-- Chat messages will be appended here -->
-        </div>
-        <div class="chat-footer">
-            <input type="text" id="chat-input" placeholder="Type your message...">
-            <button id="send-btn">Send</button>
-        </div>
-    </div>
+    <!-- Include the Chatbot Fragment -->
+    <div th:replace="~{fragments/chatbot :: chatbot}"></div>
 
     <!-- Footer -->
     <div th:replace="~{fragments/footer :: footer}"></div>
@@ -289,11 +156,9 @@
                 const data = await response.json();
                 const article = data.data;
 
-                // Hide loading and show content
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('article-content').style.display = 'block';
 
-                // Populate article data
                 document.getElementById('article-title').textContent = article.attributes.title;
                 document.getElementById('article-body').innerHTML = article.attributes.content;
 
@@ -306,100 +171,11 @@
             }
         }
 
-        // Handle back button click
         document.getElementById('back-button').addEventListener('click', () => {
             const backUrl = `/function-article-list?function=${functionId}&category=${categoryId}&article=${articleId}`;
             window.location.href = backUrl;
         });
 
-        // Chatbot functionality
-        const chatbotIcon = document.getElementById('chatbot-icon');
-        const chatModal = document.getElementById('chat-modal');
-        const closeModal = document.getElementById('close-modal');
-        const chatBody = document.getElementById('chat-body');
-        const chatInput = document.getElementById('chat-input');
-        const sendBtn = document.getElementById('send-btn');
-
-        // Show modal only when clicking the chatbot icon
-        chatbotIcon.addEventListener('click', () => {
-            chatModal.style.display = 'flex';
-            if (!chatBody.querySelector('.chat-message')) {
-                addMessage('bot', 'Hello! How can I assist you today?');
-            }
-        });
-
-        // Hide modal when clicking the close button
-        closeModal.addEventListener('click', () => {
-            chatModal.style.display = 'none';
-        });
-
-        // Send message and get response
-        sendBtn.addEventListener('click', sendMessage);
-        chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendMessage();
-        });
-
-        async function sendMessage() {
-            const message = chatInput.value.trim();
-            if (!message) return;
-
-            addMessage('user', message);
-            chatInput.value = '';
-
-            try {
-                console.log('Sending request to backend with message:', message);
-                const response = await fetch('https://parentgenius-backend-852311377699.us-west1.run.app/ask', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({ question: message })
-                });
-
-                console.log('Response status:', response.status);
-                console.log('Response headers:', [...response.headers.entries()]);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const data = await response.json();
-                console.log('Response data:', data);
-                if (data.error) {
-                    addMessage('bot', `Error: ${data.error}`);
-                } else {
-                    addMessage('bot', data.answer || 'No response from the server.');
-                }
-            } catch (error) {
-                console.error('Error fetching bot response:', error);
-                addMessage('bot', 'Sorry, something went wrong: ' + error.message);
-            }
-        }
-
-        function addMessage(sender, text) {
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('chat-message', sender);
-            const avatarSrc = sender === 'bot' ? 'images/chatbot01.png' : 'images/user-avatar.png';
-
-            if (sender === 'bot') {
-                // Bot: Avatar on left, text on right, aligned left
-                messageDiv.innerHTML = `
-                    <img src="${avatarSrc}" alt="${sender}">
-                    <span class="text">${text}</span>
-                `;
-            } else {
-                // User: Text on left, avatar on right, aligned right
-                messageDiv.innerHTML = `
-                    <span class="text">${text}</span>
-                    <img src="${avatarSrc}" alt="${sender}">
-                `;
-            }
-
-            chatBody.appendChild(messageDiv);
-            chatBody.scrollTop = chatBody.scrollHeight;
-        }
-
-        // Fetch article when page loads
         window.onload = fetchArticle;
     </script>
 </body>
