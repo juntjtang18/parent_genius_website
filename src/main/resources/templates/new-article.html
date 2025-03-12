@@ -4,87 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="#{new-article.text1}">New Article | Genius Parenting AI</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous" />
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <!-- Summernote BS5 CSS -->
+    <link rel="icon" type="image/jpeg" th:href="@{/images/gpa-logo.jpg}" /> <!-- Favicon -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-bs5.min.css" rel="stylesheet" />
-    <!-- Custom CSS -->
     <link rel="stylesheet" th:href="@{/css/style.css}" />
     <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            margin: 0;
-        }
-        .article-panel {
-            width: 70vw;
-            margin: 20px auto;
-            padding: 20px;
-            flex: 1 0 auto;
-        }
-        .article-editor {
-            background-color: #f8f9fa;
-            padding: 20px;
-            border-radius: 5px;
-        }
-        .article-form-group {
-            margin-bottom: 20px;
-        }
-        .article-form-group label {
-            font-weight: bold;
-            margin-bottom: 5px;
-            display: block;
-        }
-        .article-form-group input {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        .article-button-group {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .article-btn {
-            padding: 10px 20px;
-            font-size: 16px;
-            border-radius: 5px;
-            text-decoration: none;
-            color: white;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 100px;
-            height: 40px;
-            transition: background-color 0.3s ease;
-        }
-        .article-save-btn {
-            background-color: #28a745;
-        }
-        .article-save-btn:hover {
-            background-color: #218838;
-        }
-        .article-back-btn {
-            background-color: #6c757d;
-        }
-        .article-back-btn:hover {
-            background-color: #5a6268;
-        }
-        .article-summernote-container {
-            margin-bottom: 20px;
-        }
-        .article-error {
-            color: red;
-            text-align: center;
-            margin-top: 10px;
-            display: none;
-        }
+        body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; }
+        .article-panel { width: 70vw; margin: 20px auto; padding: 20px; flex: 1 0 auto; }
+        .article-editor { background-color: #f8f9fa; padding: 20px; border-radius: 5px; }
+        .article-form-group { margin-bottom: 20px; }
+        .article-form-group label { font-weight: bold; margin-bottom: 5px; display: block; }
+        .article-form-group input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        .article-button-group { display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 20px; }
+        .article-btn { padding: 10px 20px; font-size: 16px; border-radius: 5px; text-decoration: none; color: white; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; min-width: 100px; height: 40px; transition: background-color 0.3s ease; }
+        .article-save-btn { background-color: #28a745; }
+        .article-save-btn:hover { background-color: #218838; }
+        .article-back-btn { background-color: #6c757d; }
+        .article-back-btn:hover { background-color: #5a6268; }
+        .article-summernote-container { margin-bottom: 20px; }
+        .article-error { color: red; text-align: center; margin-top: 10px; display: none; }
     </style>
 </head>
 <body>
@@ -100,6 +39,14 @@
                 <label for="article-title">Title</label>
                 <input type="text" id="article-title" placeholder="Enter article title" required />
             </div>
+            <div class="article-form-group">
+                <label for="article-sortScore">Sort Score (higher first, default 0)</label>
+                <input type="number" id="article-sortScore" value="0" min="0" />
+            </div>
+            <div class="article-form-group">
+                <label for="article-icon-image">Icon Image</label>
+                <input type="file" id="article-icon-image" accept="image/*" />
+            </div>
             <div class="article-summernote-container">
                 <label for="article-content">Content</label>
                 <div id="article-content"></div>
@@ -111,11 +58,8 @@
     <div th:replace="~{fragments/chatbot :: chatbot}"></div>
     <div th:replace="~{fragments/footer :: footer}"></div>
 
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
-    <!-- Summernote JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-bs5.min.js"></script>
     <script th:inline="javascript">
         /*<![CDATA[*/
@@ -125,28 +69,16 @@
         const RETURN_URL = /*[[${returnUrl}]]*/ '/function-article-list?function=1';
 
         $(document).ready(function() {
-            // Check if Summernote is loaded
-            if (typeof $.fn.summernote === 'undefined') {
-                console.error('Summernote is not loaded!');
-                $('#error').text('Summernote failed to load. Please check your network or CDN availability.').show();
-                return;
-            }
-
-            // Initialize Summernote
             $('#article-content').summernote({
                 height: 400,
                 placeholder: 'Enter article content here...'
             });
 
-            // Debug token and variables
-            console.log('Auth Token:', AUTH_TOKEN);
-            console.log('Function ID:', FUNCTION_ID);
-            console.log('Return URL:', RETURN_URL);
-
-            // Save Button Logic
             $('#save-btn').on('click', async function() {
                 const title = $('#article-title').val().trim();
                 const content = $('#article-content').summernote('code').trim();
+                const sortScore = parseInt($('#article-sortScore').val()) || 0;
+                const iconImageFile = $('#article-icon-image')[0].files[0];
 
                 if (!title) {
                     $('#error').text('Title is required!').show();
@@ -154,7 +86,21 @@
                 }
 
                 try {
-                    const response = await fetch(`${STRAPI_URL}articles`, {
+                    let iconImageId = null;
+                    if (iconImageFile) {
+                        const formData = new FormData();
+                        formData.append('files', iconImageFile);
+                        const uploadResponse = await fetch(`${STRAPI_URL}upload`, {
+                            method: 'POST',
+                            headers: { 'Authorization': AUTH_TOKEN },
+                            body: formData
+                        });
+                        if (!uploadResponse.ok) throw new Error('Image upload failed');
+                        const uploadData = await uploadResponse.json();
+                        iconImageId = uploadData[0].id;
+                    }
+
+                    const articleResponse = await fetch(`${STRAPI_URL}articles`, {
                         method: 'POST',
                         headers: {
                             'Authorization': AUTH_TOKEN,
@@ -165,21 +111,22 @@
                                 title: title,
                                 content: content,
                                 functions: [FUNCTION_ID],
+                                sortScore: sortScore,
+                                icon_image: iconImageId,
                                 published: true,
                                 create_time: new Date().toISOString(),
                                 like_count: 0,
-                                visit_count: 0,
-                                sortScore: 0
+                                visit_count: 0
                             }
                         })
                     });
 
-                    if (!response.ok) {
-                        const errorText = await response.text();
-                        throw new Error(`Failed to save article: ${response.status} - ${errorText}`);
+                    if (!articleResponse.ok) {
+                        const errorText = await articleResponse.text();
+                        throw new Error(`Failed to save article: ${articleResponse.status} - ${errorText}`);
                     }
 
-                    const newArticle = await response.json();
+                    const newArticle = await articleResponse.json();
                     window.location.href = `${RETURN_URL}&article=${newArticle.data.id}`;
                 } catch (error) {
                     console.error('Error saving article:', error);
