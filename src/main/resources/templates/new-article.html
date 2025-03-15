@@ -68,6 +68,24 @@
         const FUNCTION_ID = /*[[${functionId}]]*/ '1';
         const RETURN_URL = /*[[${returnUrl}]]*/ '/function-article-list?function=1';
 
+        // Helper function for specific error messages
+        function getErrorMessage(status, errorText) {
+            switch (status) {
+                case 400:
+                    return 'Bad request: Invalid data provided.';
+                case 401:
+                    return 'Unauthorized: Please check your authentication token.';
+                case 403:
+                    return 'Forbidden: You do not have permission to save this article.';
+                case 413:
+                    return 'Payload exceeds server limits. Please reduce the content size.';
+                case 500:
+                    return 'Server error: Something went wrong on the server.';
+                default:
+                    return `Failed to save article: ${status} - ${errorText || 'Unknown error'}`;
+            }
+        }
+
         $(document).ready(function() {
             $('#article-content').summernote({
                 height: 400,
@@ -123,14 +141,15 @@
 
                     if (!articleResponse.ok) {
                         const errorText = await articleResponse.text();
-                        throw new Error(`Failed to save article: ${articleResponse.status} - ${errorText}`);
+                        const errorMessage = getErrorMessage(articleResponse.status, errorText);
+                        throw new Error(errorMessage);
                     }
 
                     const newArticle = await articleResponse.json();
                     window.location.href = `${RETURN_URL}&article=${newArticle.data.id}`;
                 } catch (error) {
                     console.error('Error saving article:', error);
-                    $('#error').text('Failed to save article: ' + error.message).show();
+                    $('#error').text(error.message).show();
                 }
             });
         });

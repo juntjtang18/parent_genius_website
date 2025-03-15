@@ -84,29 +84,38 @@
             font-size: 1.2em;
             margin: 15px 0;
         }
-        /* Base image styling */
-        .pgai-slide-image {
+        /* Specific image styling for Slide 1 carousel */
+        .slide1-carousel-image {
             width: 400px;
             height: 400px;
             max-width: 100%;
             object-fit: cover;
-            margin-bottom: 10px;
             transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for hover */
         }
-        /* Specific styling for slide1 images */
-        .slide1-image {
-            position: absolute;
-            top: 0;
-        }
-        /* Space div styling */
-        .space-div {
-            position: absolute;
+        /* Spacer for Slide 1 images */
+        .slide1-image-spacer {
             width: 60px;
             height: 400px;
             background-color: transparent; /* Invisible space */
-            top: 0;
         }
-        /* Description styling for slide2 */
+        /* Specific image styling for Slide 2 features */
+        .slide2-feature-image {
+            width: 100%;
+            height: auto;
+            max-width: 400px;
+            object-fit: cover;
+            margin-bottom: 10px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for hover */
+        }
+        /* Specific image styling for Slide 5 tap image */
+        .slide5-tap-image {
+            width: 100%;
+            height: auto;
+            max-width: 400px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+        /* Description styling for Slide 2 */
         .pgai-feature-description {
             text-align: center;
             margin: 0;
@@ -124,10 +133,13 @@
             font-size: 0.9em;
             color: #333;
         }
-        /* Quote container with fixed height */
+        /* Quote container as a view window for Slide 4 */
         #quote-container {
-            min-height: 600px; /* Adjust based on your content */
-            position: relative;
+            position: relative; /* Contain absolutely positioned children */
+            min-height: 600px; /* Fixed height for layout consistency */
+            width: 70vw; /* Match quote box width */
+            margin: 0 auto; /* Center the container */
+            overflow: hidden; /* Clip quotes outside the container */
         }
         /* Quote box styling for testimonials */
         .pgai-quote-box {
@@ -136,10 +148,9 @@
             border-radius: 30px;
             background-color: #f9f9f9;
             padding: 50px;
-            margin: 50px auto; /* Center horizontally with auto margins */
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
-            position: absolute; /* Prevent layout shift during animation */
+            position: absolute; /* Position within #quote-container */
             left: 50%;
             transform: translateX(-50%);
             width: 100%;
@@ -149,15 +160,15 @@
         .pgai-quote-box:nth-child(1) { top: 0; }
         .pgai-quote-box:nth-child(2) { top: 200px; }
         .pgai-quote-box:nth-child(3) { top: 400px; }
-        /* Fly-out animation (random directions) */
+        /* Fly-out animation (limited within container) */
         @keyframes flyOut {
-            0% { opacity: 1; transform: translate(-50%, 0); }
-            100% { opacity: 0; transform: translate(calc(-50% + var(--fly-out-x)), var(--fly-out-y)); }
+            0% { opacity: 1; transform: translateX(-50%); }
+            100% { opacity: 0; transform: translateX(calc(-50% + var(--fly-out-x))) translateY(var(--fly-out-y)); }
         }
-        /* Fly-in animation (random directions) */
+        /* Fly-in animation (limited within container) */
         @keyframes flyIn {
-            0% { opacity: 0; transform: translate(calc(-50% + var(--fly-in-x)), var(--fly-in-y)); }
-            100% { opacity: 1; transform: translate(-50%, 0); }
+            0% { opacity: 0; transform: translateX(calc(-50% + var(--fly-in-x))) translateY(var(--fly-in-y)); }
+            100% { opacity: 1; transform: translateX(-50%); }
         }
         .pgai-quote-box.fly-out {
             animation: flyOut 2s ease-out forwards;
@@ -165,24 +176,12 @@
         .pgai-quote-box.fly-in {
             animation: flyIn 2s ease-in forwards;
         }
-        /* Slide animation for images and space divs in slide1 */
-        @keyframes slideRight {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(860px); } /* Move 860px (container width) */
+        /* Carousel transition timing */
+        .carousel-item {
+            transition: transform 2s ease-out;
         }
-        .slide1-image.slide, .space-div.slide {
-            animation: slideRight 2s ease-out forwards;
-        }
-        /* Container for slide1 images and space divs */
-        #slide1-image-container {
-            position: relative;
-            width: 860px; /* 400px (image) + 60px (space) + 400px (image) */
-            height: 400px; /* Fixed height to occupy space */
-            margin: 0 auto; /* Center the container */
-            overflow: hidden; /* Ensure only the window is visible */
-        }
-        /* Hover effects for slide2 */
-        #slide2 .col-12.col-md-4:hover .pgai-slide-image {
+        /* Hover effects for Slide 2 */
+        #slide2 .col-12.col-md-4:hover .slide2-feature-image {
             transform: scale(1.05); /* Slight zoom effect */
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Add shadow on hover */
         }
@@ -200,9 +199,34 @@
         <div id="slide1" class="pgai-slide-section">
             <h1 class="pgai-home-title" th:text="#{index.welcome}">GENIUS PARENTING AI</h1>
             <p class="pgai-slide-description" th:text="#{index.description}">Smarter Parenting, Happier Families</p>
-            <!-- Image container for dynamic animation -->
-            <div id="slide1-image-container" style="margin-top: 40px;">
-                <!-- Images and space divs will be inserted dynamically by JavaScript -->
+            <!-- Carousel for Slide 1 images -->
+            <div id="slide1Carousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000" style="width: 860px; margin: 40px auto 0;">
+                <div class="carousel-inner">
+                    <!-- First pair: pic2 (left), pic1 (right) -->
+                    <div class="carousel-item active">
+                        <div style="position: relative; width: 860px; height: 400px;">
+                            <img src="images/index/slide1-pic2.jpg" class="slide1-carousel-image" style="position: absolute; left: 0;">
+                            <div class="slide1-image-spacer" style="position: absolute; left: 400px;"></div>
+                            <img src="images/index/slide1-pic1.jpg" class="slide1-carousel-image" style="position: absolute; left: 460px;">
+                        </div>
+                    </div>
+                    <!-- Second pair: pic4 (left), pic3 (right) -->
+                    <div class="carousel-item">
+                        <div style="position: relative; width: 860px; height: 400px;">
+                            <img src="images/index/slide1-pic4.jpg" class="slide1-carousel-image" style="position: absolute; left: 0;">
+                            <div class="slide1-image-spacer" style="position: absolute; left: 400px;"></div>
+                            <img src="images/index/slide1-pic3.jpg" class="slide1-carousel-image" style="position: absolute; left: 460px;">
+                        </div>
+                    </div>
+                    <!-- Third pair: pic6 (left), pic5 (right) -->
+                    <div class="carousel-item">
+                        <div style="position: relative; width: 860px; height: 400px;">
+                            <img src="images/index/slide1-pic6.jpg" class="slide1-carousel-image" style="position: absolute; left: 0;">
+                            <div class="slide1-image-spacer" style="position: absolute; left: 400px;"></div>
+                            <img src="images/index/slide1-pic5.jpg" class="slide1-carousel-image" style="position: absolute; left: 460px;">
+                        </div>
+                    </div>
+                </div>
             </div>
             <!-- Fancy, italicized text -->
             <p class="pgai-fancy-text" style="margin-top:30px">Every Parent Needs a Helping Hand. Meet Yours</p>
@@ -217,21 +241,21 @@
             <!-- Three images with descriptions in a row -->
             <div class="row justify-content-center mt-3">
                 <div class="col-12 col-md-4 mb-4">
-                    <img src="images/index/pic3.jpg" alt="Personalized Support" class="pgai-slide-image">
+                    <img src="images/index/pic3.jpg" alt="Personalized Support" class="slide2-feature-image">
                     <div class="pgai-feature-description">
                         <strong>Personalized Parenting Support:</strong>
                         <p>Get expert-backed advice and tools tailored to your child’s needs.</p>
                     </div>
                 </div>
                 <div class="col-12 col-md-4 mb-4">
-                    <img src="images/index/pic4.jpg" alt="Interactive Learning" class="pgai-slide-image">
+                    <img src="images/index/pic4.jpg" alt="Interactive Learning" class="slide2-feature-image">
                     <div class="pgai-feature-description">
                         <strong>Interactive Learning & Creativity:</strong>
                         <p>Storytelling, music, and games to spark imagination and unique growth.</p>
                     </div>
                 </div>
                 <div class="col-12 col-md-4 mb-4">
-                    <img src="images/index/pic5.jpg" alt="Community & Knowledge Hub" class="pgai-slide-image">
+                    <img src="images/index/pic5.jpg" alt="Community & Knowledge Hub" class="slide2-feature-image">
                     <div class="pgai-feature-description">
                         <strong>Community & Knowledge Hub:</strong>
                         <p>Connect with parents, experts, and find resources at your fingertips.</p>
@@ -271,7 +295,7 @@
             <!-- Add image after the title -->
             <div class="row justify-content-center mb-3">
                 <div class="col-12 col-md-6">
-                    <img src="images/index/pic6.jpg" alt="Parenting Tap Image" class="pgai-slide-image">
+                    <img src="images/index/pic6.jpg" alt="Parenting Tap Image" class="slide5-tap-image">
                 </div>
             </div>
             <p class="pgai-slide-description">Ever wished parenting came with a handbook? Consider this your ultimate toolkit—packed with expert advice, interactive activities, and milestone tracking, all in one easy-to-use app.</p>
@@ -294,7 +318,7 @@
 
     <!-- JavaScript for Quote Shuffling with Fly Animation and Intersection Observer -->
     <script>
-        // Array of 12 quotes for slide4
+        // Array of 12 quotes for Slide 4
         const quotes = [
             '"Genius Parenting AI has transformed how I approach parenting. It’s my go-to for advice and creative activities!" – Sarah, Mom of 2',
             '"I love the milestone tracker! It helps me ensure my child is on the right path." – David, Father of a 5-year-old',
@@ -310,18 +334,18 @@
             '"MindTales has made emotional learning so easy for my kids." – Noah, Father of 3'
         ];
 
-        // Function to get random direction (x, y) for fly animation (slide4)
+        // Function to get random direction (x, y) for fly animation within container bounds
         function getRandomDirection() {
             const directions = [
-                { x: -100, y: 0 }, // Left
-                { x: 100, y: 0 },  // Right
-                { x: 0, y: -100 }, // Top
-                { x: 0, y: 100 }   // Bottom
+                { x: -200, y: 0 },  // Left
+                { x: 200, y: 0 },   // Right
+                { x: 0, y: -200 },  // Up
+                { x: 0, y: 200 }    // Down
             ];
             return directions[Math.floor(Math.random() * directions.length)];
         }
 
-        // Function to shuffle and animate quotes (slide4)
+        // Function to shuffle and animate quotes (Slide 4)
         function shuffleQuotes() {
             const quoteContainer = document.getElementById('quote-container');
             const currentQuotes = quoteContainer.getElementsByClassName('pgai-quote-box');
@@ -329,8 +353,8 @@
             // Apply fly-out animation to current quotes
             for (let quote of currentQuotes) {
                 const { x, y } = getRandomDirection();
-                quote.style.setProperty('--fly-out-x', `${x}vw`);
-                quote.style.setProperty('--fly-out-y', `${y}vw`);
+                quote.style.setProperty('--fly-out-x', `${x}px`); // Use px instead of vw
+                quote.style.setProperty('--fly-out-y', `${y}px`); // Use px instead of vw
                 quote.classList.add('fly-out');
             }
 
@@ -342,8 +366,8 @@
                 const quoteElement = document.createElement('div');
                 quoteElement.className = 'pgai-quote-box fly-in';
                 const { x, y } = getRandomDirection();
-                quoteElement.style.setProperty('--fly-in-x', `${-x}vw`); // Opposite direction for fly-in
-                quoteElement.style.setProperty('--fly-in-y', `${-y}vw`);
+                quoteElement.style.setProperty('--fly-in-x', `${x}px`); // Opposite direction for fly-in
+                quoteElement.style.setProperty('--fly-in-y', `${y}px`);
                 quoteElement.innerHTML = `<p class="pgai-testimonial-text">${quote}</p>`;
                 quoteContainer.appendChild(quoteElement);
 
@@ -360,7 +384,7 @@
             }, 2000); // Match animation duration
         }
 
-        // Initial display of quotes (slide4)
+        // Initial display of quotes (Slide 4)
         const quoteContainer = document.getElementById('quote-container');
         const initialQuotes = [...quotes].sort(() => Math.random() - 0.5).slice(0, 3);
         initialQuotes.forEach((quote, index) => {
@@ -370,7 +394,7 @@
             quoteContainer.appendChild(quoteElement);
         });
 
-        // Use Intersection Observer for slide4
+        // Use Intersection Observer for Slide 4
         let animationInterval = null;
         const slide4 = document.getElementById('slide4');
 
@@ -395,79 +419,6 @@
         });
 
         observer.observe(slide4);
-
-        // Image animation for slide1
-        const imagePaths = [
-            'images/index/slide1-pic1.jpg',
-            'images/index/slide1-pic2.jpg',
-            'images/index/slide1-pic3.jpg',
-            'images/index/slide1-pic4.jpg',
-            'images/index/slide1-pic5.jpg',
-            'images/index/slide1-pic6.jpg'
-        ];
-
-        function animateImagePair(index) {
-            const imageContainer = document.getElementById('slide1-image-container');
-            imageContainer.innerHTML = ''; // Clear previous images and space divs
-
-            // Current pair with space div
-            const currentImg2 = document.createElement('img');
-            const currentSpaceDiv = document.createElement('div');
-            const currentImg1 = document.createElement('img');
-            currentImg2.src = imagePaths[(index + 1) % imagePaths.length]; // image2
-            currentImg1.src = imagePaths[index]; // image1
-            currentImg2.className = 'pgai-slide-image slide1-image';
-            currentImg1.className = 'pgai-slide-image slide1-image';
-            currentSpaceDiv.className = 'space-div';
-            currentImg2.style.left = '0'; // Start at left edge
-            currentSpaceDiv.style.left = '400px'; // After image2
-            currentImg1.style.left = '460px'; // 400px (image) + 60px (space)
-            imageContainer.appendChild(currentImg2);
-            imageContainer.appendChild(currentSpaceDiv);
-            imageContainer.appendChild(currentImg1);
-
-            // Next pair with space div (start off-screen to the left)
-            const nextIndex = (index + 2) % imagePaths.length;
-            const nextImg2 = document.createElement('img');
-            const nextSpaceDiv = document.createElement('div');
-            const nextImg1 = document.createElement('img');
-            nextImg2.src = imagePaths[(nextIndex + 1) % imagePaths.length]; // image4
-            nextImg1.src = imagePaths[nextIndex]; // image3
-            nextImg2.className = 'pgai-slide-image slide1-image';
-            nextImg1.className = 'pgai-slide-image slide1-image';
-            nextSpaceDiv.className = 'space-div';
-            nextImg2.style.left = '-920px'; // -860px - 60px (to account for space before image3)
-            nextSpaceDiv.style.left = '-460px'; // After image4
-            nextImg1.style.left = '-400px'; // 60px after space div
-            imageContainer.appendChild(nextImg2);
-            imageContainer.appendChild(nextSpaceDiv);
-            imageContainer.appendChild(nextImg1);
-
-            // Wait 4 seconds, then start animation
-            setTimeout(() => {
-                // Animate all images and space divs together
-                currentImg2.classList.add('slide');
-                currentSpaceDiv.classList.add('slide');
-                currentImg1.classList.add('slide');
-                nextImg2.classList.add('slide');
-                nextSpaceDiv.classList.add('slide');
-                nextImg1.classList.add('slide');
-
-                // After animation (2s), remove old pair and space div
-                setTimeout(() => {
-                    currentImg2.remove();
-                    currentSpaceDiv.remove();
-                    currentImg1.remove();
-                    // Next pair and space div are now in position, trigger next cycle
-                    animateImagePair(nextIndex);
-                }, 2000); // Match animation duration
-            }, 4000); // Display current pair for 4 seconds
-        }
-
-        // Start the animation with the first pair
-        document.addEventListener('DOMContentLoaded', () => {
-            animateImagePair(0); // Start with slide1-pic1.jpg (image1) and slide1-pic2.jpg (image2)
-        });
     </script>
 </body>
 </html>
