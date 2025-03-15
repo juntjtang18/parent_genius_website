@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/jpeg" th:href="@{/images/gpa-logo.jpg}" /> <!-- Favicon -->
     <title th:text="#{edit-article.text1}">Edit Article | Genius Parenting AI</title>
-    <link rel="icon" type="image/jpeg" th:href="@{/images/gpa-logo.jpg}" /> <!-- Favicon -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-bs5.min.css" rel="stylesheet" />
@@ -83,7 +82,10 @@
                     const response = await fetch(`${STRAPI_URL}articles/${ARTICLE_ID}?populate=*`, {
                         headers: { 'Authorization': AUTH_TOKEN }
                     });
-                    if (!response.ok) throw new Error(`Failed to fetch article: ${response.status}`);
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(`Unable to load article (Status ${response.status}): ${errorText || 'Server error'}`);
+                    }
                     const data = await response.json();
                     const article = data.data;
 
@@ -104,7 +106,7 @@
                     $('.article-back-btn').attr('href', backUrl);
                 } catch (error) {
                     console.error('Error loading article:', error);
-                    $('#error').text('Failed to load article: ' + error.message).show();
+                    $('#error').text(`Error loading article: ${error.message}. Please check your connection or try again later.`).show();
                 }
             }
 
@@ -114,8 +116,13 @@
                 const sortScore = parseInt($('#article-sortScore').val()) || 0;
                 const iconImageFile = $('#article-icon-image')[0].files[0];
 
+                // Client-side validation
                 if (!title) {
-                    $('#error').text('Title is required!').show();
+                    $('#error').text('Please enter a title for the article.').show();
+                    return;
+                }
+                if (!content || content === '<p><br></p>') {
+                    $('#error').text('Please provide some content for the article.').show();
                     return;
                 }
 
@@ -123,6 +130,7 @@
                 let iconImageId = null;
 
                 try {
+                    // Handle image upload if a new file is selected
                     if (iconImageFile) {
                         const formData = new FormData();
                         formData.append('files', iconImageFile);
@@ -131,11 +139,22 @@
                             headers: { 'Authorization': AUTH_TOKEN },
                             body: formData
                         });
-                        if (!uploadResponse.ok) throw new Error('Image upload failed');
+                        if (!uploadResponse.ok) {
+                            const errorData = await uploadResponse.json().catch(() => null);
+                            const errorMessage = errorData?.error?.message || (await uploadResponse.text()) || 'Unknown error';
+                            if (uploadResponse.status === 413) {
+                                throw new Error('The image file is too large. Please upload a smaller file (e.g., under 10MB).');
+                            }
+                            throw new Error(`Image upload failed (Status ${uploadResponse.status}): ${errorMessage}`);
+                        }
                         const uploadData = await uploadResponse.json();
+                        if (!uploadData[0]?.id) {
+                            throw new Error('Image upload succeeded but no ID was returned.');
+                        }
                         iconImageId = uploadData[0].id;
                     }
 
+                    // Update the article
                     const response = await fetch(`${STRAPI_URL}articles/${ARTICLE_ID}`, {
                         method: 'PUT',
                         headers: {
@@ -148,21 +167,58 @@
                                 content: content,
                                 functions: functionIds,
                                 sortScore: sortScore,
-                                icon_image: iconImageId || null, // Use new ID if uploaded, else keep existing or null
+                                icon_image: iconImageId || null,
                                 published: true
                             }
                         })
                     });
 
                     if (!response.ok) {
-                        const errorText = await response.text();
-                        throw new Error(`Failed to update article: ${response.status} - ${errorText}`);
+                        const errorData = await response.json().catch(() => null);
+                        const errorMessage = errorData?.error?.message || (await response.text()) || 'Unknown server error';
+                        switch (response.status) {
+                            case 400:
+                                throw new Error(`Invalid data provided: ${errorMessage}. Please check all fields and try again.`);
+                            case 401:
+                            case 403:
+                                throw new Error(`Authentication error: ${errorMessage}. Please log in again or contact support.`);
+                            case 404:
+                                throw new Error(`Article not found: ${errorMessage}. It may have been deleted.`);
+                            case 413:
+                                throw new Error(`Payload too large: ${errorMessage}. Please reduce the content size or image file and try again.`);
+                            case 422:
+                                throw new Error(`Data validation failed: ${errorMessage}. Please ensure all fields are correctly formatted.`);
+                            case 429:
+                                throw new Error(`Too many requests: ${errorMessage}. Please wait a moment and try again.`);
+                            case 500:
+                                throw new Error(`Server error: ${errorMessage}. Please try again later or contact support.`);
+                            default:
+                                throw new Error(`Unexpected error (Status ${response.status}): ${errorMessage}. Please try again or contact support.`);
+                        }
                     }
 
+                    // Success: Redirect to article page
                     window.location.href = `/article?article=${ARTICLE_ID}` + (functionId ? `&function=${functionId}` : '');
                 } catch (error) {
                     console.error('Error updating article:', error);
-                    $('#error').text('Failed to update article: ' + error.message).show();
+                    let userMessage = 'Unable to save article: ';
+                    
+                    // Customize error message based on context
+                    if (error.message.includes('Image upload failed')) {
+                        userMessage += error.message; // Already includes specific details
+                    } else if (error.message.includes('Payload too large')) {
+                        userMessage += 'The request size exceeds the server limit. Try using a smaller image or shorter content.';
+                    } else if (error.message.includes('Too many requests')) {
+                        userMessage += 'You’ve hit a rate limit. Please wait a few minutes and try again.';
+                    } else if (error.message.includes('Data validation failed')) {
+                        userMessage += 'There’s an issue with the data format. Check the sort score or content for errors.';
+                    } else if (error.message.includes('network')) {
+                        userMessage += 'Network issue detected. Please check your internet connection and try again.';
+                    } else {
+                        userMessage += `${error.message}. Please try again or contact support if the issue persists.`;
+                    }
+
+                    $('#error').text(userMessage).show();
                 }
             });
 
