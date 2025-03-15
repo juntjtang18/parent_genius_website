@@ -91,6 +91,7 @@
             max-width: 100%;
             object-fit: cover;
             margin-bottom: 10px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for hover */
         }
         /* Specific styling for slide1 images */
         .slide1-image {
@@ -109,6 +110,7 @@
         .pgai-feature-description {
             text-align: center;
             margin: 0;
+            transition: text-shadow 0.3s ease; /* Smooth transition for text shadow on hover */
         }
         .pgai-feature-description strong {
             display: block;
@@ -178,6 +180,14 @@
             height: 400px; /* Fixed height to occupy space */
             margin: 0 auto; /* Center the container */
             overflow: hidden; /* Ensure only the window is visible */
+        }
+        /* Hover effects for slide2 */
+        #slide2 .col-12.col-md-4:hover .pgai-slide-image {
+            transform: scale(1.05); /* Slight zoom effect */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Add shadow on hover */
+        }
+        #slide2 .col-12.col-md-4:hover .pgai-feature-description {
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Add shadow to text on hover */
         }
     </style>
 </head>
@@ -324,29 +334,30 @@
                 quote.classList.add('fly-out');
             }
 
-            // Wait for fly-out animation to complete (2s) before updating
+            // Simultaneously add new quotes with fly-in animation
+            const shuffledQuotes = [...quotes].sort(() => Math.random() - 0.5);
+            const selectedQuotes = shuffledQuotes.slice(0, 3);
+
+            selectedQuotes.forEach((quote, index) => {
+                const quoteElement = document.createElement('div');
+                quoteElement.className = 'pgai-quote-box fly-in';
+                const { x, y } = getRandomDirection();
+                quoteElement.style.setProperty('--fly-in-x', `${-x}vw`); // Opposite direction for fly-in
+                quoteElement.style.setProperty('--fly-in-y', `${-y}vw`);
+                quoteElement.innerHTML = `<p class="pgai-testimonial-text">${quote}</p>`;
+                quoteContainer.appendChild(quoteElement);
+
+                // Remove fly-in class after animation to reset
+                setTimeout(() => quoteElement.classList.remove('fly-in'), 2000);
+            });
+
+            // After 2 seconds (animation duration), remove the old quotes that flew out
             setTimeout(() => {
-                // Clear current quotes
-                quoteContainer.innerHTML = '';
-
-                // Shuffle and select 3 random quotes
-                const shuffledQuotes = [...quotes].sort(() => Math.random() - 0.5);
-                const selectedQuotes = shuffledQuotes.slice(0, 3);
-
-                // Display the selected quotes with fly-in animation
-                selectedQuotes.forEach((quote, index) => {
-                    const quoteElement = document.createElement('div');
-                    quoteElement.className = 'pgai-quote-box fly-in';
-                    const { x, y } = getRandomDirection();
-                    quoteElement.style.setProperty('--fly-in-x', `${-x}vw`); // Opposite direction for fly-in
-                    quoteElement.style.setProperty('--fly-in-y', `${-y}vw`);
-                    quoteElement.innerHTML = `<p class="pgai-testimonial-text">${quote}</p>`;
-                    quoteContainer.appendChild(quoteElement);
-
-                    // Remove fly-in class after animation to reset
-                    setTimeout(() => quoteElement.classList.remove('fly-in'), 2000);
-                });
-            }, 2000); // Match the fly-out animation duration (2s)
+                const quotesToRemove = quoteContainer.getElementsByClassName('fly-out');
+                while (quotesToRemove.length > 0) {
+                    quotesToRemove[0].remove();
+                }
+            }, 2000); // Match animation duration
         }
 
         // Initial display of quotes (slide4)
@@ -367,8 +378,8 @@
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     if (!animationInterval) {
-                        shuffleQuotes();
-                        animationInterval = setInterval(shuffleQuotes, 10000); // 2s fly-out + 2s fly-in + 6s rest
+                        shuffleQuotes(); // Initial call
+                        animationInterval = setInterval(shuffleQuotes, 8000); // 2s transition + 6s static = 8s total
                     }
                 } else {
                     if (animationInterval) {
