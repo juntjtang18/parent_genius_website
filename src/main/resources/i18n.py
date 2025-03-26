@@ -8,59 +8,49 @@ def process_html_file(file_path, properties_file, is_first_file):
         html_content = infile.read()
 
     # Regular expression to find all th:text="#{key}" messages, even in nested elements
-    # This will capture th:text="#{key}" and extract the key and message
     pattern = re.compile(r'th:text="#\{([^}]+)\}"[^>]*>(.*?)</.*?>|th:text="#\{([^}]+)\}"[^>]*>([^<]+)<')
     matches = pattern.findall(html_content)
 
-    # If no valid matches, return and print a message
-    if not matches:
-        print(f"Skipping {file_path}: No th:text=#{'{}'} found.")  # Escape curly braces
-        return
+    written_pairs = 0
+    if matches:
+        mode = 'w' if is_first_file else 'a'
+        with codecs.open(properties_file, mode, 'utf-8') as prop_file:
+            for match in matches:
+                key = match[0] or match[2]  # Extract key
+                message = match[1] or match[3]  # Extract message
+                message = ' '.join(message.strip().splitlines())  # Convert multi-line to single-line
+                
+                prop_file.write(f"{key}={message}\n")
+                written_pairs += 1
 
-    # Open the properties file in 'a' (append) mode for subsequent files, 'w' (overwrite) for the first file
-    mode = 'w' if is_first_file else 'a'
-    with codecs.open(properties_file, mode, 'utf-8') as prop_file:
-        for match in matches:
-            # The regex will return either the key or the text, check both possibilities
-            key = match[0] or match[2]  # key is in the first or third group
-            message = match[1] or match[3]  # message is in the second or fourth group
+    return file_path, written_pairs  # Return file path and count of extracted messages
 
-            # Strip leading and trailing whitespace from the message
-            message = message.strip()
-
-            # Write the key-message pair to the properties file
-            prop_file.write(f"{key}={message}\n")
-            # Print the key-message pair that is being written
-            print(f"Key-Message Pair Written: {key}={message}")
-
-    print(f"Processed: {file_path}")
-    print(f"Messages saved to: {properties_file}")
-
-# Function to process all HTML files in a directory and its subdirectories
+# Function to process all HTML files in a directory
 def process_directory(directory, properties_file):
-    is_first_file = True  # Flag to check if it's the first file being processed
+    is_first_file = True
+    results = []
 
     for root, _, files in os.walk(directory):
         for file in files:
             if file.endswith('.html'):
                 file_path = os.path.join(root, file)
-                print(f"Processing HTML file: {file_path}")
-                process_html_file(file_path, properties_file, is_first_file)
-                is_first_file = False  # After processing the first file, switch to append mode
+                result = process_html_file(file_path, properties_file, is_first_file)
+                results.append(result)
+                is_first_file = False
+
+    return results
 
 if __name__ == '__main__':
-    # --- USER CONFIGURATION ---
-    # Start from the src/main/resources directory
-    base_dir = os.getcwd()  # Current working directory should be <project_root>/src/main/resources
-    templates_directory = os.path.join(base_dir, 'templates')  # Path to your templates folder
-    properties_file = os.path.join(base_dir, 'messages', 'messages.properties')  # Path to your messages properties file
-    # --------------------------
+    base_dir = os.getcwd()
+    templates_directory = os.path.join(base_dir, 'templates')
+    properties_file = os.path.join(base_dir, 'messages', 'messages.properties')
 
-    # Ensure the 'messages' directory exists, create it if not
-    messages_dir = os.path.dirname(properties_file)
-    if not os.path.exists(messages_dir):
-        os.makedirs(messages_dir)
+    # Ensure the messages directory exists
+    os.makedirs(os.path.dirname(properties_file), exist_ok=True)
 
-    # Start processing directly from the templates directory
-    process_directory(templates_directory, properties_file)
-    print("✅ Extraction completed, key-message pairs saved to properties file.")
+    # Process files and collect results
+    results = process_directory(templates_directory, properties_file)
+
+    # Output the list of files and message counts, including files with zero messages
+    for file_path, count in results:
+        print(f"{file_path}: {count}")

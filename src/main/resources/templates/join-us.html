@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{joinus.title}">Join Us - Parent Genius AI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link th:href="@{/css/style.css}" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+    <style>
+        .joinus-header {
+            text-align: center;
+            padding: 50px 20px;
+        }
+        .joinus-header-title {
+            font-size: 48px;
+            font-weight: bold;
+        }
+        .joinus-header-description {
+            font-size: 20px;
+            color: #555;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .joinus-job-container {
+            margin: 30px auto;
+            padding: 30px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+            max-width: 900px;
+        }
+        .joinus-job-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        .joinus-job-description {
+            font-size: 18px;
+            margin-top: 10px;
+        }
+        .joinus-apply-section {
+            text-align: center;
+            padding: 40px 20px;
+            background: #ff6f61;
+            color: white;
+            border-radius: 8px;
+            max-width: 800px;
+            margin: 50px auto;
+        }
+        .joinus-apply-section a {
+            color: white;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <section class="joinus-header">
+        <h2 class="joinus-header-title" th:text="#{joinus.title1}">Join Us!</h2>
+        <p class="joinus-header-description" th:text="#{joinus.description}">
+            At Parent Genius AI, we are building the future of parenting support. 
+            We value innovation, transparency, and collaboration. 
+            Join our team and help shape a brighter future for families worldwide!
+        </p>
+    </section>
+
+    <!-- Job Listings -->
+    <div class="container">
+        <div class="joinus-job-container">
+            <div class="joinus-job-title" th:text="#{joinus.uiux.title}">UI/UX Designer</div>
+            <p class="joinus-job-description" th:text="#{joinus.uiux.description1}">
+                We are looking for a creative UI/UX designer who can craft intuitive and visually appealing user experiences for our platform.
+            </p>
+            <p class="joinus-job-description" th:text="#{joinus.uiux.description2}">Responsibilities:</p>
+            <ul>
+                <li th:text="#{joinus.uiux.responsibility1}">Design and prototype user-friendly interfaces for web and mobile applications.</li>
+                <li th:text="#{joinus.uiux.responsibility2}">Collaborate with developers and stakeholders to ensure a seamless user experience.</li>
+                <li th:text="#{joinus.uiux.responsibility3}">Conduct user research and usability testing to enhance product design.</li>
+            </ul>
+            <p class="joinus-job-description"><strong th:text="#{joinus.uiux.requirements}">Requirements:</strong></p>
+            <ul>
+                <li th:text="#{joinus.uiux.requirement1}">2+ years of experience in UI/UX design.</li>
+                <li th:text="#{joinus.uiux.requirement2}">Proficiency in Figma, Adobe XD, or similar tools.</li>
+                <li th:text="#{joinus.uiux.requirement3}">Understanding of user-centered design principles.</li>
+            </ul>
+        </div>
+
+        <div class="joinus-job-container">
+            <div class="joinus-job-title" th:text="#{joinus.education.title}">Children Education Expert</div>
+            <p class="joinus-job-description" th:text="#{joinus.education.description1}">
+                We are looking for a passionate expert in children's education to help us develop evidence-based parenting content.
+            </p>
+            <p class="joinus-job-description" th:text="#{joinus.education.description2}">Responsibilities:</p>
+            <ul>
+                <li th:text="#{joinus.education.responsibility1}">Create engaging, research-backed parenting resources.</li>
+                <li th:text="#{joinus.education.responsibility2}">Collaborate with AI engineers to enhance educational recommendations.</li>
+                <li th:text="#{joinus.education.responsibility3}">Advise on child psychology and developmental best practices.</li>
+            </ul>
+            <p class="joinus-job-description"><strong th:text="#{joinus.education.requirements}">Requirements:</strong></p>
+            <ul>
+                <li th:text="#{joinus.education.requirement1}">Background in child development, education, or psychology.</li>
+                <li th:text="#{joinus.education.requirement2}">Experience in curriculum design or early childhood education.</li>
+                <li th:text="#{joinus.education.requirement3}">Strong communication and writing skills.</li>
+            </ul>
+        </div>
+    </div>
+
+	<!-- Application Info -->
+	<div class="joinus-apply-section">
+	    <h3 th:text="#{joinus.apply.title}">How to Apply</h3>
+	    <p th:text="#{joinus.apply.description}">
+	        Interested in joining our mission? Send your resume and a short introduction to  
+	        <a href="mailto:support@geniusParentingAI.ca">support@geniusParentingAI.ca</a>.  
+	        We look forward to hearing from you!
+	    </p>
+	    <p><strong th:text="#{joinus.company.name}">Company:</strong> GNM399 Ventures Corp.</p>
+	    <p><strong th:text="#{joinus.company.website}">Website:</strong>  
+	        <a href="https://www.geniusParentingAI.ca" target="_blank">www.geniusParentingAI.ca</a>
+	    </p>
+	    <p><strong th:text="#{joinus.company.location}">Location:</strong> 2112 W Broadway Unit 208,  
+	        Vancouver, BC, V6K 2C8, Canada
+	    </p>
+	    <p><strong th:text="#{joinus.company.workemail}">Work Email:</strong>  
+	        <a href="mailto:support@geniusParentingAI.ca">support@geniusParentingAI.ca</a>
+	    </p>
+	</div>
+
+
+    <!-- Include Chatbot -->
+    <div th:replace="~{fragments/chatbot :: chatbot}"></div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

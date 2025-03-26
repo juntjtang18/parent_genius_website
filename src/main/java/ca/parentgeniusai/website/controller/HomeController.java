@@ -70,4 +70,15 @@ public class HomeController {
     public String privacyPolicy() {
         return "privacy-policy";
     }
+    
+    @GetMapping("/term-of-service")
+    public String termsOfService() {
+        return "term-of-service";
+    }
+
+    @GetMapping("/join-us")
+    public String joinUs() {
+    	return "join-us";    
+    }
+    
 }

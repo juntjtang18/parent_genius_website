@@ -1,7 +1,7 @@
 <!-- fragments/chatbot.html -->
 <div xmlns:th="http://www.thymeleaf.org" th:fragment="chatbot">
     <!-- Floating Chatbot Icon with Popup -->
-    <div class="chatbot-container">
+    <div class="chatbot-container" id="chatbot-container">
         <img src="images/chatbot03.png" alt="Chatbot" class="chatbot-icon" id="chatbot-icon">
         <span class="chatbot-popup">What can I help you?</span>
     </div>
@@ -26,8 +26,8 @@
         /* Chatbot Container for relative positioning */
         .chatbot-container {
             position: fixed;
-            bottom: 150px;
-            right: 100px;
+            bottom: 10vh; /* 10% of viewport height from bottom */
+            right: 5vw; /* 5% of viewport width from right */
             z-index: 1000;
         }
 
@@ -36,21 +36,19 @@
             width: 60px;
             height: 60px;
             cursor: pointer;
-            transition: transform 0.3s ease; /* Smooth hover animation */
+            transition: transform 0.3s ease;
         }
 
-        /* Hover effect on icon */
         .chatbot-icon:hover {
-            transform: scale(1.1); /* Slight zoom on hover */
+            transform: scale(1.1);
         }
 
-        /* Popup text */
         .chatbot-popup {
-            display: none; /* Hidden by default */
+            display: none;
             position: absolute;
-            bottom: 70px; /* Position above the icon */
+            bottom: 70px;
             right: 0;
-            background-color: #4A90E2; /* Blue background */
+            background-color: #4A90E2;
             color: white;
             padding: 8px 12px;
             border-radius: 5px;
@@ -60,7 +58,6 @@
             z-index: 1001;
         }
 
-        /* Show popup on hover */
         .chatbot-container:hover .chatbot-popup {
             display: block;
         }
@@ -69,10 +66,10 @@
         .chat-modal {
             display: none;
             position: fixed;
-            bottom: 210px;
-            right: 160px;
+            bottom: 15vh; /* 15% of viewport height from bottom */
+            right: 8vw; /* 8% of viewport width from right */
             width: 600px;
-            height: 600px;
+            max-height: 80vh;
             background-color: rgba(240, 240, 240, 0.95);
             border: 1px solid #ccc;
             border-radius: 10px;
@@ -170,19 +167,55 @@
         .chat-footer button:hover {
             background-color: #0056b3;
         }
+
+        /* Media Queries for Smaller Screens */
+        @media (max-width: 768px) {
+            .chatbot-container {
+                bottom: 5vh;
+                right: 3vw;
+            }
+            .chat-modal {
+                bottom: 10vh;
+                right: 3vw;
+                width: 90vw; /* Take up most of the screen width */
+            }
+            .chatbot-icon {
+                width: 50px;
+                height: 50px;
+            }
+        }
     </style>
 
     <!-- Chatbot JavaScript -->
     <script th:inline="javascript">
         document.addEventListener('DOMContentLoaded', () => {
             const chatbotIcon = document.getElementById('chatbot-icon');
+            const chatbotContainer = document.getElementById('chatbot-container');
             const chatModal = document.getElementById('chat-modal');
             const closeModal = document.getElementById('close-modal');
             const chatBody = document.getElementById('chat-body');
             const chatInput = document.getElementById('chat-input');
             const sendBtn = document.getElementById('send-btn');
 
+            // Function to adjust chat height and position
+            function adjustChatLayout() {
+                const viewportHeight = window.innerHeight;
+                const viewportWidth = window.innerWidth;
+                const maxHeight = viewportHeight * 0.8;
+                const minHeight = 300;
+                const desiredHeight = Math.max(minHeight, Math.min(maxHeight, 600));
+                chatModal.style.height = `${desiredHeight}px`;
+
+                // Optional: Fine-tune position dynamically if needed
+                if (viewportWidth < 768) {
+                    chatModal.style.width = '90vw'; // Match media query
+                } else {
+                    chatModal.style.width = '600px'; // Default width
+                }
+            }
+
             chatbotIcon.addEventListener('click', () => {
+                adjustChatLayout();
                 chatModal.style.display = 'flex';
                 if (!chatBody.querySelector('.chat-message')) {
                     addMessage('bot', 'Hello! How can I assist you today?');
@@ -197,6 +230,9 @@
             chatInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') sendMessage();
             });
+
+            // Adjust layout on window resize
+            window.addEventListener('resize', adjustChatLayout);
 
             async function sendMessage() {
                 const message = chatInput.value.trim();
