@@ -1,19 +1,30 @@
 package ca.parentgeniusai.website;
 
-import java.util.Locale;
-
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.web.servlet.LocaleResolver;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
-import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 @SpringBootApplication
 public class WebsiteApplication {
+
+    @Autowired
+    private DataSource dataSource;
+
+    @PostConstruct
+    public void testConnection() {
+        try (Connection conn = dataSource.getConnection()) {
+            System.out.println("Connection successful!");
+        } catch (SQLException e) {
+            System.err.println("Connection failed: " + e.getMessage());
+        }
+    }
+
     public static void main(String[] args) {
         SpringApplication.run(WebsiteApplication.class, args);
+        System.out.println("SpringApplication.run(...) finished.\n");
     }
-    
 }

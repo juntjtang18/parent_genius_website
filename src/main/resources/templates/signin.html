@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="#{login.page.title}">Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link th:href="@{/css/style.css}" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            background-color: #f5f5f7;
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .pga-login-container {
+            width: 100%;
+            max-width: 420px;
+            margin: auto;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .pga-login-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+        .pga-form-control {
+            border-radius: 8px;
+            padding: 14px;
+            font-size: 16px;
+            width: 100%;
+            border: 1px solid #d2d2d7;
+        }
+        .pga-btn-primary {
+            background-color: #0071e3;
+            border: none;
+            border-radius: 8px;
+            padding: 14px;
+            width: 100%;
+            font-size: 18px;
+            color: #fff;
+            cursor: pointer;
+            margin-top: 12px;
+        }
+        .pga-btn-primary:hover {
+            background-color: #005bb5;
+        }
+        .pga-signup-link {
+            color: #0071e3;
+            text-decoration: none;
+        }
+        .pga-signup-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="pga-login-container">
+        <h2 class="pga-login-title">Sign In</h2>
+        <form th:action="@{/do-login}" method="post">
+            <input type="hidden" name="redirect" th:value="${referer}">
+            <div class="mb-3">
+                <input type="email" class="pga-form-control" id="pga-login-email" name="username" placeholder="Enter your email" required aria-label="Email">
+            </div>
+            <div class="mb-3">
+                <input type="password" class="pga-form-control" id="pga-login-password" name="password" placeholder="Enter your password" required aria-label="Password">
+            </div>
+            <div th:if="${error}" class="alert alert-danger">Invalid email or password</div>
+            <button type="submit" class="pga-btn-primary">Sign In</button>
+        </form>
+        <p class="mt-4">Don’t have an account? <a href="/signup" class="pga-signup-link">Sign Up</a></p>
+    </div>
+
+    <footer class="mt-auto text-center py-3">
+        <p>© 2025 Parent Genius AI</p>
+    </footer>
+</body>
+</html>
