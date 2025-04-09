@@ -20,7 +20,9 @@ import org.slf4j.LoggerFactory;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 public class StrapiAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
@@ -51,36 +53,70 @@ public class StrapiAuthenticationFilter extends AbstractAuthenticationProcessing
         }
 
         logger.debug("Attempting Strapi authentication for email: " + email);
-        UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(email, password);
-        Authentication auth = getAuthenticationManager().authenticate(authRequest);
 
-        // Fetch username from Strapi
-        String jwt = (String) auth.getDetails();
-        String meUrl = strapiRootUrl + "api/users/me";
+        // Step 1: Authenticate with Strapi /auth/local
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        String body = String.format("{\"identifier\":\"%s\",\"password\":\"%s\"}", email, password);
+        HttpEntity<String> entity = new HttpEntity<>(body, headers);
+
+        Map<String, Object> strapiResponse;
+        try {
+            strapiResponse = restTemplate.exchange(
+                strapiRootUrl + "api/auth/local", HttpMethod.POST, entity, Map.class
+            ).getBody();
+            logger.debug("Strapi /auth/local response: " + strapiResponse);
+        } catch (Exception e) {
+            logger.error("Strapi authentication failed: " + e.getMessage());
+            throw new AuthenticationException("Authentication failed: " + e.getMessage()) {};
+        }
+
+        if (strapiResponse == null || !strapiResponse.containsKey("jwt")) {
+            throw new AuthenticationException("No JWT in Strapi response") {};
+        }
+
+        String jwt = (String) strapiResponse.get("jwt");
+        Map<String, Object> user = (Map<String, Object>) strapiResponse.get("user");
+        String username = user != null && user.containsKey("username") ? (String) user.get("username") : email;
+
+        // Step 2: Fetch role from /users/me
+        String roleName = "AUTHENTICATED"; // Default to Strapi's "Authenticated" role
+        String meUrl = strapiRootUrl + "api/users/me?populate=role";
         HttpHeaders authHeaders = new HttpHeaders();
         authHeaders.setBearerAuth(jwt);
         HttpEntity<String> authEntity = new HttpEntity<>(authHeaders);
-        Map<String, Object> meResponse;
-        String username;
         try {
-            meResponse = restTemplate.exchange(meUrl, HttpMethod.GET, authEntity, Map.class).getBody();
-            username = (String) meResponse.get("username");
-            logger.debug("Fetched username: " + username);
+            Map<String, Object> meResponse = restTemplate.exchange(meUrl, HttpMethod.GET, authEntity, Map.class).getBody();
+            logger.debug("Strapi /users/me response: " + meResponse);
+            if (meResponse != null && meResponse.containsKey("role")) {
+                Map<String, Object> role = (Map<String, Object>) meResponse.get("role");
+                if (role != null && role.containsKey("name")) {
+                    roleName = (String) role.get("name"); // e.g., "editor"
+                } else {
+                    logger.warn("Role object from /users/me found but no 'name' field: " + role);
+                }
+            } else {
+                logger.warn("No 'role' field in /users/me response: " + meResponse);
+            }
         } catch (Exception e) {
-            logger.warn("Failed to fetch username, using email as fallback: " + e.getMessage());
-            username = email; // Fallback to email if fetch fails
+            logger.warn("Failed to fetch role from /users/me, defaulting to 'AUTHENTICATED': " + e.getMessage());
         }
 
-        // Set username as principal
+        // Step 3: Map Strapi role to Spring Security authority
+        String authority = "ROLE_" + roleName.toUpperCase().replace(" ", "_"); // e.g., "ROLE_EDITOR"
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(authority));
+
+        // Step 4: Create and set authentication with correct role
         UsernamePasswordAuthenticationToken newAuth = new UsernamePasswordAuthenticationToken(
-            username, null, Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))
+            username, null, authorities
         );
         newAuth.setDetails(jwt);
         SecurityContextHolder.getContext().setAuthentication(newAuth);
 
         HttpSession session = request.getSession(true);
         session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
-        logger.debug("Authentication set with username " + username + " and session ID: " + session.getId());
+        logger.debug("Authentication set with username " + username + ", role: " + roleName + ", and session ID: " + session.getId());
 
         return newAuth;
     }
@@ -105,8 +141,30 @@ public class StrapiAuthenticationFilter extends AbstractAuthenticationProcessing
         }
 
         String jwt = (String) strapiResponse.get("jwt");
+        Map<String, Object> user = (Map<String, Object>) strapiResponse.get("user");
+        String authenticatedUsername = user != null && user.containsKey("username") ? (String) user.get("username") : username;
+
+        // Fetch role from /users/me
+        String roleName = "AUTHENTICATED"; // Default to Strapi's "Authenticated" role
+        String meUrl = strapiRootUrl + "api/users/me?populate=role";
+        HttpHeaders authHeaders = new HttpHeaders();
+        authHeaders.setBearerAuth(jwt);
+        HttpEntity<String> authEntity = new HttpEntity<>(authHeaders);
+        try {
+            Map<String, Object> meResponse = restTemplate.exchange(meUrl, HttpMethod.GET, authEntity, Map.class).getBody();
+            if (meResponse != null && meResponse.containsKey("role")) {
+                Map<String, Object> role = (Map<String, Object>) meResponse.get("role");
+                if (role != null && role.containsKey("name")) {
+                    roleName = (String) role.get("name");
+                }
+            }
+        } catch (Exception e) {
+            // Log warning but proceed with default role
+        }
+
+        String authority = "ROLE_" + roleName.toUpperCase().replace(" ", "_");
         UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-            username, null, Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))
+            authenticatedUsername, null, Collections.singletonList(new SimpleGrantedAuthority(authority))
         );
         auth.setDetails(jwt);
         return auth;

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -109,7 +109,7 @@
 
     <div id="function-title">
         <h2 id="function-name"></h2>
-        <a th:href="@{/new-article(function=${selectedFunctionId})}" class="add-article-btn">+</a>
+		<a th:href="@{/new-article(function=${selectedFunctionId})}" class="add-article-btn" sec:authorize="hasRole('ROLE_EDITOR')">+</a>
     </div>
     <div id="article-list"></div>
     <div id="loading" class="loading">Loading...</div>

@@ -35,6 +35,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(authz -> authz
                 .requestMatchers("/signin", "/do-login", "/signup", "/css/**", "/images/**", "/").permitAll()
                 .requestMatchers("/protected", "/profile").authenticated()
+                .requestMatchers("/new-article", "/edit-article").hasRole("EDITOR") // Restrict to ROLE_EDITOR
                 .anyRequest().permitAll()
             )
             .formLogin(form -> form
