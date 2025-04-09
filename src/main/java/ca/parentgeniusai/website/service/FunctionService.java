@@ -20,7 +20,7 @@ public class FunctionService {
 	private static final Logger logger = LoggerFactory.getLogger(FunctionService.class);
 	private final RestTemplate restTemplate = new RestTemplate();
 
-    @Value("${strapi.url}")
+    @Value("${strapi.root.url}")
     private String STRAPI_ROOTURL;
 
     @Value("${strapi.auth-token}")
@@ -159,7 +159,7 @@ public class FunctionService {
     // Fetch only functions (for /function-article-list)
     @Cacheable("functions")
     public List<Function> getFunctions() {
-        String functionsUrl = STRAPI_ROOTURL + "functions";
+        String functionsUrl = STRAPI_ROOTURL + "api/functions";
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", AUTH_TOKEN);
         headers.set("Accept", "application/json");
@@ -192,7 +192,7 @@ public class FunctionService {
     // Fetch functions with articles (for /functions)
     @Cacheable("functionsWithArticles")
     public List<Function> getFunctionsWithArticles() {
-        String functionsUrl = STRAPI_ROOTURL + "functions";
+        String functionsUrl = STRAPI_ROOTURL + "api/functions";
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", AUTH_TOKEN);
         headers.set("Accept", "application/json");
@@ -225,7 +225,7 @@ public class FunctionService {
                     funcResp.getAttributes().getIcon_name()
                 );
 
-                String articlesUrl = STRAPI_ROOTURL + "articles?filters[functions][id][$in]=" + func.getId() +
+                String articlesUrl = STRAPI_ROOTURL + "api/articles?filters[functions][id][$in]=" + func.getId() +
                     "&pagination[pageSize]=5&sort[0]=sortScore:desc&populate=icon_image";
                 try {
                     logger.info("Fetching articles for function {}: {}", func.getId(), articlesUrl);

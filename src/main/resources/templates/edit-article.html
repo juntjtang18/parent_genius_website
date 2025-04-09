@@ -69,13 +69,14 @@
         const AUTH_TOKEN = /*[[${strapiToken}]]*/ 'Bearer default-token';
         const ARTICLE_ID = /*[[${articleId}]]*/ null;
 
+        let currentIconImageId = null; // Store the current icon_image ID
+        let functionId = null;
+
         $(document).ready(function() {
             $('#article-content').summernote({
                 height: 400,
                 placeholder: 'Enter article content here...'
             });
-
-            let functionId = null;
 
             async function loadArticle() {
                 try {
@@ -93,9 +94,11 @@
                     $('#article-sortScore').val(article.attributes.sortScore || 0);
                     $('#article-content').summernote('code', article.attributes.content);
 
+                    // Store the current icon_image ID and display the image
                     if (article.attributes.icon_image?.data) {
                         const iconUrl = article.attributes.icon_image.data.attributes.url;
                         $('#current-icon-image').attr('src', iconUrl.startsWith('http') ? iconUrl : `${STRAPI_URL}${iconUrl}`).show();
+                        currentIconImageId = article.attributes.icon_image.data.id; // Save the existing ID
                     }
 
                     functionId = article.attributes.functions?.data?.length > 0 
@@ -127,7 +130,7 @@
                 }
 
                 const functionIds = functionId ? [functionId] : [];
-                let iconImageId = null;
+                let iconImageId = currentIconImageId; // Default to the existing image ID
 
                 try {
                     // Handle image upload if a new file is selected
@@ -151,7 +154,7 @@
                         if (!uploadData[0]?.id) {
                             throw new Error('Image upload succeeded but no ID was returned.');
                         }
-                        iconImageId = uploadData[0].id;
+                        iconImageId = uploadData[0].id; // Update with the new image ID
                     }
 
                     // Update the article
@@ -167,7 +170,7 @@
                                 content: content,
                                 functions: functionIds,
                                 sortScore: sortScore,
-                                icon_image: iconImageId || null,
+                                icon_image: iconImageId, // Use existing or new ID
                                 published: true
                             }
                         })
@@ -205,7 +208,7 @@
                     
                     // Customize error message based on context
                     if (error.message.includes('Image upload failed')) {
-                        userMessage += error.message; // Already includes specific details
+                        userMessage += error.message;
                     } else if (error.message.includes('Payload too large')) {
                         userMessage += 'The request size exceeds the server limit. Try using a smaller image or shorter content.';
                     } else if (error.message.includes('Too many requests')) {

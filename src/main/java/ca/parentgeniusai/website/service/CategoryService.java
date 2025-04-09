@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class CategoryService {
     private final RestTemplate restTemplate = new RestTemplate();
     
-    @Value("${strapi.url}")
+    @Value("${strapi.root.url}")
     private String STRAPI_ROOTURL;
     @Value("${strapi.auth-token}")
     private String AUTH_TOKEN;
@@ -98,7 +98,7 @@ public class CategoryService {
 
         try {
             ResponseEntity<ApiResponse> response = restTemplate.exchange(
-                STRAPI_ROOTURL + "categories?sort[0]=order:asc", // Sort by order ascending
+                STRAPI_ROOTURL + "api/categories?sort[0]=order:asc", // Sort by order ascending
                 HttpMethod.GET,
                 entity,
                 ApiResponse.class

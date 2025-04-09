@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class RestAPIController {
-	@Value("${strapi.url}")
+	@Value("${strapi.root.url}")
 	private String strapiRootUrl;
 	
 	@Value("${strapi.auth-token}")

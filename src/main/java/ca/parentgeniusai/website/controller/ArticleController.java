@@ -2,6 +2,7 @@ package ca.parentgeniusai.website.controller;
 
 import ca.parentgeniusai.website.model.Function;
 import ca.parentgeniusai.website.service.FunctionService;
+import jakarta.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,14 +20,21 @@ public class ArticleController {
     private final FunctionService functionService;
     private static final Logger logger = LoggerFactory.getLogger(ArticleController.class);
 
-    @Value("${strapi.url:http://localhost:8081/api/}")
-    private String strapiUrl;
-
+    @Value("${strapi.root.url:http://localhost:8081/}")
+    private String strapiRootUrl;
+    private String strapiApiUrl;
+    
     @Value("${strapi.auth-token}")
     private String strapiToken;
     
     public ArticleController(FunctionService functionService) {
         this.functionService = functionService;
+    }
+
+    @PostConstruct
+    public void init() {
+        strapiApiUrl = strapiRootUrl + "api/";
+        logger.info("strapiApiUrl initialized to {}", strapiApiUrl);
     }
 
     @GetMapping("/article")
@@ -35,8 +43,9 @@ public class ArticleController {
             Model model) {
         logger.info("/article called with articleId={}", articleId);
         model.addAttribute("articleId", articleId);
-        model.addAttribute("strapiUrl", strapiUrl);
+        model.addAttribute("strapiUrl", strapiApiUrl);
         model.addAttribute("strapiToken", strapiToken);
+        logger.info("strapiApiUrl={}", strapiApiUrl);
         return "article";
     }
     
@@ -51,8 +60,9 @@ public class ArticleController {
         model.addAttribute("functions", functions != null ? functions : Collections.emptyList());
         model.addAttribute("selectedFunctionId", selectedFunctionId);
         model.addAttribute("selectedArticleId", articleId);
-        model.addAttribute("strapiUrl", strapiUrl);
+        model.addAttribute("strapiUrl", strapiApiUrl);
         model.addAttribute("strapiToken", strapiToken);
+        logger.info("strapiApiUrl={}", strapiApiUrl);
         return "function-article-list";
     }
     
@@ -61,9 +71,10 @@ public class ArticleController {
             @RequestParam("function") String functionId,
             Model model) {
         model.addAttribute("functionId", functionId);
-        model.addAttribute("returnUrl", "/function-article-list?function=" + functionId );
-        model.addAttribute("strapiUrl", strapiUrl);
+        model.addAttribute("returnUrl", "/function-article-list?function=" + functionId);
+        model.addAttribute("strapiUrl", strapiApiUrl);
         model.addAttribute("strapiToken", strapiToken);
+        logger.info("strapiApiUrl={}", strapiApiUrl);
         return "new-article";
     }
 
@@ -73,8 +84,9 @@ public class ArticleController {
             Model model) {
         logger.info("/edit-article called with articleId={}", articleId);
         model.addAttribute("articleId", articleId);
-        model.addAttribute("strapiUrl", strapiUrl);
+        model.addAttribute("strapiUrl", strapiApiUrl);
         model.addAttribute("strapiToken", strapiToken);
+        logger.info("strapiApiUrl={}", strapiApiUrl);
         return "edit-article";
     }
 }
