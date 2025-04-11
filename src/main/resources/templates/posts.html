@@ -21,7 +21,8 @@
         .pgai-note-editable img { max-width: 100%; height: auto; }
         .pgai-summernote-toolbar { display: flex; justify-content: flex-end; }
         .note-statusbar { display: none !important; }
-        .note-editable { min-height: 100px; } /* Updated CSS to match */
+        .note-editable { min-height: 40px; }
+        .pgai-post-item img { max-width: 100%; height: auto; }
     </style>
 </head>
 <body>
@@ -50,7 +51,18 @@
                 return;
             }
 
-            const MIN_HEIGHT = 40; // Adjusted to fit two lines
+            const MIN_HEIGHT = 40;
+            const STRAPI_URL = /*[[${strapiUrl}]]*/ 'http://localhost:8080/api/';
+            const AUTH_TOKEN = /*[[${strapiToken}]]*/ 'Bearer default-token';
+            const CURRENT_USER = /*[[${currentUser}]]*/ 'Anonymous';
+            const POSTS_PER_PAGE = 10;
+            const CACHE_MAX_POSTS = 50;
+
+            let totalPosts = 0;
+            let totalPages = 0;
+            let currentPage = 1;
+            let isLoading = false;
+            let currentUserId = null;
 
             $('#summernote').summernote({
                 height: MIN_HEIGHT,
@@ -107,10 +119,8 @@
                             var scale = editorWidth / this.width;
                             var imgHeight = this.height * scale;
                             $editor.summernote('insertImage', url, function ($image) {
-                                $image.css({
-                                    width: '100%',
-                                    height: 'auto'
-                                });
+                                $image.css({ width: '100%', height: 'auto' });
+                                $image.attr('data-filename', file.name);
                                 measureContentHeight($editable.html(), $editable, (newContentHeight) => {
                                     const newHeight = Math.max(newContentHeight, MIN_HEIGHT);
                                     const currentHeight = $editable.height();
@@ -118,7 +128,6 @@
                                         $editable.height(newHeight);
                                         console.log('Image Upload - Adjusted height to:', newHeight);
                                     }
-                                    URL.revokeObjectURL(url);
                                 });
                             });
                         };
@@ -126,55 +135,222 @@
                 }
             });
 
-            // Mitigate non-passive event listener warnings
             $(document).on('touchstart wheel', '.note-editable', { passive: true }, function () {});
-        });
 
-        function measureContentHeight(htmlContent, $editable, callback) {
-            const hiddenDiv = document.createElement('div');
-            hiddenDiv.style.visibility = 'hidden';
-            hiddenDiv.style.position = 'absolute';
-            hiddenDiv.style.top = '-9999px';
-            hiddenDiv.style.left = '-9999px';
-            hiddenDiv.style.width = $editable.width() + 'px';
-            hiddenDiv.style.padding = '10px';
-            hiddenDiv.style.font = 'inherit';
-            
-            const sanitizedContent = htmlContent.replace(/src="blob:[^"]*"/g, 'src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"');
-            hiddenDiv.innerHTML = sanitizedContent;
-
-            document.body.appendChild(hiddenDiv);
-
-            const images = hiddenDiv.querySelectorAll('img');
-            let totalHeight = hiddenDiv.scrollHeight;
-
-            if (images.length > 0) {
-                const realImages = $editable.find('img');
-                realImages.each((index, realImg) => {
-                    if (realImg.complete && index < images.length) {
-                        const imgHeight = realImg.clientHeight;
-                        totalHeight -= images[index].scrollHeight;
-                        totalHeight += imgHeight;
-                    }
-                });
+            async function fetchCurrentUserId() {
+                const url = `${STRAPI_URL}users/me`;
+                const response = await fetch(url, { headers: { 'Authorization': AUTH_TOKEN } });
+                if (!response.ok) throw new Error('Failed to fetch user ID');
+                const user = await response.json();
+                return user.id;
             }
 
-            document.body.removeChild(hiddenDiv);
-            callback(totalHeight);
-        }
+            async function fetchPosts(page) {
+                const url = `${STRAPI_URL}posts?pagination[page]=${page}&pagination[pageSize]=${POSTS_PER_PAGE}&sort[0]=create_time:desc&populate=users_permissions_user`;
+                console.log(`Fetching: ${url}`);
+                const response = await fetch(url, { headers: { 'Authorization': AUTH_TOKEN } });
+                if (!response.ok) throw new Error(`Fetch failed: ${response.status}`);
+                const data = await response.json();
+                totalPosts = data.meta.pagination.total;
+                totalPages = data.meta.pagination.pageCount;
+                return data.data;
+            }
 
-        function submitPost() {
-            var content = $('#summernote').summernote('code');
-            console.log('Posting content:', content);
-        }
+            function renderPost(post) {
+                const postDiv = document.createElement('div');
+                postDiv.className = 'pgai-post-item';
+                postDiv.dataset.postId = post.id;
+                const username = post.attributes.users_permissions_user?.data?.attributes?.username || 'Anonymous';
+                const content = post.attributes.content || ''; // Raw HTML string from richtext
+                postDiv.innerHTML = `
+                    <p><strong>${username}</strong> <small>${new Date(post.attributes.create_time || post.attributes.createdAt).toLocaleString()}</small></p>
+                    <div>${content}</div>
+                `;
+                return postDiv;
+            }
 
-        function switchTab(tabName) {
-            $('.pgai-post-tab').removeClass('active');
-            $('.pgai-post-tab').filter(function () {
-                return $(this).text().trim().toLowerCase() === tabName;
-            }).addClass('active');
-            console.log('Switched to tab:', tabName);
-        }
+            async function loadPosts(direction = 'initial') {
+                if (isLoading) return;
+                isLoading = true;
+                document.querySelector('.pgai-loading').style.display = 'block';
+
+                const postList = document.querySelector('.pgai-post-list');
+                const scrollPosition = postList.scrollTop;
+
+                try {
+                    let pageToFetch = currentPage;
+                    if (direction === 'initial') {
+                        pageToFetch = 1;
+                        const posts = await fetchPosts(pageToFetch);
+                        postList.innerHTML = '';
+                        posts.forEach(post => postList.appendChild(renderPost(post)));
+                        currentPage = pageToFetch;
+                    } else if (direction === 'up' && currentPage > 1) {
+                        pageToFetch = currentPage - 1;
+                        const posts = await fetchPosts(pageToFetch);
+                        const scrollHeightBefore = postList.scrollHeight;
+                        posts.reverse().forEach(post => {
+                            if (!document.querySelector(`.pgai-post-item[data-post-id="${post.id}"]`)) {
+                                postList.insertBefore(renderPost(post), postList.firstChild);
+                            }
+                        });
+                        currentPage--;
+                        if (scrollHeightBefore !== postList.scrollHeight) {
+                            postList.scrollTop = scrollPosition + (postList.scrollHeight - scrollHeightBefore);
+                        }
+                    } else if (direction === 'down' && currentPage < totalPages) {
+                        pageToFetch = currentPage + 1;
+                        const posts = await fetchPosts(pageToFetch);
+                        posts.forEach(post => {
+                            if (!document.querySelector(`.pgai-post-item[data-post-id="${post.id}"]`)) {
+                                postList.appendChild(renderPost(post));
+                            }
+                        });
+                        currentPage++;
+                        postList.scrollTop = scrollPosition;
+                    } else {
+                        console.log(direction === 'up' ? 'Reached the top' : 'Reached the bottom');
+                        isLoading = false;
+                        document.querySelector('.pgai-loading').style.display = 'none';
+                        return;
+                    }
+
+                    const postElements = postList.querySelectorAll('.pgai-post-item');
+                    if (postElements.length > CACHE_MAX_POSTS) {
+                        if (direction === 'down') {
+                            for (let i = 0; i < postElements.length - CACHE_MAX_POSTS; i++) {
+                                postElements[i].remove();
+                            }
+                        } else if (direction === 'up') {
+                            for (let i = CACHE_MAX_POSTS; i < postElements.length; i++) {
+                                postElements[i].remove();
+                            }
+                        }
+                    }
+
+                } catch (error) {
+                    console.error('Load failed:', error);
+                } finally {
+                    isLoading = false;
+                    document.querySelector('.pgai-loading').style.display = 'none';
+                }
+            }
+
+            function handleScroll() {
+                const postList = document.querySelector('.pgai-post-list');
+                const scrollTop = postList.scrollTop;
+                const windowHeight = postList.clientHeight;
+                const docHeight = postList.scrollHeight;
+
+                if (scrollTop <= 100 && currentPage > 1 && !isLoading) {
+                    console.log('Scrolling up, loading page:', currentPage - 1);
+                    loadPosts('up');
+                } else if (scrollTop + windowHeight >= docHeight - 100 && currentPage < totalPages && !isLoading) {
+                    console.log('Scrolling down, loading page:', currentPage + 1);
+                    loadPosts('down');
+                }
+            }
+
+            async function uploadImage(file) {
+                const formData = new FormData();
+                formData.append('files', file);
+                const response = await fetch(`${STRAPI_URL}upload`, {
+                    method: 'POST',
+                    headers: { 'Authorization': AUTH_TOKEN },
+                    body: formData
+                });
+                if (!response.ok) throw new Error('Image upload failed');
+                const data = await response.json();
+                return data[0].url; // Returns the uploaded image URL (e.g., "https://storage.googleapis.com/...")
+            }
+
+            async function submitPost() {
+                if (!currentUserId) {
+                    currentUserId = await fetchCurrentUserId();
+                }
+                let content = $('#summernote').summernote('code');
+                const $images = $('#summernote').next('.note-editor').find('.note-editable img');
+
+                // Upload images and replace blob URLs with Strapi URLs
+                const imagePromises = Array.from($images).map(async img => {
+                    const blobUrl = img.src;
+                    const filename = img.getAttribute('data-filename') || 'image.jpg';
+                    const blob = await fetch(blobUrl).then(res => res.blob());
+                    const file = new File([blob], filename, { type: blob.type });
+                    const uploadedUrl = await uploadImage(file);
+                    content = content.replace(blobUrl, uploadedUrl); // Use raw uploaded URL
+                });
+
+                await Promise.all(imagePromises);
+
+                const response = await fetch(`${STRAPI_URL}posts`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': AUTH_TOKEN,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        data: {
+                            content: content,
+                            users_permissions_user: currentUserId,
+                            create_time: new Date().toISOString()
+                        }
+                    })
+                });
+
+                if (response.ok) {
+                    $('#summernote').summernote('reset');
+                    loadPosts('initial');
+                } else {
+                    console.error('Post submission failed:', await response.text());
+                }
+            }
+
+            function measureContentHeight(htmlContent, $editable, callback) {
+                const hiddenDiv = document.createElement('div');
+                hiddenDiv.style.visibility = 'hidden';
+                hiddenDiv.style.position = 'absolute';
+                hiddenDiv.style.top = '-9999px';
+                hiddenDiv.style.left = '-9999px';
+                hiddenDiv.style.width = $editable.width() + 'px';
+                hiddenDiv.style.padding = '10px';
+                hiddenDiv.style.font = 'inherit';
+                
+                const sanitizedContent = htmlContent.replace(/src="blob:[^"]*"/g, 'src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"');
+                hiddenDiv.innerHTML = sanitizedContent;
+
+                document.body.appendChild(hiddenDiv);
+
+                const images = hiddenDiv.querySelectorAll('img');
+                let totalHeight = hiddenDiv.scrollHeight;
+
+                if (images.length > 0) {
+                    const realImages = $editable.find('img');
+                    realImages.each((index, realImg) => {
+                        if (realImg.complete && index < images.length) {
+                            const imgHeight = realImg.clientHeight;
+                            totalHeight -= images[index].scrollHeight;
+                            totalHeight += imgHeight;
+                        }
+                    });
+                }
+
+                document.body.removeChild(hiddenDiv);
+                callback(totalHeight);
+            }
+
+            function switchTab(tabName) {
+                $('.pgai-post-tab').removeClass('active');
+                $('.pgai-post-tab').filter(function () {
+                    return $(this).text().trim().toLowerCase() === tabName;
+                }).addClass('active');
+                console.log('Switched to tab:', tabName);
+            }
+
+            loadPosts('initial').then(() => {
+                document.querySelector('.pgai-post-list').addEventListener('scroll', handleScroll);
+            });
+        });
     </script>
 </body>
 </html>
