@@ -48,6 +48,7 @@ public class HomeController {
         return "vision";
     }
     
+    /*
     @GetMapping("/posts")
     public String posts(Model model) {
         // Keep username logic, but auth is handled globally
@@ -58,7 +59,7 @@ public class HomeController {
         }
         return "posts";
     }
-
+	*/
     @GetMapping("/faq")
     public String faq(Model model) {
         // No need for auth parameter or model attribute

@@ -34,30 +34,27 @@ public class SecurityConfig {
             .csrf().disable()
             .authorizeHttpRequests(authz -> authz
                 .requestMatchers("/signin", "/do-login", "/signup", "/css/**", "/images/**", "/").permitAll()
-                .requestMatchers("/protected", "/profile").authenticated()
-                .requestMatchers("/new-article", "/edit-article").hasRole("EDITOR") // Restrict to ROLE_EDITOR
+                .requestMatchers("/protected", "/profile", "/posts").authenticated()
+                .requestMatchers("/new-article", "/edit-article").hasRole("EDITOR")
                 .anyRequest().permitAll()
             )
             .formLogin(form -> form
                 .loginPage("/signin")
                 .loginProcessingUrl("/do-login")
-                .successHandler(new SimpleUrlAuthenticationSuccessHandler("/") {
+                .successHandler(new SimpleUrlAuthenticationSuccessHandler("/") { // Default redirect to "/"
                     @Override
                     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, 
                             Authentication authentication) throws java.io.IOException, jakarta.servlet.ServletException {
                         logger.info("Login successful for user: " + authentication.getName());
-                        logger.debug("Session ID in success handler: " + request.getSession().getId());
-                        super.onAuthenticationSuccess(request, response, authentication);
+                        String redirectUrl = request.getParameter("redirect");
+                        if (redirectUrl != null && !redirectUrl.isEmpty()) {
+                            response.sendRedirect(redirectUrl); // Redirect to the intended URL (e.g., /posts)
+                        } else {
+                            super.onAuthenticationSuccess(request, response, authentication); // Default to "/"
+                        }
                     }
                 })
-                .failureHandler(new SimpleUrlAuthenticationFailureHandler("/signin?error=true") {
-                    @Override
-                    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, 
-                            org.springframework.security.core.AuthenticationException exception) throws java.io.IOException, jakarta.servlet.ServletException {
-                        logger.warn("Login failed: " + exception.getMessage());
-                        super.onAuthenticationFailure(request, response, exception);
-                    }
-                })
+                .failureHandler(new SimpleUrlAuthenticationFailureHandler("/signin?error=true"))
                 .permitAll()
             )
             .logout(logout -> logout
@@ -98,18 +95,15 @@ public class SecurityConfig {
             public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, 
                     Authentication authentication) throws java.io.IOException, jakarta.servlet.ServletException {
                 logger.info("Strapi filter login successful for user: " + authentication.getName());
-                logger.debug("Session ID in filter success handler: " + request.getSession().getId());
-                super.onAuthenticationSuccess(request, response, authentication);
+                String redirectUrl = request.getParameter("redirect");
+                if (redirectUrl != null && !redirectUrl.isEmpty()) {
+                    response.sendRedirect(redirectUrl);
+                } else {
+                    super.onAuthenticationSuccess(request, response, authentication);
+                }
             }
         });
-        filter.setAuthenticationFailureHandler(new SimpleUrlAuthenticationFailureHandler("/signin?error=true") {
-            @Override
-            public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, 
-                    org.springframework.security.core.AuthenticationException exception) throws java.io.IOException, jakarta.servlet.ServletException {
-                logger.warn("Strapi authentication failed: " + exception.getMessage());
-                super.onAuthenticationFailure(request, response, exception);
-            }
-        });
+        filter.setAuthenticationFailureHandler(new SimpleUrlAuthenticationFailureHandler("/signin?error=true"));
         return filter;
     }
 }
