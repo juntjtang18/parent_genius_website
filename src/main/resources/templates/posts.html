@@ -78,6 +78,8 @@
                 postTooltip: document.getElementById('i18n-summernote-tooltip-post').innerText
             };
 
+            console.log('STRAPI_URL initialized:', STRAPI_URL);
+
             let totalPosts = 0;
             let totalPages = 0;
             let currentPage = 1;
@@ -110,11 +112,9 @@
                         measureContentHeight(contents, $editable, (newContentHeight) => {
                             const newHeight = Math.max(newContentHeight, MIN_HEIGHT);
                             const currentHeight = $editable.height();
-
                             console.log('Editor HTML:', contents);
                             console.log('Measured Height:', newContentHeight);
                             console.log('Current Height:', currentHeight);
-
                             if (newHeight !== currentHeight) {
                                 $editable.height(newHeight);
                                 console.log('Adjusted height to:', newHeight);
@@ -159,33 +159,56 @@
 
             async function fetchCurrentUserId() {
                 const url = `${STRAPI_URL}users/me`;
+                console.log('Fetching user ID from:', url);
                 const response = await fetch(url, { headers: { 'Authorization': AUTH_TOKEN } });
                 if (!response.ok) throw new Error('Failed to fetch user ID');
                 const user = await response.json();
+                console.log('Fetched user:', user);
                 return user.id;
             }
 
             async function fetchPosts(page) {
                 const url = `${STRAPI_URL}posts?pagination[page]=${page}&pagination[pageSize]=${POSTS_PER_PAGE}&sort[0]=create_time:desc&populate=users_permissions_user`;
-                console.log(`Fetching: ${url}`);
+                console.log(`Fetching posts from: ${url}`);
                 const response = await fetch(url, { headers: { 'Authorization': AUTH_TOKEN } });
                 if (!response.ok) throw new Error(`Fetch failed: ${response.status}`);
                 const data = await response.json();
+                console.log('Fetched posts data:', data);
+                data.data.forEach(post => {
+                    console.log(`Post ${post.id} content:`, post.attributes.content);
+                });
                 totalPosts = data.meta.pagination.total;
                 totalPages = data.meta.pagination.pageCount;
                 return data.data;
             }
 
             function renderPost(post) {
+                console.log('Rendering post:', post);
+                console.log('Raw post content:', post.attributes.content);
                 const postDiv = document.createElement('div');
                 postDiv.className = 'pgai-post-item';
                 postDiv.dataset.postId = post.id;
                 const username = post.attributes.users_permissions_user?.data?.attributes?.username || 'Anonymous';
-                const content = post.attributes.content || ''; // Raw HTML string from richtext
+                const content = post.attributes.content || '';
+                // Fix URLs before rendering
+                const fixedContent = content.replace(new RegExp(`${STRAPI_URL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'g'), '');
+                console.log('Fixed content:', fixedContent);
                 postDiv.innerHTML = `
                     <p><strong>${username}</strong> <small>${new Date(post.attributes.create_time || post.attributes.createdAt).toLocaleString()}</small></p>
-                    <div>${content}</div>
+                    <div>${fixedContent}</div>
                 `;
+                console.log('Rendered HTML for post:', postDiv.innerHTML);
+                // Log and fix image URLs in DOM
+                const images = postDiv.querySelectorAll('img');
+                console.log('Found images:', images.length);
+                images.forEach(img => {
+                    console.log('Image src after rendering:', img.src);
+                    if (img.src.includes(`${STRAPI_URL}`)) {
+                        console.warn('Fixing image URL:', img.src);
+                        img.src = img.src.replace(`${STRAPI_URL}`, '');
+                        console.log('Fixed image src:', img.src);
+                    }
+                });
                 return postDiv;
             }
 
@@ -222,7 +245,7 @@
                         pageToFetch = currentPage + 1;
                         const posts = await fetchPosts(pageToFetch);
                         posts.forEach(post => {
-                            if (!document.querySelector(`.pgai-post-item[data-post-id="${post.id}"]`)) {
+                            if (!document.querySelector(`.pgai-post-item[data-post-id="${post.id}"]`))  {
                                 postList.appendChild(renderPost(post));
                             }
                         });
@@ -274,22 +297,27 @@
             async function uploadImage(file) {
                 const formData = new FormData();
                 formData.append('files', file);
-                const response = await fetch(`${STRAPI_URL}upload`, {
+                const uploadUrl = `${STRAPI_URL}upload`;
+                console.log('Uploading image to:', uploadUrl);
+                const response = await fetch(uploadUrl, {
                     method: 'POST',
                     headers: { 'Authorization': AUTH_TOKEN },
                     body: formData
                 });
                 if (!response.ok) throw new Error('Image upload failed');
                 const data = await response.json();
-                return data[0].url; // Returns the uploaded image URL (e.g., "https://storage.googleapis.com/...")
+                console.log('Upload response:', data);
+                console.log('Uploaded image URL:', data[0].url);
+                return data[0].url;
             }
 
             async function submitPost() {
                 let content = $('#summernote').summernote('code');
+                console.log('Original editor content:', content);
                 const $images = $('#summernote').next('.note-editor').find('.note-editable img');
-                
-                // Check if content is empty (strip HTML tags and trim) and no images
-                const cleanContent = content.replace(/<[^>]+>/g, '').trim(); // Strip HTML tags and trim
+                console.log('Images in editor:', $images.length, $images.toArray().map(img => img.src));
+
+                const cleanContent = content.replace(/<[^>]+>/g, '').trim();
                 const hasImages = $images.length > 0;
                 if (!cleanContent && !hasImages) {
                     console.log('Post is empty (no text or images), submission aborted.');
@@ -302,26 +330,28 @@
                         setTimeout(() => {
                             console.log('Hiding hint: Setting display to none');
                             hint.css('display', 'none');
-                        }, 500); // Match transition duration
-                    }, 3000); // Show for 3 seconds
-                    return; // Exit if both text and images are empty
+                        }, 500);
+                    }, 3000);
+                    return;
                 }
 
                 if (!currentUserId) {
                     currentUserId = await fetchCurrentUserId();
                 }
 
-                // Upload images and replace blob URLs with Strapi URLs
                 const imagePromises = Array.from($images).map(async img => {
                     const blobUrl = img.src;
                     const filename = img.getAttribute('data-filename') || 'image.jpg';
                     const blob = await fetch(blobUrl).then(res => res.blob());
                     const file = new File([blob], filename, { type: blob.type });
                     const uploadedUrl = await uploadImage(file);
-                    content = content.replace(blobUrl, uploadedUrl); // Use raw uploaded URL
+                    console.log(`Replacing blob URL ${blobUrl} with ${uploadedUrl}`);
+                    const escapedBlobUrl = blobUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                    content = content.replace(new RegExp(escapedBlobUrl, 'g'), uploadedUrl);
                 });
 
                 await Promise.all(imagePromises);
+                console.log('Final content before POST:', content);
 
                 const response = await fetch(`${STRAPI_URL}posts`, {
                     method: 'POST',
@@ -338,6 +368,7 @@
                     })
                 });
 
+                console.log('Post submission response:', response.status);
                 if (response.ok) {
                     $('#summernote').summernote('reset');
                     loadPosts('initial');
