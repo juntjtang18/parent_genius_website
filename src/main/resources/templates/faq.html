@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{joinus.title}">Page Title - Parent Genius AI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link th:href="@{/css/style.css}" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="container my-5">
+        <h1 th:text="#{faq.title}" class="text-center mb-4">Frequently Asked Questions</h1>
+        
+        <div class="accordion" id="faqAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading1">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="true" aria-controls="collapse1">
+                        <span th:text="#{faq.question1}" class="fw-bold">What is Genius Parenting?</span>
+                    </button>
+                </h2>
+                <div id="collapse1" class="accordion-collapse collapse show" aria-labelledby="heading1" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        <span th:text="#{faq.answer1}">Genius Parenting is a support app made for international parents in Canada who are raising (or planning to raise) kids between two cultures. We help you blend your traditions with Canadian life, offering real advice, a community space, and easy tools for parenting from newborn to 12 years old.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading2">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2">
+                        <span th:text="#{faq.question2}" class="fw-bold">Who is this app for?</span>
+                    </button>
+                </h2>
+                <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="heading2" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        <span th:text="#{faq.answer2}">If you're an immigrant, newcomer, international student, or first-generation parent raising kids in Canada (or even expecting), this app is for you! Whether you're from Asia, Africa, Europe, Latin America, or anywhere else—you’ll find a home here.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading3">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3" aria-expanded="false" aria-controls="collapse3">
+                        <span th:text="#{faq.question3}" class="fw-bold">How is this different from other parenting apps?</span>
+                    </button>
+                </h2>
+                <div id="collapse3" class="accordion-collapse collapse" aria-labelledby="heading3" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        <span th:text="#{faq.answer3}">Most apps give general tips based on one culture. Genius Parenting understands the tug between your roots and your new life in Canada. We offer advice, milestones, routines, and even community discussions with a multicultural lens.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading4">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4" aria-expanded="false" aria-controls="collapse4">
+                        <span th:text="#{faq.question4}" class="fw-bold">Is this app only for people who already have kids?</span>
+                    </button>
+                </h2>
+                <div id="collapse4" class="accordion-collapse collapse" aria-labelledby="heading4" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        <span th:text="#{faq.answer4}">Nope! If you're expecting or planning to have kids soon, you’re 100% welcome. We’ve got resources for you too—from preparing for parenthood in a new country to navigating early childhood.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading5">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse5" aria-expanded="false" aria-controls="collapse5">
+                        <span th:text="#{faq.question5}" class="fw-bold">Is my information safe?</span>
+                    </button>
+                </h2>
+                <div id="collapse5" class="accordion-collapse collapse" aria-labelledby="heading5" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        <span th:text="#{faq.answer5}">Absolutely. We don't sell your info. Your conversations, stories, and data are private and protected. Genius Parenting is built by real parents who care about trust, not by big corporations looking to cash in.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading6">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse6" aria-expanded="false" aria-controls="collapse6">
+                        <span th:text="#{faq.question6}" class="fw-bold">How much does it cost?</span>
+                    </button>
+                </h2>
+                <div id="collapse6" class="accordion-collapse collapse" aria-labelledby="heading6" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        <span th:text="#{faq.answer6}">Genius Parenting is free to download! Some premium tools (like personal coaching or workshops) might have a fee later, but basic features, advice, and community access will always be free.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading7">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse7" aria-expanded="false" aria-controls="collapse7">
+                        <span th:text="#{faq.question7}" class="fw-bold">What kind of help can I find on the app?</span>
+                    </button>
+                </h2>
+                <div id="collapse7" class="accordion-collapse collapse" aria-labelledby="heading7" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        <span th:text="#{faq.answer7}">You’ll get: Culturally blended parenting advice, Child growth trackers, Bilingual/bicultural tips, Mental health support for you and your child, Activities and routines for different age groups, A safe community to ask questions and share experiences.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading8">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse8" aria-expanded="false" aria-controls="collapse8">
+                        <span th:text="#{faq.question8}" class="fw-bold">Can I connect with other parents like me?</span>
+                    </button>
+                </h2>
+                <div id="collapse8" class="accordion-collapse collapse" aria-labelledby="heading8" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        <span th:text="#{faq.answer8}">Yes! That’s a huge part of Genius Parenting. You can join community circles based on your child's age, your background, your city, or topics you care about.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading9">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse9" aria-expanded="false" aria-controls="collapse9">
+                        <span th:text="#{faq.question9}" class="fw-bold">I'm still learning English / French. Will that be a problem?</span>
+                    </button>
+                </h2>
+                <div id="collapse9" class="accordion-collapse collapse" aria-labelledby="heading9" data-bs-parent="#FAQAccordion">
+                    <div class="accordion-body">
+                        <span th:text="#{faq.answer9}">Not at all! We are working toward offering multilingual support, starting with simple English, and expanding based on user needs. In future updates, you’ll be able to choose your preferred language for advice and tips.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Chatbot -->
+    <div th:replace="~{fragments/chatbot :: chatbot}"></div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

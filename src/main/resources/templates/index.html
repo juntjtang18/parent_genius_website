@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Parent Genius AI</title>
+    <title th:text="#{index.title}">Parent Genius AI</title>
     <!-- Updated Bootstrap 5.3.3 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <!-- Google Font: Roboto (400 regular and italic) -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
     <!-- Link to your custom stylesheet -->
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
     <style>
         .pgai-home-section {
             background-color: #A4E5D9;
@@ -205,108 +205,97 @@
                     <!-- First pair: pic2 (left), pic1 (right) -->
                     <div class="carousel-item active">
                         <div style="position: relative; width: 860px; height: 400px;">
-                            <img src="images/index/slide1-pic2.jpg" class="slide1-carousel-image" style="position: absolute; left: 0;">
+                            <img src="images/index/slide1-pic2.jpg" class="slide1-carousel-image" style="position: absolute; left: 0;" th:alt="#{index.slide1.image2.alt}">
                             <div class="slide1-image-spacer" style="position: absolute; left: 400px;"></div>
-                            <img src="images/index/slide1-pic1.jpg" class="slide1-carousel-image" style="position: absolute; left: 460px;">
+                            <img src="images/index/slide1-pic1.jpg" class="slide1-carousel-image" style="position: absolute; left: 460px;" th:alt="#{index.slide1.image1.alt}">
                         </div>
                     </div>
                     <!-- Second pair: pic4 (left), pic3 (right) -->
                     <div class="carousel-item">
                         <div style="position: relative; width: 860px; height: 400px;">
-                            <img src="images/index/slide1-pic4.jpg" class="slide1-carousel-image" style="position: absolute; left: 0;">
+                            <img src="images/index/slide1-pic4.jpg" class="slide1-carousel-image" style="position: absolute; left: 0;" th:alt="#{index.slide1.image4.alt}">
                             <div class="slide1-image-spacer" style="position: absolute; left: 400px;"></div>
-                            <img src="images/index/slide1-pic3.jpg" class="slide1-carousel-image" style="position: absolute; left: 460px;">
+                            <img src="images/index/slide1-pic3.jpg" class="slide1-carousel-image" style="position: absolute; left: 460px;" th:alt="#{index.slide1.image3.alt}">
                         </div>
                     </div>
                     <!-- Third pair: pic6 (left), pic5 (right) -->
                     <div class="carousel-item">
                         <div style="position: relative; width: 860px; height: 400px;">
-                            <img src="images/index/slide1-pic6.jpg" class="slide1-carousel-image" style="position: absolute; left: 0;">
+                            <img src="images/index/slide1-pic6.jpg" class="slide1-carousel-image" style="position: absolute; left: 0;" th:alt="#{index.slide1.image6.alt}">
                             <div class="slide1-image-spacer" style="position: absolute; left: 400px;"></div>
-                            <img src="images/index/slide1-pic5.jpg" class="slide1-carousel-image" style="position: absolute; left: 460px;">
+                            <img src="images/index/slide1-pic5.jpg" class="slide1-carousel-image" style="position: absolute; left: 460px;" th:alt="#{index.slide1.image5.alt}">
                         </div>
                     </div>
                 </div>
             </div>
             <!-- Fancy, italicized text -->
-            <p class="pgai-fancy-text" style="margin-top:30px">Every Parent Needs a Helping Hand. Meet Yours</p>
-            <p class="pgai-slide-description">Parenting is Tough. What if it Didn’t Have to Be?</p>
-            <p class="pgai-slide-description">Imagine having a personal guide to help you understand your child’s growth, spark their creativity, and make parenting feel… effortless.</p>
-            <p class="pgai-slide-description"><strong>Meet Genius Parenting AI—your all-in-one parenting companion!</strong></p>
+            <p class="pgai-fancy-text" th:text="#{index.slide1.fancyText}" style="margin-top:30px">Every Parent Needs a Helping Hand. Meet Yours</p>
+            <p class="pgai-slide-description" th:text="#{index.slide1.question}">Parenting is Tough. What if it Didn’t Have to Be?</p>
+            <p class="pgai-slide-description" th:text="#{index.slide1.guideText}">Imagine having a personal guide to help you understand your child’s growth, spark their creativity, and make parenting feel… effortless.</p>
+            <p class="pgai-slide-description"><strong th:text="#{index.slide1.introduction}">Meet Genius Parenting AI—your all-in-one parenting companion!</strong></p>
         </div>
 
         <!-- Slide 2 -->
         <div id="slide2" class="pgai-slide-section">
-            <h1 class="pgai-slide-title">Why Genius Parenting AI?</h1>
+            <h1 class="pgai-slide-title" th:text="#{index.slide2.title}">Why Genius Parenting AI?</h1>
             <!-- Three images with descriptions in a row -->
             <div class="row justify-content-center mt-3">
                 <div class="col-12 col-md-4 mb-4">
-                    <img src="images/index/pic3.jpg" alt="Personalized Support" class="slide2-feature-image">
+                    <img src="images/index/pic3.jpg" th:alt="#{index.slide2.feature1.imageAlt}" class="slide2-feature-image">
                     <div class="pgai-feature-description">
-                        <strong>Personalized Parenting Support:</strong>
-                        <p>Get expert-backed advice and tools tailored to your child’s needs.</p>
+                        <strong th:text="#{index.slide2.feature1.title}">Personalized Parenting Support:</strong>
+                        <p th:text="#{index.slide2.feature1.description}">Get expert-backed advice and tools tailored to your child’s needs.</p>
                     </div>
                 </div>
                 <div class="col-12 col-md-4 mb-4">
-                    <img src="images/index/pic4.jpg" alt="Interactive Learning" class="slide2-feature-image">
+                    <img src="images/index/pic4.jpg" th:alt="#{index.slide2.feature2.imageAlt}" class="slide2-feature-image">
                     <div class="pgai-feature-description">
-                        <strong>Interactive Learning & Creativity:</strong>
-                        <p>Storytelling, music, and games to spark imagination and unique growth.</p>
+                        <strong th:text="#{index.slide2.feature2.title}">Interactive Learning & Creativity:</strong>
+                        <p th:text="#{index.slide2.feature2.description}">Storytelling, music, and games to spark imagination and unique growth.</p>
                     </div>
                 </div>
                 <div class="col-12 col-md-4 mb-4">
-                    <img src="images/index/pic5.jpg" alt="Community & Knowledge Hub" class="slide2-feature-image">
+                    <img src="images/index/pic5.jpg" th:alt="#{index.slide2.feature3.imageAlt}" class="slide2-feature-image">
                     <div class="pgai-feature-description">
-                        <strong>Community & Knowledge Hub:</strong>
-                        <p>Connect with parents, experts, and find resources at your fingertips.</p>
+                        <strong th:text="#{index.slide2.feature3.title}">Community & Knowledge Hub:</strong>
+                        <p th:text="#{index.slide2.feature3.description}">Connect with parents, experts, and find resources at your fingertips.</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Slide 3 -->
-        <div id="slide3" class="pgai-slide-section">
-            <h2 class="pgai-slide-title">Features at a Glance</h2>
-            <ul class="pgai-feature-list">
-                <li class="pgai-slide-description"><strong>Parent Pulse</strong> → Quick parenting insights & milestone tracking</li>
-                <li class="pgai-slide-description"><strong>ImagiParent</strong> → Creativity tools for storytelling & art</li>
-                <li class="pgai-slide-description"><strong>ParentSphere</strong> → Connect with a supportive parenting community</li>
-                <li class="pgai-slide-description"><strong>MindTales</strong> → Bedtime stories & emotional learning</li>
-                <li class="pgai-slide-description"><strong>WisdomTree</strong> → Expert parenting resources</li>
-                <li class="pgai-slide-description"><strong>ThinkPlay</strong> → Fun learning games for kids</li>
-                <li class="pgai-slide-description"><strong>MindBridge</strong> → School & social life coaching</li>
-                <li class="pgai-slide-description"><strong>Little Wins</strong> → Growth tracking & goal setting</li>
-            </ul>
-            <p class="pgai-slide-description" style="margin-bottom:50px">Creativity Hub? We got it. Insights on your child’s growth? Yep. Fun, educational games? Absolutely. A supportive community? You bet.</p>
-            <a href="#" class="pgai-cta-button">Get Started for Free!</a>
-        </div>
-
         <!-- Slide 4 -->
         <div id="slide4" class="pgai-slide-section">
-            <h2 class="pgai-slide-title">What Parents Are Saying</h2>
+            <h2 class="pgai-slide-title" th:text="#{index.slide4.title}">What Parents Are Saying</h2>
+            <!-- Hidden quote divs for i18n extraction -->
+            <div style="display: none;" th:text="#{index.slide4.quote1}" class="quote-text">Genius Parenting AI has transformed how I approach parenting. It’s my go-to for advice and creative activities! – Sarah, Mom of 2</div>
+            <div style="display: none;" th:text="#{index.slide4.quote2}" class="quote-text">I love the milestone tracker! It helps me ensure my child is on the right path. – David, Father of a 5-year-old</div>
+            <div style="display: none;" th:text="#{index.slide4.quote3}" class="quote-text">The community hub is a lifesaver. I’ve learned so much from other parents! – Priya, First-time Mom</div>
+            <div style="display: none;" th:text="#{index.slide4.quote4}" class="quote-text">This app makes bedtime stories so much fun for my kids! – Emma, Mom of 3</div>
+            <div style="display: none;" th:text="#{index.slide4.quote5}" class="quote-text">I finally feel confident about my child’s social skills thanks to MindBridge. – James, Dad of a 7-year-old</div>
+            <div style="display: none;" th:text="#{index.slide4.quote6}" class="quote-text">The creativity tools are amazing! My child loves the storytelling feature. – Lisa, Mom of 1</div>
+            <div style="display: none;" th:text="#{index.slide4.quote7}" class="quote-text">ParentSphere connected me with parents who truly understand my challenges. – Michael, Father of 2</div>
+            <div style="display: none;" th:text="#{index.slide4.quote8}" class="quote-text">ThinkPlay games are both educational and entertaining – a win-win! – Sophia, Mom of a 4-year-old</div>
+            <div style="display: none;" th:text="#{index.slide4.quote9}" class="quote-text">I never knew parenting could be this organized. Thank you, Genius Parenting AI! – Olivia, First-time Mom</div>
+            <div style="display: none;" th:text="#{index.slide4.quote10}" class="quote-text">The expert resources in WisdomTree are incredibly helpful for new parents. – Ethan, Dad of a newborn</div>
+            <div style="display: none;" th:text="#{index.slide4.quote11}" class="quote-text">Tracking my child’s growth with Little Wins keeps me motivated! – Chloe, Mom of a 6-year-old</div>
+            <div style="display: none;" th:text="#{index.slide4.quote12}" class="quote-text">MindTales has made emotional learning so easy for my kids. – Noah, Father of 3</div>
+            <!-- Quote container for dynamic quotes -->
             <div id="quote-container">
-                <!-- Quotes will be dynamically inserted here by JavaScript -->
+                <!-- Dynamic quotes will be inserted here by JavaScript -->
             </div>
         </div>
 
         <!-- Slide 5 -->
         <div id="slide5" style="margin-top:60px" class="pgai-slide-section">
-            <h2 class="pgai-slide-title">Parenting, Just a Tap Away</h2>
-            <!-- Add image after the title -->
-            <div class="row justify-content-center mb-3">
-                <div class="col-12 col-md-6">
-                    <img src="images/index/pic6.jpg" alt="Parenting Tap Image" class="slide5-tap-image">
-                </div>
-            </div>
-            <p class="pgai-slide-description">Ever wished parenting came with a handbook? Consider this your ultimate toolkit—packed with expert advice, interactive activities, and milestone tracking, all in one easy-to-use app.</p>
-            <h3 class="pgai-slide-subtitle">Still Wondering If Genius Parenting AI is for You?</h3>
+            <h2 class="pgai-slide-title" th:text="#{index.slide5.title}">Parenting, Just a Tap Away</h2>
             <ul class="pgai-feature-list">
-                <li class="pgai-slide-description">Do you wish you had expert-backed parenting advice at your fingertips?</li>
-                <li class="pgai-slide-description">Do you want to track your child’s milestones without the stress?</li>
-                <li class="pgai-slide-description">Do you want to encourage creativity and learning in a fun way?</li>
+                <li class="pgai-slide-description" th:text="#{index.slide5.question1}">Do you wish you had expert-backed parenting advice at your fingertips?</li>
+                <li class="pgai-slide-description" th:text="#{index.slide5.question2}">Do you want to track your child’s milestones without the stress?</li>
+                <li class="pgai-slide-description" th:text="#{index.slide5.question3}">Do you want to encourage creativity and learning in a fun way?</li>
             </ul>
-            <p class="pgai-slide-description" style="margin-bottom:50px"><strong>Then what are you waiting for?</strong></p>            
-            <a href="#" class="pgai-cta-button">Download Genius Parenting AI Today!</a>
+            <p class="pgai-slide-description" style="margin-bottom:50px"><strong th:text="#{index.slide5.callToAction}">Then what are you waiting for?</strong></p>            
+            <a href="#" class="pgai-cta-button" th:text="#{index.slide5.buttonText}">Download Genius Parenting AI Today!</a>
         </div>
     </div>
 
@@ -318,22 +307,6 @@
 
     <!-- JavaScript for Quote Shuffling with Fly Animation and Intersection Observer -->
     <script>
-        // Array of 12 quotes for Slide 4
-        const quotes = [
-            '"Genius Parenting AI has transformed how I approach parenting. It’s my go-to for advice and creative activities!" – Sarah, Mom of 2',
-            '"I love the milestone tracker! It helps me ensure my child is on the right path." – David, Father of a 5-year-old',
-            '"The community hub is a lifesaver. I’ve learned so much from other parents!" – Priya, First-time Mom',
-            '"This app makes bedtime stories so much fun for my kids!" – Emma, Mom of 3',
-            '"I finally feel confident about my child’s social skills thanks to MindBridge." – James, Dad of a 7-year-old',
-            '"The creativity tools are amazing! My child loves the storytelling feature." – Lisa, Mom of 1',
-            '"ParentSphere connected me with parents who truly understand my challenges." – Michael, Father of 2',
-            '"ThinkPlay games are both educational and entertaining – a win-win!" – Sophia, Mom of a 4-year-old',
-            '"I never knew parenting could be this organized. Thank you, Genius Parenting AI!" – Olivia, First-time Mom',
-            '"The expert resources in WisdomTree are incredibly helpful for new parents." – Ethan, Dad of a newborn',
-            '"Tracking my child’s growth with Little Wins keeps me motivated!" – Chloe, Mom of a 6-year-old',
-            '"MindTales has made emotional learning so easy for my kids." – Noah, Father of 3'
-        ];
-
         // Function to get random direction (x, y) for fly animation within container bounds
         function getRandomDirection() {
             const directions = [
@@ -349,12 +322,14 @@
         function shuffleQuotes() {
             const quoteContainer = document.getElementById('quote-container');
             const currentQuotes = quoteContainer.getElementsByClassName('pgai-quote-box');
+            const quoteElements = document.getElementsByClassName('quote-text');
+            const quotes = Array.from(quoteElements).map(el => el.innerText);
 
             // Apply fly-out animation to current quotes
             for (let quote of currentQuotes) {
                 const { x, y } = getRandomDirection();
-                quote.style.setProperty('--fly-out-x', `${x}px`); // Use px instead of vw
-                quote.style.setProperty('--fly-out-y', `${y}px`); // Use px instead of vw
+                quote.style.setProperty('--fly-out-x', `${x}px`);
+                quote.style.setProperty('--fly-out-y', `${y}px`);
                 quote.classList.add('fly-out');
             }
 
@@ -364,9 +339,9 @@
 
             selectedQuotes.forEach((quote, index) => {
                 const quoteElement = document.createElement('div');
-                quoteElement.className = 'pgai-quote-box fly-in';
+                quoteElement.className = `pgai-quote-box fly-in quote-${index + 1}`;
                 const { x, y } = getRandomDirection();
-                quoteElement.style.setProperty('--fly-in-x', `${x}px`); // Opposite direction for fly-in
+                quoteElement.style.setProperty('--fly-in-x', `${x}px`);
                 quoteElement.style.setProperty('--fly-in-y', `${y}px`);
                 quoteElement.innerHTML = `<p class="pgai-testimonial-text">${quote}</p>`;
                 quoteContainer.appendChild(quoteElement);
@@ -386,10 +361,12 @@
 
         // Initial display of quotes (Slide 4)
         const quoteContainer = document.getElementById('quote-container');
+        const quoteElements = document.getElementsByClassName('quote-text');
+        const quotes = Array.from(quoteElements).map(el => el.innerText);
         const initialQuotes = [...quotes].sort(() => Math.random() - 0.5).slice(0, 3);
         initialQuotes.forEach((quote, index) => {
             const quoteElement = document.createElement('div');
-            quoteElement.className = 'pgai-quote-box';
+            quoteElement.className = `pgai-quote-box quote-${index + 1}`;
             quoteElement.innerHTML = `<p class="pgai-testimonial-text">${quote}</p>`;
             quoteContainer.appendChild(quoteElement);
         });

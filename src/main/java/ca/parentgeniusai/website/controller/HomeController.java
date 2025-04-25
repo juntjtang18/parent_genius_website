@@ -100,4 +100,5 @@ public class HomeController {
         // No need for auth parameter or model attribute
         return "join-us";    
     }
+    
 }
