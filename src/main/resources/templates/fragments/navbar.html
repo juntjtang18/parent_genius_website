@@ -35,6 +35,16 @@
                             <li><a class="dropdown-item" href="/join-us" th:text="#{navbar.caption6}">Join Us</a></li>
                         </ul>
                     </li>
+                    <!-- Admin Menu Item - Visible only to users with 'EDITOR' role -->
+                    <li class="nav-item dropdown" th:if="${auth != null && #authorization.expression('hasRole(''EDITOR'')')}">
+                        <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-shield me-1"></i>Admin
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+                            <li><a class="dropdown-item" th:href="@{/course-list}"><i class="fas fa-chalkboard-teacher me-2"></i><span th:text="#{navbar.admin.courses}">Courses</span></a></li>
+                            <!-- Add other admin links here if needed in the future -->
+                        </ul>
+                    </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" th:text="#{navbar.caption7}">Language</a>
                         <ul class="dropdown-menu" aria-labelledby="languageDropdown" id="languageList"></ul>
@@ -61,43 +71,58 @@
         </div>
     </nav>
     <!-- Add Font Awesome CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" xintegrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         @media (max-width: 767.98px) {
-            .navbar-nav.fs-3 {
-                font-size: 1.20rem !important;
+            .navbar-nav.fs-4 { 
+                 font-size: 1.20rem !important;
             }
         }
         .navbar-avatar-icon {
             font-size: 1.8rem;
-            color: #333; /* Changed from #fff to contrast with light background */
+            color: #333; 
             margin-right: 10px;
+        }
+        .dropdown-item i {
+            min-width: 20px; 
         }
     </style>
     <script th:inline="javascript">
         document.addEventListener('DOMContentLoaded', function() {
             const languageList = document.getElementById('languageList');
             const dropdown = document.getElementById('languageDropdown');
-            dropdown.addEventListener('shown.bs.dropdown', function() {
-                if (languageList.children.length === 0) {
-                    fetch('/api/languages')
-                        .then(response => response.json())
-                        .then(data => {
-                            for (const [code, name] of Object.entries(data)) {
-                                const listItem = document.createElement('li');
-                                const link = document.createElement('a');
-                                link.className = 'dropdown-item';
-                                const url = new URL(window.location.href);
-                                url.searchParams.set('lang', code);
-                                link.href = url.toString();
-                                link.textContent = name;
-                                listItem.appendChild(link);
-                                languageList.appendChild(listItem);
-                            }
-                        })
-                        .catch(error => console.error('Error fetching languages:', error));
-                }
-            });
+            if (dropdown && languageList) {
+                dropdown.addEventListener('shown.bs.dropdown', function() {
+                    if (languageList.children.length === 0) {
+                        fetch('/api/languages')
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Network response was not ok for languages API');
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                for (const [code, name] of Object.entries(data)) {
+                                    const listItem = document.createElement('li');
+                                    const link = document.createElement('a');
+                                    link.className = 'dropdown-item';
+                                    const url = new URL(window.location.href);
+                                    url.searchParams.set('lang', code);
+                                    link.href = url.toString();
+                                    link.textContent = name;
+                                    listItem.appendChild(link);
+                                    languageList.appendChild(listItem);
+                                }
+                            })
+                            .catch(error => console.error('Error fetching languages:', error));
+                    }
+                });
+            }
+
+            const functionsDropDown = document.getElementById('functionsDropDown');
+            if (functionsDropDown) {
+                // Placeholder for any specific JS for this dropdown if needed
+            }
         });
     </script>
 </div>

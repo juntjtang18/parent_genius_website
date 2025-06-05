@@ -1,0 +1,4 @@
+
+
+cloud-sql-proxy lucid-arch-451211-b0:us-central1:my-strapi-db \
+--credentials-file=/Users/James/develop/cloud-sql-key.json
