@@ -73,7 +73,7 @@ public class CourseController {
         model.addAttribute("strapiApiUrl", strapiApiBaseUrl);
         model.addAttribute("strapiToken", "Bearer " + jwtToken);
         model.addAttribute("returnUrl", "/course-list");
-        
+         
         // ADD THIS LINE
         model.addAttribute("strapiRootUrl", strapiRootUrl); 
 
