@@ -73,10 +73,14 @@ public class CourseController {
         model.addAttribute("strapiApiUrl", strapiApiBaseUrl);
         model.addAttribute("strapiToken", "Bearer " + jwtToken);
         model.addAttribute("returnUrl", "/course-list");
+        
+        // ADD THIS LINE
+        model.addAttribute("strapiRootUrl", strapiRootUrl); 
+
         logger.info("Serving edit page for course ID: {}", courseId);
         return "edit-course-content";
     }
-
+    
     @GetMapping("/course-list")
     public String courseListPage(Model model, HttpServletRequest request) {
         String jwtToken = getJwtToken(request);

@@ -16,8 +16,7 @@
         <h1 class="my-4">Our Courses</h1>
 
         <div class="mb-4">
-            <!-- Category filter buttons can be added here -->
-        </div>
+            </div>
 
         <div id="course-container" class="row">
             <div class="col-12 text-center" id="loading-spinner">
@@ -80,7 +79,13 @@
                     const courseId = course.id;
                     const title = attributes.title;
                     const iconData = attributes.icon_image?.data;
-                    const imageUrl = iconData ? strapiRootUrl + iconData.attributes.url : null;
+                    let imageUrl = null;
+
+                    // UPDATED: Robustly construct the image URL
+                    if (iconData && iconData.attributes && iconData.attributes.url) {
+                        // Use the URL constructor to safely join the base URL and the relative path
+                        imageUrl = new URL(iconData.attributes.url, strapiRootUrl).href;
+                    }
 
                     const courseCard = document.createElement('div');
                     courseCard.className = 'col-md-4 mb-4';

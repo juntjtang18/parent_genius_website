@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Course Content | Genius Parenting AI</title>
+    <link rel="icon" type="image/jpeg" th:href="@{/images/gpa-logo.jpg}" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <style>
+        body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; font-family: 'Inter', sans-serif; background-color: #f8f9fa; }
+        .main-content { flex: 1 0 auto; }
+        .course-panel { width: 90vw; max-width: 1200px; margin: 30px auto; padding: 30px; background-color: #fff; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.08); }
+        .course-panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid #e9ecef; }
+        .course-panel-header h2 { margin-bottom: 0; color: #2c3e50; font-weight: 600; }
+        .course-panel-header .actions { display: flex; gap: 12px; }
+        .course-editor { background-color: #fff; padding: 20px; border-radius: 8px; }
+        .form-section { margin-bottom: 30px; }
+        .form-section label { font-weight: 600; margin-bottom: 10px; display: block; color: #34495e; }
+        .form-control { padding: 12px; border: 1px solid #ced4da; border-radius: 6px; transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out; }
+        .form-control:focus { border-color: #86b7fe; box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 25%); }
+        textarea.form-control { min-height: 120px; font-family: monospace; font-size: 0.9em; }
+        .component { border: 1px solid #d1d8e0; padding: 20px; margin-bottom: 20px; border-radius: 8px; background-color: #fdfdfd; box-shadow: 0 3px 8px rgba(0,0,0,0.05); transition: box-shadow 0.2s ease; }
+        .component:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
+        .component-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+        .component-header strong { color: #34495e; font-size: 1.1em; }
+        .component-actions { display: flex; align-items: center; gap: 5px;}
+        .btn-action { background-color: #f8f9fa; border: 1px solid #dee2e6; color: #495057; padding: 5px 10px; font-size: 0.9em; border-radius: 5px; transition: all 0.2s; }
+        .btn-action:hover { background-color: #e9ecef; border-color: #ced4da; }
+        .btn-action:disabled { background-color: #e9ecef; color: #adb5bd; cursor: not-allowed; }
+        .btn-insert { color: #0d6efd; border-color: #0d6efd; }
+        .btn-insert:hover { background-color: #e7f1ff; }
+        .add-component-placeholder { padding: 25px; margin-top: 10px; border: 2px dashed #0d6efd; border-radius: 8px; background-color: #f8f9fa; text-align: center; }
+        .add-component-main-btn { background-color: #0d6efd; color: white; padding: 12px 25px; font-size: 1.1em; transition: background-color 0.2s; }
+        .add-component-main-btn:hover { background-color: #0b5ed7; }
+        .action-btn { padding: 10px 20px; font-size: 1rem; border-radius: 6px; text-decoration: none; color: white; cursor: pointer; border: none; display: inline-flex; align-items: center; justify-content: center; transition: background-color 0.2s ease, transform 0.1s ease; }
+        .action-btn:hover { transform: translateY(-1px); }
+        .save-btn { background-color: #198754; }
+        .save-btn:hover { background-color: #157347; }
+        .back-btn { background-color: #6c757d; }
+        .back-btn:hover { background-color: #5c636a; }
+        .remove-component-btn { background-color: #dc3545; font-size: 13px; padding: 8px 14px; }
+        .remove-component-btn:hover { background-color: #bb2d3b; }
+        .media-preview { max-width: 250px; max-height: 180px; margin-top: 10px; display: block; border: 1px solid #ddd; padding: 5px; border-radius: 4px; }
+        .pagebreaker-component-display { padding: 15px; text-align: center; border: 2px dashed #0d6efd; border-radius: 5px; background-color: #e7f1ff; color: #0b5ed7; font-weight: bold; margin-top: 10px; }
+        #status-message-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1056; min-width: 300px; text-align: center; }
+        .drag-handle { cursor: grab; margin-right: 15px; color: #adb5bd; font-size: 1.2em; }
+        .sortable-ghost { background-color: #eef2f5; opacity: 0.7; border: 2px dashed #0d6efd; }
+        .modal-dialog { max-width: 650px; }
+        .component-picker-button { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 130px; height: 110px; border: 1px solid #ddd; border-radius: 8px; margin: 10px; cursor: pointer; transition: all 0.2s ease-in-out; background-color: #fff; }
+        .component-picker-button:hover { background-color: #f8f9fa; border-color: #0d6efd; box-shadow: 0 0 12px rgba(13,110,253,.25); transform: translateY(-3px); }
+        .component-picker-button i { font-size: 2.2em; margin-bottom: 10px; color: #0d6efd; }
+        .component-picker-button span { font-size: 0.95em; color: #34495e; font-weight: 500; }
+        .component-picker-container { display: flex; flex-wrap: wrap; justify-content: center; padding: 15px; }
+        .form-group { margin-bottom: 18px; }
+        .form-group label { font-weight: 500; margin-bottom: 6px; display: block; color: #555; }
+    </style>
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="container-fluid main-content">
+        <div class="course-panel">
+            <div class="course-panel-header">
+                 <h2 id="course-page-title">Loading Course...</h2>
+                 <div class="actions"> 
+                    <button class="action-btn save-btn" id="save-course-btn"><i class="fas fa-save me-2"></i>Save Course</button>
+                    <a th:href="${returnUrl}" class="action-btn back-btn"><i class="fas fa-arrow-left me-2"></i>Back to List</a>
+                 </div>
+            </div>
+
+            <div class="course-editor">
+                <div class="form-section">
+                    <label for="course-title-main">Course Title</label>
+                    <input type="text" id="course-title-main" class="form-control form-control-lg" placeholder="Enter overall course title" />
+                </div>
+
+                <div class="form-section">
+                    <label for="course-translations-json">Translations (JSON format)</label>
+                    <textarea id="course-translations-json" class="form-control" placeholder='Example: {"fr": {"title": "Titre du cours"}}'></textarea>
+                </div>
+
+                <h3 class="mt-5 mb-3" style="color: #34495e; font-weight: 500;">Course Content Components</h3>
+                <div id="course-content-area" class="mt-1">
+                    <!-- Dynamic components will be rendered here -->
+                </div>
+
+                <div class="add-component-placeholder">
+                     <button type="button" class="btn add-component-main-btn" data-bs-toggle="modal" data-bs-target="#addComponentModal">
+                        <i class="fas fa-plus me-2"></i>Add New Component
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="status-message-container"></div>
+
+    <div id="modals-and-templates">
+        <div class="modal fade" id="addComponentModal" tabindex="-1" aria-labelledby="addComponentModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addComponentModalLabel">Pick a Component</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="component-picker-container">
+                            <button class="component-picker-button" data-type="text"><i class="fas fa-paragraph"></i><span>Text</span></button>
+                            <button class="component-picker-button" data-type="image"><i class="fas fa-image"></i><span>Image</span></button>
+                            <button class="component-picker-button" data-type="video"><i class="fas fa-video"></i><span>Video</span></button>
+                            <button class="component-picker-button" data-type="quiz"><i class="fas fa-question-circle"></i><span>Quiz</span></button>
+                            <button class="component-picker-button" data-type="pagebreaker"><i class="fas fa-arrows-alt-h"></i><span>Page Break</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="component-templates" style="display: none;">
+            <div class="component text-component template" data-component-strapi-name="coursecontent.text">
+                <div class="component-header">
+                    <div><i class="fas fa-grip-vertical drag-handle"></i><strong>Text Block</strong></div>
+                    <div class="component-actions">
+                        <button class="btn-action btn-insert insert-before-btn" title="Insert before"><i class="fas fa-chevron-up"></i></button>
+                        <button class="btn-action btn-insert insert-after-btn" title="Insert after"><i class="fas fa-chevron-down"></i></button>
+                        <button class="btn-action move-up" title="Move up"><i class="fas fa-arrow-up"></i></button>
+                        <button class="btn-action move-down" title="Move down"><i class="fas fa-arrow-down"></i></button>
+                        <button class="action-btn remove-component-btn" title="Remove"><i class="fas fa-trash-alt"></i></button>
+                    </div>
+                </div>
+                <div class="form-group"><label>Text Data</label><textarea class="form-control text-data-input" rows="5"></textarea></div>
+                <div class="form-group"><label>Styles (JSON format)</label><textarea class="form-control style-json-input" rows="4"></textarea></div>
+            </div>
+            <div class="component image-component template" data-component-strapi-name="coursecontent.image">
+                 <div class="component-header">
+                    <div><i class="fas fa-grip-vertical drag-handle"></i><strong>Image</strong></div>
+                    <div class="component-actions">
+                         <button class="btn-action btn-insert insert-before-btn" title="Insert before"><i class="fas fa-chevron-up"></i></button>
+                        <button class="btn-action btn-insert insert-after-btn" title="Insert after"><i class="fas fa-chevron-down"></i></button>
+                        <button class="btn-action move-up" title="Move up"><i class="fas fa-arrow-up"></i></button>
+                        <button class="btn-action move-down" title="Move down"><i class="fas fa-arrow-down"></i></button>
+                        <button class="action-btn remove-component-btn" title="Remove"><i class="fas fa-trash-alt"></i></button>
+                    </div>
+                </div>
+                <div class="form-group"><label>Image Preview</label><img src="#" alt="Preview" class="media-preview image-preview" style="display:none;" /></div>
+                 <div class="form-group"><label>Upload New Image</label><input type="file" class="image-file-upload-input form-control" accept="image/*" /></div>
+            </div>
+            <div class="component video-component template" data-component-strapi-name="coursecontent.video">
+                <div class="component-header">
+                    <div><i class="fas fa-grip-vertical drag-handle"></i><strong>Video</strong></div>
+                    <div class="component-actions">
+                         <button class="btn-action btn-insert insert-before-btn" title="Insert before"><i class="fas fa-chevron-up"></i></button>
+                        <button class="btn-action btn-insert insert-after-btn" title="Insert after"><i class="fas fa-chevron-down"></i></button>
+                        <button class="btn-action move-up" title="Move up"><i class="fas fa-arrow-up"></i></button>
+                        <button class="btn-action move-down" title="Move down"><i class="fas fa-arrow-down"></i></button>
+                        <button class="action-btn remove-component-btn" title="Remove"><i class="fas fa-trash-alt"></i></button>
+                    </div>
+                </div>
+                <div class="form-group"><label>Video URL (e.g., YouTube)</label><input type="text" class="video-url-input form-control" placeholder="Paste URL or upload file below" /></div>
+                <div class="form-group"><label>Upload Video</label><input type="file" class="video-file-upload-input form-control" accept="video/*" /><div class="video-preview-container mt-2"></div></div>
+            </div>
+            <div class="component quiz-component template" data-component-strapi-name="coursecontent.quiz">
+                <div class="component-header">
+                    <div><i class="fas fa-grip-vertical drag-handle"></i><strong>Quiz</strong></div>
+                    <div class="component-actions">
+                         <button class="btn-action btn-insert insert-before-btn" title="Insert before"><i class="fas fa-chevron-up"></i></button>
+                        <button class="btn-action btn-insert insert-after-btn" title="Insert after"><i class="fas fa-chevron-down"></i></button>
+                        <button class="btn-action move-up" title="Move up"><i class="fas fa-arrow-up"></i></button>
+                        <button class="btn-action move-down" title="Move down"><i class="fas fa-arrow-down"></i></button>
+                        <button class="action-btn remove-component-btn" title="Remove"><i class="fas fa-trash-alt"></i></button>
+                    </div>
+                </div>
+                <div class="form-group"><label>Question</label><input type="text" class="quiz-question-input form-control" /></div>
+                <div class="form-group"><label>Options (JSON array format)</label><textarea class="quiz-options-input form-control" rows="4"></textarea></div>
+                <div class="form-group"><label>Correct Answer</label><input type="text" class="quiz-correct-answer-input form-control" /></div>
+            </div>
+            <div class="component pagebreaker-component template" data-component-strapi-name="coursecontent.pagebreaker">
+                 <div class="component-header">
+                    <div><i class="fas fa-grip-vertical drag-handle"></i><strong>Page Break</strong></div>
+                    <div class="component-actions">
+                         <button class="btn-action btn-insert insert-before-btn" title="Insert before"><i class="fas fa-chevron-up"></i></button>
+                        <button class="btn-action btn-insert insert-after-btn" title="Insert after"><i class="fas fa-chevron-down"></i></button>
+                        <button class="btn-action move-up" title="Move up"><i class="fas fa-arrow-up"></i></button>
+                        <button class="btn-action move-down" title="Move down"><i class="fas fa-arrow-down"></i></button>
+                        <button class="action-btn remove-component-btn" title="Remove"><i class="fas fa-trash-alt"></i></button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6"><div class="form-check form-switch"><input class="form-check-input back-button-checkbox" type="checkbox" role="switch" id="backButtonSwitch" checked><label class="form-check-label" for="backButtonSwitch">Show "Back" button</label></div></div>
+                    <div class="col-md-6"><div class="form-check form-switch"><input class="form-check-input next-button-checkbox" type="checkbox" role="switch" id="nextButtonSwitch" checked><label class="form-check-label" for="nextButtonSwitch">Show "Next" button</label></div></div>
+                </div>
+                <div class="pagebreaker-component-display">--- Page Break ---</div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+
+    <script th:inline="javascript">
+    /*<![CDATA[*/
+    
+    const API_PROXY_URL = /*[[${strapiApiUrl}]]*/ '/api/strapi';
+    const STRAPI_ROOT_URL = /*[[${strapiRootUrl}]]*/ 'http://localhost:1337';
+    const AUTH_TOKEN = /*[[${strapiToken}]]*/ 'Bearer default-token';
+    const COURSE_ID = /*[[${courseId}]]*/ '1';
+
+    let insertionMode = null; 
+    let targetComponentForInsertion = null; 
+    let bsModal;
+    let uniqueIdCounter = 0;
+
+    function showStatusMessage(message, type = 'danger') {
+        const alertClass = `alert-${type}`;
+        const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle';
+        const $alert = $(`<div class="alert ${alertClass} alert-dismissible fade show" role="alert"><i class="fas ${icon} me-2"></i>${message}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>`);
+        $('#status-message-container').append($alert);
+        setTimeout(() => $alert.fadeOut(500, () => $alert.remove()), 5000);
+    }
+
+    function updateMoveButtonStates() {
+        $('#course-content-area .component').each(function(index) {
+            const $this = $(this);
+            $this.find('.move-up').prop('disabled', index === 0);
+            $this.find('.move-down').prop('disabled', index === $('#course-content-area .component').length - 1);
+        });
+    }
+
+    function getYouTubeVideoId(url) {
+        if (!url) return null;
+        const match = url.match(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/);
+        return (match && match[2].length === 11) ? match[2] : null;
+    }
+
+    function renderComponent(componentType, data = {}, pInsertionMode = null, pTargetComponent = null) {
+        const $template = $(`#component-templates .${componentType}-component.template`).clone().removeClass('template');
+        if (data.id) $template.attr('data-strapi-component-id', data.id);
+
+        $template.find('input[type="checkbox"]').each(function() {
+            const newId = `${$(this).attr('id')}-${uniqueIdCounter++}`;
+            $(this).attr('id', newId).next('label').attr('for', newId);
+        });
+
+        switch (componentType) {
+            case 'text':
+                $template.find('.text-data-input').val(data.data || '');
+                $template.find('.style-json-input').val(JSON.stringify(data.styles || {}, null, 2));
+                break;
+            case 'image':
+                 // **FIX 1: Read from the correct field name 'image_file'.**
+                const imageUrl = data.image_file?.data?.attributes?.url;
+                if (imageUrl) {
+                    $template.find('.image-preview').attr('src', imageUrl).show();
+                    $template.attr('data-media-id', data.image_file.data.id);
+                }
+                break;
+            case 'video':
+                $template.find('.video-url-input').val(data.url || '');
+                updateVideoPreview($template.find('.video-preview-container'), data.url);
+                break;
+            case 'quiz':
+                $template.find('.quiz-question-input').val(data.question || '');
+                $template.find('.quiz-options-input').val(JSON.stringify(data.options || [], null, 2));
+                $template.find('.quiz-correct-answer-input').val(data.correctAnswer || '');
+                break;
+            case 'pagebreaker':
+                $template.find('.back-button-checkbox').prop('checked', data.backbutton !== false);
+                $template.find('.next-button-checkbox').prop('checked', data.nextbutton !== false);
+                break;
+        }
+        
+        if (pInsertionMode === 'before' && pTargetComponent) pTargetComponent.before($template);
+        else if (pInsertionMode === 'after' && pTargetComponent) pTargetComponent.after($template);
+        else $('#course-content-area').append($template);
+        updateMoveButtonStates();
+    }
+    
+    function updateVideoPreview($previewContainer, url) {
+        $previewContainer.empty();
+        if (!url) return;
+        const videoId = getYouTubeVideoId(url);
+        if (videoId) {
+            $previewContainer.html(`<iframe width="100%" height="200" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen class="media-preview youtube-iframe"></iframe>`);
+        } else {
+            $previewContainer.html(`<video controls class="media-preview" src="${url}" style="display:block;"></video>`);
+        }
+    }
+
+    async function loadCourseContent() {
+        try {
+            // **FIX 2: Use a specific populate query for robustness.**
+            const fetchUrl = `${API_PROXY_URL}/courses/${COURSE_ID}?populate[content][populate][image_file]=*`;
+            const response = await fetch(fetchUrl, { headers: { 'Authorization': AUTH_TOKEN } });
+            if (!response.ok) throw new Error(`Failed to load course data (Status: ${response.status}). ${await response.text()}`);
+            const strapiResponse = await response.json();
+            if (!strapiResponse.data) throw new Error("Course data not found in API response.");
+            const course = strapiResponse.data.attributes;
+            $('#course-title-main').val(course.title || ''); 
+            $('#course-page-title').text('Edit Course: ' + (course.title || 'Untitled'));
+            $('#course-translations-json').val(JSON.stringify(course.translations || {}, null, 2));
+            $('#course-content-area').empty();
+            (course.content || []).forEach(c => renderComponent(c.__component.split('.')[1], c));
+            updateMoveButtonStates();
+        } catch (error) {
+            showStatusMessage(`Could not load course. ${error.message}`, 'danger');
+        }
+    }
+    
+    async function uploadFileToStrapi(file) {
+        const formData = new FormData();
+        formData.append('files', file);
+        const uploadUrl = new URL('api/upload', STRAPI_ROOT_URL).href;
+        const response = await fetch(uploadUrl, { method: 'POST', headers: { 'Authorization': AUTH_TOKEN }, body: formData });
+        if (!response.ok) throw new Error(`Upload failed: ${response.status} ${await response.text()}`);
+        const uploadData = await response.json();
+        if (!uploadData?.[0]) throw new Error("Strapi upload response was invalid.");
+        return uploadData[0];
+    }
+    
+    async function saveCourse() {
+        showStatusMessage('Saving course...', 'success');
+        let hasError = false;
+        const componentsData = [];
+
+        $('#course-content-area .component').each(function() {
+            if (hasError) return;
+            const $c = $(this);
+            const type = $c.data('component-strapi-name');
+            let payload = { __component: type };
+            const existingId = $c.attr('data-strapi-component-id');
+            if (existingId) payload.id = parseInt(existingId, 10);
+
+            try {
+                if ($c.hasClass('text-component')) {
+                    payload.data = $c.find('.text-data-input').val();
+                    payload.styles = JSON.parse($c.find('.style-json-input').val() || '{}');
+                } else if ($c.hasClass('image-component')) {
+                    const mediaId = $c.attr('data-media-id');
+                    // **FIX 3: Save to the 'image_file' field with the media ID.**
+                    payload.image_file = mediaId ? parseInt(mediaId, 10) : null;
+                } else if ($c.hasClass('video-component')) {
+                    payload.url = $c.find('.video-url-input').val().trim();
+                } else if ($c.hasClass('quiz-component')) {
+                    payload.question = $c.find('.quiz-question-input').val();
+                    payload.options = JSON.parse($c.find('.quiz-options-input').val() || '[]');
+                    payload.correctAnswer = $c.find('.quiz-correct-answer-input').val();
+                    if (!payload.question || !payload.correctAnswer || payload.options.length === 0) throw new Error("Quiz requires a question, options, and an answer.");
+                } else if ($c.hasClass('pagebreaker-component')) {
+                    payload.backbutton = $c.find('.back-button-checkbox').is(':checked');
+                    payload.nextbutton = $c.find('.next-button-checkbox').is(':checked');
+                }
+            } catch (e) {
+                showStatusMessage(`Error in component data: ${e.message}`, 'danger');
+                hasError = true;
+            }
+            componentsData.push(payload);
+        });
+
+        if (hasError) return;
+
+        try {
+            const translationsData = JSON.parse($('#course-translations-json').val() || '{}');
+            const finalPayload = { data: { title: $('#course-title-main').val().trim(), content: componentsData, translations: translationsData }};
+            const response = await fetch(`${API_PROXY_URL}/courses/${COURSE_ID}`, {
+                method: 'PUT',
+                headers: { 'Authorization': AUTH_TOKEN, 'Content-Type': 'application/json' },
+                body: JSON.stringify(finalPayload)
+            });
+            if (!response.ok) throw new Error(`Failed to save: ${response.status} ${await response.text()}`);
+            showStatusMessage('Course saved successfully!', 'success');
+        } catch (error) {
+            showStatusMessage(`Save failed: ${error.message}`, 'danger');
+        }
+    }
+
+    $(document).ready(function() {
+        bsModal = new bootstrap.Modal(document.getElementById('addComponentModal'));
+        loadCourseContent();
+        new Sortable(document.getElementById('course-content-area'), { animation: 150, handle: '.drag-handle', ghostClass: 'sortable-ghost', onEnd: updateMoveButtonStates });
+
+        $('.add-component-main-btn, #course-content-area').on('click', '.insert-before-btn, .insert-after-btn', function() {
+            const $btn = $(this);
+            insertionMode = $btn.hasClass('insert-before-btn') ? 'before' : ($btn.hasClass('insert-after-btn') ? 'after' : null);
+            targetComponentForInsertion = $btn.closest('.component');
+            bsModal.show();
+        });
+
+        $('.component-picker-button').on('click', function() { 
+            renderComponent($(this).data('type'), {}, insertionMode, targetComponentForInsertion);
+            bsModal.hide();
+        });
+
+        $('#addComponentModal').on('hidden.bs.modal', () => { insertionMode = null; targetComponentForInsertion = null; });
+        
+        $('#course-content-area').on('click', '.remove-component-btn', function() { $(this).closest('.component').remove(); updateMoveButtonStates(); });
+        $('#course-content-area').on('click', '.move-up', function() { $(this).closest('.component').prev('.component').before($(this).closest('.component')); updateMoveButtonStates(); });
+        $('#course-content-area').on('click', '.move-down', function() { $(this).closest('.component').next('.component').after($(this).closest('.component')); updateMoveButtonStates(); });
+
+        $('#course-content-area').on('change', '.image-file-upload-input', async function() {
+            const file = this.files[0];
+            if (!file) return;
+            const $component = $(this).closest('.component');
+            const $preview = $component.find('.image-preview');
+            showStatusMessage('Uploading image...', 'success');
+            try {
+                const uploadedFile = await uploadFileToStrapi(file);
+                $preview.attr('src', uploadedFile.url).show();
+                $component.attr('data-media-id', uploadedFile.id);
+                showStatusMessage('Upload successful!', 'success');
+            } catch (error) {
+                showStatusMessage(error.message, 'danger');
+            }
+            $(this).val('');
+        });
+
+        $('#course-content-area').on('change', '.video-file-upload-input', async function() {
+            const file = this.files[0];
+            if (!file) return;
+            const $component = $(this).closest('.component');
+            const $urlInput = $component.find('.video-url-input');
+            showStatusMessage('Uploading video...', 'success');
+            try {
+                const uploadedFile = await uploadFileToStrapi(file);
+                $urlInput.val(uploadedFile.url).trigger('change');
+                showStatusMessage('Upload successful!', 'success');
+            } catch (error) {
+                showStatusMessage(error.message, 'danger');
+            }
+            $(this).val('');
+        });
+
+        $('#course-content-area').on('input change', '.video-url-input', function() {
+            updateVideoPreview($(this).closest('.component').find('.video-preview-container'), $(this).val().trim());
+        });
+
+        $('#save-course-btn').on('click', saveCourse);
+    });
+    /*]]>*/
+    </script>
+</body>
+</html>
