@@ -44,8 +44,118 @@
     </div>
     <div id="status-message-container" class="position-fixed bottom-0 start-50 translate-middle-x p-3" style="z-index: 1056;"></div>
     <div id="modals-and-templates">
-        <div class="modal fade" id="addComponentModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-dialog-centered modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Pick a Component</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body d-flex justify-content-center flex-wrap"><button class="component-picker-button" data-type="text"><i class="fas fa-paragraph"></i><span>Text</span></button><button class="component-picker-button" data-type="image"><i class="fas fa-image"></i><span>Image</span></button><button class="component-picker-button" data-type="video"><i class="fas fa-video"></i><span>Hosted Video</span></button><button class="component-picker-button" data-type="external-video"><i class="fas fa-link"></i><span>External Video</span></button><button class="component-picker-button" data-type="quiz"><i class="fas fa-question-circle"></i><span>Quiz</span></button><button class="component-picker-button" data-type="pagebreaker"><i class="fas fa-arrows-alt-h"></i><span>Page Break</span></button></div></div></div></div>
-        <div id="component-templates" style="display: none;"><div class="component text-component template" data-component-strapi-name="coursecontent.text"><div class="component-header"><div><i class="fas fa-grip-vertical drag-handle"></i><strong>Text Block</strong></div><button class="btn btn-sm btn-danger remove-component-btn"><i class="fas fa-trash-alt"></i></button></div><div class="form-group"><label>Text Data</label><textarea class="form-control text-data-input" rows="5"></textarea></div><div class="form-group"><label>Styles (JSON)</label><textarea class="form-control style-json-input" rows="3"></textarea></div></div><div class="component image-component template" data-component-strapi-name="coursecontent.image"><div class="component-header"><div><i class="fas fa-grip-vertical drag-handle"></i><strong>Image</strong></div><button class="btn btn-sm btn-danger remove-component-btn"><i class="fas fa-trash-alt"></i></button></div><div class="form-group"><img src="#" alt="Preview" class="media-preview image-preview" style="display:none;" /></div><div class="progress mt-2" style="display: none;"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;">0%</div></div><div class="form-group"><label>Upload New Image</label><input type="file" class="image-file-upload-input form-control" accept="image/*" /></div></div><div class="component video-component template" data-component-strapi-name="coursecontent.video"><div class="component-header"><div><i class="fas fa-grip-vertical drag-handle"></i><strong>Hosted Video</strong></div><button class="btn btn-sm btn-danger remove-component-btn"><i class="fas fa-trash-alt"></i></button></div><div class="row"><div class="col-md-6"><div class="form-group"><label>Video File</label><div class="video-preview-container mt-1 border p-2 rounded bg-light" style="min-height: 150px;"></div><div class="progress mt-2" style="display: none;"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;">0%</div></div><label class="mt-2">Upload/Replace Video</label><input type="file" class="video-file-upload-input form-control" accept="video/*" /></div></div><div class="col-md-6"><div class="form-group"><label>Video Thumbnail</label><img src="#" alt="Thumb" class="media-preview thumbnail-preview" style="display:none;" /><div class="progress mt-2" style="display: none;"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;">0%</div></div><label class="mt-2">Upload/Replace Thumbnail</label><input type="file" class="thumbnail-file-upload-input form-control" accept="image/*" /></div></div></div></div><div class="component external-video-component template" data-component-strapi-name="coursecontent.external-video"><div class="component-header"><div><i class="fas fa-grip-vertical drag-handle"></i><strong>External Video</strong></div><button class="btn btn-sm btn-danger remove-component-btn"><i class="fas fa-trash-alt"></i></button></div><div class="form-group"><label>URL (e.g., YouTube)</label><input type="text" class="external-video-url-input form-control" /></div><div class="form-group"><label>Caption</label><input type="text" class="external-video-caption-input form-control" /></div><div class="video-preview-container my-2 border p-2 rounded bg-light" style="min-height: 150px;"></div><div class="form-group"><label>Thumbnail</label><img src="#" alt="Thumb" class="media-preview thumbnail-preview" style="display:none;" /><div class="progress mt-2" style="display: none;"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;">0%</div></div><label class="mt-2">Upload/Replace Thumbnail</label><input type="file" class="thumbnail-file-upload-input form-control" accept="image/*" /></div></div><div class="component quiz-component template" data-component-strapi-name="coursecontent.quiz"><div class="component-header"><div><i class="fas fa-grip-vertical drag-handle"></i><strong>Quiz</strong></div><button class="btn btn-sm btn-danger remove-component-btn"><i class="fas fa-trash-alt"></i></button></div><div class="form-group"><label>Question</label><input type="text" class="quiz-question-input form-control" /></div><div class="form-group"><label>Options (JSON)</label><textarea class="quiz-options-input form-control" rows="4"></textarea></div><div class="form-group"><label>Correct Answer</label><input type="text" class="quiz-correct-answer-input form-control" /></div></div><div class="component pagebreaker-component template" data-component-strapi-name="coursecontent.pagebreaker"><div class="component-header"><div><i class="fas fa-grip-vertical drag-handle"></i><strong>Page Break</strong></div><button class="btn btn-sm btn-danger remove-component-btn"><i class="fas fa-trash-alt"></i></button></div><div class="alert alert-info text-center">--- Page Break ---</div></div></div>
+        <div class="modal fade" id="addComponentModal" tabindex="-1" aria-hidden="true">
+        	<div class="modal-dialog modal-dialog-centered modal-lg">
+        		<div class="modal-content">
+        			<div class="modal-header">
+        				<h5 class="modal-title">Pick a Component</h5>
+        				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        			</div>
+        			<div class="modal-body d-flex justify-content-center flex-wrap">
+        				<button class="component-picker-button" data-type="text"><i class="fas fa-paragraph"></i><span>Text</span></button>
+        				<button class="component-picker-button" data-type="image"><i class="fas fa-image"></i><span>Image</span></button>
+        				<button class="component-picker-button" data-type="video"><i class="fas fa-video"></i><span>Hosted Video</span></button>
+        				<button class="component-picker-button" data-type="external-video"><i class="fas fa-link"></i><span>External Video</span></button>
+        				<button class="component-picker-button" data-type="quiz"><i class="fas fa-question-circle"></i><span>Quiz</span></button>
+        				<button class="component-picker-button" data-type="pagebreaker"><i class="fas fa-arrows-alt-h"></i><span>Page Break</span></button>
+        			</div>
+        		</div>
+        	</div>
+        </div>
+        <div id="component-templates" style="display: none;">
+        	<div class="component text-component template" data-component-strapi-name="coursecontent.text">
+        		<div class="component-header">
+        			<div>
+        				<i class="fas fa-grip-vertical drag-handle"></i>
+        				<strong>Text Block</strong>
+        			</div>
+        			<button class="btn btn-sm btn-danger remove-component-btn"><i class="fas fa-trash-alt"></i></button>
+       			</div>
+       			<div class="form-group">
+       				<label>Text Data</label><textarea class="form-control text-data-input" rows="5"></textarea>
+      			</div>
+      			<div class="form-group">
+      				<label>Styles (JSON)</label><textarea class="form-control style-json-input" rows="3"></textarea>
+     			</div>
+     		</div>
+     		<div class="component image-component template" data-component-strapi-name="coursecontent.image">
+     			<div class="component-header">
+     				<div>
+     					<i class="fas fa-grip-vertical drag-handle"></i><strong>Image</strong>
+     				</div>
+     				<button class="btn btn-sm btn-danger remove-component-btn"><i class="fas fa-trash-alt"></i></button>
+     			</div>
+     			<div class="form-group">
+     				<img src="#" alt="Preview" class="media-preview image-preview" style="display:none;" />
+     			</div>
+     			<div class="progress mt-2" style="display: none;">
+     				<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;">0%</div>
+     			</div>
+     			<div class="form-group">
+     				<label>Upload New Image</label>
+     				<input type="file" class="image-file-upload-input form-control" accept="image/*" />
+     			</div>
+    		</div>
+    		<div class="component video-component template" data-component-strapi-name="coursecontent.video">
+    			<div class="component-header">
+    				<div><i class="fas fa-grip-vertical drag-handle"></i><strong>Hosted Video</strong></div>
+    				<button class="btn btn-sm btn-danger remove-component-btn"><i class="fas fa-trash-alt"></i></button>
+    			</div>
+    			<div class="row">
+    				<div class="col-md-6">
+	    				<div class="form-group">
+	    					<label>Video File</label>
+	    					<div class="video-preview-container mt-1 border p-2 rounded bg-light" style="min-height: 150px;"></div>
+	    					<div class="progress mt-2" style="display: none;">
+	    						<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;">0%</div>
+	    					</div>
+	    					<label class="mt-2">Upload/Replace Video</label>
+	    					<input type="file" class="video-file-upload-input form-control" accept="video/*" />
+	    				</div>
+    				</div>
+	    			<div class="col-md-6">
+	    				<div class="form-group">
+	    					<label>Video Thumbnail</label>
+	    					<img src="#" alt="Thumb" class="media-preview thumbnail-preview" style="display:none;" />
+	    					<div class="progress mt-2" style="display: none;">
+	    						<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;">0%</div>
+	    					</div>
+	    					<label class="mt-2">Upload/Replace Thumbnail</label>
+	    					<input type="file" class="thumbnail-file-upload-input form-control" accept="image/*" />
+	    				</div>
+	    			</div>
+    			</div>
+    		</div>
+    		<div class="component external-video-component template" data-component-strapi-name="coursecontent.external-video">
+    			<div class="component-header">
+	    			<div>
+	    				<i class="fas fa-grip-vertical drag-handle"></i>
+	    				<strong>External Video</strong>
+	    			</div>
+	    			<button class="btn btn-sm btn-danger remove-component-btn"><i class="fas fa-trash-alt"></i></button>
+    			</div>
+    			<div class="form-group">
+    				<label>URL (e.g., YouTube)</label>
+    				<input type="text" class="external-video-url-input form-control" />
+    			</div>
+    			<div class="form-group">
+    				<label>Caption</label>
+    				<input type="text" class="external-video-caption-input form-control" />
+    			</div>
+    			<div class="video-preview-container my-2 border p-2 rounded bg-light" style="min-height: 150px;"></div>
+    			<!-- 
+    			<div class="form-group">
+    				<label>Thumbnail</label>
+    				<img src="#" alt="Thumb" class="media-preview thumbnail-preview" style="display:none;" />
+    				<div class="progress mt-2" style="display: none;">
+    					<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;">0%</div>
+    				</div>
+    				<label class="mt-2">Upload/Replace Thumbnail</label>
+    				<input type="file" class="thumbnail-file-upload-input form-control" accept="image/*" />
+    			</div>
+    			 -->
+    		</div>
+    		<div class="component quiz-component template" data-component-strapi-name="coursecontent.quiz"><div class="component-header"><div><i class="fas fa-grip-vertical drag-handle"></i><strong>Quiz</strong></div><button class="btn btn-sm btn-danger remove-component-btn"><i class="fas fa-trash-alt"></i></button></div><div class="form-group"><label>Question</label><input type="text" class="quiz-question-input form-control" /></div><div class="form-group"><label>Options (JSON)</label><textarea class="quiz-options-input form-control" rows="4"></textarea></div><div class="form-group"><label>Correct Answer</label><input type="text" class="quiz-correct-answer-input form-control" /></div></div><div class="component pagebreaker-component template" data-component-strapi-name="coursecontent.pagebreaker"><div class="component-header"><div><i class="fas fa-grip-vertical drag-handle"></i><strong>Page Break</strong></div><button class="btn btn-sm btn-danger remove-component-btn"><i class="fas fa-trash-alt"></i></button></div><div class="alert alert-info text-center">--- Page Break ---</div></div></div>
     </div>
     <div th:replace="~{fragments/footer :: footer}"></div>
 
