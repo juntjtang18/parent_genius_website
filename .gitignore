@@ -4,6 +4,7 @@ users.pwd
 *.log
 mvnw
 mvnw.cmd
+bin/
 
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
