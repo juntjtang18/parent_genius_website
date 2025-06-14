@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>New Course</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="container mt-5">
+        <div class="card w-75 mx-auto">
+            <div class="card-header">
+                <h2 class="my-3">Create a New Course</h2>
+            </div>
+            <div class="card-body p-4">
+                <div id="alert-container"></div>
+                <form id="new-course-form" enctype="multipart/form-data" novalidate>
+                    <div class="mb-3">
+                        <label for="course-title" class="form-label"><strong>Course Title</strong></label>
+                        <input type="text" class="form-control form-control-lg" id="course-title" required>
+                        <div class="form-text">Enter the title for your new course. You can add content after creation.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="icon-image" class="form-label"><strong>Icon Image (Optional)</strong></label>
+                        <input type="file" class="form-control form-control-lg" id="icon-image" name="icon_image" accept="image/*">
+                        <div class="form-text">Upload an image for the course icon (e.g., PNG, JPEG).</div>
+                    </div>
+                    <hr class="my-4">
+                    <button type="submit" id="save-button" class="btn btn-primary btn-lg">
+                        <i class="fas fa-save me-2"></i>Save and Continue to Edit
+                    </button>
+                    <a th:href="@{/course-list}" class="btn btn-secondary btn-lg">
+                        <i class="fas fa-times me-2"></i>Cancel
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const strapiApiUrl = /*[[${strapiApiUrl}]]*/ '/api/strapi';
+        const strapiToken = /*[[${strapiToken}]]*/ '';
+
+        document.getElementById('new-course-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const saveButton = document.getElementById('save-button');
+            const courseTitleInput = document.getElementById('course-title');
+            const iconImageInput = document.getElementById('icon-image');
+            const title = courseTitleInput.value.trim();
+            const iconImage = iconImageInput.files[0];
+
+            if (!title) {
+                showAlert('Course title cannot be empty.', 'warning');
+                return;
+            }
+
+            if (iconImage && !['image/png', 'image/jpeg', 'image/jpg', 'image/gif'].includes(iconImage.type)) {
+                showAlert('Please select a valid image file (e.g., PNG, JPEG).', 'warning');
+                return;
+            }
+
+            saveButton.disabled = true;
+            saveButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
+
+            const formData = new FormData();
+            formData.append('data', JSON.stringify({ title }));
+            if (iconImage) {
+                formData.append('files.icon_image', iconImage);
+            }
+
+            fetch(`${strapiApiUrl}/courses`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': strapiToken
+                },
+                body: formData
+            })
+            .then(response => {
+                if (response.status === 401) {
+                    window.location.href = '/signin?error=unauthenticated';
+                    throw new Error('User not authenticated');
+                }
+                if (!response.ok) {
+                    return response.json().then(err => {
+                        const errorMessage = err.error?.message || `HTTP error! status: ${response.status}`;
+                        throw new Error(errorMessage);
+                    });
+                }
+                return response.json();
+            })
+            .then(responseBody => {
+                const newCourseId = responseBody.data.id;
+                window.location.href = `/courses/${newCourseId}/edit`;
+            })
+            .catch(error => {
+                showAlert(`Error creating course: ${error.message}`, 'danger');
+                saveButton.disabled = false;
+                saveButton.innerHTML = '<i class="fas fa-save me-2"></i>Save and Continue to Edit';
+                console.error('Error creating course:', error);
+            });
+        });
+
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alert-container');
+            const alert = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+            alertContainer.innerHTML = alert;
+        }
+        /*]]>*/
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -20,6 +20,22 @@
         .component-picker-button:hover { background-color: #f8f9fa; border-color: #0d6efd; box-shadow: 0 0 10px rgba(13,110,253,.2); }
         .component-picker-button i { font-size: 2.2em; margin-bottom: 10px; color: #0d6efd; }
         .form-group { margin-bottom: 1rem; }
+        .component-actions { display: flex; gap: 5px; }
+        .btn-insert, .btn-move, .action-btn { 
+            border: none; 
+            background: none; 
+            cursor: pointer; 
+            padding: 5px; 
+            font-size: 1rem; 
+            color: #6c757d; 
+            transition: color 0.2s; 
+        }
+        .btn-insert:hover, .btn-move:hover { color: #0d6efd; }
+        .action-btn:hover { color: #dc3545; }
+        .btn-insert:disabled, .btn-move:disabled { 
+            color: #adb5bd; 
+            cursor: not-allowed; 
+        }
     </style>
 </head>
 <body>
@@ -35,6 +51,15 @@
             </div>
             <div class="course-editor">
                  <div class="form-group"><label for="course-title-main"><strong>Course Title</strong></label><input type="text" id="course-title-main" class="form-control form-control-lg" /></div>
+                 <div class="form-group">
+                     <label for="icon-image" class="form-label"><strong>Icon Image (Optional)</strong></label>
+                     <input type="file" class="form-control form-control-lg" id="icon-image" name="icon_image" accept="image/*">
+                     <img src="#" alt="Icon Preview" class="media-preview icon-image-preview" style="display:none;" />
+                     <div class="progress mt-2" style="display: none;">
+                         <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;">0%</div>
+                     </div>
+                     <div class="form-text">Upload an image for the course icon (e.g., PNG, JPEG).</div>
+                 </div>
                 <div class="form-group"><label for="course-translations-json"><strong>Translations (JSON)</strong></label><textarea id="course-translations-json" class="form-control" rows="3"></textarea></div>
                 <h3 class="mt-5 mb-3">Course Content</h3>
                 <div id="course-content-area" class="mt-1"></div>
@@ -69,7 +94,13 @@
         				<i class="fas fa-grip-vertical drag-handle"></i>
         				<strong>Text Block</strong>
         			</div>
-        			<button class="btn btn-sm btn-danger remove-component-btn"><i class="fas fa-trash-alt"></i></button>
+        			<div class="component-actions">
+                        <button class="btn-insert insert-before-btn" title="Insert component before"><i class="fas fa-chevron-circle-up"></i></button>
+                        <button class="btn-insert insert-after-btn" title="Insert component after"><i class="fas fa-chevron-circle-down"></i></button>
+                        <button class="btn-move move-up" title="Move up"><i class="fas fa-arrow-up"></i></button>
+                        <button class="btn-move move-down" title="Move down"><i class="fas fa-arrow-down"></i></button>
+                        <button class="action-btn remove-component-btn" title="Remove component"><i class="fas fa-trash-alt"></i></button>
+                    </div>
        			</div>
        			<div class="form-group">
        				<label>Text Data</label><textarea class="form-control text-data-input" rows="5"></textarea>
@@ -83,7 +114,13 @@
      				<div>
      					<i class="fas fa-grip-vertical drag-handle"></i><strong>Image</strong>
      				</div>
-     				<button class="btn btn-sm btn-danger remove-component-btn"><i class="fas fa-trash-alt"></i></button>
+     				<div class="component-actions">
+                        <button class="btn-insert insert-before-btn" title="Insert component before"><i class="fas fa-chevron-circle-up"></i></button>
+                        <button class="btn-insert insert-after-btn" title="Insert component after"><i class="fas fa-chevron-circle-down"></i></button>
+                        <button class="btn-move move-up" title="Move up"><i class="fas fa-arrow-up"></i></button>
+                        <button class="btn-move move-down" title="Move down"><i class="fas fa-arrow-down"></i></button>
+                        <button class="action-btn remove-component-btn" title="Remove component"><i class="fas fa-trash-alt"></i></button>
+                    </div>
      			</div>
      			<div class="form-group">
      				<img src="#" alt="Preview" class="media-preview image-preview" style="display:none;" />
@@ -99,7 +136,13 @@
     		<div class="component video-component template" data-component-strapi-name="coursecontent.video">
     			<div class="component-header">
     				<div><i class="fas fa-grip-vertical drag-handle"></i><strong>Hosted Video</strong></div>
-    				<button class="btn btn-sm btn-danger remove-component-btn"><i class="fas fa-trash-alt"></i></button>
+    				<div class="component-actions">
+                        <button class="btn-insert insert-before-btn" title="Insert component before"><i class="fas fa-chevron-circle-up"></i></button>
+                        <button class="btn-insert insert-after-btn" title="Insert component after"><i class="fas fa-chevron-circle-down"></i></button>
+                        <button class="btn-move move-up" title="Move up"><i class="fas fa-arrow-up"></i></button>
+                        <button class="btn-move move-down" title="Move down"><i class="fas fa-arrow-down"></i></button>
+                        <button class="action-btn remove-component-btn" title="Remove component"><i class="fas fa-trash-alt"></i></button>
+                    </div>
     			</div>
     			<div class="row">
     				<div class="col-md-6">
@@ -132,7 +175,13 @@
 	    				<i class="fas fa-grip-vertical drag-handle"></i>
 	    				<strong>External Video</strong>
 	    			</div>
-	    			<button class="btn btn-sm btn-danger remove-component-btn"><i class="fas fa-trash-alt"></i></button>
+	    			<div class="component-actions">
+                        <button class="btn-insert insert-before-btn" title="Insert component before"><i class="fas fa-chevron-circle-up"></i></button>
+                        <button class="btn-insert insert-after-btn" title="Insert component after"><i class="fas fa-chevron-circle-down"></i></button>
+                        <button class="btn-move move-up" title="Move up"><i class="fas fa-arrow-up"></i></button>
+                        <button class="btn-move move-down" title="Move down"><i class="fas fa-arrow-down"></i></button>
+                        <button class="action-btn remove-component-btn" title="Remove component"><i class="fas fa-trash-alt"></i></button>
+                    </div>
     			</div>
     			<div class="form-group">
     				<label>URL (e.g., YouTube)</label>
@@ -143,19 +192,36 @@
     				<input type="text" class="external-video-caption-input form-control" />
     			</div>
     			<div class="video-preview-container my-2 border p-2 rounded bg-light" style="min-height: 150px;"></div>
-    			<!-- 
-    			<div class="form-group">
-    				<label>Thumbnail</label>
-    				<img src="#" alt="Thumb" class="media-preview thumbnail-preview" style="display:none;" />
-    				<div class="progress mt-2" style="display: none;">
-    					<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;">0%</div>
-    				</div>
-    				<label class="mt-2">Upload/Replace Thumbnail</label>
-    				<input type="file" class="thumbnail-file-upload-input form-control" accept="image/*" />
-    			</div>
-    			 -->
     		</div>
-    		<div class="component quiz-component template" data-component-strapi-name="coursecontent.quiz"><div class="component-header"><div><i class="fas fa-grip-vertical drag-handle"></i><strong>Quiz</strong></div><button class="btn btn-sm btn-danger remove-component-btn"><i class="fas fa-trash-alt"></i></button></div><div class="form-group"><label>Question</label><input type="text" class="quiz-question-input form-control" /></div><div class="form-group"><label>Options (JSON)</label><textarea class="quiz-options-input form-control" rows="4"></textarea></div><div class="form-group"><label>Correct Answer</label><input type="text" class="quiz-correct-answer-input form-control" /></div></div><div class="component pagebreaker-component template" data-component-strapi-name="coursecontent.pagebreaker"><div class="component-header"><div><i class="fas fa-grip-vertical drag-handle"></i><strong>Page Break</strong></div><button class="btn btn-sm btn-danger remove-component-btn"><i class="fas fa-trash-alt"></i></button></div><div class="alert alert-info text-center">--- Page Break ---</div></div></div>
+    		<div class="component quiz-component template" data-component-strapi-name="coursecontent.quiz">
+                <div class="component-header">
+                    <div><i class="fas fa-grip-vertical drag-handle"></i><strong>Quiz</strong></div>
+                    <div class="component-actions">
+                        <button class="btn-insert insert-before-btn" title="Insert component before"><i class="fas fa-chevron-circle-up"></i></button>
+                        <button class="btn-insert insert-after-btn" title="Insert component after"><i class="fas fa-chevron-circle-down"></i></button>
+                        <button class="btn-move move-up" title="Move up"><i class="fas fa-arrow-up"></i></button>
+                        <button class="btn-move move-down" title="Move down"><i class="fas fa-arrow-down"></i></button>
+                        <button class="action-btn remove-component-btn" title="Remove component"><i class="fas fa-trash-alt"></i></button>
+                    </div>
+                </div>
+                <div class="form-group"><label>Question</label><input type="text" class="quiz-question-input form-control" /></div>
+                <div class="form-group"><label>Options (JSON)</label><textarea class="quiz-options-input form-control" rows="4"></textarea></div>
+                <div class="form-group"><label>Correct Answer</label><input type="text" class="quiz-correct-answer-input form-control" /></div>
+            </div>
+            <div class="component pagebreaker-component template" data-component-strapi-name="coursecontent.pagebreaker">
+                <div class="component-header">
+                    <div><i class="fas fa-grip-vertical drag-handle"></i><strong>Page Break</strong></div>
+                    <div class="component-actions">
+                        <button class="btn-insert insert-before-btn" title="Insert component before"><i class="fas fa-chevron-circle-up"></i></button>
+                        <button class="btn-insert insert-after-btn" title="Insert component after"><i class="fas fa-chevron-circle-down"></i></button>
+                        <button class="btn-move move-up" title="Move up"><i class="fas fa-arrow-up"></i></button>
+                        <button class="btn-move move-down" title="Move down"><i class="fas fa-arrow-down"></i></button>
+                        <button class="action-btn remove-component-btn" title="Remove component"><i class="fas fa-trash-alt"></i></button>
+                    </div>
+                </div>
+                <div class="alert alert-info text-center">--- Page Break ---</div>
+            </div>
+        </div>
     </div>
     <div th:replace="~{fragments/footer :: footer}"></div>
 
@@ -171,8 +237,19 @@
     const AUTH_TOKEN = /*[[${strapiToken}]]*/ 'Bearer default-token';
     const COURSE_ID = /*[[${courseId}]]*/ '1';
     let bsModal;
-    
-    // This is the function that handles the two-stage progress.
+    let currentInsertTarget = null;
+    let insertPosition = null;
+
+    function updateMoveButtons() {
+        $('#course-content-area .component:not(.template)').each(function(index) {
+            const $component = $(this);
+            const isFirst = index === 0;
+            const isLast = index === $('#course-content-area .component:not(.template)').length - 1;
+            $component.find('.move-up').prop('disabled', isFirst);
+            $component.find('.move-down').prop('disabled', isLast);
+        });
+    }
+
     function uploadFileToStrapi(file, onProgress) {
         return new Promise((resolve, reject) => {
             const formData = new FormData();
@@ -184,7 +261,6 @@
             xhr.upload.onprogress = (event) => {
                 if (event.lengthComputable) {
                     const percentComplete = Math.round((event.loaded / event.total) * 100);
-                    // This calls the handler in handleFileUpload to update the UI
                     onProgress(percentComplete);
                 }
             };
@@ -205,31 +281,77 @@
         loadCourseContent();
         new Sortable(document.getElementById('course-content-area'), { animation: 150, handle: '.drag-handle' });
 
-        $('.component-picker-button').on('click', function() { renderComponent($(this).data('type')); bsModal.hide(); });
-        $('#course-content-area').on('click', '.remove-component-btn', function() { $(this).closest('.component').remove(); });
-        
-        // This function now manages the two-stage progress bar text.
+        $('.component-picker-button').on('click', function() { 
+            const componentType = $(this).data('type');
+            if (currentInsertTarget && insertPosition) {
+                renderComponent(componentType);
+                const $newComponent = $('#course-content-area .component:not(.template)').last();
+                if (insertPosition === 'before') {
+                    $newComponent.insertBefore(currentInsertTarget);
+                } else {
+                    $newComponent.insertAfter(currentInsertTarget);
+                }
+                currentInsertTarget = null;
+                insertPosition = null;
+            } else {
+                renderComponent(componentType);
+            }
+            bsModal.hide();
+        });
+
+        $('#course-content-area').on('click', '.remove-component-btn', function() { 
+            $(this).closest('.component').remove(); 
+            updateMoveButtons();
+        });
+
+        $('#course-content-area').on('click', '.insert-before-btn', function() {
+            currentInsertTarget = $(this).closest('.component');
+            insertPosition = 'before';
+            bsModal.show();
+        });
+
+        $('#course-content-area').on('click', '.insert-after-btn', function() {
+            currentInsertTarget = $(this).closest('.component');
+            insertPosition = 'after';
+            bsModal.show();
+        });
+
+        $('#course-content-area').on('click', '.move-up', function() {
+            const $component = $(this).closest('.component');
+            const $prev = $component.prev('.component:not(.template)');
+            if ($prev.length) {
+                $component.insertBefore($prev);
+                updateMoveButtons();
+            }
+        });
+
+        $('#course-content-area').on('click', '.move-down', function() {
+            const $component = $(this).closest('.component');
+            const $next = $component.next('.component:not(.template)');
+            if ($next.length) {
+                $component.insertAfter($next);
+                updateMoveButtons();
+            }
+        });
+
         async function handleFileUpload(context, mediaType) {
             const file = context.files[0];
             if (!file) return;
-            const $component = $(context).closest('.component');
-            const $progress = $component.find('.progress');
+            const $container = $(context).closest('.component, .form-group');
+            const $progress = $container.find('.progress');
             const $progressBar = $progress.find('.progress-bar');
             
             $(context).prop('disabled', true);
             $('#save-course-btn').prop('disabled', true);
             $progress.show();
-            // Reset progress bar style for new uploads
             $progressBar.removeClass('bg-info').addClass('progress-bar-animated');
             
             try {
-                // This is the callback function that will be executed by uploadFileToStrapi
                 const onProgress = (percent) => {
                     $progressBar.css('width', percent + '%');
                     if (percent < 100) {
                         $progressBar.text(`Uploading: ${percent}%`);
                     } else {
-                        // Stage 2: Browser has sent the file, now we wait for the server to finish.
                         $progressBar.addClass('bg-info').removeClass('progress-bar-animated');
                         $progressBar.text('Processing... Please Wait');
                     }
@@ -240,14 +362,17 @@
                 showStatusMessage('Upload successful!', 'success');
 
                 if (mediaType === 'image') {
-                    $component.attr('data-media-id', uploadedFile.id);
-                    $component.find('.image-preview').attr('src', getFullStrapiUrl(uploadedFile.url)).show();
+                    $container.attr('data-media-id', uploadedFile.id);
+                    $container.find('.image-preview').attr('src', getFullStrapiUrl(uploadedFile.url)).show();
                 } else if (mediaType === 'video') {
-                    $component.attr('data-video-media-id', uploadedFile.id);
-                    updateVideoPreview($component.find('.video-preview-container'), uploadedFile.url);
+                    $container.attr('data-video-media-id', uploadedFile.id);
+                    updateVideoPreview($container.find('.video-preview-container'), uploadedFile.url);
                 } else if (mediaType === 'thumbnail') {
-                    $component.attr('data-thumbnail-media-id', uploadedFile.id);
-                    $component.find('.thumbnail-preview').attr('src', getFullStrapiUrl(uploadedFile.url)).show();
+                    $container.attr('data-thumbnail-media-id', uploadedFile.id);
+                    $container.find('.thumbnail-preview').attr('src', getFullStrapiUrl(uploadedFile.url)).show();
+                } else if (mediaType === 'icon-image') {
+                    $('#icon-image').attr('data-icon-media-id', uploadedFile.id);
+                    $container.find('.icon-image-preview').attr('src', getFullStrapiUrl(uploadedFile.url)).show();
                 }
             } catch (error) {
                 showStatusMessage(`Upload failed. See browser console for details.`, 'danger');
@@ -261,17 +386,174 @@
         $('#course-content-area').on('change', '.image-file-upload-input', function() { handleFileUpload(this, 'image'); });
         $('#course-content-area').on('change', '.video-file-upload-input', function() { handleFileUpload(this, 'video'); });
         $('#course-content-area').on('change', '.thumbnail-file-upload-input', function() { handleFileUpload(this, 'thumbnail'); });
+        $('#icon-image').on('change', function() { handleFileUpload(this, 'icon-image'); });
         $('#course-content-area').on('input change', '.external-video-url-input', function() { updateVideoPreview($(this).closest('.component').find('.video-preview-container'), $(this).val().trim()); });
         $('#save-course-btn').on('click', saveCourse);
+
+        // Initialize move buttons state after content is loaded
+        $('#course-content-area').on('sortupdate', updateMoveButtons);
     });
 
-    // --- Other functions are unchanged and included for completeness ---
-    function showStatusMessage(message, type = 'danger') { const alertClass = `alert-${type}`; const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'; const $alert = $(`<div class="alert ${alertClass} alert-dismissible fade show" role="alert"><i class="fas ${icon} me-2"></i>${message}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>`); $('#status-message-container').append($alert); setTimeout(() => $alert.fadeOut(500, () => $alert.remove()), 6000); }
-    function getFullStrapiUrl(path) { if (!path || path.startsWith('http')) return path; return new URL(path, STRAPI_ROOT_URL).href; }
-    function updateVideoPreview($previewContainer, url) { $previewContainer.empty(); if (!url) return; const videoIdMatch = url.match(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/); if (videoIdMatch && videoIdMatch[2].length === 11) { $previewContainer.html(`<iframe width="100%" height="200" src="https://www.youtube.com/embed/${videoIdMatch[2]}" frameborder="0" allowfullscreen class="media-preview"></iframe>`); } else { $previewContainer.html(`<video controls class="media-preview" src="${getFullStrapiUrl(url)}" style="max-height: 250px;"></video>`); } }
-    function renderComponent(componentType, data = {}) { const $template = $(`#component-templates .${componentType}-component.template`).clone().removeClass('template'); if (data.id) $template.attr('data-strapi-component-id', data.id); switch (componentType) { case 'text': $template.find('.text-data-input').val(data.data || ''); $template.find('.style-json-input').val(JSON.stringify(data.styles || {}, null, 2)); break; case 'image': const imageUrl = data.image_file?.data?.attributes?.url; if (imageUrl) { $template.find('.image-preview').attr('src', getFullStrapiUrl(imageUrl)).show(); $template.attr('data-media-id', data.image_file.data.id); } break; case 'video': if (data.video_file?.data) { updateVideoPreview($template.find('.video-preview-container'), data.video_file.data.attributes.url); $template.attr('data-video-media-id', data.video_file.data.id); } if (data.thumbnail?.data) { $template.find('.thumbnail-preview').attr('src', getFullStrapiUrl(data.thumbnail.data.attributes.url)).show(); $template.attr('data-thumbnail-media-id', data.thumbnail.data.id); } break; case 'external-video': const externalUrl = data.external_url || ''; $template.find('.external-video-url-input').val(externalUrl); $template.find('.external-video-caption-input').val(data.caption || ''); if (externalUrl) updateVideoPreview($template.find('.video-preview-container'), externalUrl); if (data.thumbnail?.data) { $template.find('.thumbnail-preview').attr('src', getFullStrapiUrl(data.thumbnail.data.attributes.url)).show(); $template.attr('data-thumbnail-media-id', data.thumbnail.data.id); } break; case 'quiz': $template.find('.quiz-question-input').val(data.question || ''); $template.find('.quiz-options-input').val(JSON.stringify(data.options || [], null, 2)); $template.find('.quiz-correct-answer-input').val(data.correctAnswer || ''); break; } $('#course-content-area').append($template); }
-    async function loadCourseContent() { try { const populateQuery = 'populate[content][populate]=image_file,video_file,thumbnail'; const fetchUrl = `${API_PROXY_URL}/courses/${COURSE_ID}?${populateQuery}`; const response = await fetch(fetchUrl, { headers: { 'Authorization': AUTH_TOKEN } }); if (!response.ok) throw new Error(`Failed to load course (Status: ${response.status})`); const strapiResponse = await response.json(); if (!strapiResponse.data) throw new Error("Course data object not found in API response."); const course = strapiResponse.data.attributes; $('#course-title-main').val(course.title || '');  $('#course-page-title').text('Edit Course: ' + (course.title || 'Untitled')); $('#course-translations-json').val(JSON.stringify(course.translations || {}, null, 2)); $('#course-content-area').empty(); (course.content || []).forEach(c => { const componentType = c.__component.split('.')[1].replace(/_/g, '-'); renderComponent(componentType, c); }); } catch (error) { showStatusMessage(`Could not load course. ${error.message}`, 'danger'); } }
-    async function saveCourse() { $('#save-course-btn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...'); const componentsData = []; let hasError = false; $('#course-content-area .component:not(.template)').each(function() { if (hasError) return; const $c = $(this); const type = $c.data('component-strapi-name'); let payload = { __component: type }; if ($c.attr('data-strapi-component-id')) payload.id = parseInt($c.attr('data-strapi-component-id'), 10); try { if ($c.hasClass('text-component')) { payload.data = $c.find('.text-data-input').val(); payload.styles = JSON.parse($c.find('.style-json-input').val() || '{}'); } else if ($c.hasClass('image-component')) { payload.image_file = $c.attr('data-media-id') ? parseInt($c.attr('data-media-id'), 10) : null; } else if ($c.hasClass('video-component')) { payload.video_file = $c.attr('data-video-media-id') ? parseInt($c.attr('data-video-media-id'), 10) : null; payload.thumbnail = $c.attr('data-thumbnail-media-id') ? parseInt($c.attr('data-thumbnail-media-id'), 10) : null; } else if ($c.hasClass('external-video-component')) { payload.external_url = $c.find('.external-video-url-input').val().trim(); payload.caption = $c.find('.external-video-caption-input').val().trim(); payload.thumbnail = $c.attr('data-thumbnail-media-id') ? parseInt($c.attr('data-thumbnail-media-id'), 10) : null; } else if ($c.hasClass('quiz-component')) { payload.question = $c.find('.quiz-question-input').val(); payload.options = JSON.parse($c.find('.quiz-options-input').val() || '[]'); payload.correctAnswer = $c.find('.quiz-correct-answer-input').val(); } else if ($c.hasClass('pagebreaker-component')) { payload.backbutton = true; payload.nextbutton = true; } } catch (e) { showStatusMessage(`Error in component data: ${e.message}`, 'danger'); hasError = true; } componentsData.push(payload); }); if (hasError) { $('#save-course-btn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save Course'); return; } try { const finalPayload = { data: { title: $('#course-title-main').val().trim(), content: componentsData, translations: JSON.parse($('#course-translations-json').val() || '{}') }}; const response = await fetch(`${API_PROXY_URL}/courses/${COURSE_ID}`, { method: 'PUT', headers: { 'Authorization': AUTH_TOKEN, 'Content-Type': 'application/json' }, body: JSON.stringify(finalPayload) }); if (!response.ok) throw new Error(`Save failed: ${response.statusText} ${await response.text()}`); showStatusMessage('Course saved successfully!', 'success'); setTimeout(loadCourseContent, 1200); } catch (error) { showStatusMessage(`Save failed: ${error.message}`, 'danger'); } finally { $('#save-course-btn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save Course'); } }
+    function showStatusMessage(message, type = 'danger') { 
+        const alertClass = `alert-${type}`; 
+        const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'; 
+        const $alert = $(`<div class="alert ${alertClass} alert-dismissible fade show" role="alert"><i class="fas ${icon} me-2"></i>${message}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>`); 
+        $('#status-message-container').append($alert); 
+        setTimeout(() => $alert.fadeOut(500, () => $alert.remove()), 6000); 
+    }
+    function getFullStrapiUrl(path) { 
+        if (!path || path.startsWith('http')) return path; 
+        return new URL(path, STRAPI_ROOT_URL).href; 
+    }
+    function updateVideoPreview($previewContainer, url) { 
+        $previewContainer.empty(); 
+        if (!url) return; 
+        const videoIdMatch = url.match(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/); 
+        if (videoIdMatch && videoIdMatch[2].length === 11) { 
+            $previewContainer.html(`<iframe width="100%" height="200" src="https://www.youtube.com/embed/${videoIdMatch[2]}" frameborder="0" allowfullscreen class="media-preview"></iframe>`); 
+        } else { 
+            $previewContainer.html(`<video controls class="media-preview" src="${getFullStrapiUrl(url)}" style="max-height: 250px;"></video>`); 
+        } 
+    }
+    function renderComponent(componentType, data = {}) { 
+        const $template = $(`#component-templates .${componentType}-component.template`).clone().removeClass('template'); 
+        if (data.id) $template.attr('data-strapi-component-id', data.id); 
+        switch (componentType) { 
+            case 'text': 
+                $template.find('.text-data-input').val(data.data || ''); 
+                $template.find('.style-json-input').val(JSON.stringify(data.styles || {}, null, 2)); 
+                break; 
+            case 'image': 
+                const imageUrl = data.image_file?.data?.attributes?.url; 
+                if (imageUrl) { 
+                    $template.find('.image-preview').attr('src', getFullStrapiUrl(imageUrl)).show(); 
+                    $template.attr('data-media-id', data.image_file.data.id); 
+                } 
+                break; 
+            case 'video': 
+                if (data.video_file?.data) { 
+                    updateVideoPreview($template.find('.video-preview-container'), data.video_file.data.attributes.url); 
+                    $template.attr('data-video-media-id', data.video_file.data.id); 
+                } 
+                if (data.thumbnail?.data) { 
+                    $template.find('.thumbnail-preview').attr('src', getFullStrapiUrl(data.thumbnail.data.attributes.url)).show(); 
+                    $template.attr('data-thumbnail-media-id', data.thumbnail.data.id); 
+                } 
+                break; 
+            case 'external-video': 
+                const externalUrl = data.external_url || ''; 
+                $template.find('.external-video-url-input').val(externalUrl); 
+                $template.find('.external-video-caption-input').val(data.caption || ''); 
+                if (externalUrl) updateVideoPreview($template.find('.video-preview-container'), externalUrl); 
+                if (data.thumbnail?.data) { 
+                    $template.find('.thumbnail-preview').attr('src', getFullStrapiUrl(data.thumbnail.data.attributes.url)).show(); 
+                    $template.attr('data-thumbnail-media-id', data.thumbnail.data.id); 
+                } 
+                break; 
+            case 'quiz': 
+                $template.find('.quiz-question-input').val(data.question || ''); 
+                $template.find('.quiz-options-input').val(JSON.stringify(data.options || [], null, 2)); 
+                $template.find('.quiz-correct-answer-input').val(data.correctAnswer || ''); 
+                break; 
+        } 
+        $('#course-content-area').append($template); 
+        updateMoveButtons();
+    }
+    async function loadCourseContent() { 
+        try { 
+            const populateQuery = 'populate[content][populate]=image_file,video_file,thumbnail,icon_image&populate[icon_image][populate]=*'; 
+            const fetchUrl = `${API_PROXY_URL}/courses/${COURSE_ID}?${populateQuery}`; 
+            const response = await fetch(fetchUrl, { headers: { 'Authorization': AUTH_TOKEN } }); 
+            if (!response.ok) throw new Error(`Failed to load course (Status: ${response.status})`); 
+            const strapiResponse = await response.json(); 
+            if (!strapiResponse.data) throw new Error("Course data object not found in API response."); 
+            const course = strapiResponse.data.attributes; 
+            $('#course-title-main').val(course.title || '');  
+            $('#course-page-title').text('Edit Course: ' + (course.title || 'Untitled')); 
+            $('#course-translations-json').val(JSON.stringify(course.translations || {}, null, 2)); 
+            if (course.icon_image?.data?.attributes?.url) {
+                $('#icon-image').attr('data-icon-media-id', course.icon_image.data.id);
+                $('.icon-image-preview')
+                    .attr('src', getFullStrapiUrl(course.icon_image.data.attributes.url))
+                    .css('display', 'block');
+            } else {
+                $('.icon-image-preview').css('display', 'none');
+            }
+            $('#course-content-area').empty(); 
+            (course.content || []).forEach(c => { 
+                const componentType = c.__component.split('.')[1].replace(/_/g, '-'); 
+                renderComponent(componentType, c); 
+            }); 
+            updateMoveButtons();
+        } catch (error) { 
+            showStatusMessage(`Could not load course. ${error.message}`, 'danger'); 
+            console.error('Load course error:', error);
+        } 
+    }
+    async function saveCourse() { 
+        $('#save-course-btn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...'); 
+        const componentsData = []; 
+        let hasError = false; 
+        $('#course-content-area .component:not(.template)').each(function() { 
+            if (hasError) return; 
+            const $c = $(this); 
+            const type = $c.data('component-strapi-name'); 
+            let payload = { __component: type }; 
+            if ($c.attr('data-strapi-component-id')) payload.id = parseInt($c.attr('data-strapi-component-id'), 10); 
+            try { 
+                if ($c.hasClass('text-component')) { 
+                    payload.data = $c.find('.text-data-input').val(); 
+                    payload.styles = JSON.parse($c.find('.style-json-input').val() || '{}'); 
+                } else if ($c.hasClass('image-component')) { 
+                    payload.image_file = $c.attr('data-media-id') ? parseInt($c.attr('data-media-id'), 10) : null; 
+                } else if ($c.hasClass('video-component')) { 
+                    payload.video_file = $c.attr('data-video-media-id') ? parseInt($c.attr('data-video-media-id'), 10) : null; 
+                    payload.thumbnail = $c.attr('data-thumbnail-media-id') ? parseInt($c.attr('data-thumbnail-media-id'), 10) : null; 
+                } else if ($c.hasClass('external-video-component')) { 
+                    payload.external_url = $c.find('.external-video-url-input').val().trim(); 
+                    payload.caption = $c.find('.external-video-caption-input').val().trim(); 
+                    payload.thumbnail = $c.attr('data-thumbnail-media-id') ? parseInt($c.attr('data-thumbnail-media-id'), 10) : null; 
+                } else if ($c.hasClass('quiz-component')) { 
+                    payload.question = $c.find('.quiz-question-input').val(); 
+                    payload.options = JSON.parse($c.find('.quiz-options-input').val() || '[]'); 
+                    payload.correctAnswer = $c.find('.quiz-correct-answer-input').val(); 
+                } else if ($c.hasClass('pagebreaker-component')) { 
+                    payload.backbutton = true; 
+                    payload.nextbutton = true; 
+                } 
+            } catch (e) { 
+                showStatusMessage(`Error in component data: ${e.message}`, 'danger'); 
+                hasError = true; 
+            } 
+            componentsData.push(payload); 
+        }); 
+        if (hasError) { 
+            $('#save-course-btn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save Course'); 
+            return; 
+        } 
+        try { 
+            const finalPayload = { 
+                data: { 
+                    title: $('#course-title-main').val().trim(), 
+                    content: componentsData, 
+                    translations: JSON.parse($('#course-translations-json').val() || '{}'),
+                    icon_image: $('#icon-image').attr('data-icon-media-id') ? parseInt($('#icon-image').attr('data-icon-media-id'), 10) : null
+                }
+            }; 
+            const response = await fetch(`${API_PROXY_URL}/courses/${COURSE_ID}`, { 
+                method: 'PUT', 
+                headers: { 'Authorization': AUTH_TOKEN, 'Content-Type': 'application/json' }, 
+                body: JSON.stringify(finalPayload) 
+            }); 
+            if (!response.ok) throw new Error(`Save failed: ${response.statusText} ${await response.text()}`); 
+            showStatusMessage('Course saved successfully!', 'success'); 
+            setTimeout(loadCourseContent, 1200); 
+        } catch (error) { 
+            showStatusMessage(`Save failed: ${error.message}`, 'danger'); 
+        } finally { 
+            $('#save-course-btn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save Course'); 
+        } 
+    }
     /*]]>*/
     </script>
 </body>

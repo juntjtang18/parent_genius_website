@@ -13,10 +13,12 @@
     <div th:replace="~{fragments/navbar :: navbar}"></div>
 
     <div class="container mt-5">
-        <h1 class="my-4">Our Courses</h1>
-
-        <div class="mb-4">
-            </div>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="my-0">Our Courses</h1>
+            <a th:href="@{/new-course}" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>New Course
+            </a>
+        </div>
 
         <div id="course-container" class="row">
             <div class="col-12 text-center" id="loading-spinner">
