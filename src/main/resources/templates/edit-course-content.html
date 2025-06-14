@@ -21,205 +21,152 @@
         .component-picker-button i { font-size: 2.2em; margin-bottom: 10px; color: #0d6efd; }
         .form-group { margin-bottom: 1rem; }
         .component-actions { display: flex; gap: 5px; }
-        .btn-insert, .btn-move, .action-btn { 
-            border: none; 
-            background: none; 
-            cursor: pointer; 
-            padding: 5px; 
-            font-size: 1rem; 
-            color: #6c757d; 
-            transition: color 0.2s; 
-        }
+        .btn-insert, .btn-move, .action-btn { border: none; background: none; cursor: pointer; padding: 5px; font-size: 1rem; color: #6c757d; transition: color 0.2s; }
         .btn-insert:hover, .btn-move:hover { color: #0d6efd; }
         .action-btn:hover { color: #dc3545; }
-        .btn-insert:disabled, .btn-move:disabled { 
-            color: #adb5bd; 
-            cursor: not-allowed; 
-        }
+        .btn-insert:disabled, .btn-move:disabled { color: #adb5bd; cursor: not-allowed; }
     </style>
 </head>
 <body>
     <div th:replace="~{fragments/navbar :: navbar}"></div>
+
     <div class="container-fluid main-content">
         <div class="course-panel">
             <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
-                 <h2 id="course-page-title" class="mb-0">Loading Course...</h2>
-                 <div> 
-                    <button class="btn btn-success" id="save-course-btn"><i class="fas fa-save me-2"></i>Save Course</button>
-                    <a th:href="${returnUrl}" class="btn btn-secondary"><i class="fas fa-arrow-left me-2"></i>Back to List</a>
-                 </div>
+                <h2 id="course-page-title" class="mb-0" th:text="#{edit-course.cap1}">Loading Course...</h2>
+                <div>
+                    <button class="btn btn-success" id="save-course-btn"><i class="fas fa-save me-2"></i><span th:text="#{edit-course.cap2}">Save Course</span></button>
+                    <a th:href="${returnUrl}" class="btn btn-secondary"><i class="fas fa-arrow-left me-2"></i><span th:text="#{edit-course.cap3}">Back to List</span></a>
+                </div>
             </div>
             <div class="course-editor">
-                 <div class="form-group"><label for="course-title-main"><strong>Course Title</strong></label><input type="text" id="course-title-main" class="form-control form-control-lg" /></div>
-                 <div class="form-group">
-                     <label for="icon-image" class="form-label"><strong>Icon Image (Optional)</strong></label>
-                     <input type="file" class="form-control form-control-lg" id="icon-image" name="icon_image" accept="image/*">
-                     <img src="#" alt="Icon Preview" class="media-preview icon-image-preview" style="display:none;" />
-                     <div class="progress mt-2" style="display: none;">
-                         <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;">0%</div>
-                     </div>
-                     <div class="form-text">Upload an image for the course icon (e.g., PNG, JPEG).</div>
-                 </div>
-                <div class="form-group"><label for="course-translations-json"><strong>Translations (JSON)</strong></label><textarea id="course-translations-json" class="form-control" rows="3"></textarea></div>
-                <h3 class="mt-5 mb-3">Course Content</h3>
+                <div class="form-group">
+                    <label for="course-title-main"><strong th:text="#{edit-course.cap4}">Course Title</strong></label>
+                    <input type="text" id="course-title-main" class="form-control form-control-lg" />
+                </div>
+                <div class="form-group course-icon-uploader">
+                    <label for="course-icon-input" class="form-label"><strong th:text="#{edit-course.cap5}">Icon Image (Optional)</strong></label>
+                    <input type="file" class="form-control form-control-lg course-icon__file-input" id="course-icon-input" name="icon_image" accept="image/*">
+                    <img src="#" alt="Icon Preview" class="media-preview course-icon__preview" style="display:none;" />
+                    <div class="progress mt-2" style="display: none;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;">0%</div>
+                    </div>
+                    <div class="form-text" th:text="#{edit-course.cap6}">Upload an image for the course icon (e.g., PNG, JPEG).</div>
+                </div>
+                <div class="form-group">
+                    <label for="course-translations-json"><strong th:text="#{edit-course.cap7}">Translations (JSON)</strong></label>
+                    <textarea id="course-translations-json" class="form-control" rows="3"></textarea>
+                </div>
+                <h3 class="mt-5 mb-3" th:text="#{edit-course.cap8}">Course Content</h3>
                 <div id="course-content-area" class="mt-1"></div>
-                <div class="text-center mt-4"><button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#addComponentModal"><i class="fas fa-plus me-2"></i>Add New Component</button></div>
+                <div class="text-center mt-4">
+                    <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#addComponentModal">
+                        <i class="fas fa-plus me-2"></i><span th:text="#{edit-course.cap8}">Add New Component</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
+
     <div id="status-message-container" class="position-fixed bottom-0 start-50 translate-middle-x p-3" style="z-index: 1056;"></div>
+
     <div id="modals-and-templates">
         <div class="modal fade" id="addComponentModal" tabindex="-1" aria-hidden="true">
-        	<div class="modal-dialog modal-dialog-centered modal-lg">
-        		<div class="modal-content">
-        			<div class="modal-header">
-        				<h5 class="modal-title">Pick a Component</h5>
-        				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        			</div>
-        			<div class="modal-body d-flex justify-content-center flex-wrap">
-        				<button class="component-picker-button" data-type="text"><i class="fas fa-paragraph"></i><span>Text</span></button>
-        				<button class="component-picker-button" data-type="image"><i class="fas fa-image"></i><span>Image</span></button>
-        				<button class="component-picker-button" data-type="video"><i class="fas fa-video"></i><span>Hosted Video</span></button>
-        				<button class="component-picker-button" data-type="external-video"><i class="fas fa-link"></i><span>External Video</span></button>
-        				<button class="component-picker-button" data-type="quiz"><i class="fas fa-question-circle"></i><span>Quiz</span></button>
-        				<button class="component-picker-button" data-type="pagebreaker"><i class="fas fa-arrows-alt-h"></i><span>Page Break</span></button>
-        			</div>
-        		</div>
-        	</div>
-        </div>
-        <div id="component-templates" style="display: none;">
-        	<div class="component text-component template" data-component-strapi-name="coursecontent.text">
-        		<div class="component-header">
-        			<div>
-        				<i class="fas fa-grip-vertical drag-handle"></i>
-        				<strong>Text Block</strong>
-        			</div>
-        			<div class="component-actions">
-                        <button class="btn-insert insert-before-btn" title="Insert component before"><i class="fas fa-chevron-circle-up"></i></button>
-                        <button class="btn-insert insert-after-btn" title="Insert component after"><i class="fas fa-chevron-circle-down"></i></button>
-                        <button class="btn-move move-up" title="Move up"><i class="fas fa-arrow-up"></i></button>
-                        <button class="btn-move move-down" title="Move down"><i class="fas fa-arrow-down"></i></button>
-                        <button class="action-btn remove-component-btn" title="Remove component"><i class="fas fa-trash-alt"></i></button>
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" th:text="#{edit-course.cap9}">Pick a Component</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
-       			</div>
-       			<div class="form-group">
-       				<label>Text Data</label><textarea class="form-control text-data-input" rows="5"></textarea>
-      			</div>
-      			<div class="form-group">
-      				<label>Styles (JSON)</label><textarea class="form-control style-json-input" rows="3"></textarea>
-     			</div>
-     		</div>
-     		<div class="component image-component template" data-component-strapi-name="coursecontent.image">
-     			<div class="component-header">
-     				<div>
-     					<i class="fas fa-grip-vertical drag-handle"></i><strong>Image</strong>
-     				</div>
-     				<div class="component-actions">
-                        <button class="btn-insert insert-before-btn" title="Insert component before"><i class="fas fa-chevron-circle-up"></i></button>
-                        <button class="btn-insert insert-after-btn" title="Insert component after"><i class="fas fa-chevron-circle-down"></i></button>
-                        <button class="btn-move move-up" title="Move up"><i class="fas fa-arrow-up"></i></button>
-                        <button class="btn-move move-down" title="Move down"><i class="fas fa-arrow-down"></i></button>
-                        <button class="action-btn remove-component-btn" title="Remove component"><i class="fas fa-trash-alt"></i></button>
-                    </div>
-     			</div>
-     			<div class="form-group">
-     				<img src="#" alt="Preview" class="media-preview image-preview" style="display:none;" />
-     			</div>
-     			<div class="progress mt-2" style="display: none;">
-     				<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;">0%</div>
-     			</div>
-     			<div class="form-group">
-     				<label>Upload New Image</label>
-     				<input type="file" class="image-file-upload-input form-control" accept="image/*" />
-     			</div>
-    		</div>
-    		<div class="component video-component template" data-component-strapi-name="coursecontent.video">
-    			<div class="component-header">
-    				<div><i class="fas fa-grip-vertical drag-handle"></i><strong>Hosted Video</strong></div>
-    				<div class="component-actions">
-                        <button class="btn-insert insert-before-btn" title="Insert component before"><i class="fas fa-chevron-circle-up"></i></button>
-                        <button class="btn-insert insert-after-btn" title="Insert component after"><i class="fas fa-chevron-circle-down"></i></button>
-                        <button class="btn-move move-up" title="Move up"><i class="fas fa-arrow-up"></i></button>
-                        <button class="btn-move move-down" title="Move down"><i class="fas fa-arrow-down"></i></button>
-                        <button class="action-btn remove-component-btn" title="Remove component"><i class="fas fa-trash-alt"></i></button>
-                    </div>
-    			</div>
-    			<div class="row">
-    				<div class="col-md-6">
-	    				<div class="form-group">
-	    					<label>Video File</label>
-	    					<div class="video-preview-container mt-1 border p-2 rounded bg-light" style="min-height: 150px;"></div>
-	    					<div class="progress mt-2" style="display: none;">
-	    						<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;">0%</div>
-	    					</div>
-	    					<label class="mt-2">Upload/Replace Video</label>
-	    					<input type="file" class="video-file-upload-input form-control" accept="video/*" />
-	    				</div>
-    				</div>
-	    			<div class="col-md-6">
-	    				<div class="form-group">
-	    					<label>Video Thumbnail</label>
-	    					<img src="#" alt="Thumb" class="media-preview thumbnail-preview" style="display:none;" />
-	    					<div class="progress mt-2" style="display: none;">
-	    						<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;">0%</div>
-	    					</div>
-	    					<label class="mt-2">Upload/Replace Thumbnail</label>
-	    					<input type="file" class="thumbnail-file-upload-input form-control" accept="image/*" />
-	    				</div>
-	    			</div>
-    			</div>
-    		</div>
-    		<div class="component external-video-component template" data-component-strapi-name="coursecontent.external-video">
-    			<div class="component-header">
-	    			<div>
-	    				<i class="fas fa-grip-vertical drag-handle"></i>
-	    				<strong>External Video</strong>
-	    			</div>
-	    			<div class="component-actions">
-                        <button class="btn-insert insert-before-btn" title="Insert component before"><i class="fas fa-chevron-circle-up"></i></button>
-                        <button class="btn-insert insert-after-btn" title="Insert component after"><i class="fas fa-chevron-circle-down"></i></button>
-                        <button class="btn-move move-up" title="Move up"><i class="fas fa-arrow-up"></i></button>
-                        <button class="btn-move move-down" title="Move down"><i class="fas fa-arrow-down"></i></button>
-                        <button class="action-btn remove-component-btn" title="Remove component"><i class="fas fa-trash-alt"></i></button>
-                    </div>
-    			</div>
-    			<div class="form-group">
-    				<label>URL (e.g., YouTube)</label>
-    				<input type="text" class="external-video-url-input form-control" />
-    			</div>
-    			<div class="form-group">
-    				<label>Caption</label>
-    				<input type="text" class="external-video-caption-input form-control" />
-    			</div>
-    			<div class="video-preview-container my-2 border p-2 rounded bg-light" style="min-height: 150px;"></div>
-    		</div>
-    		<div class="component quiz-component template" data-component-strapi-name="coursecontent.quiz">
-                <div class="component-header">
-                    <div><i class="fas fa-grip-vertical drag-handle"></i><strong>Quiz</strong></div>
-                    <div class="component-actions">
-                        <button class="btn-insert insert-before-btn" title="Insert component before"><i class="fas fa-chevron-circle-up"></i></button>
-                        <button class="btn-insert insert-after-btn" title="Insert component after"><i class="fas fa-chevron-circle-down"></i></button>
-                        <button class="btn-move move-up" title="Move up"><i class="fas fa-arrow-up"></i></button>
-                        <button class="btn-move move-down" title="Move down"><i class="fas fa-arrow-down"></i></button>
-                        <button class="action-btn remove-component-btn" title="Remove component"><i class="fas fa-trash-alt"></i></button>
+                    <div class="modal-body d-flex justify-content-center flex-wrap">
+                        <button class="component-picker-button" data-type="text"><i class="fas fa-paragraph"></i><span th:text="#{edit-course.cap10}">Text</span></button>
+                        <button class="component-picker-button" data-type="image"><i class="fas fa-image"></i><span th:text="#{edit-course.cap11}">Image</span></button>
+                        <button class="component-picker-button" data-type="video"><i class="fas fa-video"></i><span th:text="#{edit-course.cap12}">Hosted Video</span></button>
+                        <button class="component-picker-button" data-type="external-video"><i class="fas fa-link"></i><span th:text="#{edit-course.cap13}">External Video</span></button>
+                        <button class="component-picker-button" data-type="quiz"><i class="fas fa-question-circle"></i><span th:text="#{edit-course.cap14}">Quiz</span></button>
+                        <button class="component-picker-button" data-type="pagebreaker"><i class="fas fa-arrows-alt-h"></i><span th:text="#{edit-course.cap15}">Page Break</span></button>
                     </div>
                 </div>
-                <div class="form-group"><label>Question</label><input type="text" class="quiz-question-input form-control" /></div>
-                <div class="form-group"><label>Options (JSON)</label><textarea class="quiz-options-input form-control" rows="4"></textarea></div>
-                <div class="form-group"><label>Correct Answer</label><input type="text" class="quiz-correct-answer-input form-control" /></div>
             </div>
+        </div>
+
+        <div id="component-actions-template" style="display: none;">
+            <div class="component-actions">
+                <button class="btn-insert insert-before-btn" title="Insert component before"><i class="fas fa-chevron-circle-up"></i></button>
+                <button class="btn-insert insert-after-btn" title="Insert component after"><i class="fas fa-chevron-circle-down"></i></button>
+                <button class="btn-move move-up" title="Move up"><i class="fas fa-arrow-up"></i></button>
+                <button class="btn-move move-down" title="Move down"><i class="fas fa-arrow-down"></i></button>
+                <button class="action-btn remove-component-btn" title="Remove component"><i class="fas fa-trash-alt"></i></button>
+            </div>
+        </div>
+
+        <div id="component-templates" style="display: none;">
+            <div class="component text-component template" data-component-strapi-name="coursecontent.text">
+                <div class="component-header">
+                    <div><i class="fas fa-grip-vertical drag-handle"></i><strong th:text="#{edit-course.cap16}">Text Block</strong></div>
+                </div>
+                <div class="form-group"><label th:text="#{edit-course.cap17}">Text Data</label><textarea class="form-control text-component__data-input" rows="5"></textarea></div>
+                <div class="form-group"><label th:text="#{edit-course.cap18}">Styles (JSON)</label><textarea class="form-control text-component__style-input" rows="3"></textarea></div>
+            </div>
+
+            <div class="component image-component template" data-component-strapi-name="coursecontent.image">
+                <div class="component-header">
+                    <div><i class="fas fa-grip-vertical drag-handle"></i><strong th:text="#{edit-course.cap19}">Image</strong></div>
+                </div>
+                <div class="form-group"><img src="#" alt="Preview" class="media-preview image-component__preview" style="display:none;" /></div>
+                <div class="progress mt-2" style="display: none;"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;">0%</div></div>
+                <div class="form-group"><label th:text="#{edit-course.cap20}">Upload New Image</label><input type="file" class="form-control image-component__file-input" accept="image/*" /></div>
+            </div>
+
+            <div class="component video-component template" data-component-strapi-name="coursecontent.video">
+                <div class="component-header">
+                    <div><i class="fas fa-grip-vertical drag-handle"></i><strong>Hosted Video</strong></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label th:text="#{edit-course.cap21}">Video File</label>
+                            <div class="video-component__video-preview mt-1 border p-2 rounded bg-light" style="min-height: 150px;"></div>
+                            <div class="progress mt-2" style="display: none;"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;">0%</div></div>
+                            <label class="mt-2" th:text="#{edit-course.cap22}">Upload/Replace Video</label>
+                            <input type="file" class="form-control video-component__video-input" accept="video/*" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label th:text="#{edit-course.cap23}">Video Thumbnail</label>
+                            <img src="#" alt="Thumb" class="media-preview video-component__thumbnail-preview" style="display:none;" />
+                            <div class="progress mt-2" style="display: none;"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;">0%</div></div>
+                            <label class="mt-2" th:text="#{edit-course.cap24}">Upload/Replace Thumbnail</label>
+                            <input type="file" class="form-control video-component__thumbnail-input" accept="image/*" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="component external-video-component template" data-component-strapi-name="coursecontent.external-video">
+                <div class="component-header">
+                    <div><i class="fas fa-grip-vertical drag-handle"></i><strong th:text="#{edit-course.cap25}">External Video</strong></div>
+                </div>
+                <div class="form-group"><label th:text="#{edit-course.cap26}">URL (e.g., YouTube)</label><input type="text" class="form-control external-video-component__url-input" /></div>
+                <div class="form-group"><label th:text="#{edit-course.cap27}">Caption</label><input type="text" class="form-control external-video-component__caption-input" /></div>
+                <div class="external-video-component__video-preview my-2 border p-2 rounded bg-light" style="min-height: 150px;"></div>
+            </div>
+
+            <div class="component quiz-component template" data-component-strapi-name="coursecontent.quiz">
+                <div class="component-header">
+                    <div><i class="fas fa-grip-vertical drag-handle"></i><strong th:text="#{edit-course.cap27.1}">Quiz</strong></div>
+                </div>
+                <div class="form-group"><label th:text="#{edit-course.cap28}">Question</label><input type="text" class="form-control quiz-component__question-input" /></div>
+                <div class="form-group"><label th:text="#{edit-course.cap29}">Options (JSON)</label><textarea class="form-control quiz-component__options-input" rows="4"></textarea></div>
+                <div class="form-group"><label th:text="#{edit-course.cap30}">Correct Answer</label><input type="text" class="form-control quiz-component__correct-answer-input" /></div>
+            </div>
+
             <div class="component pagebreaker-component template" data-component-strapi-name="coursecontent.pagebreaker">
                 <div class="component-header">
-                    <div><i class="fas fa-grip-vertical drag-handle"></i><strong>Page Break</strong></div>
-                    <div class="component-actions">
-                        <button class="btn-insert insert-before-btn" title="Insert component before"><i class="fas fa-chevron-circle-up"></i></button>
-                        <button class="btn-insert insert-after-btn" title="Insert component after"><i class="fas fa-chevron-circle-down"></i></button>
-                        <button class="btn-move move-up" title="Move up"><i class="fas fa-arrow-up"></i></button>
-                        <button class="btn-move move-down" title="Move down"><i class="fas fa-arrow-down"></i></button>
-                        <button class="action-btn remove-component-btn" title="Remove component"><i class="fas fa-trash-alt"></i></button>
-                    </div>
+                    <div><i class="fas fa-grip-vertical drag-handle"></i><strong th:text="#{edit-course.cap31}">Page Break</strong></div>
                 </div>
-                <div class="alert alert-info text-center">--- Page Break ---</div>
+                <div class="alert alert-info text-center">--- <span th:text="#{edit-course.cap32}">Page Break</span> ---</div>
             </div>
         </div>
     </div>
@@ -231,7 +178,7 @@
 
     <script th:inline="javascript">
     /*<![CDATA[*/
-    
+
     const API_PROXY_URL = /*[[${strapiApiUrl}]]*/ '/api/strapi';
     const STRAPI_ROOT_URL = /*[[${strapiRootUrl}]]*/ 'http://localhost:1337';
     const AUTH_TOKEN = /*[[${strapiToken}]]*/ 'Bearer default-token';
@@ -257,7 +204,6 @@
             const xhr = new XMLHttpRequest();
             xhr.open('POST', new URL('api/upload', STRAPI_ROOT_URL).href, true);
             xhr.setRequestHeader('Authorization', AUTH_TOKEN);
-
             xhr.upload.onprogress = (event) => {
                 if (event.lengthComputable) {
                     const percentComplete = Math.round((event.loaded / event.total) * 100);
@@ -281,11 +227,10 @@
         loadCourseContent();
         new Sortable(document.getElementById('course-content-area'), { animation: 150, handle: '.drag-handle' });
 
-        $('.component-picker-button').on('click', function() { 
+        $('.component-picker-button').on('click', function() {
             const componentType = $(this).data('type');
+            const $newComponent = renderComponent(componentType);
             if (currentInsertTarget && insertPosition) {
-                renderComponent(componentType);
-                const $newComponent = $('#course-content-area .component:not(.template)').last();
                 if (insertPosition === 'before') {
                     $newComponent.insertBefore(currentInsertTarget);
                 } else {
@@ -294,57 +239,30 @@
                 currentInsertTarget = null;
                 insertPosition = null;
             } else {
-                renderComponent(componentType);
+                 $('#course-content-area').append($newComponent);
             }
             bsModal.hide();
-        });
-
-        $('#course-content-area').on('click', '.remove-component-btn', function() { 
-            $(this).closest('.component').remove(); 
             updateMoveButtons();
         });
 
-        $('#course-content-area').on('click', '.insert-before-btn', function() {
-            currentInsertTarget = $(this).closest('.component');
-            insertPosition = 'before';
-            bsModal.show();
-        });
-
-        $('#course-content-area').on('click', '.insert-after-btn', function() {
-            currentInsertTarget = $(this).closest('.component');
-            insertPosition = 'after';
-            bsModal.show();
-        });
-
-        $('#course-content-area').on('click', '.move-up', function() {
-            const $component = $(this).closest('.component');
-            const $prev = $component.prev('.component:not(.template)');
-            if ($prev.length) {
-                $component.insertBefore($prev);
-                updateMoveButtons();
-            }
-        });
-
-        $('#course-content-area').on('click', '.move-down', function() {
-            const $component = $(this).closest('.component');
-            const $next = $component.next('.component:not(.template)');
-            if ($next.length) {
-                $component.insertAfter($next);
-                updateMoveButtons();
-            }
-        });
+        $('#course-content-area').on('click', '.remove-component-btn', function() { $(this).closest('.component').remove(); updateMoveButtons(); });
+        $('#course-content-area').on('click', '.insert-before-btn', function() { currentInsertTarget = $(this).closest('.component'); insertPosition = 'before'; bsModal.show(); });
+        $('#course-content-area').on('click', '.insert-after-btn', function() { currentInsertTarget = $(this).closest('.component'); insertPosition = 'after'; bsModal.show(); });
+        $('#course-content-area').on('click', '.move-up', function() { const $component = $(this).closest('.component'); const $prev = $component.prev('.component:not(.template)'); if ($prev.length) { $component.insertBefore($prev); updateMoveButtons(); } });
+        $('#course-content-area').on('click', '.move-down', function() { const $component = $(this).closest('.component'); const $next = $component.next('.component:not(.template)'); if ($next.length) { $component.insertAfter($next); updateMoveButtons(); } });
 
         async function handleFileUpload(context, mediaType) {
             const file = context.files[0];
             if (!file) return;
-            const $container = $(context).closest('.component, .form-group');
+
+            const $container = $(context).closest('.component, .course-icon-uploader');
             const $progress = $container.find('.progress');
             const $progressBar = $progress.find('.progress-bar');
             
             $(context).prop('disabled', true);
             $('#save-course-btn').prop('disabled', true);
             $progress.show();
-            $progressBar.removeClass('bg-info').addClass('progress-bar-animated');
+            $progressBar.removeClass('bg-info').addClass('progress-bar-animated progress-bar-striped');
             
             try {
                 const onProgress = (percent) => {
@@ -352,27 +270,26 @@
                     if (percent < 100) {
                         $progressBar.text(`Uploading: ${percent}%`);
                     } else {
-                        $progressBar.addClass('bg-info').removeClass('progress-bar-animated');
+                        $progressBar.addClass('bg-info').removeClass('progress-bar-animated progress-bar-striped');
                         $progressBar.text('Processing... Please Wait');
                     }
                 };
                 
                 const uploadedFile = await uploadFileToStrapi(file, onProgress);
-                
                 showStatusMessage('Upload successful!', 'success');
 
                 if (mediaType === 'image') {
                     $container.attr('data-media-id', uploadedFile.id);
-                    $container.find('.image-preview').attr('src', getFullStrapiUrl(uploadedFile.url)).show();
+                    $container.find('.image-component__preview').attr('src', getFullStrapiUrl(uploadedFile.url)).show();
                 } else if (mediaType === 'video') {
                     $container.attr('data-video-media-id', uploadedFile.id);
-                    updateVideoPreview($container.find('.video-preview-container'), uploadedFile.url);
+                    updateVideoPreview($container.find('.video-component__video-preview'), uploadedFile.url);
                 } else if (mediaType === 'thumbnail') {
                     $container.attr('data-thumbnail-media-id', uploadedFile.id);
-                    $container.find('.thumbnail-preview').attr('src', getFullStrapiUrl(uploadedFile.url)).show();
+                    $container.find('.video-component__thumbnail-preview').attr('src', getFullStrapiUrl(uploadedFile.url)).show();
                 } else if (mediaType === 'icon-image') {
-                    $('#icon-image').attr('data-icon-media-id', uploadedFile.id);
-                    $container.find('.icon-image-preview').attr('src', getFullStrapiUrl(uploadedFile.url)).show();
+                    $container.attr('data-icon-media-id', uploadedFile.id);
+                    $container.find('.course-icon__preview').attr('src', getFullStrapiUrl(uploadedFile.url)).show();
                 }
             } catch (error) {
                 showStatusMessage(`Upload failed. See browser console for details.`, 'danger');
@@ -381,178 +298,188 @@
                 $('#save-course-btn').prop('disabled', false);
                 $progress.hide();
             }
-        };
-        
-        $('#course-content-area').on('change', '.image-file-upload-input', function() { handleFileUpload(this, 'image'); });
-        $('#course-content-area').on('change', '.video-file-upload-input', function() { handleFileUpload(this, 'video'); });
-        $('#course-content-area').on('change', '.thumbnail-file-upload-input', function() { handleFileUpload(this, 'thumbnail'); });
-        $('#icon-image').on('change', function() { handleFileUpload(this, 'icon-image'); });
-        $('#course-content-area').on('input change', '.external-video-url-input', function() { updateVideoPreview($(this).closest('.component').find('.video-preview-container'), $(this).val().trim()); });
-        $('#save-course-btn').on('click', saveCourse);
+        }
 
-        // Initialize move buttons state after content is loaded
+        $('#course-content-area').on('change', '.image-component__file-input', function() { handleFileUpload(this, 'image'); });
+        $('#course-content-area').on('change', '.video-component__video-input', function() { handleFileUpload(this, 'video'); });
+        $('#course-content-area').on('change', '.video-component__thumbnail-input', function() { handleFileUpload(this, 'thumbnail'); });
+        $('.course-icon__file-input').on('change', function() { handleFileUpload(this, 'icon-image'); });
+        
+        $('#course-content-area').on('input change', '.external-video-component__url-input', function() {
+            updateVideoPreview($(this).closest('.component').find('.external-video-component__video-preview'), $(this).val().trim());
+        });
+        
+        $('#save-course-btn').on('click', saveCourse);
         $('#course-content-area').on('sortupdate', updateMoveButtons);
     });
 
-    function showStatusMessage(message, type = 'danger') { 
-        const alertClass = `alert-${type}`; 
-        const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'; 
-        const $alert = $(`<div class="alert ${alertClass} alert-dismissible fade show" role="alert"><i class="fas ${icon} me-2"></i>${message}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>`); 
-        $('#status-message-container').append($alert); 
-        setTimeout(() => $alert.fadeOut(500, () => $alert.remove()), 6000); 
+    function showStatusMessage(message, type = 'danger') {
+        const alertClass = `alert-${type}`;
+        const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle';
+        const $alert = $(`<div class="alert ${alertClass} alert-dismissible fade show" role="alert"><i class="fas ${icon} me-2"></i>${message}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>`);
+        $('#status-message-container').append($alert);
+        setTimeout(() => $alert.fadeOut(500, () => $alert.remove()), 6000);
     }
-    function getFullStrapiUrl(path) { 
-        if (!path || path.startsWith('http')) return path; 
-        return new URL(path, STRAPI_ROOT_URL).href; 
+
+    function getFullStrapiUrl(path) {
+        if (!path || path.startsWith('http')) return path;
+        return new URL(path, STRAPI_ROOT_URL).href;
     }
-    function updateVideoPreview($previewContainer, url) { 
-        $previewContainer.empty(); 
-        if (!url) return; 
-        const videoIdMatch = url.match(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/); 
-        if (videoIdMatch && videoIdMatch[2].length === 11) { 
-            $previewContainer.html(`<iframe width="100%" height="200" src="https://www.youtube.com/embed/${videoIdMatch[2]}" frameborder="0" allowfullscreen class="media-preview"></iframe>`); 
-        } else { 
-            $previewContainer.html(`<video controls class="media-preview" src="${getFullStrapiUrl(url)}" style="max-height: 250px;"></video>`); 
-        } 
+
+    function updateVideoPreview($previewContainer, url) {
+        $previewContainer.empty();
+        if (!url) return;
+        const videoIdMatch = url.match(/^.*(youtube.com\/watch\?v=|youtu.be\/|youtube.com\/embed\/)([^#\&\?]*).*/);
+        if (videoIdMatch && videoIdMatch[2].length === 11) {
+            $previewContainer.html(`<iframe width="100%" height="200" src="https://www.youtube.com/embed/${videoIdMatch[2]}" frameborder="0" allowfullscreen class="media-preview"></iframe>`);
+        } else {
+            $previewContainer.html(`<video controls class="media-preview" src="${getFullStrapiUrl(url)}" style="max-height: 250px;"></video>`);
+        }
     }
-    function renderComponent(componentType, data = {}) { 
-        const $template = $(`#component-templates .${componentType}-component.template`).clone().removeClass('template'); 
-        if (data.id) $template.attr('data-strapi-component-id', data.id); 
-        switch (componentType) { 
-            case 'text': 
-                $template.find('.text-data-input').val(data.data || ''); 
-                $template.find('.style-json-input').val(JSON.stringify(data.styles || {}, null, 2)); 
-                break; 
-            case 'image': 
-                const imageUrl = data.image_file?.data?.attributes?.url; 
-                if (imageUrl) { 
-                    $template.find('.image-preview').attr('src', getFullStrapiUrl(imageUrl)).show(); 
-                    $template.attr('data-media-id', data.image_file.data.id); 
-                } 
-                break; 
-            case 'video': 
-                if (data.video_file?.data) { 
-                    updateVideoPreview($template.find('.video-preview-container'), data.video_file.data.attributes.url); 
-                    $template.attr('data-video-media-id', data.video_file.data.id); 
-                } 
-                if (data.thumbnail?.data) { 
-                    $template.find('.thumbnail-preview').attr('src', getFullStrapiUrl(data.thumbnail.data.attributes.url)).show(); 
-                    $template.attr('data-thumbnail-media-id', data.thumbnail.data.id); 
-                } 
-                break; 
-            case 'external-video': 
-                const externalUrl = data.external_url || ''; 
-                $template.find('.external-video-url-input').val(externalUrl); 
-                $template.find('.external-video-caption-input').val(data.caption || ''); 
-                if (externalUrl) updateVideoPreview($template.find('.video-preview-container'), externalUrl); 
-                if (data.thumbnail?.data) { 
-                    $template.find('.thumbnail-preview').attr('src', getFullStrapiUrl(data.thumbnail.data.attributes.url)).show(); 
-                    $template.attr('data-thumbnail-media-id', data.thumbnail.data.id); 
-                } 
-                break; 
-            case 'quiz': 
-                $template.find('.quiz-question-input').val(data.question || ''); 
-                $template.find('.quiz-options-input').val(JSON.stringify(data.options || [], null, 2)); 
-                $template.find('.quiz-correct-answer-input').val(data.correctAnswer || ''); 
-                break; 
-        } 
-        $('#course-content-area').append($template); 
-        updateMoveButtons();
-    }
-    async function loadCourseContent() { 
-        try { 
-            const populateQuery = 'populate[content][populate]=image_file,video_file,thumbnail,icon_image&populate[icon_image][populate]=*'; 
-            const fetchUrl = `${API_PROXY_URL}/courses/${COURSE_ID}?${populateQuery}`; 
-            const response = await fetch(fetchUrl, { headers: { 'Authorization': AUTH_TOKEN } }); 
-            if (!response.ok) throw new Error(`Failed to load course (Status: ${response.status})`); 
-            const strapiResponse = await response.json(); 
-            if (!strapiResponse.data) throw new Error("Course data object not found in API response."); 
-            const course = strapiResponse.data.attributes; 
-            $('#course-title-main').val(course.title || '');  
-            $('#course-page-title').text('Edit Course: ' + (course.title || 'Untitled')); 
-            $('#course-translations-json').val(JSON.stringify(course.translations || {}, null, 2)); 
-            if (course.icon_image?.data?.attributes?.url) {
-                $('#icon-image').attr('data-icon-media-id', course.icon_image.data.id);
-                $('.icon-image-preview')
-                    .attr('src', getFullStrapiUrl(course.icon_image.data.attributes.url))
-                    .css('display', 'block');
-            } else {
-                $('.icon-image-preview').css('display', 'none');
-            }
-            $('#course-content-area').empty(); 
-            (course.content || []).forEach(c => { 
-                const componentType = c.__component.split('.')[1].replace(/_/g, '-'); 
-                renderComponent(componentType, c); 
-            }); 
-            updateMoveButtons();
-        } catch (error) { 
-            showStatusMessage(`Could not load course. ${error.message}`, 'danger'); 
-            console.error('Load course error:', error);
-        } 
-    }
-    async function saveCourse() { 
-        $('#save-course-btn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...'); 
-        const componentsData = []; 
-        let hasError = false; 
-        $('#course-content-area .component:not(.template)').each(function() { 
-            if (hasError) return; 
-            const $c = $(this); 
-            const type = $c.data('component-strapi-name'); 
-            let payload = { __component: type }; 
-            if ($c.attr('data-strapi-component-id')) payload.id = parseInt($c.attr('data-strapi-component-id'), 10); 
-            try { 
-                if ($c.hasClass('text-component')) { 
-                    payload.data = $c.find('.text-data-input').val(); 
-                    payload.styles = JSON.parse($c.find('.style-json-input').val() || '{}'); 
-                } else if ($c.hasClass('image-component')) { 
-                    payload.image_file = $c.attr('data-media-id') ? parseInt($c.attr('data-media-id'), 10) : null; 
-                } else if ($c.hasClass('video-component')) { 
-                    payload.video_file = $c.attr('data-video-media-id') ? parseInt($c.attr('data-video-media-id'), 10) : null; 
-                    payload.thumbnail = $c.attr('data-thumbnail-media-id') ? parseInt($c.attr('data-thumbnail-media-id'), 10) : null; 
-                } else if ($c.hasClass('external-video-component')) { 
-                    payload.external_url = $c.find('.external-video-url-input').val().trim(); 
-                    payload.caption = $c.find('.external-video-caption-input').val().trim(); 
-                    payload.thumbnail = $c.attr('data-thumbnail-media-id') ? parseInt($c.attr('data-thumbnail-media-id'), 10) : null; 
-                } else if ($c.hasClass('quiz-component')) { 
-                    payload.question = $c.find('.quiz-question-input').val(); 
-                    payload.options = JSON.parse($c.find('.quiz-options-input').val() || '[]'); 
-                    payload.correctAnswer = $c.find('.quiz-correct-answer-input').val(); 
-                } else if ($c.hasClass('pagebreaker-component')) { 
-                    payload.backbutton = true; 
-                    payload.nextbutton = true; 
-                } 
-            } catch (e) { 
-                showStatusMessage(`Error in component data: ${e.message}`, 'danger'); 
-                hasError = true; 
-            } 
-            componentsData.push(payload); 
-        }); 
-        if (hasError) { 
-            $('#save-course-btn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save Course'); 
-            return; 
-        } 
-        try { 
-            const finalPayload = { 
-                data: { 
-                    title: $('#course-title-main').val().trim(), 
-                    content: componentsData, 
-                    translations: JSON.parse($('#course-translations-json').val() || '{}'),
-                    icon_image: $('#icon-image').attr('data-icon-media-id') ? parseInt($('#icon-image').attr('data-icon-media-id'), 10) : null
+
+    function renderComponent(componentType, data = {}) {
+        const $template = $(`#component-templates .${componentType}-component.template`).clone().removeClass('template');
+        const $actions = $('#component-actions-template .component-actions').clone();
+        $template.find('.component-header').append($actions);
+        if (data.id) $template.attr('data-strapi-component-id', data.id);
+
+        switch (componentType) {
+            case 'text':
+                $template.find('.text-component__data-input').val(data.data || '');
+                $template.find('.text-component__style-input').val(JSON.stringify(data.styles || {}, null, 2));
+                break;
+            case 'image':
+                if (data.image_file?.data) {
+                    $template.find('.image-component__preview').attr('src', getFullStrapiUrl(data.image_file.data.attributes.url)).show();
+                    $template.attr('data-media-id', data.image_file.data.id);
                 }
-            }; 
-            const response = await fetch(`${API_PROXY_URL}/courses/${COURSE_ID}`, { 
-                method: 'PUT', 
-                headers: { 'Authorization': AUTH_TOKEN, 'Content-Type': 'application/json' }, 
-                body: JSON.stringify(finalPayload) 
-            }); 
-            if (!response.ok) throw new Error(`Save failed: ${response.statusText} ${await response.text()}`); 
-            showStatusMessage('Course saved successfully!', 'success'); 
-            setTimeout(loadCourseContent, 1200); 
-        } catch (error) { 
-            showStatusMessage(`Save failed: ${error.message}`, 'danger'); 
-        } finally { 
-            $('#save-course-btn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save Course'); 
-        } 
+                break;
+            case 'video':
+                if (data.video_file?.data) {
+                    updateVideoPreview($template.find('.video-component__video-preview'), data.video_file.data.attributes.url);
+                    $template.attr('data-video-media-id', data.video_file.data.id);
+                }
+                if (data.thumbnail?.data) {
+                    $template.find('.video-component__thumbnail-preview').attr('src', getFullStrapiUrl(data.thumbnail.data.attributes.url)).show();
+                    $template.attr('data-thumbnail-media-id', data.thumbnail.data.id);
+                }
+                break;
+            case 'external-video':
+                const externalUrl = data.external_url || '';
+                $template.find('.external-video-component__url-input').val(externalUrl);
+                $template.find('.external-video-component__caption-input').val(data.caption || '');
+                if (externalUrl) updateVideoPreview($template.find('.external-video-component__video-preview'), externalUrl);
+                break;
+            case 'quiz':
+                $template.find('.quiz-component__question-input').val(data.question || '');
+                $template.find('.quiz-component__options-input').val(JSON.stringify(data.options || [], null, 2));
+                $template.find('.quiz-component__correct-answer-input').val(data.correctAnswer || '');
+                break;
+        }
+        return $template;
+    }
+
+    async function loadCourseContent() {
+        try {
+            const populateQuery = 'populate[content][populate]=image_file,video_file,thumbnail&populate=icon_image';
+            const fetchUrl = `${API_PROXY_URL}/courses/${COURSE_ID}?${populateQuery}`;
+            const response = await fetch(fetchUrl, { headers: { 'Authorization': AUTH_TOKEN } });
+            if (!response.ok) throw new Error(`Failed to load course (Status: ${response.status})`);
+            
+            const strapiResponse = await response.json();
+            if (!strapiResponse.data) throw new Error("Course data object not found in API response.");
+            
+            const course = strapiResponse.data.attributes;
+            $('#course-title-main').val(course.title || '');
+            $('#course-page-title').text('Edit Course: ' + (course.title || 'Untitled'));
+            $('#course-translations-json').val(JSON.stringify(course.translations || {}, null, 2));
+            
+            if (course.icon_image?.data) {
+                $('.course-icon-uploader').attr('data-icon-media-id', course.icon_image.data.id);
+                $('.course-icon__preview').attr('src', getFullStrapiUrl(course.icon_image.data.attributes.url)).show();
+            } else {
+                $('.course-icon__preview').hide();
+            }
+            
+            $('#course-content-area').empty();
+            (course.content || []).forEach(c => {
+                const componentType = c.__component.split('.')[1].replace(/_/g, '-');
+                const $newComponent = renderComponent(componentType, c);
+                $('#course-content-area').append($newComponent);
+            });
+            updateMoveButtons();
+        } catch (error) {
+            showStatusMessage(`Could not load course. ${error.message}`, 'danger');
+            console.error('Load course error:', error);
+        }
+    }
+
+    async function saveCourse() {
+        $('#save-course-btn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
+        const componentsData = [];
+        let hasError = false;
+
+        $('#course-content-area .component:not(.template)').each(function() {
+            if (hasError) return;
+            const $c = $(this);
+            const type = $c.data('component-strapi-name');
+            let payload = { '__component': type };
+            if ($c.attr('data-strapi-component-id')) payload.id = parseInt($c.attr('data-strapi-component-id'), 10);
+
+            try {
+                if ($c.hasClass('text-component')) {
+                    payload.data = $c.find('.text-component__data-input').val();
+                    payload.styles = JSON.parse($c.find('.text-component__style-input').val() || '{}');
+                } else if ($c.hasClass('image-component')) {
+                    payload.image_file = $c.attr('data-media-id') ? parseInt($c.attr('data-media-id'), 10) : null;
+                } else if ($c.hasClass('video-component')) {
+                    payload.video_file = $c.attr('data-video-media-id') ? parseInt($c.attr('data-video-media-id'), 10) : null;
+                    payload.thumbnail = $c.attr('data-thumbnail-media-id') ? parseInt($c.attr('data-thumbnail-media-id'), 10) : null;
+                } else if ($c.hasClass('external-video-component')) {
+                    payload.external_url = $c.find('.external-video-component__url-input').val().trim();
+                    payload.caption = $c.find('.external-video-component__caption-input').val().trim();
+                } else if ($c.hasClass('quiz-component')) {
+                    payload.question = $c.find('.quiz-component__question-input').val();
+                    payload.options = JSON.parse($c.find('.quiz-component__options-input').val() || '[]');
+                    payload.correctAnswer = $c.find('.quiz-component__correct-answer-input').val();
+                } else if ($c.hasClass('pagebreaker-component')) {
+                    payload.backbutton = true;
+                    payload.nextbutton = true;
+                }
+            } catch (e) {
+                showStatusMessage(`Error in component data: ${e.message}`, 'danger');
+                hasError = true;
+            }
+            componentsData.push(payload);
+        });
+
+        if (hasError) {
+            $('#save-course-btn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save Course');
+            return;
+        }
+
+        try {
+            const finalPayload = {
+                data: {
+                    title: $('#course-title-main').val().trim(),
+                    content: componentsData,
+                    translations: JSON.parse($('#course-translations-json').val() || '{}'),
+                    icon_image: $('.course-icon-uploader').attr('data-icon-media-id') ? parseInt($('.course-icon-uploader').attr('data-icon-media-id'), 10) : null
+                }
+            };
+            const response = await fetch(`${API_PROXY_URL}/courses/${COURSE_ID}`, {
+                method: 'PUT',
+                headers: { 'Authorization': AUTH_TOKEN, 'Content-Type': 'application/json' },
+                body: JSON.stringify(finalPayload)
+            });
+            if (!response.ok) throw new Error(`Save failed: ${response.statusText} ${await response.text()}`);
+            showStatusMessage('Course saved successfully!', 'success');
+            setTimeout(loadCourseContent, 1200);
+        } catch (error) {
+            showStatusMessage(`Save failed: ${error.message}`, 'danger');
+        } finally {
+            $('#save-course-btn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save Course');
+        }
     }
     /*]]>*/
     </script>

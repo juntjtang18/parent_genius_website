@@ -14,23 +14,23 @@
 
     <div class="container mt-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="my-0">Our Courses</h1>
+            <h1 class="my-0" th:text="#{course-list.cap1}">Our Courses</h1>
             <a th:href="@{/new-course}" class="btn btn-primary">
-                <i class="fas fa-plus me-2"></i>New Course
+                <i class="fas fa-plus me-2"></i><span th:text="#{course-list.cap2}">New Course</span>
             </a>
         </div>
 
         <div id="course-container" class="row">
             <div class="col-12 text-center" id="loading-spinner">
                 <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Loading...</span>
+                    <span class="visually-hidden" th:text="#{course-list.cap3}">Loading...</span>
                 </div>
-                <p>Loading courses...</p>
+                <p th:text="#{course-list.cap4}">Loading courses...</p>
             </div>
         </div>
 
         <div id="no-courses-message" class="d-none">
-            <p>No courses available at the moment.</p>
+            <p th:text="#{course-list.cap5}">No courses available at the moment.</p>
         </div>
     </div>
     

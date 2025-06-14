@@ -6,6 +6,8 @@ mvnw
 mvnw.cmd
 bin/
 
+src/main/resources/messages/pyenv/
+
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/

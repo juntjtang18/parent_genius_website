@@ -15,27 +15,27 @@
     <div class="container mt-5">
         <div class="card w-75 mx-auto">
             <div class="card-header">
-                <h2 class="my-3">Create a New Course</h2>
+                <h2 class="my-3" th:text="#{new-course.cap1}">Create a New Course</h2>
             </div>
             <div class="card-body p-4">
                 <div id="alert-container"></div>
                 <form id="new-course-form" enctype="multipart/form-data" novalidate>
                     <div class="mb-3">
-                        <label for="course-title" class="form-label"><strong>Course Title</strong></label>
+                        <label for="course-title" class="form-label"><strong th:text="#{new-course.cap2}">Course Title</strong></label>
                         <input type="text" class="form-control form-control-lg" id="course-title" required>
-                        <div class="form-text">Enter the title for your new course. You can add content after creation.</div>
+                        <div class="form-text" th:text="#{new-course.cap3}">Enter the title for your new course. You can add content after creation.</div>
                     </div>
                     <div class="mb-3">
-                        <label for="icon-image" class="form-label"><strong>Icon Image (Optional)</strong></label>
+                        <label for="icon-image" class="form-label"><strong th:text="#{new-course.cap4}">Icon Image (Optional)</strong></label>
                         <input type="file" class="form-control form-control-lg" id="icon-image" name="icon_image" accept="image/*">
-                        <div class="form-text">Upload an image for the course icon (e.g., PNG, JPEG).</div>
+                        <div class="form-text" th:text="#{new-course.cap5}">Upload an image for the course icon (e.g., PNG, JPEG).</div>
                     </div>
                     <hr class="my-4">
                     <button type="submit" id="save-button" class="btn btn-primary btn-lg">
-                        <i class="fas fa-save me-2"></i>Save and Continue to Edit
+                        <i class="fas fa-save me-2"></i><span th:text="#{new-course.cap5}">Save and Continue to Edit</span>
                     </button>
                     <a th:href="@{/course-list}" class="btn btn-secondary btn-lg">
-                        <i class="fas fa-times me-2"></i>Cancel
+                        <i class="fas fa-times me-2"></i><span th:text="#{new-course.cap6}">Cancel</span>
                     </a>
                 </form>
             </div>
