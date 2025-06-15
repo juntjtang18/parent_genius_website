@@ -1,4 +1,3 @@
-<!-- fragments/navbar.html -->
 <div th:fragment="navbar">
     <nav class="navbar navbar-expand-lg navbar-light py-3">
         <div class="container-xxl d-flex align-items-center">
@@ -35,14 +34,18 @@
                             <li><a class="dropdown-item" href="/join-us" th:text="#{navbar.caption6}">Join Us</a></li>
                         </ul>
                     </li>
-                    <!-- Admin Menu Item - Visible only to users with 'EDITOR' role -->
                     <li class="nav-item dropdown" th:if="${auth != null && #authorization.expression('hasRole(''EDITOR'')')}">
                         <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-user-shield me-1"></i><span th:text="#{navbar.caption6.1}">Admin</span>
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="adminDropdown">
                             <li><a class="dropdown-item" th:href="@{/course-list}"><i class="fas fa-chalkboard-teacher me-2"></i><span th:text="#{navbar.admin.courses}">Courses</span></a></li>
-                            <!-- Add other admin links here if needed in the future -->
+                            <li>
+                                <a class="dropdown-item" href="#" id="clearCacheLink">
+                                    <i class="fas fa-sync-alt me-2"></i>
+                                    <span>Clear Function Article Cache</span>
+                                </a>
+                            </li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
@@ -51,11 +54,9 @@
                     </li>
                 </ul>
                 <ul class="navbar-nav fs-4 ms-auto d-flex align-items-center">
-                    <!-- Not Signed In -->
                     <li class="nav-item" th:unless="${auth}">
                         <a class="nav-link" href="/signin" th:text="#{navbar.caption8}">Login</a>
                     </li>
-                    <!-- Signed In -->
                     <li class="nav-item dropdown" th:if="${auth}">
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-user-circle navbar-avatar-icon"></i>
@@ -70,7 +71,6 @@
             </div>
         </div>
     </nav>
-    <!-- Add Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" xintegrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         @media (max-width: 767.98px) {
@@ -123,6 +123,34 @@
             if (functionsDropDown) {
                 // Placeholder for any specific JS for this dropdown if needed
             }
+
+            // START --- SCRIPT FOR CLEAR CACHE LINK (CSRF DISABLED)
+            const clearCacheLink = document.getElementById('clearCacheLink');
+            if (clearCacheLink) {
+                clearCacheLink.addEventListener('click', function(event) {
+                    event.preventDefault(); // Prevent the link from navigating
+
+                    // The lines for reading CSRF tokens have been removed.
+                    // The headers object has been removed from the fetch call.
+                    fetch('/api/v1/admin/cache/clear-functions', {
+                        method: 'POST'
+                        // No headers object is needed since CSRF is disabled
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            alert('Function article cache cleared successfully!');
+                        } else {
+                            // This might now be a 401 Unauthorized if the user doesn't have the EDITOR role
+                            alert('Failed to clear cache. You may not have the required permissions.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error clearing cache:', error);
+                        alert('An error occurred while trying to clear the cache.');
+                    });
+                });
+            }
+            // END --- SCRIPT FOR CLEAR CACHE LINK
         });
     </script>
 </div>

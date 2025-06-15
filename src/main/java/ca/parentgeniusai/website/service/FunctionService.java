@@ -5,6 +5,7 @@ import ca.parentgeniusai.website.model.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -262,5 +263,11 @@ public class FunctionService {
             logger.error("Error fetching functions: {}", e.getMessage(), e);
             return Collections.emptyList();
         }
+    }
+    
+    @CacheEvict(value = "functionsWithArticles", allEntries = true)
+    public void clearFunctionsWithArticlesCache() {
+        logger.info("Cache 'functionsWithArticles' has been cleared.");
+        // The method body can be empty; the annotation handles the cache eviction.
     }
 }

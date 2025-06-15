@@ -3,6 +3,7 @@ package ca.parentgeniusai.website.controller;
 import ca.parentgeniusai.website.model.Function;
 import ca.parentgeniusai.website.service.FunctionService;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,8 +41,12 @@ public class ArticleController {
     @GetMapping("/article")
     public String showArticle(
             @RequestParam(value = "article", required = true) Long articleId,
+            HttpSession session,
             Model model) {
         logger.info("/article called with articleId={}", articleId);
+        
+        String userJwt = (String) session.getAttribute("STRAPI_JWT");
+        model.addAttribute("strapiUserJwt", userJwt);
         model.addAttribute("articleId", articleId);
         model.addAttribute("strapiUrl", strapiApiUrl);
         model.addAttribute("strapiToken", strapiToken);
@@ -53,10 +58,14 @@ public class ArticleController {
     public String showArticleList(
             @RequestParam(value = "function", required = false) Long functionId,
             @RequestParam(value = "article", required = false) Long articleId,
+            HttpSession session, // <-- By adding this, Spring provides the session
             Model model) {
         List<Function> functions = functionService.getFunctions();
         Long selectedFunctionId = (functionId != null) ? 
             functionId : (functions != null && !functions.isEmpty() ? functions.get(0).getId() : 1L);
+        String userJwt = (String) session.getAttribute("STRAPI_JWT");
+        model.addAttribute("strapiUserJwt", userJwt);
+
         model.addAttribute("functions", functions != null ? functions : Collections.emptyList());
         model.addAttribute("selectedFunctionId", selectedFunctionId);
         model.addAttribute("selectedArticleId", articleId);
@@ -81,8 +90,11 @@ public class ArticleController {
     @GetMapping("/edit-article")
     public String editArticle(
             @RequestParam("article") Long articleId,
+            HttpSession session,
             Model model) {
         logger.info("/edit-article called with articleId={}", articleId);
+        String userJwt = (String) session.getAttribute("STRAPI_JWT");
+        model.addAttribute("strapiUserJwt", userJwt);
         model.addAttribute("articleId", articleId);
         model.addAttribute("strapiUrl", strapiApiUrl);
         model.addAttribute("strapiToken", strapiToken);
