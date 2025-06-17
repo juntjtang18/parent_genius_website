@@ -40,14 +40,18 @@ public class SecurityConfig {
                 .securityContextRepository(securityContextRepository())
             )
             .authorizeHttpRequests(authz -> authz
-                // Make sure "/signin" is permitted so you can see the login page
-                .requestMatchers("/signin", "/do-login", "/signup", "/css/**", "/images/**", "/").permitAll()
-                .anyRequest().authenticated() // Simplified for clarity, use your specific rules
+                // --- START: MODIFIED ACCESS RULES ---
+                // Require 'EDITOR' role for admin-specific URLs
+                .requestMatchers("/api/v1/admin/**", "/course-list").hasRole("EDITOR")
+                // Require authentication for the functions pages
+                .requestMatchers("/function-article-list", "/article", "/new-article", "/edit-article").authenticated()
+                // Allow all other requests to be accessed publicly
+                .anyRequest().permitAll()
+                // --- END: MODIFIED ACCESS RULES ---
             )
             .addFilterBefore(strapiAuthFilter, UsernamePasswordAuthenticationFilter.class)
-            // This formLogin block is the key
             .formLogin(form -> form
-                .loginPage("/signin") // <<< THIS LINE IS CRITICAL
+                .loginPage("/signin")
                 .loginProcessingUrl("/do-login")
                 .successHandler(new SimpleUrlAuthenticationSuccessHandler("/"))
                 .failureUrl("/signin?error=true")
@@ -63,13 +67,12 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
             );
 
-        logger.debug("Security filter chain configured.");
+        logger.debug("Security filter chain configured with updated access rules.");
         return http.build();
     }
 
     @Bean
     public SecurityContextRepository securityContextRepository() {
-        // *** FIX: Corrected the typo in the class name here ***
         return new HttpSessionSecurityContextRepository();
     }
 

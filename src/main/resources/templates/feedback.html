@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{feedback.title}">Feedback - Parent Genius AI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link th:href="@{/css/style.css}" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <main class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow-sm">
+                    <div class="card-body p-5">
+                        <h1 class="card-title text-center mb-4" th:text="#{feedback.header}">Share Your Feedback</h1>
+                        <p class="card-text text-center text-muted mb-5" th:text="#{feedback.subheader}">We value your opinion and read every message. Let us know how we can improve.</p>
+
+                        <form th:action="@{/submit-feedback}" method="post" id="feedbackForm">
+
+                            <div class="mb-4">
+                                <label for="name" class="form-label fs-5" th:text="#{feedback.name}">Name</label>
+                                <input type="text" class="form-control form-control-lg" id="name" name="name" th:placeholder="#{feedback.name.placeholder}" data-i18n-default="Your name" />
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="email" class="form-label fs-5" th:text="#{feedback.email}">Email Address</label>
+                                <input type="email" class="form-control form-control-lg" id="email" name="email" required th:placeholder="#{feedback.email.placeholder}" data-i18n-default="your.email@example.com" />
+                                <div class="form-text" th:text="#{feedback.email.note}">We'll use this to follow up on your feedback if needed.</div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="feedbackType" class="form-label fs-5" th:text="#{feedback.type}">Type of Feedback</label>
+                                <select class="form-select form-select-lg" id="feedbackType" name="feedbackType" required>
+                                    <option value="" selected th:text="#{feedback.type.select}">-- Please choose an option --</option>
+                                    <option value="suggestion" th:text="#{feedback.type.suggestion}">Suggestion</option>
+                                    <option value="bug" th:text="#{feedback.type.bug}">Bug Report</option>
+                                    <option value="praise" th:text="#{feedback.type.praise}">Praise</option>
+                                    <option value="general" th:text="#{feedback.type.general}">General Comment</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="message" class="form-label fs-5" th:text="#{feedback.message}">Message</label>
+                                <textarea class="form-control form-control-lg" id="message" name="message" rows="6" required th:placeholder="#{feedback.message.placeholder}" data-i18n-default="Your feedback message"></textarea>
+                            </div>
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg" th:text="#{feedback.submit}">Submit Feedback</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="modal fade" id="feedbackSuccessModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabel" th:text="#{feedback.modal.title}">Thank You!</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" th:text="#{feedback.modal.body}">
+                    Thank you for your feedback. Your input is valuable to us. We will process your feedback and send email back to you soon.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" th:text="#{feedback.modal.close}">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:replace="~{fragments/chatbot :: chatbot}"></div>
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const feedbackForm = document.getElementById('feedbackForm');
+            const successModalEl = document.getElementById('feedbackSuccessModal');
+            
+            if (feedbackForm && successModalEl) {
+                const successModal = new bootstrap.Modal(successModalEl);
+
+                feedbackForm.addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    successModal.show();
+                });
+
+                successModalEl.addEventListener('hidden.bs.modal', function () {
+                    feedbackForm.reset();
+                });
+            }
+        });
+    </script>
+</body>
+</html>

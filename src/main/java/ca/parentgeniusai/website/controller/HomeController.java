@@ -48,8 +48,7 @@ public class HomeController {
         return "vision";
     }
     
-    /*
-    @GetMapping("/posts")
+    @GetMapping("/feedback")
     public String posts(Model model) {
         // Keep username logic, but auth is handled globally
         if (model.containsAttribute("auth") && model.getAttribute("auth") != null) {
@@ -57,9 +56,9 @@ public class HomeController {
         } else {
             model.addAttribute("username", "Guest");
         }
-        return "posts";
+        return "feedback";
     }
-	*/
+	
     @GetMapping("/faq")
     public String faq(Model model) {
         // No need for auth parameter or model attribute
