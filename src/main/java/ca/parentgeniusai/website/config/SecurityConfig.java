@@ -44,7 +44,7 @@ public class SecurityConfig {
                 // Require 'EDITOR' role for admin-specific URLs
                 .requestMatchers("/api/v1/admin/**", "/course-list").hasRole("EDITOR")
                 // Require authentication for the functions pages
-                .requestMatchers("/function-article-list", "/article", "/new-article", "/edit-article").authenticated()
+                .requestMatchers("/function-article-list", "/article", "/new-article", "/edit-article", "/posts").authenticated()
                 // Allow all other requests to be accessed publicly
                 .anyRequest().permitAll()
                 // --- END: MODIFIED ACCESS RULES ---
