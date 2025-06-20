@@ -7,420 +7,493 @@
     <link rel="icon" type="image/jpeg" th:href="@{/images/gpa-logo.jpg}" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-    <link href="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-bs5.min.css" rel="stylesheet" />
     <link rel="stylesheet" th:href="@{/css/style.css}" />
     <style>
-        .pgai-posts-section { padding: 50px 0; }
-        .pgai-post-panel { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .pgai-post-list-header { display: flex; justify-content: space-between; border-bottom: 1px solid #ddd; margin-bottom: 20px; }
-        .pgai-post-tab { flex: 1; text-align: center; cursor: pointer; background: none; border: none; color: #555; }
-        .pgai-post-tab:hover, .pgai-post-tab.active { color: #007bff; }
-        .pgai-post-list { max-height: 70vh; overflow-y: auto; padding: 15px; margin-top: 10px; }
-        .pgai-post-item { border-bottom: 1px solid #eee; padding: 15px 0; }
-        .pgai-loading { text-align: center; padding: 20px; display: none; }
-        .pgai-note-editable img { max-width: 100%; height: auto; }
-        .pgai-summernote-toolbar { display: flex; justify-content: flex-end; }
-        .note-statusbar { display: none !important; }
-        .note-editable { min-height: 40px; }
-        .pgai-post-item img { max-width: 100%; height: auto; }
-        #pgai-post-hint { display: none; color: #dc3545; font-size: 14px; margin-top: 5px; text-align: left; }
-        .pgai-post-hint-show {
-            display: block;
-            opacity: 1;
-            transition: opacity 0.5s ease-in-out;
+        body {
+            background-color: #f0f2f5;
         }
-        .pgai-post-hint-fade {
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
+        .pgai-posts-section {
+            padding: 50px 0;
+        }
+        .pgai-post-panel {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        /* Create Post Panel */
+        .pgai-create-post-panel {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+        #pgai-post-content-input {
+            width: 100%;
+            border: none;
+            resize: none;
+            min-height: 80px;
+            font-size: 1.1rem;
+            padding: 10px;
+        }
+        #pgai-post-content-input:focus {
+            outline: none;
+        }
+        /* Media Preview */
+        .pgai-media-preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .pgai-preview-item {
+            position: relative;
+            aspect-ratio: 1 / 1;
+        }
+        .pgai-preview-item img, .pgai-preview-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .pgai-remove-media-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 14px;
+            line-height: 24px;
+            text-align: center;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .pgai-create-post-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 10px;
+        }
+        #pgai-media-input {
+            display: none;
+        }
+        .pgai-media-upload-label {
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #45bd62;
+        }
+        #pgai-submit-post-btn {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+            font-weight: bold;
+        }
+        /* Post Card */
+        .pgai-post-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .pgai-post-card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            padding: 15px;
+        }
+        .pgai-post-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .pgai-post-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            background-color: #e9ecef; /* Placeholder color */
+        }
+        .pgai-post-username {
+            font-weight: bold;
+        }
+        .pgai-post-content {
+            margin-bottom: 15px;
+            white-space: pre-wrap; /* Preserve line breaks */
+        }
+        /* Media Grid */
+        .pgai-post-media-grid {
+            display: grid;
+            gap: 4px;
+            margin-bottom: 10px;
+        }
+        .pgai-post-media-grid.media-count-1 { grid-template-columns: 1fr; }
+        .pgai-post-media-grid.media-count-2 { grid-template-columns: 1fr 1fr; }
+        .pgai-post-media-grid.media-count-3-or-more { grid-template-columns: 1fr 1fr 1fr; }
+
+        .pgai-media-item, .pgai-media-item-wrapper {
+            position: relative;
+            aspect-ratio: 1 / 1;
+        }
+        .pgai-media-item img, .pgai-media-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            background-color: #f0f0f0;
+        }
+        .pgai-more-media-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        /* Post Footer */
+        .pgai-post-footer {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #65676b;
+            padding-top: 10px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .pgai-post-footer .fa-heart {
+            color: #ff4141;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+        .pgai-loading {
+            text-align: center;
+            padding: 20px;
+            display: none;
         }
     </style>
 </head>
 <body>
     <div th:replace="~{fragments/navbar :: navbar}"></div>
+
     <div class="pgai-posts-section">
         <div class="pgai-post-panel">
-            <div class="pgai-post-list-header">
-                <button class="pgai-post-tab active" onclick="switchTab('for-me')"><div th:text="#{posts.caption1}">For Me</div></button>
-                <button class="pgai-post-tab" onclick="switchTab('following')"><div th:text="#{posts.caption2}">Following</div></button>
+            <!-- Create Post Panel -->
+            <div class="pgai-create-post-panel">
+                <textarea id="pgai-post-content-input" placeholder="What's on your mind?"></textarea>
+                <div id="pgai-media-preview" class="pgai-media-preview-grid"></div>
+                <div class="pgai-create-post-footer">
+                    <label for="pgai-media-input" class="pgai-media-upload-label">
+                        <i class="fas fa-photo-video"></i>
+                    </label>
+                    <input type="file" id="pgai-media-input" multiple accept="image/*,video/*">
+                    <button id="pgai-submit-post-btn" class="btn btn-primary">Post</button>
+                </div>
             </div>
-            <div id="summernote"></div>
-            <div id="pgai-post-hint">
-                Please add some text or an image before posting.
-            </div>
+
+            <!-- Post List -->
             <div class="pgai-post-list"></div>
+
+            <!-- Loading Spinner -->
             <div class="pgai-loading">Loading...</div>
         </div>
     </div>
-    <div id="i18n-container" style="display: none;">
-        <span id="i18n-summernote-button-post" th:text="#{summernote.button.post}">Post</span>
-        <span id="i18n-summernote-tooltip-post" th:text="#{summernote.button.tooltip.post}">Submit Post</span>
-    </div>
+
     <div th:replace="~{fragments/chatbot :: chatbot}"></div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-bs5.min.js"></script>
     <script th:inline="javascript">
         $(document).ready(function () {
-            if (typeof $.fn.summernote === 'undefined') {
-                console.error('Summernote is not loaded!');
-                return;
-            }
-
-            const MIN_HEIGHT = 40;
-            const STRAPI_URL = /*[[${strapiUrl}]]*/ 'http://localhost:8080/api/';
-            const AUTH_TOKEN = /*[[${strapiToken}]]*/ 'Bearer default-token';
-            const CURRENT_USER = /*[[${currentUser}]]*/ 'Anonymous';
+            // --- CONFIGURATION ---
+            const STRAPI_URL = /*[[${strapiUrl}]]*/ 'http://localhost:1337/api/';
+            const STRAPI_ROOT = /*[[${strapiRootUrl}]]*/ 'http://localhost:1337';
+            const AUTH_TOKEN = /*[[${strapiToken}]]*/ 'default-token';
             const POSTS_PER_PAGE = 10;
-            const CACHE_MAX_POSTS = 50;
-            const i18n = {
-                post: document.getElementById('i18n-summernote-button-post').innerText,
-                postTooltip: document.getElementById('i18n-summernote-tooltip-post').innerText
-            };
 
-            console.log('STRAPI_URL initialized:', STRAPI_URL);
-
-            let totalPosts = 0;
-            let totalPages = 0;
             let currentPage = 1;
             let isLoading = false;
             let currentUserId = null;
+            let totalPages = 1;
+            let selectedFiles = []; // Array to hold selected files for preview and upload
 
-            $('#summernote').summernote({
-                height: MIN_HEIGHT,
-                minHeight: MIN_HEIGHT,
-                toolbar: [
-                    ['insert', ['picture']],
-                    ['custom', ['postButton']]
-                ],
-                buttons: {
-                    postButton: function (context) {
-                        var ui = $.summernote.ui;
-                        var button = ui.button({
-                            contents: i18n.post,
-                            tooltip: i18n.postTooltip,
-                            className: 'note-btn-primary pgai-summernote-post-btn',
-                            click: function () {
-                                submitPost();
-                            }
-                        });
-                        return button.render();
-                    }
-                },
-                callbacks: {
-                    onChange: function (contents, $editable) {
-                        measureContentHeight(contents, $editable, (newContentHeight) => {
-                            const newHeight = Math.max(newContentHeight, MIN_HEIGHT);
-                            const currentHeight = $editable.height();
-                            console.log('Editor HTML:', contents);
-                            console.log('Measured Height:', newContentHeight);
-                            console.log('Current Height:', currentHeight);
-                            if (newHeight !== currentHeight) {
-                                $editable.height(newHeight);
-                                console.log('Adjusted height to:', newHeight);
-                            }
-                        });
-                    },
-                    onInit: function () {
-                        $('.note-toolbar').addClass('pgai-summernote-toolbar');
-                        var $editable = $(this).next('.note-editor').find('.note-editable');
-                        $editable.height(MIN_HEIGHT);
-                        console.log('Init - Set height to minHeight:', MIN_HEIGHT);
-                    },
-                    onImageUpload: function (files) {
-                        var $editor = $(this);
-                        var $editable = $editor.next('.note-editor').find('.note-editable');
-                        var file = files[0];
-                        var img = new Image();
-                        var url = URL.createObjectURL(file);
-                        img.src = url;
-                        img.onload = function () {
-                            var editorWidth = $editable.width();
-                            var scale = editorWidth / this.width;
-                            var imgHeight = this.height * scale;
-                            $editor.summernote('insertImage', url, function ($image) {
-                                $image.css({ width: '100%', height: 'auto' });
-                                $image.attr('data-filename', file.name);
-                                measureContentHeight($editable.html(), $editable, (newContentHeight) => {
-                                    const newHeight = Math.max(newContentHeight, MIN_HEIGHT);
-                                    const currentHeight = $editable.height();
-                                    if (newHeight !== currentHeight) {
-                                        $editable.height(newHeight);
-                                        console.log('Image Upload - Adjusted height to:', newHeight);
-                                    }
-                                });
-                            });
-                        };
-                    }
-                }
-            });
-
-            $(document).on('touchstart wheel', '.note-editable', { passive: true }, function () {});
-
+            /**
+             * Fetches the current user's ID from Strapi.
+             */
             async function fetchCurrentUserId() {
-                const url = `${STRAPI_URL}users/me`;
-                console.log('Fetching user ID from:', url);
-                const response = await fetch(url, { headers: { 'Authorization': AUTH_TOKEN } });
-                if (!response.ok) throw new Error('Failed to fetch user ID');
-                const user = await response.json();
-                console.log('Fetched user:', user);
-                return user.id;
+                if (currentUserId) return currentUserId;
+                try {
+                    const response = await fetch(`${STRAPI_URL}users/me`, { headers: { 'Authorization': AUTH_TOKEN } });
+                    if (!response.ok) throw new Error('Failed to fetch user ID');
+                    const user = await response.json();
+                    currentUserId = user.id;
+                    return currentUserId;
+                } catch (error) {
+                    console.error("Error fetching user ID:", error);
+                }
             }
 
+            /**
+             * Fetches posts from Strapi.
+             */
             async function fetchPosts(page) {
-                const url = `${STRAPI_URL}posts?pagination[page]=${page}&pagination[pageSize]=${POSTS_PER_PAGE}&sort[0]=create_time:desc&populate=users_permissions_user`;
-                console.log(`Fetching posts from: ${url}`);
-                const response = await fetch(url, { headers: { 'Authorization': AUTH_TOKEN } });
-                if (!response.ok) throw new Error(`Fetch failed: ${response.status}`);
-                const data = await response.json();
-                console.log('Fetched posts data:', data);
-                data.data.forEach(post => {
-                    console.log(`Post ${post.id} content:`, post.attributes.content);
-                });
-                totalPosts = data.meta.pagination.total;
-                totalPages = data.meta.pagination.pageCount;
-                return data.data;
-            }
-
-            function renderPost(post) {
-                console.log('Rendering post:', post);
-                console.log('Raw post content:', post.attributes.content);
-                const postDiv = document.createElement('div');
-                postDiv.className = 'pgai-post-item';
-                postDiv.dataset.postId = post.id;
-                const username = post.attributes.users_permissions_user?.data?.attributes?.username || 'Anonymous';
-                const content = post.attributes.content || '';
-                // Fix URLs before rendering
-                const fixedContent = content.replace(new RegExp(`${STRAPI_URL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'g'), '');
-                console.log('Fixed content:', fixedContent);
-                postDiv.innerHTML = `
-                    <p><strong>${username}</strong> <small>${new Date(post.attributes.create_time || post.attributes.createdAt).toLocaleString()}</small></p>
-                    <div>${fixedContent}</div>
-                `;
-                console.log('Rendered HTML for post:', postDiv.innerHTML);
-                // Log and fix image URLs in DOM
-                const images = postDiv.querySelectorAll('img');
-                console.log('Found images:', images.length);
-                images.forEach(img => {
-                    console.log('Image src after rendering:', img.src);
-                    if (img.src.includes(`${STRAPI_URL}`)) {
-                        console.warn('Fixing image URL:', img.src);
-                        img.src = img.src.replace(`${STRAPI_URL}`, '');
-                        console.log('Fixed image src:', img.src);
-                    }
-                });
-                return postDiv;
-            }
-
-            async function loadPosts(direction = 'initial') {
-                if (isLoading) return;
-                isLoading = true;
-                document.querySelector('.pgai-loading').style.display = 'block';
-
-                const postList = document.querySelector('.pgai-post-list');
-                const scrollPosition = postList.scrollTop;
+                const populateFields = ['users_permissions_user.avatar', 'media', 'likes'];
+                const url = `${STRAPI_URL}posts?pagination[page]=${page}&pagination[pageSize]=${POSTS_PER_PAGE}&sort[0]=createdAt:desc&populate=${populateFields.join(',')}`;
 
                 try {
-                    let pageToFetch = currentPage;
-                    if (direction === 'initial') {
-                        pageToFetch = 1;
-                        const posts = await fetchPosts(pageToFetch);
-                        postList.innerHTML = '';
-                        posts.forEach(post => postList.appendChild(renderPost(post)));
-                        currentPage = pageToFetch;
-                    } else if (direction === 'up' && currentPage > 1) {
-                        pageToFetch = currentPage - 1;
-                        const posts = await fetchPosts(pageToFetch);
-                        const scrollHeightBefore = postList.scrollHeight;
-                        posts.reverse().forEach(post => {
-                            if (!document.querySelector(`.pgai-post-item[data-post-id="${post.id}"]`)) {
-                                postList.insertBefore(renderPost(post), postList.firstChild);
-                            }
-                        });
-                        currentPage--;
-                        if (scrollHeightBefore !== postList.scrollHeight) {
-                            postList.scrollTop = scrollPosition + (postList.scrollHeight - scrollHeightBefore);
-                        }
-                    } else if (direction === 'down' && currentPage < totalPages) {
-                        pageToFetch = currentPage + 1;
-                        const posts = await fetchPosts(pageToFetch);
-                        posts.forEach(post => {
-                            if (!document.querySelector(`.pgai-post-item[data-post-id="${post.id}"]`))  {
-                                postList.appendChild(renderPost(post));
-                            }
-                        });
-                        currentPage++;
-                        postList.scrollTop = scrollPosition;
-                    } else {
-                        console.log(direction === 'up' ? 'Reached the top' : 'Reached the bottom');
-                        isLoading = false;
-                        document.querySelector('.pgai-loading').style.display = 'none';
-                        return;
-                    }
-
-                    const postElements = postList.querySelectorAll('.pgai-post-item');
-                    if (postElements.length > CACHE_MAX_POSTS) {
-                        if (direction === 'down') {
-                            for (let i = 0; i < postElements.length - CACHE_MAX_POSTS; i++) {
-                                postElements[i].remove();
-                            }
-                        } else if (direction === 'up') {
-                            for (let i = CACHE_MAX_POSTS; i < postElements.length; i++) {
-                                postElements[i].remove();
-                            }
-                        }
-                    }
-
+                    const response = await fetch(url, { headers: { 'Authorization': AUTH_TOKEN } });
+                    if (!response.ok) throw new Error(`Fetch failed: ${response.statusText}`);
+                    const data = await response.json();
+                    totalPages = data.meta.pagination.pageCount;
+                    return data.data;
                 } catch (error) {
-                    console.error('Load failed:', error);
+                    console.error("Error fetching posts:", error);
+                    return [];
+                }
+            }
+            
+            /**
+             * Renders a single post card.
+             */
+            function renderPost(post) {
+                const postAttributes = post.attributes;
+                const postCard = document.createElement('div');
+                postCard.className = 'pgai-post-card';
+                postCard.dataset.postId = post.id;
+                
+                const user = postAttributes.users_permissions_user?.data?.attributes;
+                const username = user?.username || 'Anonymous';
+                let avatarUrl = 'https://placehold.co/40x40/EFEFEF/AAAAAA?text=A'; // Default placeholder
+                if (user?.avatar?.data?.attributes?.url) {
+                    let rawAvatarUrl = user.avatar.data.attributes.url;
+                    avatarUrl = rawAvatarUrl.startsWith('http') ? rawAvatarUrl : `${STRAPI_ROOT}${rawAvatarUrl}`;
+                }
+
+                const mediaData = postAttributes.media?.data;
+                let mediaGridHtml = '';
+                if (mediaData && mediaData.length > 0) {
+                    const validMediaData = mediaData.filter(media => media && media.attributes && media.attributes.url);
+                    const originalCount = validMediaData.length;
+                    const displayMedia = validMediaData.slice(0, 9); // Limit to 9 items
+                    const displayCount = displayMedia.length;
+
+                    let gridClass = 'media-count-1';
+                    if (displayCount === 2) {
+                        gridClass = 'media-count-2';
+                    } else if (displayCount >= 3) {
+                        gridClass = 'media-count-3-or-more';
+                    }
+
+                    const mediaItemsHtml = displayMedia.map((media, index) => {
+                        let mediaUrl = media.attributes.url;
+                        if (!mediaUrl.startsWith('http')) {
+                            mediaUrl = `${STRAPI_ROOT}${mediaUrl}`;
+                        }
+                        const isVideo = media.attributes.mime.startsWith('video');
+                        
+                        // If this is the 9th item AND there are more, show overlay
+                        if (index === 8 && originalCount > 9) {
+                            const moreCount = originalCount - 9;
+                            return `
+                                <div class="pgai-media-item-wrapper">
+                                    <div class="pgai-media-item">
+                                        ${isVideo
+                                            ? `<video src="${mediaUrl}" muted playsinline></video>`
+                                            : `<img src="${mediaUrl}" alt="Post media">`
+                                        }
+                                    </div>
+                                    <div class="pgai-more-media-overlay">+${moreCount}</div>
+                                </div>
+                            `;
+                        }
+
+                        return `
+                            <div class="pgai-media-item">
+                                ${isVideo
+                                    ? `<video src="${mediaUrl}" controls></video>`
+                                    : `<img src="${mediaUrl}" alt="Post media" onerror="this.style.display='none'">`
+                                }
+                            </div>
+                        `;
+                    }).join('');
+
+                    if(mediaItemsHtml) {
+                        mediaGridHtml = `<div class="pgai-post-media-grid ${gridClass}">${mediaItemsHtml}</div>`;
+                    }
+                }
+
+                const likeCount = postAttributes.likes?.data?.length || 0;
+
+                postCard.innerHTML = `
+                    <div class="pgai-post-header">
+                        <img src="${avatarUrl}" alt="${username}'s avatar" class="pgai-post-avatar" onerror="this.onerror=null;this.src='https://placehold.co/40x40/EFEFEF/AAAAAA?text=A';">
+                        <div>
+                            <div class="pgai-post-username">${username}</div>
+                            <small class="text-muted">${new Date(postAttributes.createdAt).toLocaleString()}</small>
+                        </div>
+                    </div>
+                    <div class="pgai-post-content">
+                        <p>${postAttributes.content || ''}</p>
+                    </div>
+                    ${mediaGridHtml}
+                    <div class="pgai-post-footer">
+                        <i class="fas fa-heart"></i>
+                        <span>${likeCount} likes</span>
+                    </div>
+                `;
+                return postCard;
+            }
+            
+            /**
+             * Renders previews for selected media files.
+             */
+            function renderPreviews() {
+                const previewContainer = $('#pgai-media-preview');
+                previewContainer.empty();
+                selectedFiles.forEach((file, index) => {
+                    const previewItem = $(`
+                        <div class="pgai-preview-item">
+                            <button class="pgai-remove-media-btn" data-index="${index}">&times;</button>
+                        </div>
+                    `);
+                    
+                    const url = URL.createObjectURL(file);
+                    if (file.type.startsWith('image/')) {
+                        previewItem.prepend(`<img src="${url}" alt="Preview">`);
+                    } else if (file.type.startsWith('video/')) {
+                        previewItem.prepend(`<video src="${url}" muted playsinline></video>`);
+                    }
+                    previewContainer.append(previewItem);
+                });
+            }
+
+
+            /**
+             * Loads posts and appends them to the list.
+             */
+            async function loadPosts() {
+                if (isLoading) return;
+                isLoading = true;
+                $('.pgai-loading').show();
+
+                try {
+                    const posts = await fetchPosts(currentPage);
+                    const postList = $('.pgai-post-list');
+                    if (posts.length > 0) {
+                        posts.forEach(post => postList.append(renderPost(post)));
+                        currentPage++;
+                    } else if (currentPage > totalPages) {
+                        $(window).off('scroll', handleScroll);
+                    }
+                } catch (error) {
+                    console.error("Failed to load posts:", error);
                 } finally {
                     isLoading = false;
-                    document.querySelector('.pgai-loading').style.display = 'none';
+                    $('.pgai-loading').hide();
                 }
             }
 
+            /**
+             * Handles infinite scrolling.
+             */
             function handleScroll() {
-                const postList = document.querySelector('.pgai-post-list');
-                const scrollTop = postList.scrollTop;
-                const windowHeight = postList.clientHeight;
-                const docHeight = postList.scrollHeight;
-
-                if (scrollTop <= 100 && currentPage > 1 && !isLoading) {
-                    console.log('Scrolling up, loading page:', currentPage - 1);
-                    loadPosts('up');
-                } else if (scrollTop + windowHeight >= docHeight - 100 && currentPage < totalPages && !isLoading) {
-                    console.log('Scrolling down, loading page:', currentPage + 1);
-                    loadPosts('down');
+                if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
+                    if (currentPage <= totalPages) {
+                        loadPosts();
+                    }
                 }
             }
 
-            async function uploadImage(file) {
-                const formData = new FormData();
-                formData.append('files', file);
-                const uploadUrl = `${STRAPI_URL}upload`;
-                console.log('Uploading image to:', uploadUrl);
-                const response = await fetch(uploadUrl, {
-                    method: 'POST',
-                    headers: { 'Authorization': AUTH_TOKEN },
-                    body: formData
-                });
-                if (!response.ok) throw new Error('Image upload failed');
-                const data = await response.json();
-                console.log('Upload response:', data);
-                console.log('Uploaded image URL:', data[0].url);
-                return data[0].url;
-            }
-
+            /**
+             * Handles the post submission process.
+             */
             async function submitPost() {
-                let content = $('#summernote').summernote('code');
-                console.log('Original editor content:', content);
-                const $images = $('#summernote').next('.note-editor').find('.note-editable img');
-                console.log('Images in editor:', $images.length, $images.toArray().map(img => img.src));
+                const content = $('#pgai-post-content-input').val().trim();
+                const mediaFiles = selectedFiles;
 
-                const cleanContent = content.replace(/<[^>]+>/g, '').trim();
-                const hasImages = $images.length > 0;
-                if (!cleanContent && !hasImages) {
-                    console.log('Post is empty (no text or images), submission aborted.');
-                    const hint = $('#pgai-post-hint');
-                    console.log('Showing hint: Setting display to block and adding pgai-post-hint-show');
-                    hint.css('display', 'block').removeClass('pgai-post-hint-fade').addClass('pgai-post-hint-show');
-                    setTimeout(() => {
-                        console.log('Fading hint: Adding pgai-post-hint-fade');
-                        hint.removeClass('pgai-post-hint-show').addClass('pgai-post-hint-fade');
-                        setTimeout(() => {
-                            console.log('Hiding hint: Setting display to none');
-                            hint.css('display', 'none');
-                        }, 500);
-                    }, 3000);
+                if (!content && mediaFiles.length === 0) {
+                    alert('Please add some text or media to your post.');
                     return;
                 }
-
-                if (!currentUserId) {
-                    currentUserId = await fetchCurrentUserId();
-                }
-
-                const imagePromises = Array.from($images).map(async img => {
-                    const blobUrl = img.src;
-                    const filename = img.getAttribute('data-filename') || 'image.jpg';
-                    const blob = await fetch(blobUrl).then(res => res.blob());
-                    const file = new File([blob], filename, { type: blob.type });
-                    const uploadedUrl = await uploadImage(file);
-                    console.log(`Replacing blob URL ${blobUrl} with ${uploadedUrl}`);
-                    const escapedBlobUrl = blobUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                    content = content.replace(new RegExp(escapedBlobUrl, 'g'), uploadedUrl);
-                });
-
-                await Promise.all(imagePromises);
-                console.log('Final content before POST:', content);
-
-                const response = await fetch(`${STRAPI_URL}posts`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': AUTH_TOKEN,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        data: {
-                            content: content,
-                            users_permissions_user: currentUserId,
-                            create_time: new Date().toISOString()
-                        }
-                    })
-                });
-
-                console.log('Post submission response:', response.status);
-                if (response.ok) {
-                    $('#summernote').summernote('reset');
-                    loadPosts('initial');
-                } else {
-                    console.error('Post submission failed:', await response.text());
-                }
-            }
-
-            function measureContentHeight(htmlContent, $editable, callback) {
-                const hiddenDiv = document.createElement('div');
-                hiddenDiv.style.visibility = 'hidden';
-                hiddenDiv.style.position = 'absolute';
-                hiddenDiv.style.top = '-9999px';
-                hiddenDiv.style.left = '-9999px';
-                hiddenDiv.style.width = $editable.width() + 'px';
-                hiddenDiv.style.padding = '10px';
-                hiddenDiv.style.font = 'inherit';
                 
-                const sanitizedContent = htmlContent.replace(/src="blob:[^"]*"/g, 'src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"');
-                hiddenDiv.innerHTML = sanitizedContent;
+                const submitButton = $('#pgai-submit-post-btn');
+                submitButton.prop('disabled', true).text('Posting...');
 
-                document.body.appendChild(hiddenDiv);
-
-                const images = hiddenDiv.querySelectorAll('img');
-                let totalHeight = hiddenDiv.scrollHeight;
-
-                if (images.length > 0) {
-                    const realImages = $editable.find('img');
-                    realImages.each((index, realImg) => {
-                        if (realImg.complete && index < images.length) {
-                            const imgHeight = realImg.clientHeight;
-                            totalHeight -= images[index].scrollHeight;
-                            totalHeight += imgHeight;
+                try {
+                    // Step 1: Upload media if any
+                    let mediaIds = [];
+                    if (mediaFiles.length > 0) {
+                        const formData = new FormData();
+                        for (const file of mediaFiles) {
+                            formData.append('files', file);
                         }
+                        const response = await fetch(`${STRAPI_URL}upload`, {
+                            method: 'POST',
+                            headers: { 'Authorization': AUTH_TOKEN },
+                            body: formData
+                        });
+                        if (!response.ok) throw new Error('Media upload failed');
+                        const uploadedMedia = await response.json();
+                        mediaIds = uploadedMedia.map(media => media.id);
+                    }
+
+                    // Step 2: Create the post with content and media IDs
+                    await fetchCurrentUserId();
+                    const postData = { data: { content: content, media: mediaIds, users_permissions_user: currentUserId } };
+                    const postResponse = await fetch(`${STRAPI_URL}posts`, {
+                        method: 'POST',
+                        headers: { 'Authorization': AUTH_TOKEN, 'Content-Type': 'application/json' },
+                        body: JSON.stringify(postData)
                     });
+
+                    if (!postResponse.ok) throw new Error('Failed to create post');
+                    
+                    // Step 3: Clear form and reload list
+                    $('#pgai-post-content-input').val('');
+                    selectedFiles = [];
+                    renderPreviews(); // Clear previews
+                    $('.pgai-post-list').empty();
+                    currentPage = 1;
+                    await loadPosts();
+                    $(window).on('scroll', handleScroll);
+
+                } catch (error) {
+                    console.error("Error submitting post:", error);
+                    alert(`Error: ${error.message}`);
+                } finally {
+                    submitButton.prop('disabled', false).text('Post');
                 }
-
-                document.body.appendChild(hiddenDiv);
-                callback(totalHeight);
             }
 
-            function switchTab(tabName) {
-                $('.pgai-post-tab').removeClass('active');
-                $('.pgai-post-tab').filter(function () {
-                    return $(this).text().trim().toLowerCase() === tabName;
-                }).addClass('active');
-                console.log('Switched to tab:', tabName);
-            }
 
-            loadPosts('initial').then(() => {
-                document.querySelector('.pgai-post-list').addEventListener('scroll', handleScroll);
+            // --- INITIALIZATION ---
+            $('#pgai-submit-post-btn').on('click', submitPost);
+            
+            $('#pgai-media-input').on('change', function(event) {
+                const files = Array.from(event.target.files);
+                selectedFiles.push(...files);
+                renderPreviews();
+                $(this).val(''); // Reset input to allow selecting same file again
             });
+            
+            $('#pgai-media-preview').on('click', '.pgai-remove-media-btn', function() {
+                const indexToRemove = $(this).data('index');
+                selectedFiles.splice(indexToRemove, 1);
+                renderPreviews();
+            });
+
+            $(window).on('scroll', handleScroll);
+            
+            // Initial load
+            loadPosts();
         });
     </script>
 </body>
