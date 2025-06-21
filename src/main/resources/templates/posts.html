@@ -188,14 +188,14 @@
         <div class="pgai-post-panel">
             <!-- Create Post Panel -->
             <div class="pgai-create-post-panel">
-                <textarea id="pgai-post-content-input" placeholder="What's on your mind?"></textarea>
+                <textarea id="pgai-post-content-input" th:placeholder="#{posts.placeholder.cap1}" data-i18n-default="What's on your mind?"></textarea>
                 <div id="pgai-media-preview" class="pgai-media-preview-grid"></div>
                 <div class="pgai-create-post-footer">
                     <label for="pgai-media-input" class="pgai-media-upload-label">
                         <i class="fas fa-photo-video"></i>
                     </label>
                     <input type="file" id="pgai-media-input" multiple accept="image/*,video/*">
-                    <button id="pgai-submit-post-btn" class="btn btn-primary">Post</button>
+                    <button id="pgai-submit-post-btn" class="btn btn-primary"><span th:text="#{posts.cap2}">Post</span></button>
                 </div>
             </div>
 
@@ -203,7 +203,7 @@
             <div class="pgai-post-list"></div>
 
             <!-- Loading Spinner -->
-            <div class="pgai-loading">Loading...</div>
+            <div class="pgai-loading" th:text="#{posts.cap3}">Loading...</div>
         </div>
     </div>
 
