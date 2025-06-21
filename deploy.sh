@@ -64,6 +64,6 @@ gcloud run deploy "${SERVICE_NAME}" \
   --platform "managed" \
   --region "${REGION}" \
   --allow-unauthenticated \
-  --revision-suffix "v${VERSION}" # Add a prefix for clarity in the console
+  --revision-suffix "v${VERSION//./-}" # MODIFIED: Replaced '.' with '-' for a valid revision name
 
 echo "--- Deployment of ${SERVICE_NAME} version ${VERSION} complete! ---"
