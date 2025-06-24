@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Topic Content</title>
+    <link rel="icon" type="image/jpeg" th:href="@{/images/gpa-logo.jpg}" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <style>
+        body { display: flex; flex-direction: column; min-height: 100vh; background-color: #f8f9fa; }
+        .main-content { flex: 1; }
+        .editor-panel { width: 90vw; max-width: 1200px; margin: 30px auto; padding: 30px; background-color: #fff; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.08); }
+        .component { border: 1px solid #d1d8e0; padding: 20px; margin-bottom: 20px; border-radius: 8px; background-color: #fdfdfd; }
+        .component-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+        .drag-handle { cursor: grab; margin-right: 15px; color: #adb5bd; }
+        .media-preview { max-width: 250px; max-height: 180px; margin-top: 10px; display: block; border: 1px solid #ddd; padding: 5px; border-radius: 4px; }
+        .component-picker-button { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 130px; height: 110px; border: 1px solid #ddd; border-radius: 8px; margin: 10px; cursor: pointer; transition: all 0.2s ease-in-out; background-color: #fff; }
+        .component-picker-button:hover { background-color: #f8f9fa; border-color: #0d6efd; box-shadow: 0 0 10px rgba(13,110,253,.2); }
+        .component-picker-button i { font-size: 2.2em; margin-bottom: 10px; color: #0d6efd; }
+    </style>
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+    <div class="container-fluid main-content">
+        <div class="editor-panel">
+            <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                <h2 id="topic-page-title" class="mb-0">Loading Topic...</h2>
+                <div>
+                    <button class="btn btn-danger" id="delete-topic-btn"><i class="fas fa-trash-alt me-2"></i>Delete</button>
+                    <button class="btn btn-success" id="save-topic-btn"><i class="fas fa-save me-2"></i>Save Topic</button>
+                    <a th:href="@{/topics}" class="btn btn-secondary"><i class="fas fa-arrow-left me-2"></i>Back to List</a>
+                </div>
+            </div>
+            <div class="topic-editor">
+                <div class="form-group">
+                    <label for="topic-title-main"><strong>Topic Title</strong></label>
+                    <input type="text" id="topic-title-main" class="form-control form-control-lg" />
+                </div>
+                <div class="form-group topic-icon-uploader">
+                    <strong>Icon Image</strong>
+                    <input type="file" class="form-control form-control-lg topic-icon__file-input" accept="image/*">
+                    <img src="#" alt="Icon Preview" class="media-preview topic-icon__preview" style="display:none;" />
+                    <div class="progress mt-2" style="display: none;"><div class="progress-bar" role="progressbar" style="width: 0%;">0%</div></div>
+                </div>
+                <h3 class="mt-5 mb-3">Topic Content</h3>
+                <div id="topic-content-area" class="mt-1"></div>
+                <div class="text-center mt-4">
+                    <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#addComponentModal"><i class="fas fa-plus me-2"></i>Add New Component</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="status-message-container" class="position-fixed bottom-0 start-50 translate-middle-x p-3" style="z-index: 1056;"></div>
+    <div th:replace="~{fragments/component-editor-fragment :: editor-components}"></div>
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+
+    <script th:inline="javascript">
+    /*<![CDATA[*/
+    const STRAPI_API_URL = /*[[${strapiApiUrl}]]*/ 'http://localhost:1337/api';
+    const STRAPI_ROOT_URL = /*[[${strapiRootUrl}]]*/ 'http://localhost:1337';
+    const AUTH_TOKEN = /*[[${strapiToken}]]*/ 'Bearer default-token';
+    const TOPIC_ID = /*[[${topicId}]]*/ '1';
+    let bsModal;
+    let currentInsertTarget = null;
+    let insertPosition = null;
+
+    async function loadTopicContent() {
+        showStatusMessage('Loading content...', 'info');
+        try {
+            // FIX: Using the shorter, cleaner query from the working course editor.
+            const query = 'populate[content][populate]=image_file,video_file,thumbnail&populate=icon_image';
+
+            const fetchUrl = `${STRAPI_API_URL}/topics/${TOPIC_ID}?${query}`;
+            
+            const response = await fetch(fetchUrl, { headers: { 'Authorization': AUTH_TOKEN } });
+            if (!response.ok) throw new Error(`Failed to load topic (Status: ${response.status})`);
+            
+            const strapiResponse = await response.json();
+            if (!strapiResponse.data) throw new Error("Topic data not found.");
+            
+            const topic = strapiResponse.data.attributes;
+            $('#topic-title-main').val(topic.title || '');
+            $('#topic-page-title').text('Edit Topic: ' + (topic.title || 'Untitled'));
+            
+            if (topic.icon_image?.data) {
+                $('.topic-icon-uploader').attr('data-icon-media-id', topic.icon_image.data.id);
+                $('.topic-icon__preview').attr('src', getFullStrapiUrl(topic.icon_image.data.attributes.url)).show();
+            }
+            
+            $('#topic-content-area').empty();
+            (topic.content || []).forEach(c => {
+                const componentType = c.__component.split('.')[1].replace(/_/g, '-');
+                const $newComponent = renderComponent(componentType, c);
+                $('#topic-content-area').append($newComponent);
+            });
+            updateMoveButtons();
+        } catch (error) {
+            showStatusMessage(`Could not load topic. ${error.message}`, 'danger');
+        }
+    }
+
+    async function saveTopic() {
+        $('#save-topic-btn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
+        const componentsData = collectComponentData();
+        if (componentsData === null) {
+             $('#save-topic-btn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save Topic');
+            return;
+        }
+        try {
+            const finalPayload = {
+                data: {
+                    title: $('#topic-title-main').val().trim(),
+                    content: componentsData,
+                    icon_image: $('.topic-icon-uploader').attr('data-icon-media-id') ? parseInt($('.topic-icon-uploader').attr('data-icon-media-id'), 10) : null
+                }
+            };
+            
+            const response = await fetch(`${STRAPI_API_URL}/topics/${TOPIC_ID}`, {
+                method: 'PUT',
+                headers: { 'Authorization': AUTH_TOKEN, 'Content-Type': 'application/json' },
+                body: JSON.stringify(finalPayload)
+            });
+
+            if (!response.ok) {
+                 const errorBody = await response.text();
+                 throw new Error(`Save failed: ${response.statusText} - ${errorBody}`);
+            }
+            showStatusMessage('Topic saved successfully!', 'success');
+            setTimeout(() => loadTopicContent(), 1200);
+        } catch (error) {
+            showStatusMessage(`Save failed: ${error.message}`, 'danger');
+        } finally {
+            $('#save-topic-btn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save Topic');
+        }
+    }
+
+    async function deleteTopic() {
+        if (!confirm('Are you sure you want to delete this topic? This action cannot be undone.')) return;
+        $('#delete-topic-btn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Deleting...');
+        try {
+            const response = await fetch(`${STRAPI_API_URL}/topics/${TOPIC_ID}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': AUTH_TOKEN }
+            });
+            if (!response.ok) throw new Error(`Delete failed: ${response.statusText}`);
+            showStatusMessage('Topic deleted successfully! Redirecting...', 'success');
+            setTimeout(() => { window.location.href = '/topics'; }, 2000);
+        } catch (error) {
+            showStatusMessage(`Delete failed: ${error.message}`, 'danger');
+            $('#delete-topic-btn').prop('disabled', false).html('<i class="fas fa-trash-alt me-2"></i>Delete');
+        }
+    }
+    
+    // The rest of the JS functions (renderComponent, handleFileUpload, etc.) are identical
+    // to the previous versions and are required for the component editor to work.
+
+    function showStatusMessage(message, type = 'danger') {
+        const alertClass = `alert-${type}`;
+        const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle';
+        const $alert = $(`<div class="alert ${alertClass} alert-dismissible fade show" role="alert"><i class="fas ${icon} me-2"></i>${message}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>`);
+        $('#status-message-container').append($alert);
+        setTimeout(() => $alert.fadeOut(500, () => $alert.remove()), 6000);
+    }
+    function getFullStrapiUrl(path) { if (!path || path.startsWith('http')) return path; try { return new URL(path, STRAPI_ROOT_URL).href; } catch(e) { console.error("Could not create full URL from path:", path); return path; } }
+    function updateVideoPreview($previewContainer, url) { $previewContainer.empty(); if (!url) return; const videoIdMatch = url.match(/^.*(https?:\/\/www\.youtube\.com\/watch\?v=|https?:\/\/youtu\.be\/|https?:\/\/www\.youtube\.com\/embed\/)([^#\&\?]*).*/); if (videoIdMatch && videoIdMatch[2].length === 11) { $previewContainer.html(`<iframe width="100%" height="200" src="https://www.youtube.com/embed/${videoIdMatch[2]}" frameborder="0" allowfullscreen class="media-preview"></iframe>`); } else { $previewContainer.html(`<video controls class="media-preview" src="${getFullStrapiUrl(url)}" style="max-height: 250px;"></video>`); } }
+    function updateMoveButtons() { $('#topic-content-area .component:not(.template)').each(function(index) { const $component = $(this); const isFirst = index === 0; const isLast = index === $('#topic-content-area .component:not(.template)').length - 1; $component.find('.move-up').prop('disabled', isFirst); $component.find('.move-down').prop('disabled', isLast); }); }
+    function uploadFileToStrapi(file, onProgress) { return new Promise((resolve, reject) => { const formData = new FormData(); formData.append('files', file); const xhr = new XMLHttpRequest(); xhr.open('POST', new URL('api/upload', STRAPI_ROOT_URL).href, true); xhr.setRequestHeader('Authorization', AUTH_TOKEN); xhr.upload.onprogress = (event) => { if (event.lengthComputable) { onProgress(Math.round((event.loaded / event.total) * 100)); } }; xhr.onload = () => { if (xhr.status >= 200 && xhr.status < 300) { resolve(JSON.parse(xhr.responseText)[0]); } else { reject(new Error(`Upload failed: ${xhr.status} ${xhr.statusText}`)); } }; xhr.onerror = () => reject(new Error('Network error during file upload.')); xhr.send(formData); }); }
+    async function handleFileUpload(context, mediaType) { const file = context.files[0]; if (!file) return; const $container = $(context).closest('.component, .topic-icon-uploader'); const $progress = $container.find('.progress'); const $progressBar = $progress.find('.progress-bar'); $(context).prop('disabled', true); $('#save-topic-btn').prop('disabled', true); $progress.show(); try { const uploadedFile = await uploadFileToStrapi(file, (percent) => { $progressBar.css('width', percent + '%').text(percent + '%'); }); showStatusMessage('Upload successful!', 'success'); if (mediaType === 'image') { $container.attr('data-media-id', uploadedFile.id); $container.find('.image-component__preview').attr('src', getFullStrapiUrl(uploadedFile.url)).show(); } else if (mediaType === 'video') { $container.attr('data-video-media-id', uploadedFile.id); updateVideoPreview($container.find('.video-component__video-preview'), uploadedFile.url); } else if (mediaType === 'thumbnail') { $container.attr('data-thumbnail-media-id', uploadedFile.id); $container.find('.video-component__thumbnail-preview').attr('src', getFullStrapiUrl(uploadedFile.url)).show(); } else if (mediaType === 'icon-image') { $container.attr('data-icon-media-id', uploadedFile.id); $container.find('.topic-icon__preview').attr('src', getFullStrapiUrl(uploadedFile.url)).show(); } } catch (error) { showStatusMessage(`Upload failed: ${error.message}`, 'danger'); } finally { $(context).prop('disabled', false).val(''); $('#save-topic-btn').prop('disabled', false); $progress.hide(); } }
+    function renderComponent(componentType, data = {}) { const $template = $(`#component-templates .${componentType}-component.template`).clone().removeClass('template'); $template.find('.component-header').append($('#component-actions-template .component-actions').clone()); if (data.id) $template.attr('data-strapi-component-id', data.id); switch (componentType) { case 'text': $template.find('.text-component__data-input').val(data.data || ''); $template.find('.text-component__style-input').val(JSON.stringify(data.styles || {}, null, 2)); break; case 'image': if (data.image_file?.data) { $template.find('.image-component__preview').attr('src', getFullStrapiUrl(data.image_file.data.attributes.url)).show(); $template.attr('data-media-id', data.image_file.data.id); } break; case 'video': if (data.video_file?.data) { updateVideoPreview($template.find('.video-component__video-preview'), data.video_file.data.attributes.url); $template.attr('data-video-media-id', data.video_file.data.id); } if (data.thumbnail?.data) { $template.find('.video-component__thumbnail-preview').attr('src', getFullStrapiUrl(data.thumbnail.data.attributes.url)).show(); $template.attr('data-thumbnail-media-id', data.thumbnail.data.id); } break; case 'external-video': const externalUrl = data.external_url || ''; $template.find('.external-video-component__url-input').val(externalUrl); $template.find('.external-video-component__caption-input').val(data.caption || ''); if (externalUrl) updateVideoPreview($template.find('.external-video-component__video-preview'), externalUrl); break; case 'quiz': $template.find('.quiz-component__question-input').val(data.question || ''); $template.find('.quiz-component__options-input').val(JSON.stringify(data.options || [], null, 2)); $template.find('.quiz-component__correct-answer-input').val(data.correctAnswer || ''); break; case 'pagebreaker': $template.find('.pagebreaker-component__backbutton-input').prop('checked', data.backbutton !== false); $template.find('.pagebreaker-component__nextbutton-input').prop('checked', data.nextbutton !== false); break; } return $template; }
+    function collectComponentData() { const componentsData = []; let hasError = false; $('#topic-content-area .component:not(.template)').each(function() { if (hasError) return; const $c = $(this); const type = $c.data('component-strapi-name'); if (!type) { showStatusMessage('Error: A component is missing its type information.'); hasError = true; return; } let payload = { '__component': type }; if ($c.attr('data-strapi-component-id')) payload.id = parseInt($c.attr('data-strapi-component-id'), 10); try { if ($c.hasClass('text-component')) { payload.data = $c.find('.text-component__data-input').val(); payload.styles = JSON.parse($c.find('.text-component__style-input').val() || '{}'); } else if ($c.hasClass('image-component')) { payload.image_file = $c.attr('data-media-id') ? parseInt($c.attr('data-media-id'), 10) : null; } else if ($c.hasClass('video-component')) { payload.video_file = $c.attr('data-video-media-id') ? parseInt($c.attr('data-video-media-id'), 10) : null; payload.thumbnail = $c.attr('data-thumbnail-media-id') ? parseInt($c.attr('data-thumbnail-media-id'), 10) : null; } else if ($c.hasClass('external-video-component')) { payload.external_url = $c.find('.external-video-component__url-input').val().trim(); payload.caption = $c.find('.external-video-component__caption-input').val().trim(); } else if ($c.hasClass('quiz-component')) { payload.question = $c.find('.quiz-component__question-input').val(); payload.options = JSON.parse($c.find('.quiz-component__options-input').val() || '[]'); payload.correctAnswer = $c.find('.quiz-component__correct-answer-input').val(); } else if ($c.hasClass('pagebreaker-component')) { payload.backbutton = $c.find('.pagebreaker-component__backbutton-input').is(':checked'); payload.nextbutton = $c.find('.pagebreaker-component__nextbutton-input').is(':checked'); } } catch (e) { showStatusMessage(`Error in component data (check for valid JSON): ${e.message}`, 'danger'); hasError = true; } componentsData.push(payload); }); return hasError ? null : componentsData; }
+    $(document).ready(function() { bsModal = new bootstrap.Modal(document.getElementById('addComponentModal')); loadTopicContent(); $('#save-topic-btn').on('click', saveTopic); $('#delete-topic-btn').on('click', deleteTopic); $('.topic-icon-uploader').on('change', '.topic-icon__file-input', function() { handleFileUpload(this, 'icon-image'); }); new Sortable(document.getElementById('topic-content-area'), { animation: 150, handle: '.drag-handle', onEnd: updateMoveButtons }); $('.component-picker-button').on('click', function() { const componentType = $(this).data('type'); const $newComponent = renderComponent(componentType); if (currentInsertTarget) { if (insertPosition === 'before') { $newComponent.insertBefore(currentInsertTarget); } else { $newComponent.insertAfter(currentInsertTarget); } currentInsertTarget = null; insertPosition = null; } else { $('#topic-content-area').append($newComponent); } bsModal.hide(); updateMoveButtons(); }); $('#topic-content-area').on('click', '.remove-component-btn', function() { $(this).closest('.component').remove(); updateMoveButtons(); }); $('#topic-content-area').on('click', '.insert-before-btn', function() { currentInsertTarget = $(this).closest('.component'); insertPosition = 'before'; bsModal.show(); }); $('#topic-content-area').on('click', '.insert-after-btn', function() { currentInsertTarget = $(this).closest('.component'); insertPosition = 'after'; bsModal.show(); }); $('#topic-content-area').on('click', '.move-up', function() { const $component = $(this).closest('.component'); $component.insertBefore($component.prev()); updateMoveButtons(); }); $('#topic-content-area').on('click', '.move-down', function() { const $component = $(this).closest('.component'); $component.insertAfter($component.next()); updateMoveButtons(); }); $('#topic-content-area').on('change', '.image-component__file-input', function() { handleFileUpload(this, 'image'); }); $('#topic-content-area').on('change', '.video-component__video-input', function() { handleFileUpload(this, 'video'); }); $('#topic-content-area').on('change', '.video-component__thumbnail-input', function() { handleFileUpload(this, 'thumbnail'); }); $('#topic-content-area').on('input change', '.external-video-component__url-input', function() { updateVideoPreview($(this).closest('.component').find('.external-video-component__video-preview'), $(this).val().trim()); }); });
+    /*]]>*/
+    </script>
+</body>
+</html>

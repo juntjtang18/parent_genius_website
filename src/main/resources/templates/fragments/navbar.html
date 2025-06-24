@@ -40,6 +40,8 @@
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="adminDropdown">
                             <li><a class="dropdown-item" th:href="@{/course-list}"><i class="fas fa-chalkboard-teacher me-2"></i><span th:text="#{navbar.admin.courses}">Courses</span></a></li>
+                            <!-- NEW MENU ITEM FOR TOPICS -->
+                            <li><a class="dropdown-item" th:href="@{/topics}"><i class="fas fa-lightbulb me-2"></i><span>Topics</span></a></li>
                             <li>
                                 <a class="dropdown-item" href="#" id="clearCacheLink">
                                     <i class="fas fa-sync-alt me-2"></i>
@@ -73,7 +75,7 @@
             </div>
         </div>
     </nav>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" xintegrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         @media (max-width: 767.98px) { .navbar-nav.fs-4 { font-size: 1.20rem !important; } }
         .navbar-avatar-icon { font-size: 1.8rem; color: #333; margin-right: 10px; }

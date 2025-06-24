@@ -7,7 +7,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -15,10 +14,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.client.RestTemplate;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,10 +36,10 @@ public class SecurityConfig {
             )
             .authorizeHttpRequests(authz -> authz
                 // --- START: MODIFIED ACCESS RULES ---
-                // Require 'EDITOR' role for admin-specific URLs
-                .requestMatchers("/api/v1/admin/**", "/course-list").hasRole("EDITOR")
-                // Require authentication for the functions pages
-                .requestMatchers("/function-article-list", "/article", "/new-article", "/edit-article", "/posts").authenticated()
+                // Require 'EDITOR' role for all admin and content creation/editing URLs
+                .requestMatchers("/api/v1/admin/**", "/course-list", "/topics", "/new-topic", "/edit-topic", "/new-article", "/edit-article").hasRole("EDITOR")
+                // Require authentication for general user-specific pages
+                .requestMatchers("/function-article-list", "/article", "/posts").authenticated()
                 // Allow all other requests to be accessed publicly
                 .anyRequest().permitAll()
                 // --- END: MODIFIED ACCESS RULES ---
@@ -67,7 +62,7 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
             );
 
-        logger.debug("Security filter chain configured with updated access rules.");
+        logger.debug("Security filter chain configured with updated access rules for topics and articles.");
         return http.build();
     }
 

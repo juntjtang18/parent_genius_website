@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+    <!--
+      This fragment contains all the shared HTML for the dynamic component editor.
+      It is used by both the course editor and the topic editor.
+    -->
+    <div th:fragment="editor-components">
+        <div class="modal fade" id="addComponentModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Pick a Component</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body d-flex justify-content-center flex-wrap">
+                        <button class="component-picker-button" data-type="text"><i class="fas fa-paragraph"></i><span>Text</span></button>
+                        <button class="component-picker-button" data-type="image"><i class="fas fa-image"></i><span>Image</span></button>
+                        <button class="component-picker-button" data-type="video"><i class="fas fa-video"></i><span>Hosted Video</span></button>
+                        <button class="component-picker-button" data-type="external-video"><i class="fas fa-link"></i><span>External Video</span></button>
+                        <button class="component-picker-button" data-type="quiz"><i class="fas fa-question-circle"></i><span>Quiz</span></button>
+                        <button class="component-picker-button" data-type="pagebreaker"><i class="fas fa-arrows-alt-h"></i><span>Page Break</span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="component-actions-template" style="display: none;">
+            <div class="component-actions">
+                <button class="btn-insert insert-before-btn" title="Insert component before"><i class="fas fa-chevron-circle-up"></i></button>
+                <button class="btn-insert insert-after-btn" title="Insert component after"><i class="fas fa-chevron-circle-down"></i></button>
+                <button class="btn-move move-up" title="Move up"><i class="fas fa-arrow-up"></i></button>
+                <button class="btn-move move-down" title="Move down"><i class="fas fa-arrow-down"></i></button>
+                <button class="action-btn remove-component-btn" title="Remove component"><i class="fas fa-trash-alt"></i></button>
+            </div>
+        </div>
+
+        <div id="component-templates" style="display: none;">
+             <div class="component text-component template" data-component-strapi-name="coursecontent.text">
+                <div class="component-header"><div><i class="fas fa-grip-vertical drag-handle"></i><strong>Text Block</strong></div></div>
+                <div class="form-group"><label>Text Data</label><textarea class="form-control text-component__data-input" rows="5"></textarea></div>
+                <div class="form-group"><label>Styles (JSON)</label><textarea class="form-control text-component__style-input" rows="3"></textarea></div>
+            </div>
+            <div class="component image-component template" data-component-strapi-name="coursecontent.image">
+                <div class="component-header"><div><i class="fas fa-grip-vertical drag-handle"></i><strong>Image</strong></div></div>
+                <div class="form-group"><img src="#" alt="Preview" class="media-preview image-component__preview" style="display:none;" /></div>
+                <div class="progress mt-2" style="display: none;"><div class="progress-bar" role="progressbar" style="width: 0%;">0%</div></div>
+                <div class="form-group"><label>Upload New Image</label><input type="file" class="form-control image-component__file-input" accept="image/*" /></div>
+            </div>
+            <div class="component video-component template" data-component-strapi-name="coursecontent.video">
+                <div class="component-header"><div><i class="fas fa-grip-vertical drag-handle"></i><strong>Hosted Video</strong></div></div>
+                <div class="row">
+                    <div class="col-md-6"><div class="form-group"><label>Video File</label><div class="video-component__video-preview mt-1 border p-2 rounded bg-light" style="min-height: 150px;"></div><div class="progress mt-2" style="display: none;"><div class="progress-bar" role="progressbar" style="width: 0%;">0%</div></div><label class="mt-2">Upload/Replace Video</label><input type="file" class="form-control video-component__video-input" accept="video/*" /></div></div>
+                    <div class="col-md-6"><div class="form-group"><label>Video Thumbnail</label><img src="#" alt="Thumb" class="media-preview video-component__thumbnail-preview" style="display:none;" /><div class="progress mt-2" style="display: none;"><div class="progress-bar" role="progressbar" style="width: 0%;">0%</div></div><label class="mt-2">Upload/Replace Thumbnail</label><input type="file" class="form-control video-component__thumbnail-input" accept="image/*" /></div></div>
+                </div>
+            </div>
+            <div class="component external-video-component template" data-component-strapi-name="coursecontent.external-video">
+                <div class="component-header"><div><i class="fas fa-grip-vertical drag-handle"></i><strong>External Video</strong></div></div>
+                <div class="form-group"><label>URL (e.g., YouTube)</label><input type="text" class="form-control external-video-component__url-input" /></div>
+                <div class="form-group"><label>Caption</label><input type="text" class="form-control external-video-component__caption-input" /></div>
+                <div class="external-video-component__video-preview my-2 border p-2 rounded bg-light" style="min-height: 150px;"></div>
+            </div>
+            <div class="component quiz-component template" data-component-strapi-name="coursecontent.quiz">
+                <div class="component-header"><div><i class="fas fa-grip-vertical drag-handle"></i><strong>Quiz</strong></div></div>
+                <div class="form-group"><label>Question</label><input type="text" class="form-control quiz-component__question-input" /></div>
+                <div class="form-group"><label>Options (JSON)</label><textarea class="form-control quiz-component__options-input" rows="4"></textarea></div>
+                <div class="form-group"><label>Correct Answer</label><input type="text" class="form-control quiz-component__correct-answer-input" /></div>
+            </div>
+            <div class="component pagebreaker-component template" data-component-strapi-name="coursecontent.pagebreaker">
+                <div class="component-header"><div><i class="fas fa-grip-vertical drag-handle"></i><strong>Page Break</strong></div></div>
+                <div class="alert alert-info text-center">--- Page Break ---</div>
+                <div class="d-flex justify-content-center gap-4 mt-3">
+                    <div class="form-check form-switch"><input class="form-check-input pagebreaker-component__backbutton-input" type="checkbox" role="switch"><label class="form-check-label">Show 'Back' Button</label></div>
+                    <div class="form-check form-switch"><input class="form-check-input pagebreaker-component__nextbutton-input" type="checkbox" role="switch"><label class="form-check-label">Show 'Next' Button</label></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
