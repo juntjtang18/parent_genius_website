@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -14,6 +15,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.client.RestTemplate;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,14 +40,17 @@ public class SecurityConfig {
                 .securityContextRepository(securityContextRepository())
             )
             .authorizeHttpRequests(authz -> authz
-                // --- START: MODIFIED ACCESS RULES ---
-                // Require 'EDITOR' role for all admin and content creation/editing URLs
-                .requestMatchers("/api/v1/admin/**", "/course-list", "/topics", "/new-topic", "/edit-topic", "/new-article", "/edit-article").hasRole("EDITOR")
+                // FIX: Corrected the invalid URL patterns. Replaced /.../**/edit with /.../*/edit
+                .requestMatchers(
+                    "/api/v1/admin/**", 
+                    "/course-list", "/new-course", "/courses/*/edit",
+                    "/topics", "/new-topic", "/topics/*/edit",
+                    "/tips", "/new-tip", "/tips/*/edit"
+                ).hasRole("EDITOR")
                 // Require authentication for general user-specific pages
                 .requestMatchers("/function-article-list", "/article", "/posts").authenticated()
                 // Allow all other requests to be accessed publicly
                 .anyRequest().permitAll()
-                // --- END: MODIFIED ACCESS RULES ---
             )
             .addFilterBefore(strapiAuthFilter, UsernamePasswordAuthenticationFilter.class)
             .formLogin(form -> form
@@ -62,7 +70,7 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
             );
 
-        logger.debug("Security filter chain configured with updated access rules for topics and articles.");
+        logger.debug("Security filter chain configured with corrected access rules.");
         return http.build();
     }
 

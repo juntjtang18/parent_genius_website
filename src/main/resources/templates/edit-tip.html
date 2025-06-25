@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Tip</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <!-- FIX: Added styles consistent with edit-topic.html for panel layout -->
+    <style>
+        body { display: flex; flex-direction: column; min-height: 100vh; background-color: #f8f9fa; }
+        .main-content { flex: 1; }
+        .editor-panel { width: 90vw; max-width: 1200px; margin: 30px auto; padding: 30px; background-color: #fff; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.08); }
+        .media-preview { max-width: 250px; margin-top: 10px; display: block; border-radius: 4px; }
+        .form-group { margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <!-- FIX: Replaced card layout with a layout that matches edit-topic.html -->
+    <div class="container-fluid main-content">
+        <div class="editor-panel">
+            <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                <h2 class="my-0">Edit Tip</h2>
+                <div>
+                    <!-- The buttons are correctly placed here -->
+                    <button type="button" id="delete-button" class="btn btn-danger"><i class="fas fa-trash me-2"></i>Delete</button>
+                    <button type="submit" id="save-button" class="btn btn-primary" form="edit-tip-form"><i class="fas fa-save me-2"></i>Save Changes</button>
+                    <!-- FIX: Changed button text for consistency -->
+                    <a th:href="@{/tips}" class="btn btn-secondary"><i class="fas fa-times me-2"></i>Back to List</a>
+                </div>
+            </div>
+            
+            <div id="alert-container"></div>
+            <form id="edit-tip-form" novalidate>
+                <div class="form-group">
+                    <label for="tip-text" class="form-label"><strong>Tip Text</strong></label>
+                    <textarea class="form-control form-control-lg" id="tip-text" required rows="3"></textarea>
+                </div>
+                <div class="form-group mt-3">
+                    <label for="icon-image" class="form-label"><strong>Icon Image (Optional)</strong></label>
+                    <input type="file" class="form-control form-control-lg" id="icon-image" accept="image/*">
+                    <img src="#" alt="Icon Preview" class="media-preview" id="icon-preview" style="display:none;" />
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const strapiApiUrl = /*[[${strapiApiUrl}]]*/ 'http://localhost:1337/api';
+        const strapiToken = /*[[${strapiToken}]]*/ '';
+        const strapiRootUrl = /*[[${strapiRootUrl}]]*/ '';
+        const tipId = /*[[${tipId}]]*/ '1';
+        let existingIconId = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch(`${strapiApiUrl}/tips/${tipId}?populate=icon_image`, {
+                headers: { 'Authorization': strapiToken }
+            })
+            .then(res => res.ok ? res.json() : Promise.reject('Failed to load tip'))
+            .then(body => {
+                const tip = body.data.attributes;
+                document.getElementById('tip-text').value = tip.text;
+                if (tip.icon_image?.data) {
+                    existingIconId = tip.icon_image.data.id;
+                    const preview = document.getElementById('icon-preview');
+                    preview.src = new URL(tip.icon_image.data.attributes.url, strapiRootUrl).href;
+                    preview.style.display = 'block';
+                }
+            })
+            .catch(err => showAlert('Could not load tip data.', 'danger'));
+        });
+
+        document.getElementById('edit-tip-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const text = document.getElementById('tip-text').value.trim();
+            if (!text) return showAlert('Tip text cannot be empty.', 'warning');
+
+            const iconImage = document.getElementById('icon-image').files[0];
+            if (iconImage) {
+                uploadFile(iconImage).then(updateTip);
+            } else {
+                updateTip(existingIconId);
+            }
+        });
+        
+        document.getElementById('delete-button').addEventListener('click', function() {
+            if (!confirm('Are you sure you want to delete this tip?')) return;
+            fetch(`${strapiApiUrl}/tips/${tipId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': strapiToken }
+            }).then(res => {
+                if(res.ok) window.location.href = '/tips';
+                else showAlert('Failed to delete tip.', 'danger');
+            });
+        });
+
+        function uploadFile(file) {
+            const formData = new FormData();
+            formData.append('files', file);
+            return fetch(new URL('api/upload', strapiRootUrl).href, {
+                method: 'POST',
+                headers: { 'Authorization': strapiToken },
+                body: formData
+            }).then(res => res.ok ? res.json() : Promise.reject('File upload failed'))
+              .then(files => files[0].id);
+        }
+
+        function updateTip(newIconId) {
+            const saveButton = document.getElementById('save-button');
+            saveButton.disabled = true;
+            saveButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
+
+            const payload = {
+                data: {
+                    text: document.getElementById('tip-text').value.trim(),
+                    icon_image: newIconId
+                }
+            };
+            
+            fetch(`${strapiApiUrl}/tips/${tipId}`, {
+                method: 'PUT',
+                headers: { 'Authorization': strapiToken, 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(res => {
+                if (!res.ok) return res.json().then(err => Promise.reject(err));
+                showAlert('Tip updated successfully!', 'success');
+                setTimeout(() => window.location.href = '/tips', 1500);
+            })
+            .catch(err => showAlert(`Error updating tip: ${err.error?.message || 'Unknown error'}`, 'danger'))
+            .finally(() => {
+                saveButton.disabled = false;
+                saveButton.innerHTML = '<i class="fas fa-save me-2"></i>Save Changes';
+            });
+        }
+
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alert-container');
+            alertContainer.innerHTML = `<div class="alert alert-${type} alert-dismissible fade show">${message}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>`;
+        }
+        /*]]>*/
+    </script>
+</body>
+</html>

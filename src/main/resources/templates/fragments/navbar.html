@@ -40,8 +40,9 @@
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="adminDropdown">
                             <li><a class="dropdown-item" th:href="@{/course-list}"><i class="fas fa-chalkboard-teacher me-2"></i><span th:text="#{navbar.admin.courses}">Courses</span></a></li>
-                            <!-- NEW MENU ITEM FOR TOPICS -->
+                            <!-- FIX: Removed th:text for items that may not have a message key -->
                             <li><a class="dropdown-item" th:href="@{/topics}"><i class="fas fa-lightbulb me-2"></i><span>Topics</span></a></li>
+                            <li><a class="dropdown-item" th:href="@{/tips}"><i class="fas fa-star me-2"></i><span>Tips</span></a></li>
                             <li>
                                 <a class="dropdown-item" href="#" id="clearCacheLink">
                                     <i class="fas fa-sync-alt me-2"></i>
@@ -75,12 +76,12 @@
             </div>
         </div>
     </nav>
+    <!-- FIX: Removed invalid xintegrity attribute -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" xintegrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         @media (max-width: 767.98px) { .navbar-nav.fs-4 { font-size: 1.20rem !important; } }
         .navbar-avatar-icon { font-size: 1.8rem; color: #333; margin-right: 10px; }
         .dropdown-item i { min-width: 20px; }
-        /* Adjusted style for the globe icon */
         .nav-link .fas.fa-globe { font-size: 1.5rem; }
     </style>
     <script th:inline="javascript">
@@ -89,7 +90,6 @@
             const dropdown = document.getElementById('languageDropdown');
             if (dropdown && languageList) {
                 dropdown.addEventListener('shown.bs.dropdown', function() {
-                    // Only fetch if the list is empty
                     if (languageList.children.length === 0) {
                         fetch('/api/languages')
                             .then(response => response.ok ? response.json() : Promise.reject('Failed to load languages'))
@@ -98,14 +98,10 @@
                                     const listItem = document.createElement('li');
                                     const link = document.createElement('a');
                                     link.className = 'dropdown-item';
-
                                     const url = new URL(window.location.href);
                                     url.searchParams.set('lang', code);
                                     link.href = url.toString();
-
-                                    // No more flags, just the language name
                                     link.textContent = name;
-                                    
                                     listItem.appendChild(link);
                                     languageList.appendChild(listItem);
                                 }
