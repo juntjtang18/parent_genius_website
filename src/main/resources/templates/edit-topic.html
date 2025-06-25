@@ -73,7 +73,6 @@
     async function loadTopicContent() {
         showStatusMessage('Loading content...', 'info');
         try {
-            // FIX: Using the shorter, cleaner query from the working course editor.
             const query = 'populate[content][populate]=image_file,video_file,thumbnail&populate=icon_image';
 
             const fetchUrl = `${STRAPI_API_URL}/topics/${TOPIC_ID}?${query}`;
@@ -157,9 +156,6 @@
         }
     }
     
-    // The rest of the JS functions (renderComponent, handleFileUpload, etc.) are identical
-    // to the previous versions and are required for the component editor to work.
-
     function showStatusMessage(message, type = 'danger') {
         const alertClass = `alert-${type}`;
         const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle';
@@ -168,7 +164,19 @@
         setTimeout(() => $alert.fadeOut(500, () => $alert.remove()), 6000);
     }
     function getFullStrapiUrl(path) { if (!path || path.startsWith('http')) return path; try { return new URL(path, STRAPI_ROOT_URL).href; } catch(e) { console.error("Could not create full URL from path:", path); return path; } }
-    function updateVideoPreview($previewContainer, url) { $previewContainer.empty(); if (!url) return; const videoIdMatch = url.match(/^.*(https?:\/\/www\.youtube\.com\/watch\?v=|https?:\/\/youtu\.be\/|https?:\/\/www\.youtube\.com\/embed\/)([^#\&\?]*).*/); if (videoIdMatch && videoIdMatch[2].length === 11) { $previewContainer.html(`<iframe width="100%" height="200" src="https://www.youtube.com/embed/${videoIdMatch[2]}" frameborder="0" allowfullscreen class="media-preview"></iframe>`); } else { $previewContainer.html(`<video controls class="media-preview" src="${getFullStrapiUrl(url)}" style="max-height: 250px;"></video>`); } }
+    
+    function updateVideoPreview($previewContainer, url) {
+        $previewContainer.empty();
+        if (!url) return;
+        // ** THE FIX: The regular expression now handles all standard, legacy, and shorts YouTube URLs. **
+        const videoIdMatch = url.match(/^.*(https?:\/\/www\.youtube\.com\/watch\?v=|https?:\/\/youtu\.be\/|https?:\/\/www\.youtube\.com\/embed\/|https?:\/\/www\.youtube\.com\/v\/|https?:\/\/www\.youtube\.com\/shorts\/)([^#\&\?]*).*/);
+        if (videoIdMatch && videoIdMatch[2].length === 11) {
+            $previewContainer.html(`<iframe width="100%" height="200" src="https://www.youtube.com/embed/${videoIdMatch[2]}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="media-preview"></iframe>`);
+        } else {
+            $previewContainer.html(`<video controls class="media-preview" src="${getFullStrapiUrl(url)}" style="max-height: 250px;"></video>`);
+        }
+    }
+
     function updateMoveButtons() { $('#topic-content-area .component:not(.template)').each(function(index) { const $component = $(this); const isFirst = index === 0; const isLast = index === $('#topic-content-area .component:not(.template)').length - 1; $component.find('.move-up').prop('disabled', isFirst); $component.find('.move-down').prop('disabled', isLast); }); }
     function uploadFileToStrapi(file, onProgress) { return new Promise((resolve, reject) => { const formData = new FormData(); formData.append('files', file); const xhr = new XMLHttpRequest(); xhr.open('POST', new URL('api/upload', STRAPI_ROOT_URL).href, true); xhr.setRequestHeader('Authorization', AUTH_TOKEN); xhr.upload.onprogress = (event) => { if (event.lengthComputable) { onProgress(Math.round((event.loaded / event.total) * 100)); } }; xhr.onload = () => { if (xhr.status >= 200 && xhr.status < 300) { resolve(JSON.parse(xhr.responseText)[0]); } else { reject(new Error(`Upload failed: ${xhr.status} ${xhr.statusText}`)); } }; xhr.onerror = () => reject(new Error('Network error during file upload.')); xhr.send(formData); }); }
     async function handleFileUpload(context, mediaType) { const file = context.files[0]; if (!file) return; const $container = $(context).closest('.component, .topic-icon-uploader'); const $progress = $container.find('.progress'); const $progressBar = $progress.find('.progress-bar'); $(context).prop('disabled', true); $('#save-topic-btn').prop('disabled', true); $progress.show(); try { const uploadedFile = await uploadFileToStrapi(file, (percent) => { $progressBar.css('width', percent + '%').text(percent + '%'); }); showStatusMessage('Upload successful!', 'success'); if (mediaType === 'image') { $container.attr('data-media-id', uploadedFile.id); $container.find('.image-component__preview').attr('src', getFullStrapiUrl(uploadedFile.url)).show(); } else if (mediaType === 'video') { $container.attr('data-video-media-id', uploadedFile.id); updateVideoPreview($container.find('.video-component__video-preview'), uploadedFile.url); } else if (mediaType === 'thumbnail') { $container.attr('data-thumbnail-media-id', uploadedFile.id); $container.find('.video-component__thumbnail-preview').attr('src', getFullStrapiUrl(uploadedFile.url)).show(); } else if (mediaType === 'icon-image') { $container.attr('data-icon-media-id', uploadedFile.id); $container.find('.topic-icon__preview').attr('src', getFullStrapiUrl(uploadedFile.url)).show(); } } catch (error) { showStatusMessage(`Upload failed: ${error.message}`, 'danger'); } finally { $(context).prop('disabled', false).val(''); $('#save-topic-btn').prop('disabled', false); $progress.hide(); } }

@@ -71,7 +71,6 @@
 
     <div id="status-message-container" class="position-fixed bottom-0 start-50 translate-middle-x p-3" style="z-index: 1056;"></div>
 
-    <!-- FIX: Replaced the inline modals and templates with the shared fragment -->
     <div th:replace="~{fragments/component-editor-fragment :: editor-components}"></div>
     
     <div th:replace="~{fragments/footer :: footer}"></div>
@@ -90,9 +89,6 @@
     let bsModal;
     let currentInsertTarget = null;
     let insertPosition = null;
-
-    // This file now only contains the JS logic specific to the course editor.
-    // The component rendering and handling functions are loaded via the fragment.
 
     function updateMoveButtons() {
         $('#course-content-area .component:not(.template)').each(function(index) {
@@ -237,9 +233,10 @@
     function updateVideoPreview($previewContainer, url) {
         $previewContainer.empty();
         if (!url) return;
-        const videoIdMatch = url.match(/^.*(https?:\/\/www\.youtube\.com\/watch\?v=|https?:\/\/youtu\.be\/|https?:\/\/www\.youtube\.com\/embed\/)([^#\&\?]*).*/);
+        // ** THE FIX: The regular expression now handles all standard, legacy, and shorts YouTube URLs. **
+        const videoIdMatch = url.match(/^.*(https?:\/\/www\.youtube\.com\/watch\?v=|https?:\/\/youtu\.be\/|https?:\/\/www\.youtube\.com\/embed\/|https?:\/\/www\.youtube\.com\/v\/|https?:\/\/www\.youtube\.com\/shorts\/)([^#\&\?]*).*/);
         if (videoIdMatch && videoIdMatch[2].length === 11) {
-            $previewContainer.html(`<iframe width="100%" height="200" src="https://www.youtube.com/embed/${videoIdMatch[2]}" frameborder="0" allowfullscreen class="media-preview"></iframe>`);
+            $previewContainer.html(`<iframe width="100%" height="200" src="https://www.youtube.com/embed/${videoIdMatch[2]}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="media-preview"></iframe>`);
         } else {
             $previewContainer.html(`<video controls class="media-preview" src="${getFullStrapiUrl(url)}" style="max-height: 250px;"></video>`);
         }
