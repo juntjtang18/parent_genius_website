@@ -35,7 +35,7 @@
             <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
                 <h2 id="course-page-title" class="mb-0" th:text="#{edit-course.cap1}">Loading Course...</h2>
                 <div>
-                    <button class="btn btn-danger" id="delete-course-btn"><i class="fas fa-trash-alt me-2"></i>Delete</button>
+                    <button class="btn btn-danger" id="delete-course-btn"><i class="fas fa-trash-alt me-2"></i><span th:text="#{edit.course.cap11}">Delete</span></button>
                     <button class="btn btn-success" id="save-course-btn"><i class="fas fa-save me-2"></i><span th:text="#{edit-course.cap2}">Save Course</span></button>
                     <a th:href="${returnUrl}" class="btn btn-secondary"><i class="fas fa-arrow-left me-2"></i><span th:text="#{edit-course.cap3}">Back to List</span></a>
                 </div>
@@ -62,7 +62,7 @@
                 <div id="course-content-area" class="mt-1"></div>
                 <div class="text-center mt-4">
                     <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#addComponentModal">
-                        <i class="fas fa-plus me-2"></i>Add New Component
+                        <i class="fas fa-plus me-2"></i><span th:text="#{edit.course.cap12}">Add New Component</span>
                     </button>
                 </div>
             </div>

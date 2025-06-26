@@ -28,14 +28,14 @@
             <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
                 <h2 id="topic-page-title" class="mb-0">Loading Topic...</h2>
                 <div>
-                    <button class="btn btn-danger" id="delete-topic-btn"><i class="fas fa-trash-alt me-2"></i>Delete</button>
-                    <button class="btn btn-success" id="save-topic-btn"><i class="fas fa-save me-2"></i>Save Topic</button>
-                    <a th:href="@{/topics}" class="btn btn-secondary"><i class="fas fa-arrow-left me-2"></i>Back to List</a>
+                    <button class="btn btn-danger" id="delete-topic-btn"><i class="fas fa-trash-alt me-2"></i><span th:text="#{edit.topic.delete.cap1}">Delete</span></button>
+                    <button class="btn btn-success" id="save-topic-btn"><i class="fas fa-save me-2"></i><span th:text="#{edit.topic.save.cap2}">Save Topic</span></button>
+                    <a th:href="@{/topics}" class="btn btn-secondary"><i class="fas fa-arrow-left me-2"></i><span th:text="#{edit.topic.back.cap3}">Back to List</span></a>
                 </div>
             </div>
             <div class="topic-editor">
                 <div class="form-group">
-                    <label for="topic-title-main"><strong>Topic Title</strong></label>
+                    <label for="topic-title-main"><strong th:text="#{edit.topic.title.cap4}">Topic Title</strong></label>
                     <input type="text" id="topic-title-main" class="form-control form-control-lg" />
                 </div>
                 <div class="form-group topic-icon-uploader">
@@ -47,7 +47,7 @@
                 <h3 class="mt-5 mb-3">Topic Content</h3>
                 <div id="topic-content-area" class="mt-1"></div>
                 <div class="text-center mt-4">
-                    <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#addComponentModal"><i class="fas fa-plus me-2"></i>Add New Component</button>
+                    <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#addComponentModal"><i class="fas fa-plus me-2"></i><span th:text="#{edit.topic.addnewcomponent.cap}">Add New Component</span></button>
                 </div>
             </div>
         </div>

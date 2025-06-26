@@ -26,21 +26,21 @@
                 <h2 class="my-0">Edit Tip</h2>
                 <div>
                     <!-- The buttons are correctly placed here -->
-                    <button type="button" id="delete-button" class="btn btn-danger"><i class="fas fa-trash me-2"></i>Delete</button>
-                    <button type="submit" id="save-button" class="btn btn-primary" form="edit-tip-form"><i class="fas fa-save me-2"></i>Save Changes</button>
+                    <button type="button" id="delete-button" class="btn btn-danger"><i class="fas fa-trash me-2"></i><span th:text="#{edit.tip.delete.cap1}">Delete</span></button>
+                    <button type="submit" id="save-button" class="btn btn-primary" form="edit-tip-form"><i class="fas fa-save me-2"></i><span th:text="#{edit.tip.save.cap2}">Save Changes</span></button>
                     <!-- FIX: Changed button text for consistency -->
-                    <a th:href="@{/tips}" class="btn btn-secondary"><i class="fas fa-times me-2"></i>Back to List</a>
+                    <a th:href="@{/tips}" class="btn btn-secondary"><i class="fas fa-times me-2"></i><span th:text="#{edit.tip.backtolist.cap3}">Back to List</span></a>
                 </div>
             </div>
             
             <div id="alert-container"></div>
             <form id="edit-tip-form" novalidate>
                 <div class="form-group">
-                    <label for="tip-text" class="form-label"><strong>Tip Text</strong></label>
+                    <label for="tip-text" class="form-label"><strong th:text="#{edit.tip.tiptext.cap4}">Tip Text</strong></label>
                     <textarea class="form-control form-control-lg" id="tip-text" required rows="3"></textarea>
                 </div>
                 <div class="form-group mt-3">
-                    <label for="icon-image" class="form-label"><strong>Icon Image (Optional)</strong></label>
+                    <label for="icon-image" class="form-label"><strong th:text="#{edit.tip.iconimage.cap5}">Icon Image (Optional)</strong></label>
                     <input type="file" class="form-control form-control-lg" id="icon-image" accept="image/*">
                     <img src="#" alt="Icon Preview" class="media-preview" id="icon-preview" style="display:none;" />
                 </div>
