@@ -46,7 +46,7 @@
 
     <script th:inline="javascript">
         /*<![CDATA[*/
-        const strapiApiUrl = /*[[${strapiApiUrl}]]*/ '/api/strapi';
+        const strapiApiUrl = /*[[${strapiApiUrl}]]*/ '';
         const strapiToken = /*[[${strapiToken}]]*/ '';
 
         document.getElementById('new-topic-form').addEventListener('submit', function(event) {
@@ -66,13 +66,12 @@
             saveButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
 
             const formData = new FormData();
-            // This 'data' part is crucial and must match the @RequestParam("data") in the controller
             formData.append('data', JSON.stringify({ title }));
             if (iconImage) {
-                // This 'files.icon_image' part must match the @RequestParam("files.icon_image")
                 formData.append('files.icon_image', iconImage, iconImage.name);
             }
 
+            // MODIFIED: The fetch URL now points directly to the Strapi API
             fetch(`${strapiApiUrl}/topics`, {
                 method: 'POST',
                 headers: {
@@ -87,17 +86,14 @@
                     window.location.href = '/signin?error=unauthenticated';
                     throw new Error('User not authenticated');
                 }
-                // Check for a 413 error specifically
                 if (response.status === 413) {
                     throw new Error('File is too large. Please upload a smaller icon.');
                 }
                 if (!response.ok) {
-                    // Try to parse error from JSON, otherwise use status text
                     return response.json().then(err => {
                         const errorMessage = err.error?.message || `HTTP error! status: ${response.status}`;
                         throw new Error(errorMessage);
                     }).catch(() => {
-                        // Fallback if the body isn't JSON
                         throw new Error(`HTTP error! status: ${response.status} ${response.statusText}`);
                     });
                 }

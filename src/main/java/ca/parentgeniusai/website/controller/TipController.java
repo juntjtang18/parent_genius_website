@@ -6,19 +6,10 @@ import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import java.io.IOException;
 
 @Controller
 public class TipController {
@@ -51,7 +42,8 @@ public class TipController {
     public String tipsListPage(Model model, HttpServletRequest request) {
         String jwtToken = getJwtToken(request);
         if (jwtToken == null) return "redirect:/signin?error=unauthenticated";
-        model.addAttribute("strapiApiUrl", "/api/strapi");
+        // MODIFIED: Pass the actual Strapi API base URL to the view
+        model.addAttribute("strapiApiUrl", strapiApiBaseUrl);
         model.addAttribute("strapiToken", "Bearer " + jwtToken);
         model.addAttribute("strapiRootUrl", strapiRootUrl);
         return "tips";
@@ -61,7 +53,8 @@ public class TipController {
     public String newTipPage(Model model, HttpServletRequest request) {
         String jwtToken = getJwtToken(request);
         if (jwtToken == null) return "redirect:/signin?error=unauthenticated";
-        model.addAttribute("strapiApiUrl", "/api/strapi");
+        // MODIFIED: Pass the actual Strapi API base URL to the view
+        model.addAttribute("strapiApiUrl", strapiApiBaseUrl);
         model.addAttribute("strapiToken", "Bearer " + jwtToken);
         return "new-tip";
     }
@@ -77,58 +70,6 @@ public class TipController {
         return "edit-tip";
     }
 
-    // API proxy methods
-    @GetMapping("/api/strapi/tips")
-    @ResponseBody
-    public ResponseEntity<String> getTips(HttpServletRequest request) {
-        String jwtToken = getJwtToken(request);
-        if (jwtToken == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(jwtToken);
-        String url = UriComponentsBuilder.fromHttpUrl(strapiApiBaseUrl + "/tips")
-            .queryParam("populate", "icon_image")
-            .queryParam("sort", "text:asc")
-            .toUriString();
-        try {
-            return restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(headers), String.class);
-        } catch (HttpClientErrorException e) {
-            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
-        }
-    }
-
-    @PostMapping(value = "/api/strapi/tips", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @ResponseBody
-    public ResponseEntity<String> createTip(
-            @RequestParam("data") String jsonData,
-            @RequestParam(value = "files.icon_image", required = false) MultipartFile iconImage,
-            HttpServletRequest request) {
-        String jwtToken = getJwtToken(request);
-        if (jwtToken == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-        headers.setBearerAuth(jwtToken);
-        
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("data", jsonData);
-
-        if (iconImage != null && !iconImage.isEmpty()) {
-            try {
-                body.add("files.icon_image", new ByteArrayResource(iconImage.getBytes()) {
-                    @Override public String getFilename() { return iconImage.getOriginalFilename(); }
-                });
-            } catch (IOException e) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\":\"Error reading file\"}");
-            }
-        }
-        
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-        try {
-            return restTemplate.postForEntity(strapiApiBaseUrl + "/tips", requestEntity, String.class);
-        } catch (HttpClientErrorException e) {
-            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
-        }
-    }
+    // REMOVED: The redundant proxy endpoints for listing and creating tips
+    // have been deleted. The frontend will now call the Strapi API directly.
 }

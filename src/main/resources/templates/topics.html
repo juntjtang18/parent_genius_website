@@ -31,11 +31,21 @@
         </div>
 
         <div id="topic-container" class="row">
-            <div class="col-12 text-center" id="loading-spinner">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden" th:text="#{topics.cap2}">Loading...</span>
-                </div>
-                <p th:text="#{topics.cap3}">Loading topics...</p>
+            <!-- Topic cards will be inserted here -->
+        </div>
+
+        <!-- Initial loading spinner -->
+        <div class="col-12 text-center" id="loading-spinner">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden" th:text="#{topics.cap2}">Loading...</span>
+            </div>
+            <p th:text="#{topics.cap3}">Loading topics...</p>
+        </div>
+        
+        <!-- Spinner for loading more topics on scroll -->
+        <div id="loading-more-spinner" class="text-center my-4" style="display: none;">
+            <div class="spinner-border text-secondary" role="status">
+                <span class="visually-hidden">Loading more...</span>
             </div>
         </div>
 
@@ -48,86 +58,138 @@
 
     <script th:inline="javascript">
         /*<![CDATA[*/
-        const strapiApiUrl = /*[[${strapiApiUrl}]]*/ '/api/strapi';
+        const strapiApiUrl = /*[[${strapiApiUrl}]]*/ '';
         const strapiToken = /*[[${strapiToken}]]*/ '';
         const strapiRootUrl = /*[[${strapiRootUrl}]]*/ '';
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const topicContainer = document.getElementById('topic-container');
-            const loadingSpinner = document.getElementById('loading-spinner');
-            const noTopicsMessage = document.getElementById('no-topics-message');
+        // --- Pagination and Infinite Scroll State ---
+        let currentPage = 1;
+        let totalPages = 1;
+        let isLoading = false;
+        const PAGE_SIZE = 12; // Fetch 12 topics per page
 
-            fetch(`${strapiApiUrl}/topics`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': strapiToken,
-                    'Content-Type': 'application/json'
+        const topicContainer = document.getElementById('topic-container');
+        const initialSpinner = document.getElementById('loading-spinner');
+        const moreSpinner = document.getElementById('loading-more-spinner');
+        const noTopicsMessage = document.getElementById('no-topics-message');
+
+        /**
+         * Renders a list of topic objects into the DOM.
+         * @param {Array} topics - The array of topic objects from Strapi.
+         */
+        function renderTopics(topics) {
+            if (!topics || topics.length === 0) {
+                if (currentPage === 1) { // Only show if it's the first page and it's empty
+                    noTopicsMessage.classList.remove('d-none');
                 }
-            })
-            .then(response => {
+                return;
+            }
+
+            topics.forEach(topic => {
+                if (document.querySelector(`.topic-card[data-topic-id="${topic.id}"]`)) {
+                    return; // Avoid rendering duplicates
+                }
+
+                const attributes = topic.attributes;
+                const topicId = topic.id;
+                const title = attributes.title;
+                const iconData = attributes.icon_image?.data;
+                let imageUrl = null;
+
+                if (iconData && iconData.attributes && iconData.attributes.url) {
+                    imageUrl = new URL(iconData.attributes.url, strapiRootUrl).href;
+                }
+
+                const topicCard = document.createElement('div');
+                topicCard.className = 'col-md-4 mb-4 topic-card';
+                topicCard.setAttribute('data-topic-id', topicId);
+                
+                let imageHtml = imageUrl 
+                    ? `<img src="${imageUrl}" class="card-img-top" alt="Topic Icon" style="height: 200px; object-fit: cover;" loading="lazy">`
+                    : `<div class="card-img-top card-img-top-placeholder"><i class="fas fa-lightbulb fa-3x"></i></div>`;
+
+                topicCard.innerHTML = `
+                    <div class="card h-100">
+                        <a href="/topics/${topicId}/edit">
+                            ${imageHtml}
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a class="text-decoration-none" href="/topics/${topicId}/edit">${title}</a>
+                            </h5>
+                        </div>
+                    </div>
+                `;
+                topicContainer.appendChild(topicCard);
+            });
+        }
+
+        /**
+         * Fetches a page of topics from the Strapi API.
+         */
+        async function loadTopics() {
+            if (isLoading || currentPage > totalPages) {
+                return;
+            }
+            isLoading = true;
+
+            if (currentPage === 1) {
+                initialSpinner.style.display = 'block';
+            } else {
+                moreSpinner.style.display = 'block';
+            }
+
+            const fetchUrl = `${strapiApiUrl}/topics?populate=icon_image&pagination[page]=${currentPage}&pagination[pageSize]=${PAGE_SIZE}&sort=title:asc`;
+
+            try {
+                const response = await fetch(fetchUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': strapiToken,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
                 if (response.status === 401) {
                     window.location.href = '/signin?error=unauthenticated';
                     throw new Error('User not authenticated');
                 }
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                return response.json();
-            })
-            .then(responseBody => {
-                loadingSpinner.classList.add('d-none');
-                
-                const topics = responseBody.data;
-
-                if (!topics || topics.length === 0) {
-                    noTopicsMessage.classList.remove('d-none');
-                    return;
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
+                
+                const responseBody = await response.json();
+                renderTopics(responseBody.data);
+                
+                totalPages = responseBody.meta.pagination.pageCount;
+                currentPage++;
 
-                topicContainer.innerHTML = ''; // Clear loading spinner
-
-                topics.forEach(topic => {
-                    const attributes = topic.attributes;
-                    const topicId = topic.id;
-                    const title = attributes.title;
-                    const iconData = attributes.icon_image?.data;
-                    let imageUrl = null;
-
-                    if (iconData && iconData.attributes && iconData.attributes.url) {
-                        try {
-                            imageUrl = new URL(iconData.attributes.url, strapiRootUrl).href;
-                        } catch(e) {
-                             console.error("Invalid URL for icon:", iconData.attributes.url);
-                             imageUrl = '';
-                        }
-                    }
-
-                    const topicCard = document.createElement('div');
-                    topicCard.className = 'col-md-4 mb-4';
-                    
-                    let imageHtml = imageUrl 
-                        ? `<img src="${imageUrl}" class="card-img-top" alt="Topic Icon" style="height: 200px; object-fit: cover;">`
-                        : `<div class="card-img-top card-img-top-placeholder"><i class="fas fa-lightbulb fa-3x"></i></div>`;
-
-                    topicCard.innerHTML = `
-                        <div class="card h-100">
-                            <a href="/topics/${topicId}/edit">
-                                ${imageHtml}
-                            </a>
-                            <div class="card-body">
-                                <h5 class="card-title">
-                                    <a class="text-decoration-none" href="/topics/${topicId}/edit">${title}</a>
-                                </h5>
-                            </div>
-                        </div>
-                    `;
-                    topicContainer.appendChild(topicCard);
-                });
-            })
-            .catch(error => {
-                loadingSpinner.classList.add('d-none');
-                topicContainer.innerHTML = '<div class="col-12"><div class="alert alert-danger" role="alert">Could not load topics. Please try again later.</div></div>';
+            } catch (error) {
                 console.error('Error fetching topics:', error);
-            });
+                topicContainer.innerHTML = '<div class="col-12"><div class="alert alert-danger" role="alert">Could not load topics. Please try again later.</div></div>';
+            } finally {
+                isLoading = false;
+                initialSpinner.style.display = 'none';
+                moreSpinner.style.display = 'none';
+            }
+        }
+
+        /**
+         * Handles the scroll event to trigger loading more topics.
+         */
+        function handleScroll() {
+            const nearBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 200;
+            if (nearBottom && !isLoading && currentPage <= totalPages) {
+                loadTopics();
+            }
+        }
+
+        // Initial setup
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTopics();
+            window.addEventListener('scroll', handleScroll);
         });
+        /*]]>*/
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
