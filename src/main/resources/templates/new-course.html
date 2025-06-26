@@ -46,7 +46,8 @@
 
     <script th:inline="javascript">
         /*<![CDATA[*/
-        const strapiApiUrl = /*[[${strapiApiUrl}]]*/ '/api/strapi';
+        // MODIFIED: This now receives the full Strapi API URL from the controller
+        const strapiApiUrl = /*[[${strapiApiUrl}]]*/ '';
         const strapiToken = /*[[${strapiToken}]]*/ '';
 
         document.getElementById('new-course-form').addEventListener('submit', function(event) {
@@ -76,10 +77,12 @@
                 formData.append('files.icon_image', iconImage);
             }
 
+            // MODIFIED: The fetch URL now points directly to the Strapi API
             fetch(`${strapiApiUrl}/courses`, {
                 method: 'POST',
                 headers: {
                     'Authorization': strapiToken
+                    // 'Content-Type' is not needed here; the browser sets it correctly for FormData
                 },
                 body: formData
             })

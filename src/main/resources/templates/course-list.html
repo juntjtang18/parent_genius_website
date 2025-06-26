@@ -38,7 +38,8 @@
 
     <script th:inline="javascript">
         /*<![CDATA[*/
-        const strapiApiUrl = /*[[${strapiApiUrl}]]*/ '/api/strapi';
+        // MODIFIED: This now receives the full Strapi API URL from the controller
+        const strapiApiUrl = /*[[${strapiApiUrl}]]*/ '';
         const strapiToken = /*[[${strapiToken}]]*/ '';
         const strapiRootUrl = /*[[${strapiRootUrl}]]*/ '';
 
@@ -47,7 +48,11 @@
             const loadingSpinner = document.getElementById('loading-spinner');
             const noCoursesMessage = document.getElementById('no-courses-message');
 
-            fetch(`${strapiApiUrl}/courses`, {
+            // MODIFIED: The fetch URL now points directly to the Strapi API and includes the 'populate' parameter
+            const fetchUrl = `${strapiApiUrl}/courses?populate=icon_image,coursecategory`;
+            console.log("Fetching courses from:", fetchUrl);
+
+            fetch(fetchUrl, {
                 method: 'GET',
                 headers: {
                     'Authorization': strapiToken,
@@ -83,7 +88,6 @@
                     const iconData = attributes.icon_image?.data;
                     let imageUrl = null;
 
-                    // UPDATED: Robustly construct the image URL
                     if (iconData && iconData.attributes && iconData.attributes.url) {
                         // Use the URL constructor to safely join the base URL and the relative path
                         imageUrl = new URL(iconData.attributes.url, strapiRootUrl).href;
