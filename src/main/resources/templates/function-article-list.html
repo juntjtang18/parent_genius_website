@@ -109,7 +109,7 @@
 
     <div id="function-title">
         <h2 id="function-name"></h2>
-		<a th:href="@{/new-article(function=${selectedFunctionId})}" class="add-article-btn" sec:authorize="hasRole('ROLE_EDITOR')">+</a>
+		<a th:href="@{/new-article(function=${selectedFunctionId})}" class="add-article-btn" sec:authorize="hasAnyRole('ROLE_EDITOR', 'ROLE_ADMIN')">+</a>
     </div>
     <div id="article-list"></div>
     <div id="loading" class="loading">Loading...</div>

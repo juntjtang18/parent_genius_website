@@ -34,8 +34,7 @@
                             <li><a class="dropdown-item" href="/join-us" th:text="#{navbar.caption6}">Join Us</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item dropdown" th:if="${auth != null && #authorization.expression('hasRole(''EDITOR'')')}">
-                        <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+					<li class="nav-item dropdown" th:if="${auth != null && #authorization.expression('hasAnyRole(''EDITOR'', ''ADMIN'')')}">                        <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-user-shield me-1"></i><span th:text="#{navbar.caption6.1}">Admin</span>
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="adminDropdown">
