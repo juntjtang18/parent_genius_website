@@ -46,6 +46,7 @@
             </div>
             <div class="article-controls">
                 <a th:href="@{/edit-article(article=${articleId})}" class="article-button edit-button" sec:authorize="hasRole('ROLE_EDITOR')"><i class="fas fa-edit"></i> Edit</a>
+                <button id="delete-btn" class="article-button delete-button" sec:authorize="hasRole('ROLE_ADMIN')"><i class="fas fa-trash"></i> Delete</button>
                 <button class="article-button back-button" id="back-button">Back</button>
             </div>
             <div id="article-body-panel">

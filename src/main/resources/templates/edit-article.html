@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/jpeg" th:href="@{/images/gpa-logo.jpg}" /> <!-- Favicon -->
-    <title th:text="#{edit-article.text1}">Edit Article | Genius Parenting AI</title>
+    <link rel="icon" type="image/jpeg" th:href="@{/images/gpa-logo.jpg}" /> <title th:text="#{edit-article.text1}">Edit Article | Genius Parenting AI</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-bs5.min.css" rel="stylesheet" />
@@ -15,7 +14,7 @@
         .article-editor { background-color: #f8f9fa; padding: 20px; border-radius: 5px; }
         .article-form-group { margin-bottom: 20px; }
         .article-form-group label { font-weight: bold; margin-bottom: 5px; display: block; }
-        .article-form-group input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        .article-form-group input, .article-form-group select { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
         .article-button-group { display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 20px; }
         .article-btn { padding: 10px 20px; font-size: 16px; border-radius: 5px; text-decoration: none; color: white; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; min-width: 100px; height: 40px; transition: background-color 0.3s ease; }
         .article-save-btn { background-color: #28a745; }
@@ -45,6 +44,10 @@
                 <input type="number" id="article-sortScore" value="0" min="0" />
             </div>
             <div class="article-form-group">
+                <label for="article-function">Function</label>
+                <select id="article-function" class="form-control"></select>
+            </div>
+            <div class="article-form-group">
                 <label for="article-icon-image">Icon Image</label>
                 <input type="file" id="article-icon-image" accept="image/*" />
                 <img id="current-icon-image" class="current-icon" style="display: none;" />
@@ -70,13 +73,38 @@
         const ARTICLE_ID = /*[[${articleId}]]*/ null;
 
         let currentIconImageId = null; // Store the current icon_image ID
-        let functionId = null;
+        let functionId = null; // This will now store the initially loaded function ID
 
         $(document).ready(function() {
             $('#article-content').summernote({
                 height: 400,
                 placeholder: 'Enter article content here...'
             });
+
+            // Function to load functions into the dropdown
+            async function loadFunctions(selectedFunctionId) {
+                try {
+                    const response = await fetch(`${STRAPI_URL}functions`, {
+                        headers: { 'Authorization': AUTH_TOKEN }
+                    });
+                    if (!response.ok) {
+                        throw new Error(`Unable to load functions (Status ${response.status})`);
+                    }
+                    const data = await response.json();
+                    const functions = data.data;
+                    const $dropdown = $('#article-function');
+                    $dropdown.empty().append('<option value="">Select a function...</option>'); // Add a default empty option
+
+                    functions.forEach(func => {
+                        const isSelected = func.id == selectedFunctionId ? 'selected' : '';
+                        $dropdown.append(`<option value="${func.id}" ${isSelected}>${func.attributes.name}</option>`);
+                    });
+
+                } catch (error) {
+                    console.error('Error loading functions:', error);
+                    $('#error').text(`Error loading functions: ${error.message}`).show();
+                }
+            }
 
             async function loadArticle() {
                 try {
@@ -101,9 +129,12 @@
                         currentIconImageId = article.attributes.icon_image.data.id; // Save the existing ID
                     }
 
+                    // Get the function ID and then load all functions
                     functionId = article.attributes.functions?.data?.length > 0 
                         ? article.attributes.functions.data[0].id 
                         : null;
+                        
+                    await loadFunctions(functionId); // Load functions and pre-select the current one
 
                     const backUrl = `/article?article=${ARTICLE_ID}` + (functionId ? `&function=${functionId}` : '');
                     $('.article-back-btn').attr('href', backUrl);
@@ -118,6 +149,9 @@
                 const content = $('#article-content').summernote('code').trim();
                 const sortScore = parseInt($('#article-sortScore').val()) || 0;
                 const iconImageFile = $('#article-icon-image')[0].files[0];
+                
+                // Get selected function ID from the new dropdown
+                const selectedFunctionId = $('#article-function').val(); 
 
                 // Client-side validation
                 if (!title) {
@@ -129,7 +163,8 @@
                     return;
                 }
 
-                const functionIds = functionId ? [functionId] : [];
+                // Use the selected function ID. Ensure it is an array.
+                const functionIds = selectedFunctionId ? [parseInt(selectedFunctionId)] : [];
                 let iconImageId = currentIconImageId; // Default to the existing image ID
 
                 try {
@@ -157,7 +192,7 @@
                         iconImageId = uploadData[0].id; // Update with the new image ID
                     }
 
-                    // Update the article
+                    // Update the article with the new function relation
                     const response = await fetch(`${STRAPI_URL}articles/${ARTICLE_ID}`, {
                         method: 'PUT',
                         headers: {
@@ -168,7 +203,7 @@
                             data: {
                                 title: title,
                                 content: content,
-                                functions: functionIds,
+                                functions: functionIds, // Save the selected function
                                 sortScore: sortScore,
                                 icon_image: iconImageId, // Use existing or new ID
                                 published: true
@@ -201,7 +236,8 @@
                     }
 
                     // Success: Redirect to article page
-                    window.location.href = `/article?article=${ARTICLE_ID}` + (functionId ? `&function=${functionId}` : '');
+                    const redirectFunctionId = functionIds.length > 0 ? functionIds[0] : (functionId || null);
+                    window.location.href = `/article?article=${ARTICLE_ID}` + (redirectFunctionId ? `&function=${redirectFunctionId}` : '');
                 } catch (error) {
                     console.error('Error updating article:', error);
                     let userMessage = 'Unable to save article: ';

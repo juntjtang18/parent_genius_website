@@ -158,7 +158,7 @@ public class FunctionService {
     }
 
     // Fetch only functions (for /function-article-list)
-    @Cacheable("functions")
+    //@Cacheable("functions")
     public List<Function> getFunctions() {
         String functionsUrl = STRAPI_ROOTURL + "api/functions";
         HttpHeaders headers = new HttpHeaders();
@@ -191,7 +191,7 @@ public class FunctionService {
     }
 
     // Fetch functions with articles (for /functions)
-    @Cacheable("functionsWithArticles")
+    //@Cacheable("functionsWithArticles")
     public List<Function> getFunctionsWithArticles() {
         String functionsUrl = STRAPI_ROOTURL + "api/functions";
         HttpHeaders headers = new HttpHeaders();

@@ -46,7 +46,7 @@ public class SecurityConfig {
                     "/course-list", "/new-course", "/courses/*/edit",
                     "/topics", "/new-topic", "/topics/*/edit",
                     "/tips", "/new-tip", "/tips/*/edit"
-                ).hasRole("EDITOR")
+        	    ).hasAnyRole("EDITOR", "ADMIN") // <-- Change this line
                 // Require authentication for general user-specific pages
                 .requestMatchers("/function-article-list", "/article", "/posts").authenticated()
                 // Allow all other requests to be accessed publicly
@@ -105,7 +105,8 @@ public class SecurityConfig {
         filter.setFilterProcessesUrl("/do-login");
         filter.setSecurityContextRepository(securityContextRepository);
         filter.setAuthenticationSuccessHandler((request, response, authentication) -> response.sendRedirect("/"));
-        filter.setAuthenticationFailureHandler((request, response, exception) -> response.sendRedirect("/login?error=true"));
+        //filter.setAuthenticationFailureHandler((request, response, exception) -> response.sendRedirect("/login?error=true"));
+        filter.setAuthenticationFailureHandler((request, response, exception) -> response.sendRedirect("/signin?error=true"));
 
         return filter;
     }
