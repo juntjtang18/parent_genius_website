@@ -6,7 +6,7 @@
     <title>Edit Course Content | Genius Parenting AI</title>
     <link rel="icon" type="image/jpeg" th:href="@{/images/gpa-logo.jpg}" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
     <link rel="stylesheet" th:href="@{/css/style.css}" />
     <style>
         body { display: flex; flex-direction: column; min-height: 100vh; font-family: 'Inter', sans-serif; background-color: #f8f9fa; }
@@ -35,8 +35,6 @@
             <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
                 <h2 id="course-page-title" class="mb-0" th:text="#{edit-course.cap1}">Loading Course...</h2>
                 <div>
-                    <!-- MODIFIED: This button now triggers the delete confirmation modal -->
-                    
                     <button class="btn btn-success" id="save-course-btn"><i class="fas fa-save me-2"></i><span th:text="#{edit-course.cap2}">Save Course</span></button>
                     <a th:href="${returnUrl}" class="btn btn-secondary"><i class="fas fa-arrow-left me-2"></i><span th:text="#{edit-course.cap3}">Back to List</span></a>
                 </div>
@@ -45,6 +43,14 @@
                 <div class="form-group">
                     <label for="course-title-main"><strong th:text="#{edit-course.cap4}">Course Title</strong></label>
                     <input type="text" id="course-title-main" class="form-control form-control-lg" />
+                </div>
+                <div class="form-group">
+                    <label for="course-order-input"><strong>Course Order</strong></label>
+                    <input type="number" id="course-order-input" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="course-category-select"><strong>Course Category</strong></label>
+                    <select id="course-category-select" class="form-select"></select>
                 </div>
                 <div class="form-group course-icon-uploader">
                     <strong th:text="#{edit-course.cap5}">Icon Image</strong>
@@ -66,6 +72,11 @@
                         <i class="fas fa-plus me-2"></i><span th:text="#{edit.course.cap12}">Add New Component</span>
                     </button>
                 </div>
+
+                <div class="mt-5 pt-4 border-top text-end">
+                    <button class="btn btn-success" id="save-course-btn-bottom"><i class="fas fa-save me-2"></i><span th:text="#{edit-course.cap2}">Save Course</span></button>
+                    <a th:href="${returnUrl}" class="btn btn-secondary"><i class="fas fa-arrow-left me-2"></i><span th:text="#{edit-course.cap3}">Back to List</span></a>
+                </div>
             </div>
         </div>
     </div>
@@ -74,7 +85,6 @@
 
     <div th:replace="~{fragments/component-editor-fragment :: editor-components}"></div>
 
-    <!-- ADDED: Delete confirmation modal -->
     <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -102,7 +112,6 @@
     <script th:inline="javascript">
     /*<![CDATA[*/
 
-    // MODIFIED: Renamed variable for clarity. It now holds the full Strapi API URL.
     const STRAPI_API_URL = /*[[${strapiApiUrl}]]*/ '';
     const STRAPI_ROOT_URL = /*[[${strapiRootUrl}]]*/ 'http://localhost:1337';
     const AUTH_TOKEN = /*[[${strapiToken}]]*/ 'Bearer default-token';
@@ -111,7 +120,6 @@
     let currentInsertTarget = null;
     let insertPosition = null;
 
-    // This function remains unchanged
     function updateMoveButtons() {
         $('#course-content-area .component:not(.template)').each(function(index) {
             const $component = $(this);
@@ -122,7 +130,6 @@
         });
     }
 
-    // This function remains unchanged as it already calls Strapi directly
     function uploadFileToStrapi(file, onProgress) {
         return new Promise((resolve, reject) => {
             const formData = new FormData();
@@ -148,12 +155,41 @@
         });
     }
 
+    async function loadCourseCategories() {
+        try {
+            // Assuming the endpoint for categories is 'coursecategories'
+            // and the display field is 'name'
+            const response = await fetch(`${STRAPI_API_URL}/coursecategories`, {
+                headers: { 'Authorization': AUTH_TOKEN }
+            });
+            if (!response.ok) throw new Error('Failed to load course categories');
+            const categoriesResponse = await response.json();
+            const $select = $('#course-category-select');
+            $select.empty().append('<option value="">-- Select a Category --</option>');
+            if (categoriesResponse.data && Array.isArray(categoriesResponse.data)) {
+                categoriesResponse.data.forEach(category => {
+                    // Make sure your category content type has a 'name' attribute or change 'name' to the correct field.
+                    const categoryName = category.attributes.name || `Category ${category.id}`;
+                    $select.append(`<option value="${category.id}">${categoryName}</option>`);
+                });
+            }
+        } catch (error) {
+            showStatusMessage(`Could not load categories: ${error.message}`, 'danger');
+            console.error('Load categories error:', error);
+        }
+    }
+
     $(document).ready(function() {
         bsModal = new bootstrap.Modal(document.getElementById('addComponentModal'));
-        loadCourseContent();
+        
+        // Load categories, and once that is done, load the course content.
+        // This ensures the category dropdown is populated before we try to set its value.
+        loadCourseCategories().then(() => {
+            loadCourseContent();
+        });
+
         new Sortable(document.getElementById('course-content-area'), { animation: 150, handle: '.drag-handle' });
 
-        // Component picker logic (unchanged)
         $('.component-picker-button').on('click', function() {
             const componentType = $(this).data('type');
             const $newComponent = renderComponent(componentType);
@@ -172,14 +208,12 @@
             updateMoveButtons();
         });
 
-        // Component action listeners (unchanged)
         $('#course-content-area').on('click', '.remove-component-btn', function() { $(this).closest('.component').remove(); updateMoveButtons(); });
         $('#course-content-area').on('click', '.insert-before-btn', function() { currentInsertTarget = $(this).closest('.component'); insertPosition = 'before'; bsModal.show(); });
         $('#course-content-area').on('click', '.insert-after-btn', function() { currentInsertTarget = $(this).closest('.component'); insertPosition = 'after'; bsModal.show(); });
         $('#course-content-area').on('click', '.move-up', function() { const $component = $(this).closest('.component'); const $prev = $component.prev('.component:not(.template)'); if ($prev.length) { $component.insertBefore($prev); updateMoveButtons(); } });
         $('#course-content-area').on('click', '.move-down', function() { const $component = $(this).closest('.component'); const $next = $component.next('.component:not(.template)'); if ($next.length) { $component.insertAfter($next); updateMoveButtons(); } });
 
-        // File upload handler (unchanged)
         async function handleFileUpload(context, mediaType) {
             const file = context.files[0];
             if (!file) return;
@@ -187,9 +221,10 @@
             const $container = $(context).closest('.component, .course-icon-uploader');
             const $progress = $container.find('.progress');
             const $progressBar = $progress.find('.progress-bar');
+            const $saveButtons = $('#save-course-btn, #save-course-btn-bottom');
             
             $(context).prop('disabled', true);
-            $('#save-course-btn').prop('disabled', true);
+            $saveButtons.prop('disabled', true);
             $progress.show();
             $progressBar.removeClass('bg-info').addClass('progress-bar-animated progress-bar-striped');
             
@@ -224,12 +259,11 @@
                 showStatusMessage(`Upload failed. See browser console for details.`, 'danger');
             } finally {
                 $(context).prop('disabled', false).val('');
-                $('#save-course-btn').prop('disabled', false);
+                $saveButtons.prop('disabled', false);
                 $progress.hide();
             }
         }
 
-        // File input listeners (unchanged)
         $('#course-content-area').on('change', '.image-component__file-input', function() { handleFileUpload(this, 'image'); });
         $('#course-content-area').on('change', '.video-component__video-input', function() { handleFileUpload(this, 'video'); });
         $('#course-content-area').on('change', '.video-component__thumbnail-input', function() { handleFileUpload(this, 'thumbnail'); });
@@ -238,14 +272,11 @@
             updateVideoPreview($(this).closest('.component').find('.external-video-component__video-preview'), $(this).val().trim());
         });
         
-        // Main action button listeners
-        $('#save-course-btn').on('click', saveCourse);
-        // MODIFIED: This now calls the delete function after modal confirmation
+        $('#save-course-btn, #save-course-btn-bottom').on('click', saveCourse);
         $('#confirm-delete-btn').on('click', deleteCourse);
         $('#course-content-area').on('sortupdate', updateMoveButtons);
     });
 
-    // This function remains unchanged
     function showStatusMessage(message, type = 'danger') {
         const alertClass = `alert-${type}`;
         const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle';
@@ -254,13 +285,11 @@
         setTimeout(() => $alert.fadeOut(500, () => $alert.remove()), 6000);
     }
 
-    // This function remains unchanged
     function getFullStrapiUrl(path) {
         if (!path || path.startsWith('http')) return path;
         try { return new URL(path, STRAPI_ROOT_URL).href; } catch(e) { console.error("Could not create full URL from path:", path); return path; }
     }
 
-    // This function remains unchanged
     function updateVideoPreview($previewContainer, url) {
         $previewContainer.empty();
         if (!url) return;
@@ -272,7 +301,6 @@
         }
     }
 
-    // This function remains unchanged
     function renderComponent(componentType, data = {}) {
         const $template = $(`#component-templates .${componentType}-component.template`).clone().removeClass('template');
         const $actions = $('#component-actions-template .component-actions').clone();
@@ -320,18 +348,27 @@
 
     async function loadCourseContent() {
         try {
-            // MODIFIED: Fetching directly from the Strapi API URL
-            const populateQuery = 'populate[content][populate]=image_file,video_file,thumbnail&populate=icon_image';
+            const populateQuery = 'populate[content][populate]=image_file,video_file,thumbnail&populate[icon_image]=*&populate[coursecategory]=*';
             const fetchUrl = `${STRAPI_API_URL}/courses/${COURSE_ID}?${populateQuery}`;
             const response = await fetch(fetchUrl, { headers: { 'Authorization': AUTH_TOKEN } });
             if (!response.ok) throw new Error(`Failed to load course (Status: ${response.status})`);
             const strapiResponse = await response.json();
+            
+            // DEBUG: Log the entire API response for the course
+            console.log("Full course data from API:", strapiResponse);
+
             if (!strapiResponse.data) throw new Error("Course data object not found in API response.");
             const course = strapiResponse.data.attributes;
             $('#course-title-main').val(course.title || '');
+            $('#course-order-input').val(course.order || 0);
+            if (course.coursecategory && course.coursecategory.data) {
+                // DEBUG: Log the specific ID being used to set the dropdown
+                console.log("Attempting to set coursecategory dropdown to ID:", course.coursecategory.data.id);
+                $('#course-category-select').val(course.coursecategory.data.id);
+            }
             $('#course-page-title').text('Edit Course: ' + (course.title || 'Untitled'));
             $('#course-translations-json').val(JSON.stringify(course.translations || {}, null, 2));
-            if (course.icon_image?.data) {
+            if (course.icon_image && course.icon_image.data) {
                 $('.course-icon-uploader').attr('data-icon-media-id', course.icon_image.data.id);
                 $('.course-icon__preview').attr('src', getFullStrapiUrl(course.icon_image.data.attributes.url)).show();
             } else {
@@ -350,7 +387,6 @@
         }
     }
 
-    // This function remains unchanged
     function collectComponentData() {
         const componentsData = [];
         let hasError = false;
@@ -391,22 +427,26 @@
     }
 
     async function saveCourse() {
-        $('#save-course-btn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
+        const $saveButtons = $('#save-course-btn, #save-course-btn-bottom');
+        $saveButtons.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
+        
         const componentsData = collectComponentData();
         if (componentsData === null) {
-            $('#save-course-btn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save Course');
+            $saveButtons.prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save Course');
             return;
         }
         try {
+            const categoryId = $('#course-category-select').val();
             const finalPayload = {
                 data: {
                     title: $('#course-title-main').val().trim(),
+                    order: parseInt($('#course-order-input').val(), 10) || 0,
+                    coursecategory: categoryId ? parseInt(categoryId, 10) : null,
                     content: componentsData,
                     translations: JSON.parse($('#course-translations-json').val() || '{}'),
                     icon_image: $('.course-icon-uploader').attr('data-icon-media-id') ? parseInt($('.course-icon-uploader').attr('data-icon-media-id'), 10) : null
                 }
             };
-            // MODIFIED: Saving directly to the Strapi API URL
             const response = await fetch(`${STRAPI_API_URL}/courses/${COURSE_ID}`, {
                 method: 'PUT',
                 headers: { 'Authorization': AUTH_TOKEN, 'Content-Type': 'application/json' },
@@ -418,24 +458,21 @@
         } catch (error) {
             showStatusMessage(`Save failed: ${error.message}`, 'danger');
         } finally {
-            $('#save-course-btn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save Course');
+            $saveButtons.prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save Course');
         }
     }
 
     async function deleteCourse() {
-        // MODIFIED: Logic is now called from the modal's confirm button
         const deleteButton = $('#confirm-delete-btn');
         deleteButton.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Deleting...');
         
         try {
-            // MODIFIED: Deleting directly from the Strapi API URL
             const response = await fetch(`${STRAPI_API_URL}/courses/${COURSE_ID}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': AUTH_TOKEN }
             });
             if (!response.ok) throw new Error(`Delete failed: ${response.statusText} ${await response.text()}`);
             
-            // Close the modal
             const modal = bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal'));
             modal.hide();
 

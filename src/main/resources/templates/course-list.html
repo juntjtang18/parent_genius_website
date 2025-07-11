@@ -13,18 +13,21 @@
     <div th:replace="~{fragments/navbar :: navbar}"></div>
 
     <div class="container mt-5">
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
             <h1 class="my-0" th:text="#{course-list.cap1}">Our Courses</h1>
-            <a th:href="@{/new-course}" class="btn btn-primary">
-                <i class="fas fa-plus me-2"></i><span th:text="#{course-list.cap2}">New Course</span>
-            </a>
+            <div class="d-flex align-items-center">
+                <select id="category-filter" class="form-select me-3" style="width: auto;" aria-label="Filter by category">
+                    <option value="" selected>All Categories</option>
+                </select>
+                <a th:href="@{/new-course}" class="btn btn-primary text-nowrap">
+                    <i class="fas fa-plus me-2"></i><span th:text="#{course-list.cap2}">New Course</span>
+                </a>
+            </div>
         </div>
 
-        <!-- This container will be populated with course cards -->
         <div id="course-container" class="row">
         </div>
 
-        <!-- Initial loading spinner -->
         <div class="col-12 text-center" id="loading-spinner">
             <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden" th:text="#{course-list.cap3}">Loading...</span>
@@ -32,7 +35,6 @@
             <p th:text="#{course-list.cap4}">Loading courses...</p>
         </div>
 
-        <!-- Spinner for loading more courses on scroll -->
         <div id="loading-more-spinner" class="text-center my-4" style="display: none;">
             <div class="spinner-border text-secondary" role="status">
                 <span class="visually-hidden">Loading more...</span>
@@ -62,6 +64,7 @@
         const initialSpinner = document.getElementById('loading-spinner');
         const moreSpinner = document.getElementById('loading-more-spinner');
         const noCoursesMessage = document.getElementById('no-courses-message');
+        const categoryFilter = document.getElementById('category-filter');
 
         /**
          * Renders a list of course objects into the DOM.
@@ -116,6 +119,30 @@
         }
 
         /**
+         * Fetches and populates the course category filter dropdown.
+         */
+        async function loadCategories() {
+            try {
+                const response = await fetch(`${strapiApiUrl}/coursecategories?sort=name:asc`, {
+                    headers: { 'Authorization': strapiToken }
+                });
+                if (!response.ok) throw new Error('Failed to load categories');
+                const categoriesResponse = await response.json();
+                if (categoriesResponse.data) {
+                    categoriesResponse.data.forEach(category => {
+                        const option = document.createElement('option');
+                        option.value = category.id;
+                        option.textContent = category.attributes.name;
+                        categoryFilter.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+                // Non-critical, so we don't show a big error message, just log it.
+            }
+        }
+
+        /**
          * Fetches a page of courses from the Strapi API.
          */
         async function loadCourses() {
@@ -130,8 +157,13 @@
             } else {
                 moreSpinner.style.display = 'block';
             }
+            
+            const selectedCategoryId = categoryFilter.value;
+            let fetchUrl = `${strapiApiUrl}/courses?populate=icon_image&pagination[page]=${currentPage}&pagination[pageSize]=${PAGE_SIZE}&sort=order:asc,title:asc`;
 
-            const fetchUrl = `${strapiApiUrl}/courses?populate=icon_image&pagination[page]=${currentPage}&pagination[pageSize]=${PAGE_SIZE}&sort=title:asc`;
+            if (selectedCategoryId) {
+                fetchUrl += `&filters[coursecategory][id][$eq]=${selectedCategoryId}`;
+            }
 
             try {
                 const response = await fetch(fetchUrl, {
@@ -179,8 +211,23 @@
         }
 
         // Initial setup
-        document.addEventListener('DOMContentLoaded', () => {
-            loadCourses(); // Load the first page of courses
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Load categories into the dropdown first
+            await loadCategories();
+            
+            // Then load the initial set of courses
+            loadCourses(); 
+            
+            // Add listener for the category filter
+            categoryFilter.addEventListener('change', () => {
+                courseContainer.innerHTML = '';
+                currentPage = 1;
+                totalPages = 1;
+                isLoading = false;
+                noCoursesMessage.classList.add('d-none');
+                loadCourses();
+            });
+            
             window.addEventListener('scroll', handleScroll); // Listen for scroll events
         });
         /*]]>*/
