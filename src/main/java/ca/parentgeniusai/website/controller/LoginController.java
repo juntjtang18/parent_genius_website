@@ -93,12 +93,14 @@ public class LoginController {
             @RequestParam String password,
             Model model,
             HttpServletRequest request) {
-        logger.info("Processing signup for email: " + email);
+        // ========= START: ADDED LOGGING =========
+        logger.info("====== START SIGNUP PROCESS ======");
+        logger.info("Received signup request for email: {}", email);
         model.addAttribute("email", email);
         model.addAttribute("password", password);
 
         String baseUsername = email.substring(0, email.indexOf("@"));
-        logger.debug("Generated base username: " + baseUsername);
+        logger.debug("Generated base username: {}", baseUsername);
 
         try {
             HttpHeaders headers = new HttpHeaders();
@@ -112,36 +114,43 @@ public class LoginController {
             while (attempt < maxAttempts) {
                 String body = String.format("{\"email\":\"%s\",\"password\":\"%s\",\"username\":\"%s\"}", email, password, username);
                 HttpEntity<String> entity = new HttpEntity<>(body, headers);
+                
+                String signupUrl = strapiRootUrl + "api/auth/local/register";
+                logger.info("Attempting signup (Attempt {}/{})", attempt + 1, maxAttempts);
+                logger.info("  -> Strapi URL: {}", signupUrl);
+                logger.info("  -> Request Body: {}", body);
+
 
                 try {
-                    String signupUrl = strapiRootUrl + "api/auth/local/register";
-                    logger.info("Attempting signup with username: " + username);
                     signupResponse = restTemplate.exchange(
                         signupUrl, HttpMethod.POST, entity, Map.class
                     ).getBody();
-                    logger.info("Signup response: " + signupResponse);
+                    logger.info("Signup successful on attempt {}. Raw Strapi Response: {}", attempt + 1, signupResponse);
                     break; // Success, exit loop
                 } catch (HttpClientErrorException e) {
                     String rawResponse = e.getResponseBodyAsString();
-                    logger.debug("Signup attempt failed: " + rawResponse);
+                    logger.warn("Signup attempt {} failed with status code: {}", attempt + 1, e.getStatusCode());
+                    logger.warn("  -> Raw Error Response from Strapi: {}", rawResponse);
+                    
                     if (rawResponse.contains("Username are already taken")) {
                         attempt++;
                         username = baseUsername + attempt; // e.g., test1, test2
-                        logger.debug("Username taken, retrying with: " + username);
+                        logger.info("Username taken, retrying with new username: {}", username);
                     } else {
+                        logger.error("A non-recoverable error occurred during signup attempt. Rethrowing exception.");
                         throw e; // Other errors (e.g., email taken) bubble up
                     }
                 }
             }
 
             if (signupResponse == null) {
-                logger.warn("Signup failed: exceeded max attempts for username variations");
+                logger.error("Signup failed after {} attempts. Exceeded max attempts for username variations.", maxAttempts);
                 model.addAttribute("signupError", "Too many users with similar usernames. Please try a different email.");
                 return "signup";
             }
 
             if (!signupResponse.containsKey("jwt")) {
-                logger.warn("Signup succeeded but no JWT in response: " + signupResponse);
+                logger.error("Signup succeeded but no JWT was found in the response from Strapi.");
                 model.addAttribute("signupError", "Signup succeeded but authentication failed. Please sign in manually.");
                 return "signup";
             }
@@ -150,17 +159,19 @@ public class LoginController {
             Map<String, Object> user = (Map<String, Object>) signupResponse.get("user");
             Integer userId = (Integer) user.get("id");
             String registeredUsername = (String) user.get("username");
+            
+            logger.info("User {} (ID: {}) registered successfully. Proceeding to confirm user.", registeredUsername, userId);
 
             // Confirm the user (optional)
             String updateUserUrl = strapiRootUrl + "api/users/" + userId;
             String updateBody = "{\"confirmed\":true}";
             HttpEntity<String> updateEntity = new HttpEntity<>(updateBody, headers);
-            logger.info("Confirming user " + userId + " at: " + updateUserUrl);
+            logger.info("Confirming user {} at: {}", userId, updateUserUrl);
             try {
                 restTemplate.exchange(updateUserUrl, HttpMethod.PUT, updateEntity, Map.class);
-                logger.debug("User " + userId + " confirmed successfully");
+                logger.info("User {} confirmed successfully.", userId);
             } catch (Exception e) {
-                logger.warn("Failed to confirm user " + userId + ": " + e.getMessage());
+                logger.warn("Failed to confirm user {}. This is a non-critical error. Message: {}", userId, e.getMessage());
             }
 
             // Authenticate with username
@@ -172,14 +183,17 @@ public class LoginController {
 
             String sessionId = request.getSession(true).getId();
             request.getSession().setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
-            logger.info("User " + registeredUsername + " signed up and authenticated successfully with session ID: " + sessionId);
+            logger.info("User {} signed up and authenticated successfully with session ID: {}", registeredUsername, sessionId);
+            logger.info("====== END SIGNUP PROCESS (SUCCESS) ======");
 
-            logger.debug("Returning redirect:/");
             return "redirect:/";
 
         } catch (HttpClientErrorException e) {
             String rawResponse = e.getResponseBodyAsString();
-            logger.error("Signup failed with status " + e.getStatusCode() + ": " + rawResponse);
+            logger.error("CRITICAL SIGNUP FAILURE: An unhandled HttpClientErrorException occurred.", e);
+            logger.error("  -> Final Status Code: {}", e.getStatusCode());
+            logger.error("  -> Final Raw Response: {}", rawResponse);
+
 
             try {
                 Map<String, Object> errorResponse = e.getResponseBodyAs(Map.class);
@@ -189,23 +203,28 @@ public class LoginController {
                     Map<String, Object> error = (Map<String, Object>) errorResponse.get("error");
                     String errorName = (String) error.get("name");
                     String message = (String) error.get("message");
+                    logger.error("  -> Parsed Strapi Error Name: {}", errorName);
+                    logger.error("  -> Parsed Strapi Error Message: {}", message);
 
                     String key = errorName != null && message != null ? errorName + ":" + message : errorName + ":";
                     errorMessage = ERROR_MESSAGES.getOrDefault(key, ERROR_MESSAGES.get(errorName + ":"));
+                } else {
+                   logger.warn("Could not parse a structured error from the response body.");
                 }
 
                 model.addAttribute("signupError", errorMessage);
             } catch (Exception parseEx) {
-                logger.error("Error parsing Strapi response: " + parseEx.getMessage());
+                logger.error("Failed to parse the error response from Strapi. The response was likely not in JSON format.", parseEx);
                 model.addAttribute("signupError", "Signup failed. Please try again");
             }
-            logger.debug("Returning signup due to HttpClientErrorException");
+            logger.info("====== END SIGNUP PROCESS (HTTP CLIENT ERROR) ======");
             return "signup";
         } catch (Exception e) {
-            logger.error("Unexpected signup exception: " + e.getMessage(), e);
+            logger.error("CRITICAL SIGNUP FAILURE: An unexpected exception occurred.", e);
             model.addAttribute("signupError", "Signup failed due to a server error. Please try again later");
-            logger.debug("Returning signup due to unexpected exception");
+            logger.info("====== END SIGNUP PROCESS (UNEXPECTED ERROR) ======");
             return "signup";
         }
+        // ========= END: ADDED LOGGING =========
     }
 }

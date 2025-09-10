@@ -94,6 +94,12 @@ public class HomeController {
         return "term-of-service";
     }
 
+    @GetMapping("/community-guidelines")
+    public String communityGuideLines(Model model) {
+    	return "community-guidelines";
+    }
+    
+    
     @GetMapping("/join-us")
     public String joinUs(Model model) {
         // No need for auth parameter or model attribute
