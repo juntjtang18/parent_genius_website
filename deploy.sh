@@ -64,6 +64,8 @@ gcloud run deploy "${SERVICE_NAME}" \
   --platform "managed" \
   --region "${REGION}" \
   --allow-unauthenticated \
-  --revision-suffix "v${VERSION//./-}" # MODIFIED: Replaced '.' with '-' for a valid revision name
+  --revision-suffix "v${VERSION//./-}" \
+  --set-env-vars SPRING_PROFILES_ACTIVE=run
+
 
 echo "--- Deployment of ${SERVICE_NAME} version ${VERSION} complete! ---"

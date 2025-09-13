@@ -5,19 +5,10 @@ body {
     color: #333333;
     margin: 0;
     padding: 0;
-    padding-top: 100px;
+    padding-top: 63px;
 }
 
 /* Navbar */
-.navbar {
-    background-color: #8BC34A;
-    position: fixed;
-    top: 0;
-    width: 100%;
-    height: 100px;
-    z-index: 1000;
-    padding: 0 !important;
-}
 
 /* Logo styling */
 .navbar-logo {
@@ -27,7 +18,7 @@ body {
     margin-left: 40px;
 }
 
-/* Avatar styling */
+/*
 .navbar-avatar {
     height: 40px;
     width: 40px;
@@ -35,7 +26,7 @@ body {
     margin-right: 0;
 }
 
-/* Container adjustments */
+
 .container-xxl {
     padding-left: 0 !important;
     padding-right: 0 !important;
@@ -43,41 +34,41 @@ body {
     max-width: none;
 }
 
-/* Navbar items */
+
 .navbar-nav {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Center the menu items */
+
 .navbar-nav.d-flex.justify-content-center.w-100 {
     margin-left: 0 !important;
     margin-right: 0 !important;
-    flex-grow: 0 !important; /* Override any inherited flex-grow */
+    flex-grow: 0 !important; 
 }
 
-/* Right-aligned items */
+
 .navbar-nav.ms-auto {
     margin-right: 0 !important;
 }
 
-/* Navbar link styling */
+
 .nav-link {
     color: white !important;
 }
 
-/* Menu items spacing */
+
 .menu-nav {
-    gap: 30px; /* Adjust this value to increase or decrease space between menu items */
+    gap: 30px; 
 }
 
-/* Ensure the menu items are centered properly */
+
 .menu-nav {
     display: flex;
     justify-content: center;
-    flex-wrap: wrap; /* Allows items to wrap if needed */
+    flex-wrap: wrap; 
 }
 
-
+*/
 /* Footer */
 footer {
     background-color: #4A90E2;

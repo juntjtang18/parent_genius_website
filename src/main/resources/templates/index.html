@@ -1,401 +1,578 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="#{index.title}">Parent Genius AI</title>
-    <!-- Updated Bootstrap 5.3.3 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <!-- Google Font: Roboto (400 regular and italic) -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
-    <!-- Link to your custom stylesheet -->
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-    <style>
-        .pgai-home-section {
-            background-color: #A4E5D9;
-            padding: 50px 0;
-            text-align: center;
-            font-family: 'Roboto', sans-serif; /* Apply Roboto globally */
-        }
-        /* Homepage Title */
-        .pgai-home-title {
-            font-size: 3em;
-            font-weight: bold;
-            color: black;
-            margin-bottom: 20px;
-        }
-        /* Slide Title */
-        .pgai-slide-title {
-            font-size: 2.5em;
-            font-weight: bold;
-            color: black;
-            margin-top: 50px;
-            margin-bottom: 50px;
-        }
-        /* Slide Subtitle */
-        .pgai-slide-subtitle {
-            font-size: 1.5em;
-            font-weight: 500;
-            color: black;
-            margin-bottom: 15px;
-        }
-        /* Slide Description */
-        .pgai-slide-description {
-            font-size: 1.2em;
-            font-weight: 400;
-            color: black;
-            margin-bottom: 20px;
-        }
-        /* Fancy text for specific emphasis */
-        .pgai-fancy-text {
-            font-style: italic;
-            font-size: 35px;
-            color: black;
-            margin-bottom: 20px;
-        }
-        .pgai-cta-button {
-            background-color: #4C9ED9;
-            color: white;
-            padding: 15px 30px;
-            font-size: 1.1em;
-            border: none;
-            border-radius: 5px;
-            text-decoration: none;
-            transition: background-color 0.3s ease;
-        }
-        .pgai-cta-button:hover {
-            background-color: #8BC34A;
-        }
-        .pgai-slide-section {
-            padding: 20px;
-            position: relative; /* For absolute positioning in slide1 */
-            margin: 0 auto; /* Center the section */
-        }
-        .pgai-feature-list {
-            list-style: none;
-            padding: 0;
-        }
-        .pgai-feature-list li {
-            font-size: 1.1em;
-            margin: 10px 0;
-        }
-        .pgai-testimonial-text {
-            font-style: italic;
-            font-size: 1.2em;
-            margin: 15px 0;
-        }
-        /* Specific image styling for Slide 1 carousel */
-        .slide1-carousel-image {
-            width: 400px;
-            height: 400px;
-            max-width: 100%;
-            object-fit: cover;
-            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for hover */
-        }
-        /* Spacer for Slide 1 images */
-        .slide1-image-spacer {
-            width: 60px;
-            height: 400px;
-            background-color: transparent; /* Invisible space */
-        }
-        /* Specific image styling for Slide 2 features */
-        .slide2-feature-image {
-            width: 100%;
-            height: auto;
-            max-width: 400px;
-            object-fit: cover;
-            margin-bottom: 10px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for hover */
-        }
-        /* Specific image styling for Slide 5 tap image */
-        .slide5-tap-image {
-            width: 100%;
-            height: auto;
-            max-width: 400px;
-            object-fit: cover;
-            margin-bottom: 10px;
-        }
-        /* Description styling for Slide 2 */
-        .pgai-feature-description {
-            text-align: center;
-            margin: 0;
-            transition: text-shadow 0.3s ease; /* Smooth transition for text shadow on hover */
-        }
-        .pgai-feature-description strong {
-            display: block;
-            font-size: 1.2em;
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: black;
-        }
-        .pgai-feature-description p {
-            margin: 0;
-            font-size: 0.9em;
-            color: #333;
-        }
-        /* Quote container as a view window for Slide 4 */
-        #quote-container {
-            position: relative; /* Contain absolutely positioned children */
-            min-height: 600px; /* Fixed height for layout consistency */
-            width: 70vw; /* Match quote box width */
-            margin: 0 auto; /* Center the container */
-            overflow: hidden; /* Clip quotes outside the container */
-        }
-        /* Quote box styling for testimonials */
-        .pgai-quote-box {
-            max-width: 70vw;
-            border: 2px solid #4C9ED9;
-            border-radius: 30px;
-            background-color: #f9f9f9;
-            padding: 50px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            position: absolute; /* Position within #quote-container */
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            box-sizing: border-box;
-        }
-        /* Staggered positioning for quotes */
-        .pgai-quote-box:nth-child(1) { top: 0; }
-        .pgai-quote-box:nth-child(2) { top: 200px; }
-        .pgai-quote-box:nth-child(3) { top: 400px; }
-        /* Fly-out animation (limited within container) */
-        @keyframes flyOut {
-            0% { opacity: 1; transform: translateX(-50%); }
-            100% { opacity: 0; transform: translateX(calc(-50% + var(--fly-out-x))) translateY(var(--fly-out-y)); }
-        }
-        /* Fly-in animation (limited within container) */
-        @keyframes flyIn {
-            0% { opacity: 0; transform: translateX(calc(-50% + var(--fly-in-x))) translateY(var(--fly-in-y)); }
-            100% { opacity: 1; transform: translateX(-50%); }
-        }
-        .pgai-quote-box.fly-out {
-            animation: flyOut 2s ease-out forwards;
-        }
-        .pgai-quote-box.fly-in {
-            animation: flyIn 2s ease-in forwards;
-        }
-        /* Carousel transition timing */
-        .carousel-item {
-            transition: transform 2s ease-out;
-        }
-        /* Hover effects for Slide 2 */
-        #slide2 .col-12.col-md-4:hover .slide2-feature-image {
-            transform: scale(1.05); /* Slight zoom effect */
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Add shadow on hover */
-        }
-        #slide2 .col-12.col-md-4:hover .pgai-feature-description {
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Add shadow to text on hover */
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title th:text="#{home.title_en}">GenParenting AI</title>
+
+  <!-- Bootstrap (include once globally if you already do) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+
+<style>
+  /* =========================
+     Base / Utilities
+  ========================== */
+  /* clear space for fixed-top navbar in fragments/navbar */
+  body { padding-top: 63px; }
+
+  .gp-section { padding: 64px 0; }
+  .gp-section-tight { padding: 40px 0; }
+
+  /* Shared CTA pill (used in hero + testimonials button) */
+  .gp-cta-btn{
+    background: linear-gradient(90deg, #2ED3B7 0%, #1EC7E6 100%);
+    color: #fff;
+    border: 0;
+    padding: 0.9rem 1.4rem;
+    border-radius: 9999px;
+    font-weight: 800;
+    letter-spacing: .2px;
+    box-shadow: 0 10px 20px rgba(23,162,184,.25);
+    transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+  }
+  .gp-cta-btn:hover,
+  .gp-cta-btn:focus{
+    transform: translateY(-1px);
+    box-shadow: 0 12px 26px rgba(23,162,184,.32);
+    filter: brightness(1.02);
+    color: #fff;
+  }
+
+  /* Keep hero phones above Section 2 (overhang effect) */
+  .gp-hero{ position: relative; z-index: 3; padding-bottom: 8px; }
+  .gp-hero > .container-xxl{ position: relative; z-index: 3; }
+  .hero-overhang{ position: relative; z-index: 4; }
+
+  /* Ensure Section 2 stays underneath */
+  .gp-index-why{ position: relative; z-index: 1; }
+
+  /* =========================
+     Section 1: HERO
+  ========================== */
+  .gp-hero{
+    overflow: visible; /* allow image to overhang */
+  }
+  /* Gradient layer so nothing overrides it */
+  .gp-hero::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+    bottom: -56px; /* extend further to blend with next section */
+    background: #3b82f6; /* fallback */
+    background-image: linear-gradient(180deg, #3b82f6 0%, #2563eb 55%, #6c6ff7 100%);
+    z-index: 0;
+  }
+  /* Hero typography */
+  .gp-index-hero-title{
+    font-weight: 800;
+    /* 2 sizes smaller than before */
+    font-size: clamp(2.2rem, 2.8vw + 0.8rem, 3.6rem);
+    line-height: 1.12;
+    letter-spacing: .2px;
+    margin-bottom: 1rem;
+    color: #fff;
+  }
+  .gp-index-hero-subtitle{
+    max-width: 720px;
+    color: #eaf1ff;
+    font-weight: 500;
+    font-size: clamp(1.05rem, 0.6vw + 0.9rem, 1.25rem);
+    line-height: 1.75;
+    margin-top: .5rem;
+  }
+  /* Overhanging composite image */
+  .gp-hero-image{ max-width: 520px; width: 100%; height: auto; filter: drop-shadow(0 18px 40px rgba(0,0,0,.25)); }
+  .hero-overhang{ transform: translateY(38px); margin-bottom: -38px; }
+
+  /* =========================
+     Section 2: WHY
+  ========================== */
+  .gp-index-why{
+    background: #F5F7FA;
+    padding: 96px 0;
+  }
+  .gp-index-why-title{
+    color: #111827;
+    font-weight: 800;
+    font-size: clamp(1.8rem, 1.6vw + 1.2rem, 2.5rem);
+    line-height: 1.2;
+    margin-bottom: 28px;
+  }
+  .gp-index-why-card{ display: block; }
+  .gp-index-why-img{ width: 100%; height: auto; border-radius: 12px; display: block; }
+  .gp-index-why-card-title{ margin-top: 18px; color: #111827; font-weight: 800; font-size: 1.5rem; line-height: 1.25; }
+  .gp-index-why-card-text{ margin-top: 10px; color: #6B7280; font-size: 1rem; line-height: 1.75; max-width: 42ch; }
+  .gp-index-why-link{
+    margin-top: 14px; display: inline-flex; align-items: center; gap: .35rem;
+    font-weight: 700; color: #111827; text-decoration: none;
+  }
+  .gp-index-why-link::after{ content: "→"; line-height: 1; transform: translateY(1px); }
+  .gp-index-why-link:hover{ text-decoration: underline; }
+
+  /* =========================
+     Section 3: RESULTS / TESTIMONIALS (One-card carousel)
+  ========================== */
+  .gp-index-results{ background: transparent; padding-top: 32px; }
+  .gp-index-results-box{
+    background-image: linear-gradient(180deg, #3b82f6 0%, #6c6ff7 100%);
+    color: #fff;
+    padding: 48px 0 40px;  /* roomy band */
+    overflow: hidden;
+  }
+  .gp-index-results-inner{ position: relative; }
+  .gp-index-results-title{
+    color: #fff; font-weight: 800;
+    font-size: clamp(1.25rem, 0.9vw + 1rem, 1.75rem);
+    margin-bottom: 20px;
+  }
+  /* one-card viewport, centered */
+  .gp-index-quote-viewport{
+    max-width: 720px;
+    margin: 0 auto;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -ms-overflow-style: none;  /* IE/Edge */
+    scrollbar-width: none;     /* Firefox */
+  }
+  .gp-index-quote-viewport::-webkit-scrollbar{ display: none; } /* Chrome/Safari */
+  .gp-index-quote-track{ display: flex; gap: 18px; }
+  /* cards: exactly one per view */
+  .gp-index-quote-card{
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    background: #fff;
+    color: #111827;
+    border-radius: 12px;
+    box-shadow: 0 10px 24px rgba(0,0,0,.08);
+    padding: 18px 20px;
+    border-bottom: 6px solid #2ED3B7; /* bottom accent line */
+  }
+  .gp-index-quote-text{ margin: 0 0 14px; font-size: 1.05rem; line-height: 1.7; font-style: italic; color: #1f2937; }
+  .gp-index-quote-author{ display: flex; align-items: center; gap: 10px; }
+  .gp-index-avatar{ width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
+  .gp-index-author-name{ font-size: .9rem; font-weight: 700; color: #374151; }
+  /* nav arrows under the card, right aligned */
+  .gp-index-results-controls{
+    position: static;
+    width: 100%;
+    max-width: 720px;
+    margin: 12px auto 0;
+    display: flex; justify-content: flex-end; gap: 14px;
+  }
+  .gp-index-nav{
+    background: transparent; border: 0; color: #eaf1ff;
+    font-size: 1.25rem; line-height: 1; padding: 4px 6px; cursor: pointer;
+    transition: transform .12s ease, opacity .12s ease;
+  }
+  .gp-index-nav:hover{ transform: translateY(-1px); opacity: .9; }
+
+  /* =========================
+     Section 4: EXPLORE (3 + 2 cards)
+  ========================== */
+  .gp-index-explore{ background:#f8fafc; padding:64px 0 72px; }
+  .gp-index-ex-title{
+    font-family: "Poppins", "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+    font-weight: 700;  /* bold */
+    font-size: clamp(1.5rem, 1.25vw + 1rem, 2rem);
+    line-height: 1.25;
+    letter-spacing: .2px;
+    color: #111827;
+    margin-bottom: 24px;
+  }
+  .gp-index-ex-card{
+    background:#fff; border:0; border-radius:14px; padding:18px 16px;
+    box-shadow:0 12px 28px rgba(15,23,42,.08); /* soft shadow */
+  }
+  .gp-index-ex-img{ width:56px; height:56px; object-fit:contain; margin:6px auto 10px; }
+  .gp-index-ex-divider{ height:1px; width:70%; background:#E5E7EB; margin:8px auto 12px; }
+  .gp-index-ex-h{ font-weight:800; color:#111827; margin:0 0 6px; }
+  .gp-index-ex-p{ color:#6B7280; margin:0; }
+
+  /* =========================
+     Section 5: BOTTOM (Full-width gradient like hero)
+  ========================== */
+  .gp-index-bottom{
+    position: relative;
+    padding: 64px 0;
+    overflow: hidden;
+    color: #fff;
+    background: #fff; /* page background under gradient layer */
+  }
+  .gp-index-bottom::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background-image: linear-gradient(135deg, #3b82f6 0%, #6c6ff7 60%);
+    z-index:0;
+  }
+  .gp-index-bottom > .container-xxl{ position: relative; z-index: 1; }
+
+  /* inner “box” is transparent (not a card) */
+  .gp-index-bottom-box{
+    background: transparent !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+  }
+
+  /* Bottom text */
+  .gp-index-btm-title{
+    font-weight: 800;
+    font-size: clamp(1.6rem, 1.4vw + 1rem, 2.2rem);
+    line-height: 1.2;
+    margin-bottom: .75rem;
+    color:#fff;
+  }
+  .gp-index-btm-bullet{ margin:.35rem 0; color: rgba(255,255,255,.92); line-height:1.6; }
+  .gp-index-btm-tagline{ margin:1rem 0 1.25rem; color: rgba(255,255,255,.95); font-weight:600; }
+  .gp-index-btm-sub{ margin:.25rem 0 .25rem; font-weight:800; color:#fff; }
+  .gp-index-btm-free{ margin:0 0 .25rem; color: rgba(255,255,255,.78); font-size:.95rem; }
+
+  /* Store badges + image */
+  .gp-index-store-badge{ height:38px; width:auto; display:block; filter: drop-shadow(0 6px 14px rgba(0,0,0,.18)); }
+  .gp-index-bottom-img{ max-width:520px; border-top-left-radius:36px; }
+
+  /* =========================
+     Modal polish
+  ========================== */
+  .gp-index-modal{ border-radius:16px; box-shadow:0 18px 50px rgba(0,0,0,.25); }
+
+  /* =========================
+     Responsive
+  ========================== */
+  @media (max-width: 991.98px){
+    .gp-hero::before{ bottom: -32px; }
+    .gp-hero-image{ max-width: 420px; }
+    .hero-overhang{ transform: translateY(28px); margin-bottom: -28px; }
+
+    .gp-index-quote-viewport,
+    .gp-index-results-controls{ max-width: 600px; }
+
+    .gp-index-bottom-img{ max-width: 440px; }
+  }
+  @media (max-width: 575.98px){
+    .gp-hero::before{ bottom: -24px; }
+    .gp-hero-image{ max-width: 360px; }
+    .hero-overhang{ transform: translateY(20px); margin-bottom: -20px; }
+
+    .gp-index-why{ padding: 72px 0 80px; }
+    .gp-index-why-card-title{ font-size: 1.35rem; }
+
+    .gp-index-explore{ padding:48px 0 56px; }
+    .gp-index-ex-img{ width:48px; height:48px; }
+
+    .gp-index-quote-viewport,
+    .gp-index-results-controls{ max-width: 100%; }
+
+    .gp-index-bottom-img{ max-width: 360px; }
+  }
+</style>
+
+  </style>
 </head>
 <body>
-    <!-- Include the Navigation Bar -->
-    <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-    <div class="pgai-home-section">
-        <!-- Slide 1 -->
-        <div id="slide1" class="pgai-slide-section">
-            <h1 class="pgai-home-title" th:text="#{index.welcome}">GENIUS PARENTING AI</h1>
-            <p class="pgai-slide-description" th:text="#{index.description}">Smarter Parenting, Happier Families</p>
-            <!-- Carousel for Slide 1 images -->
-            <div id="slide1Carousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000" style="width: 860px; margin: 40px auto 0;">
-                <div class="carousel-inner">
-                    <!-- First pair: pic2 (left), pic1 (right) -->
-                    <div class="carousel-item active">
-                        <div style="position: relative; width: 860px; height: 400px;">
-                            <img src="images/index/slide1-pic2.jpg" class="slide1-carousel-image" style="position: absolute; left: 0;" th:alt="#{index.slide1.image2.alt}">
-                            <div class="slide1-image-spacer" style="position: absolute; left: 400px;"></div>
-                            <img src="images/index/slide1-pic1.jpg" class="slide1-carousel-image" style="position: absolute; left: 460px;" th:alt="#{index.slide1.image1.alt}">
-                        </div>
-                    </div>
-                    <!-- Second pair: pic4 (left), pic3 (right) -->
-                    <div class="carousel-item">
-                        <div style="position: relative; width: 860px; height: 400px;">
-                            <img src="images/index/slide1-pic4.jpg" class="slide1-carousel-image" style="position: absolute; left: 0;" th:alt="#{index.slide1.image4.alt}">
-                            <div class="slide1-image-spacer" style="position: absolute; left: 400px;"></div>
-                            <img src="images/index/slide1-pic3.jpg" class="slide1-carousel-image" style="position: absolute; left: 460px;" th:alt="#{index.slide1.image3.alt}">
-                        </div>
-                    </div>
-                    <!-- Third pair: pic6 (left), pic5 (right) -->
-                    <div class="carousel-item">
-                        <div style="position: relative; width: 860px; height: 400px;">
-                            <img src="images/index/slide1-pic6.jpg" class="slide1-carousel-image" style="position: absolute; left: 0;" th:alt="#{index.slide1.image6.alt}">
-                            <div class="slide1-image-spacer" style="position: absolute; left: 400px;"></div>
-                            <img src="images/index/slide1-pic5.jpg" class="slide1-carousel-image" style="position: absolute; left: 460px;" th:alt="#{index.slide1.image5.alt}">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Fancy, italicized text -->
-            <p class="pgai-fancy-text" th:text="#{index.slide1.fancyText}" style="margin-top:30px">Every Parent Needs a Helping Hand. Meet Yours</p>
-            <p class="pgai-slide-description" th:text="#{index.slide1.question}">Parenting is Tough. What if it Didn’t Have to Be?</p>
-            <p class="pgai-slide-description" th:text="#{index.slide1.guideText}">Imagine having a personal guide to help you understand your child’s growth, spark their creativity, and make parenting feel… effortless.</p>
-            <p class="pgai-slide-description"><strong th:text="#{index.slide1.introduction}">Meet Genius Parenting AI—your all-in-one parenting companion!</strong></p>
-        </div>
+  <!-- Navbar fragment (do not change path) -->
+  <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-        <!-- Slide 2 -->
-        <div id="slide2" class="pgai-slide-section">
-            <h1 class="pgai-slide-title" th:text="#{index.slide2.title}">Why Genius Parenting AI?</h1>
-            <!-- Three images with descriptions in a row -->
-            <div class="row justify-content-center mt-3">
-                <div class="col-12 col-md-4 mb-4">
-                    <img src="images/index/pic3.jpg" th:alt="#{index.slide2.feature1.imageAlt}" class="slide2-feature-image">
-                    <div class="pgai-feature-description">
-                        <strong th:text="#{index.slide2.feature1.title}">Personalized Parenting Support:</strong>
-                        <p th:text="#{index.slide2.feature1.description}">Get expert-backed advice and tools tailored to your child’s needs.</p>
-                    </div>
-                </div>
-                <div class="col-12 col-md-4 mb-4">
-                    <img src="images/index/pic4.jpg" th:alt="#{index.slide2.feature2.imageAlt}" class="slide2-feature-image">
-                    <div class="pgai-feature-description">
-                        <strong th:text="#{index.slide2.feature2.title}">Interactive Learning & Creativity:</strong>
-                        <p th:text="#{index.slide2.feature2.description}">Storytelling, music, and games to spark imagination and unique growth.</p>
-                    </div>
-                </div>
-                <div class="col-12 col-md-4 mb-4">
-                    <img src="images/index/pic5.jpg" th:alt="#{index.slide2.feature3.imageAlt}" class="slide2-feature-image">
-                    <div class="pgai-feature-description">
-                        <strong th:text="#{index.slide2.feature3.title}">Community & Knowledge Hub:</strong>
-                        <p th:text="#{index.slide2.feature3.description}">Connect with parents, experts, and find resources at your fingertips.</p>
-                    </div>
-                </div>
-            </div>
+  <!-- HERO -->
+  <section class="gp-hero">
+    <div class="container-xxl">
+      <div class="row align-items-center">
+        <div class="col-lg-6 mb-5 mb-lg-0">
+          <h1 class="gp-index-hero-title" th:text="#{home.hero.title_en}">
+            Every parent needs a helping hand. Meet yours.
+          </h1>
+          <p class="gp-index-hero-subtitle" th:text="#{home.hero.subtitle_en}">
+            Parenting is tough — but it doesn’t have to feel that way. Genius Parenting AI helps you understand your child’s needs, build routines, spark creativity, and grow together — one meaningful moment at a time.
+          </p>
+          <div class="mt-4">
+            <a href="#"
+               class="btn gp-cta-btn"
+               th:text="#{home.hero.cta_en}"
+               data-bs-toggle="modal"
+               data-bs-target="#appStoreModal">
+            </a>
+          </div>
         </div>
-
-        <!-- Slide 4 -->
-        <div id="slide4" class="pgai-slide-section">
-            <h2 class="pgai-slide-title" th:text="#{index.slide4.title}">What Parents Are Saying</h2>
-            <!-- Hidden quote divs for i18n extraction -->
-            <div style="display: none;" th:text="#{index.slide4.quote1}" class="quote-text">Genius Parenting AI has transformed how I approach parenting. It’s my go-to for advice and creative activities! – Sarah, Mom of 2</div>
-            <div style="display: none;" th:text="#{index.slide4.quote2}" class="quote-text">I love the milestone tracker! It helps me ensure my child is on the right path. – David, Father of a 5-year-old</div>
-            <div style="display: none;" th:text="#{index.slide4.quote3}" class="quote-text">The community hub is a lifesaver. I’ve learned so much from other parents! – Priya, First-time Mom</div>
-            <div style="display: none;" th:text="#{index.slide4.quote4}" class="quote-text">This app makes bedtime stories so much fun for my kids! – Emma, Mom of 3</div>
-            <div style="display: none;" th:text="#{index.slide4.quote5}" class="quote-text">I finally feel confident about my child’s social skills thanks to MindBridge. – James, Dad of a 7-year-old</div>
-            <div style="display: none;" th:text="#{index.slide4.quote6}" class="quote-text">The creativity tools are amazing! My child loves the storytelling feature. – Lisa, Mom of 1</div>
-            <div style="display: none;" th:text="#{index.slide4.quote7}" class="quote-text">ParentSphere connected me with parents who truly understand my challenges. – Michael, Father of 2</div>
-            <div style="display: none;" th:text="#{index.slide4.quote8}" class="quote-text">ThinkPlay games are both educational and entertaining – a win-win! – Sophia, Mom of a 4-year-old</div>
-            <div style="display: none;" th:text="#{index.slide4.quote9}" class="quote-text">I never knew parenting could be this organized. Thank you, Genius Parenting AI! – Olivia, First-time Mom</div>
-            <div style="display: none;" th:text="#{index.slide4.quote10}" class="quote-text">The expert resources in WisdomTree are incredibly helpful for new parents. – Ethan, Dad of a newborn</div>
-            <div style="display: none;" th:text="#{index.slide4.quote11}" class="quote-text">Tracking my child’s growth with Little Wins keeps me motivated! – Chloe, Mom of a 6-year-old</div>
-            <div style="display: none;" th:text="#{index.slide4.quote12}" class="quote-text">MindTales has made emotional learning so easy for my kids. – Noah, Father of 3</div>
-            <!-- Quote container for dynamic quotes -->
-            <div id="quote-container">
-                <!-- Dynamic quotes will be inserted here by JavaScript -->
-            </div>
+        <div class="col-lg-6">
+          <img th:src="@{/images/index/index_image1.png}"
+               alt="GenParenting app preview"
+               class="gp-hero-image hero-overhang mx-auto d-block">
         </div>
-
-        <!-- Slide 5 -->
-        <div id="slide5" style="margin-top:60px" class="pgai-slide-section">
-            <h2 class="pgai-slide-title" th:text="#{index.slide5.title}">Parenting, Just a Tap Away</h2>
-            <ul class="pgai-feature-list">
-                <li class="pgai-slide-description" th:text="#{index.slide5.question1}">Do you wish you had expert-backed parenting advice at your fingertips?</li>
-                <li class="pgai-slide-description" th:text="#{index.slide5.question2}">Do you want to track your child’s milestones without the stress?</li>
-                <li class="pgai-slide-description" th:text="#{index.slide5.question3}">Do you want to encourage creativity and learning in a fun way?</li>
-            </ul>
-            <p class="pgai-slide-description" style="margin-bottom:50px"><strong th:text="#{index.slide5.callToAction}">Then what are you waiting for?</strong></p>            
-            <a href="#" class="pgai-cta-button" th:text="#{index.slide5.buttonText}">Download Genius Parenting AI Today!</a>
-        </div>
+      </div>
     </div>
+  </section>
 
-    <!-- Footer -->
-    <div th:replace="~{fragments/footer :: footer}"></div>
+  <!-- WHY GENPARENTING (mock-accurate) -->
+  <section class="gp-index-why">
+    <div class="container-xxl">
 
-    <!-- Updated Bootstrap 5.3.3 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+      <h2 class="gp-index-why-title" th:text="#{home.why.title_en}">Why GenParenting AI?</h2>
 
-    <!-- JavaScript for Quote Shuffling with Fly Animation and Intersection Observer -->
-    <script>
-        // Function to get random direction (x, y) for fly animation within container bounds
-        function getRandomDirection() {
-            const directions = [
-                { x: -200, y: 0 },  // Left
-                { x: 200, y: 0 },   // Right
-                { x: 0, y: -200 },  // Up
-                { x: 0, y: 200 }    // Down
-            ];
-            return directions[Math.floor(Math.random() * directions.length)];
-        }
+      <div class="row gy-5 gx-4">
+        <!-- Card 1 -->
+        <div class="col-12 col-md-6 col-lg-4">
+          <article class="gp-index-why-card">
+            <img th:src="@{/images/index/index-image2.jpg}" alt="Personalized support"
+                 class="gp-index-why-img">
+            <h3 class="gp-index-why-card-title" th:text="#{home.why.card1.title_en}">
+              Personalized Parenting Support:
+            </h3>
+            <p class="gp-index-why-card-text" th:text="#{home.why.card1.text_en}">
+              Get daily insights tailored to your child’s age, needs & growth pace — backed by experts.
+            </p>
+            <a class="gp-index-why-link" th:href="@{/segments(segment=1)}" th:text="#{home.why.learn_en}">Learn More →</a>
+          </article>
+        </div>
 
-        // Function to shuffle and animate quotes (Slide 4)
-        function shuffleQuotes() {
-            const quoteContainer = document.getElementById('quote-container');
-            const currentQuotes = quoteContainer.getElementsByClassName('pgai-quote-box');
-            const quoteElements = document.getElementsByClassName('quote-text');
-            const quotes = Array.from(quoteElements).map(el => el.innerText);
+        <!-- Card 2 -->
+        <div class="col-12 col-md-6 col-lg-4">
+          <article class="gp-index-why-card">
+            <img th:src="@{/images/index/index-image3.jpg}" alt="Creativity & Learning Hub"
+                 class="gp-index-why-img">
+            <h3 class="gp-index-why-card-title" th:text="#{home.why.card2.title_en}">
+              Creativity & Learning, in one hub
+            </h3>
+            <p class="gp-index-why-card-text" th:text="#{home.why.card2.text_en}">
+              Unlock art, stories, and games that spark emotional & cognitive growth.
+            </p>
+            <a class="gp-index-why-link" th:href="@{/segments(segment=2)}" th:text="#{home.why.learn_en}">Learn More →</a>
+          </article>
+        </div>
 
-            // Apply fly-out animation to current quotes
-            for (let quote of currentQuotes) {
-                const { x, y } = getRandomDirection();
-                quote.style.setProperty('--fly-out-x', `${x}px`);
-                quote.style.setProperty('--fly-out-y', `${y}px`);
-                quote.classList.add('fly-out');
-            }
+        <!-- Card 3 -->
+        <div class="col-12 col-md-6 col-lg-4">
+          <article class="gp-index-why-card">
+            <img th:src="@{/images/index/index-image4.jpg}" alt="Community and expert access"
+                 class="gp-index-why-img">
+            <h3 class="gp-index-why-card-title" th:text="#{home.why.card3.title_en}">
+              Community & Expert Access
+            </h3>
+            <p class="gp-index-why-card-text" th:text="#{home.why.card3.text_en}">
+              Learn with real parents and vetted experts, any time you need.
+            </p>
+            <a class="gp-index-why-link" th:href="@{/segments(segment=3)}" th:text="#{home.why.learn_en}">Learn More →</a>
+          </article>
+        </div>
+      </div>
 
-            // Simultaneously add new quotes with fly-in animation
-            const shuffledQuotes = [...quotes].sort(() => Math.random() - 0.5);
-            const selectedQuotes = shuffledQuotes.slice(0, 3);
+    </div>
+  </section>
 
-            selectedQuotes.forEach((quote, index) => {
-                const quoteElement = document.createElement('div');
-                quoteElement.className = `pgai-quote-box fly-in quote-${index + 1}`;
-                const { x, y } = getRandomDirection();
-                quoteElement.style.setProperty('--fly-in-x', `${x}px`);
-                quoteElement.style.setProperty('--fly-in-y', `${y}px`);
-                quoteElement.innerHTML = `<p class="pgai-testimonial-text">${quote}</p>`;
-                quoteContainer.appendChild(quoteElement);
+  <!-- RESULTS / TESTIMONIALS (one-card carousel) -->
+  <section class="gp-index-results">
+    <div class="gp-index-results-box">
+      <div class="container-xxl gp-index-results-inner">
 
-                // Remove fly-in class after animation to reset
-                setTimeout(() => quoteElement.classList.remove('fly-in'), 2000);
-            });
+        <h3 class="gp-index-results-title" th:text="#{home.results.title_en}">
+          Real parents. Real results.
+        </h3>
 
-            // After 2 seconds (animation duration), remove the old quotes that flew out
-            setTimeout(() => {
-                const quotesToRemove = quoteContainer.getElementsByClassName('fly-out');
-                while (quotesToRemove.length > 0) {
-                    quotesToRemove[0].remove();
-                }
-            }, 2000); // Match animation duration
-        }
+        <div class="gp-index-quote-viewport" id="resultsViewport">
+          <div class="gp-index-quote-track" id="resultsTrack">
+            <!-- Card 1 -->
+            <article class="gp-index-quote-card">
+              <blockquote class="gp-index-quote-text" th:text="#{home.results.quote1_en}">
+                "Genius Parenting AI transformed my approach — it’s part emotional support, part creative spark, all in one app."
+              </blockquote>
+              <div class="gp-index-quote-author">
+                <img th:src="@{/images/index/avatar1.png}" alt="Sarah avatar" class="gp-index-avatar">
+                <span class="gp-index-author-name" th:text="#{home.results.author1_en}">Sarah, Mom of Two</span>
+              </div>
+            </article>
 
-        // Initial display of quotes (Slide 4)
-        const quoteContainer = document.getElementById('quote-container');
-        const quoteElements = document.getElementsByClassName('quote-text');
-        const quotes = Array.from(quoteElements).map(el => el.innerText);
-        const initialQuotes = [...quotes].sort(() => Math.random() - 0.5).slice(0, 3);
-        initialQuotes.forEach((quote, index) => {
-            const quoteElement = document.createElement('div');
-            quoteElement.className = `pgai-quote-box quote-${index + 1}`;
-            quoteElement.innerHTML = `<p class="pgai-testimonial-text">${quote}</p>`;
-            quoteContainer.appendChild(quoteElement);
+            <!-- Card 2 -->
+            <article class="gp-index-quote-card">
+              <blockquote class="gp-index-quote-text" th:text="#{home.results.quote2_en}">
+                "I love the milestone tracker! It keeps me calm and helps me track my daughter's progress effortlessly."
+              </blockquote>
+              <div class="gp-index-quote-author">
+                <img th:src="@{/images/index/avatar2.png}" alt="David avatar" class="gp-index-avatar">
+                <span class="gp-index-author-name" th:text="#{home.results.author2_en}">David, Father of a 5-Year-Old</span>
+              </div>
+            </article>
+
+            <!-- Card 3 -->
+            <article class="gp-index-quote-card">
+              <blockquote class="gp-index-quote-text" th:text="#{home.results.quote3_en}">
+                "I finally feel confident about my child's social skills thanks to the MindBridge feature. It's like having a coach!"
+              </blockquote>
+              <div class="gp-index-quote-author">
+                <img th:src="@{/images/index/avatar3.png}" alt="James avatar" class="gp-index-avatar">
+                <span class="gp-index-author-name" th:text="#{home.results.author3_en}">James, Dad of a 7-Year-Old</span>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="gp-index-results-controls">
+          <button class="gp-index-nav" type="button" data-dir="left" aria-label="Previous">←</button>
+          <button class="gp-index-nav" type="button" data-dir="right" aria-label="Next">→</button>
+        </div>
+
+        <div class="mt-3">
+          <a href="#"
+             class="btn gp-cta-btn"
+             th:text="#{home.hero.cta_en}"
+             data-bs-toggle="modal"
+             data-bs-target="#appStoreModal">Download the App</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+	<!-- EXPLORE WHAT YOU CAN DO (mock-accurate, 3 + 2 cards) -->
+	<section class="gp-index-explore">
+	  <div class="container-xxl">
+	    <h3 class="gp-index-ex-title text-center" th:text="#{home.explore.title_en}">
+	      Explore what you can do with GenParenting AI
+	    </h3>
+	
+	    <!-- Row 1: 3 cards -->
+	    <div class="row g-4 justify-content-center mb-2">
+	      <div class="col-12 col-md-6 col-lg-4">
+	        <article class="gp-index-ex-card text-center">
+	          <img th:src="@{/images/index/index-image5.png}" alt="Mini Courses" class="gp-index-ex-img">
+	          <div class="gp-index-ex-divider"></div>
+	          <h6 class="gp-index-ex-h" th:text="#{home.explore.tile1.title_en}">Mini Courses that grow with you</h6>
+	          <p class="gp-index-ex-p" th:text="#{home.explore.tile1.text_en}">Short, science-based growth guides.</p>
+	        </article>
+	      </div>
+	
+	      <div class="col-12 col-md-6 col-lg-4">
+	        <article class="gp-index-ex-card text-center">
+	          <img th:src="@{/images/index/index-image6.png}" alt="Personalized AI Insights" class="gp-index-ex-img">
+	          <div class="gp-index-ex-divider"></div>
+	          <h6 class="gp-index-ex-h" th:text="#{home.explore.tile2.title_en}">Get Personalized AI Insights</h6>
+	          <p class="gp-index-ex-p" th:text="#{home.explore.tile2.text_en}">Guidance matched to your child.</p>
+	        </article>
+	      </div>
+	
+	      <div class="col-12 col-md-6 col-lg-4">
+	        <article class="gp-index-ex-card text-center">
+	          <img th:src="@{/images/index/index-image7.png}" alt="Hot Topics and Tips" class="gp-index-ex-img">
+	          <div class="gp-index-ex-divider"></div>
+	          <h6 class="gp-index-ex-h" th:text="#{home.explore.tile3.title_en}">Hot Topics and Tips</h6>
+	          <p class="gp-index-ex-p" th:text="#{home.explore.tile3.text_en}">Bite-size reads that matter today.</p>
+	        </article>
+	      </div>
+	    </div>
+	
+	    <!-- Row 2: 2 cards centered -->
+	    <div class="row g-4 justify-content-center">
+	      <div class="col-12 col-md-6 col-lg-4">
+	        <article class="gp-index-ex-card text-center">
+	          <img th:src="@{/images/index/index-image8.png}" alt="Build Emotional Awareness" class="gp-index-ex-img">
+	          <div class="gp-index-ex-divider"></div>
+	          <h6 class="gp-index-ex-h" th:text="#{home.explore.tile4.title_en}">Build Emotional Awareness</h6>
+	          <p class="gp-index-ex-p" th:text="#{home.explore.tile4.text_en}">Grow social-emotional skills together.</p>
+	        </article>
+	      </div>
+	
+	      <div class="col-12 col-md-6 col-lg-4">
+	        <article class="gp-index-ex-card text-center">
+	          <img th:src="@{/images/index/index-image9.png}" alt="Inclusive Parenting Community" class="gp-index-ex-img">
+	          <div class="gp-index-ex-divider"></div>
+	          <h6 class="gp-index-ex-h" th:text="#{home.explore.tile5.title_en}">Join a Multicultural, Inclusive Parenting Community</h6>
+	          <p class="gp-index-ex-p" th:text="#{home.explore.tile5.text_en}">Learn with real families & experts.</p>
+	        </article>
+	      </div>
+	    </div>
+	  </div>
+	</section>
+	
+	
+	<!-- BOTTOM CTA (mock-accurate) -->
+	<section class="gp-index-bottom">
+	  <div class="container-xxl">
+	    <div class="gp-index-bottom-box p-4 p-lg-5">
+	      <div class="row align-items-center">
+	        <!-- Left: text -->
+	        <div class="col-lg-6">
+	          <h3 class="gp-index-btm-title" th:text="#{home.bottom2.title_en}">
+	            Parenting, just a tap away
+	          </h3>
+	
+	          <p class="gp-index-btm-bullet" th:text="#{home.bottom2.b1_en}">
+	            Do you wish you had expert-backed parenting advice, instantly?
+	          </p>
+	          <p class="gp-index-btm-bullet" th:text="#{home.bottom2.b2_en}">
+	            Want to track milestones without spreadsheets?
+	          </p>
+	          <p class="gp-index-btm-bullet" th:text="#{home.bottom2.b3_en}">
+	            Craving fun ways to build creativity & learning at home?
+	          </p>
+	
+	          <p class="gp-index-btm-tagline" th:text="#{home.bottom2.tagline_en}">
+	            Download Genius Parenting AI and make parenting feel… lighter.
+	          </p>
+	
+	          <h5 class="gp-index-btm-sub" th:text="#{home.bottom2.sub_en}">
+	            Download the App now!
+	          </h5>
+	          <p class="gp-index-btm-free" th:text="#{home.bottom2.free_en}">
+	            Free to try. No credit card needed.
+	          </p>
+	
+	          <div class="d-flex align-items-center gap-2 mt-2">
+	            <a href="#" aria-label="Get it on Google Play">
+	              <img th:src="@{/images/index/index-image11.png}" alt="Google Play" class="gp-index-store-badge">
+	            </a>
+	            <a href="#" aria-label="Download on the App Store">
+	              <img th:src="@{/images/index/index-image12.png}" alt="App Store" class="gp-index-store-badge">
+	            </a>
+	          </div>
+	        </div>
+	
+	        <!-- Right: one composite PNG with irregular shape -->
+	        <div class="col-lg-6 text-center text-lg-end mt-4 mt-lg-0">
+	          <img th:src="@{/images/index/index-image10.png}"
+	               alt="Happy family using GenParenting"
+	               class="gp-index-bottom-img img-fluid">
+	        </div>
+	      </div>
+	    </div>
+	  </div>
+	</section>
+
+  <!-- App Store availability modal -->
+  <div class="modal fade" id="appStoreModal" tabindex="-1" aria-labelledby="appStoreModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content gp-index-modal">
+        <div class="modal-header border-0">
+          <h5 class="modal-title" id="appStoreModalLabel" th:text="#{home.modal.title_en}">Coming soon</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p class="mb-0" th:text="#{home.modal.body_en}">Available soon in Apple Store.</p>
+        </div>
+        <div class="modal-footer border-0">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" th:text="#{home.modal.ok_en}">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+      const viewport = document.getElementById('resultsViewport');
+      if (!viewport) return;
+      const step = () => viewport.clientWidth;  // exactly one card
+      document.querySelectorAll('.gp-index-nav').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const dir = btn.dataset.dir === 'left' ? -1 : 1;
+          viewport.scrollBy({ left: dir * step(), behavior: 'smooth' });
         });
+      });
+    });
+  </script>
 
-        // Use Intersection Observer for Slide 4
-        let animationInterval = null;
-        const slide4 = document.getElementById('slide4');
+  <!-- Footer fragment (as before) -->
+  <div th:replace="~{fragments/footer :: footer}"></div>
 
-        const observer = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    if (!animationInterval) {
-                        shuffleQuotes(); // Initial call
-                        animationInterval = setInterval(shuffleQuotes, 8000); // 2s transition + 6s static = 8s total
-                    }
-                } else {
-                    if (animationInterval) {
-                        clearInterval(animationInterval);
-                        animationInterval = null;
-                    }
-                }
-            });
-        }, {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.1
-        });
-
-        observer.observe(slide4);
-    </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

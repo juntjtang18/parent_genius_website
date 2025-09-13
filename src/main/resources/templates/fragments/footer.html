@@ -1,10 +1,98 @@
-<!-- footer.html -->
 <div th:fragment="footer">
-    <footer>
-        <p>&copy; <span th:text="#{footer.caption1}">2025 Parent Genius AI. All rights reserved.</span></p>
-        <p><a href="/privacy-policy" th:text="#{footer.caption2}">Privacy Policy</a> | <a href="/term-of-service" th:text="#{footer.caption3}">Terms of Service</a> | <a href="/community-guidelines" th:text="#{footer.caption4}">Community Guidelines</</a></p>
-        <p class="footer-company-info">
-            <span th:text="#{footer.companyinfo}">GNM399 Ventures Corp. | Vancouver, BC, Canada</span>
-        </p>
-    </footer>
+  <footer class="gp-footer">
+    <div class="container-xxl">
+
+      <!-- Top row: logo left, socials right -->
+      <div class="d-flex align-items-center justify-content-between gp-footer-top">
+        <a class="d-flex align-items-center gap-2 gp-footer-brand" href="/">
+          <img th:src="@{/images/banner-logo.png}" alt="GenParenting Logo" class="gp-footer-logo">
+          <span class="gp-footer-wordmark">
+            <span class="gp-brand-strong">Gen</span><span class="gp-brand-light">Parenting</span>
+          </span>
+        </a>
+
+        <div class="gp-socials">
+          <a class="gp-social" href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+          <a class="gp-social" href="https://twitter.com" target="_blank" rel="noopener" aria-label="Twitter/X">
+            <i class="fab fa-twitter"></i>
+          </a>
+          <a class="gp-social" href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram">
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a class="gp-social" href="https://linkedin.com" target="_blank" rel="noopener" aria-label="LinkedIn">
+            <i class="fab fa-linkedin-in"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <hr class="gp-footer-divider"/>
+
+      <!-- Company info (left aligned) -->
+      <div class="gp-footer-company">
+        <span class="gp-footer-small">
+          <span th:text="#{footer.brandline} ?: 'Genius Parenting AI'">Genius Parenting AI</span>
+          &nbsp;|&nbsp;
+          &copy; <span th:text="#{footer.caption1}">2025 Parent Genius AI. All rights reserved.</span>
+          &nbsp;|&nbsp;
+          <span th:text="#{footer.companyinfo}">GNM399 Ventures Corp. | Vancouver, BC, Canada</span>
+        </span>
+      </div>
+
+      <!-- Links line (left aligned, under company info) -->
+      <div class="gp-footer-links">
+        <a href="/privacy-policy" class="gp-footer-link" th:text="#{footer.caption2}">Privacy Policy</a>
+        <span class="gp-sep">|</span>
+        <a href="/term-of-service" class="gp-footer-link" th:text="#{footer.caption3}">Terms of Use</a>
+	    <span class="gp-sep">|</span>
+        <a href="/community-guidelines" class="gp-footer-link" th:text="#{footer.caption4}">Community Guidelines</a>
+
+      </div>
+    </div>
+  </footer>
+
+  <!-- Icons -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <style>
+    .gp-footer {
+      background: #f7fafc;
+      padding: 24px 0 28px;
+    }
+    .gp-footer-logo { height: 36px; width: auto; }
+    .gp-brand-strong { font-weight: 700; color: #1f2937; font-size: 1.5rem; }
+    .gp-brand-light  { font-weight: 300; color: #1f2937; font-size: 1.5rem; }
+
+    .gp-footer-divider { border: 0; border-top: 1px solid rgba(0,0,0,0.08); margin: 10px 0 14px; }
+
+    .gp-footer-top {
+      margin-bottom: 8px;
+      gap: 1.6rem; /* reduced spacing between logo and socials (~20% tighter) */
+    }
+
+    .gp-socials { display: inline-flex; gap: 8px; }
+    .gp-social {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px; border-radius: 6px;
+      background: #3b82f6; color: #fff; text-decoration: none;
+      transition: transform .12s ease, opacity .12s ease;
+    }
+    .gp-social:hover { transform: translateY(-1px); opacity: .9; }
+
+    .gp-footer-company { font-size: .9rem; color: #6b7280; margin-bottom: 6px; text-align: left; }
+    .gp-footer-links { font-size: .9rem; color: #6b7280; text-align: left; }
+    .gp-footer-link { color: #2563eb; text-decoration: none; margin: 0 4px; }
+    .gp-footer-link:hover { text-decoration: underline; }
+    .gp-sep { color: #9ca3af; }
+
+    @media (max-width: 767.98px) {
+      .gp-footer-logo { height: 32px; }
+      .gp-brand-strong, .gp-brand-light { font-size: 1.25rem; }
+      .gp-footer-company, .gp-footer-links { font-size: .8rem; }
+    }
+  </style>
 </div>
