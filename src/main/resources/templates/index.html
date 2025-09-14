@@ -267,6 +267,28 @@
 
     .gp-index-bottom-img{ max-width: 360px; }
   }
+	/* ↓ phones sit lower in the hero (without changing hero height) */
+	.hero-overhang{
+	  transform: translateY(52px);   /* was 38–60px */
+	  margin-bottom: -112px;          /* keep layout unchanged */
+	}
+	
+	/* ↓ Section 2 starts lower to create more space for the overhang */
+	.gp-index-why{
+	  padding-top: 174px;            /* was 96px */
+	}
+	
+	/* responsive tweaks so it still looks right on smaller screens */
+	@media (max-width: 991.98px){
+	  .hero-overhang{ transform: translateY(52px); margin-bottom: -52px; }
+	  .gp-index-why{ padding-top: 116px; }
+	}
+	@media (max-width: 575.98px){
+	  .hero-overhang{ transform: translateY(38px); margin-bottom: -38px; }
+	  .gp-index-why{ padding-top: 96px; }
+	}
+	  
+  
 </style>
 
   </style>

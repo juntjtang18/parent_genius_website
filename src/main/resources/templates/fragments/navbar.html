@@ -23,7 +23,7 @@
         <!-- Center menu -->
         <ul class="navbar-nav mx-auto gp-menu">
           <li class="nav-item">
-            <a class="nav-link" href="/about" th:text="#{navbar_aboutus}">About Us</a>
+            <a class="nav-link" href="/vision" th:text="#{navbar_aboutus}">About Us</a>
           </li>
 
           <!-- Segments (renamed from Functions) -->
@@ -32,11 +32,11 @@
                data-bs-toggle="dropdown" aria-expanded="false"
                th:text="#{navbar_segments}">Segments</a>
             <ul class="dropdown-menu" aria-labelledby="segmentsDDLink">
-              <li><a class="dropdown-item" th:href="@{/segments(segment=1)}" th:text="#{navbar_seg1}">Emotional Development</a></li>
-              <li><a class="dropdown-item" th:href="@{/segments(segment=2)}" th:text="#{navbar_seg2}">School & Social Life</a></li>
-              <li><a class="dropdown-item" th:href="@{/segments(segment=3)}" th:text="#{navbar_seg3}">Growth & Milestones</a></li>
-              <li><a class="dropdown-item" th:href="@{/segments(segment=4)}" th:text="#{navbar_seg4}">Parenting Resources</a></li>
-              <li><a class="dropdown-item" th:href="@{/segments(segment=5)}" th:text="#{navbar_seg5}">Child Experts</a></li>
+              <li><a class="dropdown-item" th:href="@{/functions(function=1)}" th:text="#{navbar_seg1}">Emotional Development</a></li>
+              <li><a class="dropdown-item" th:href="@{/functions(function=2)}" th:text="#{navbar_seg2}">School & Social Life</a></li>
+              <li><a class="dropdown-item" th:href="@{/functions(function=3)}" th:text="#{navbar_seg3}">Growth & Milestones</a></li>
+              <li><a class="dropdown-item" th:href="@{/functions(function=4)}" th:text="#{navbar_seg4}">Parenting Resources</a></li>
+              <li><a class="dropdown-item" th:href="@{/functions(function=5)}" th:text="#{navbar_seg5}">Child Experts</a></li>
             </ul>
           </li>
 
