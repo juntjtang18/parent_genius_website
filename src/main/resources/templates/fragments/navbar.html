@@ -1,14 +1,11 @@
 <div th:fragment="navbar">
-  <nav class="navbar navbar-expand-lg py-2 gp-navbar fixed-top">
+  <nav class="navbar navbar-expand-lg gp-navbar fixed-top">
     <div class="container-xxl d-flex align-items-center">
 
       <!-- Brand -->
       <a class="navbar-brand d-flex align-items-center gap-2" href="/">
-        <img th:src="@{/images/banner-logo.png}" alt="GenParenting Logo" class="gp-logo">
-		  <span class="gp-brand">
-		    <span class="gp-brand-strong">Gen</span><span class="gp-brand-light">Parenting</span>
-		  </span>
-        </a>
+        <img th:src="@{/images/GenParent-Logo.png}" alt="GenParenting Logo" class="gp-logo">
+      </a>
 
       <!-- Toggler -->
       <button class="navbar-toggler gp-toggler" type="button"
@@ -116,43 +113,68 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap">
+
   <!-- Styles to match the mock -->
   <style>
-    .gp-navbar {
-      background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
-    }
+.gp-navbar {
+  --gp-navbar-pad: 0.5rem; /* default (mobile) */
+  background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+  padding-top: var(--gp-navbar-pad);
+  padding-bottom: var(--gp-navbar-pad);
+}
+
+@media (min-width: 768px) {
+  .gp-navbar {
+    --gp-navbar-pad: 0.75rem; /* tablets */
+  }
+}
+
+@media (min-width: 1200px) {
+  .gp-navbar {
+    --gp-navbar-pad: 1.5rem; /* desktops */
+  }
+}
+
     .gp-logo { height: 32px; width: auto; }
-    .gp-brand-text {
-      font-weight: 700; color: #fff; letter-spacing: .2px; font-size: 1.35rem;
+
+    /* Apply Poppins Medium 18pt to menu items */
+    .gp-menu .nav-link,
+    .gp-right .nav-link {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 500;   /* Medium */
+      font-size: 18pt;
+      color: #eaf1ff !important;
+      padding: .5rem .9rem;
     }
-    .gp-menu .nav-link, .gp-right .nav-link {
-      color: #eaf1ff !important; padding: .5rem .9rem; font-weight: 500;
+
+    .gp-menu .nav-link:hover, 
+    .gp-right .nav-link:hover { 
+      color: #ffffff !important; 
+      text-decoration: underline; 
     }
-    .gp-menu .nav-link:hover, .gp-right .nav-link:hover { color: #ffffff !important; text-decoration: underline; }
+
     .gp-divider {
-      display: inline-block; width: 1px; height: 22px; background: rgba(255,255,255,.45); margin: 0 .4rem;
+      display: inline-block; width: 1px; height: 22px; 
+      background: rgba(255,255,255,.45); margin: 0 .4rem;
     }
     .gp-avatar { font-size: 1.4rem; margin-right: .4rem; }
     .navbar .dropdown-menu { border-radius: .75rem; }
     .gp-toggler { border: 1px solid rgba(255,255,255,.6); }
     .gp-toggler .navbar-toggler-icon { filter: invert(1) brightness(2); }
+
     @media (max-width: 991.98px) {
       .gp-divider { display: none !important; }
       .gp-menu { padding-top: .5rem; }
     }
+
     .gp-brand-strong {
-	  font-weight: 700;   /* bold */
-	  color: #fff;
-	  letter-spacing: .2px;
-	  font-size: 1.35rem;
-	}
-	
-	.gp-brand-light {
-	  font-weight: 300;   /* thin */
-	  color: #fff;
-	  letter-spacing: .2px;
-	  font-size: 1.35rem;
-	}
+      font-weight: 700; color: #fff; letter-spacing: .2px; font-size: 1.35rem;
+    }
+    .gp-brand-light {
+      font-weight: 300; color: #fff; letter-spacing: .2px; font-size: 1.35rem;
+    }
   </style>
 
   <!-- JS keeps your dynamic language list and cache clearing -->

@@ -5,10 +5,12 @@
       <!-- Top row: logo left, socials right -->
       <div class="d-flex align-items-center justify-content-between gp-footer-top">
         <a class="d-flex align-items-center gap-2 gp-footer-brand" href="/">
-          <img th:src="@{/images/banner-logo.png}" alt="GenParenting Logo" class="gp-footer-logo">
+          <img th:src="@{/images/footer-logo.png}" alt="GenParenting Logo" class="gp-footer-logo">
+          <!-- 
           <span class="gp-footer-wordmark">
             <span class="gp-brand-strong">Gen</span><span class="gp-brand-light">Parenting</span>
           </span>
+           -->
         </a>
 
         <div class="gp-socials">
@@ -33,7 +35,7 @@
       <!-- Company info (left aligned) -->
       <div class="gp-footer-company">
         <span class="gp-footer-small">
-          <span th:text="#{footer.brandline} ?: 'Genius Parenting AI'">Genius Parenting AI</span>
+          <span th:text="#{footer.brandline}">Genius Parenting AI</span>
           &nbsp;|&nbsp;
           &copy; <span th:text="#{footer.caption1}">2025 Parent Genius AI. All rights reserved.</span>
           &nbsp;|&nbsp;
