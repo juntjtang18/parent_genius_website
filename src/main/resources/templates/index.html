@@ -763,11 +763,10 @@ body { padding-top: 3.5rem; }
         </div>
 
         <div class="mt-3">
-          <a href="#"
+          <a href="https://apps.apple.com/us/app/geniusparentingai/id6747332178?itscg=30200&itsct=apps_box_link&mttnsubad=6747332178"
              class="btn gp-cta-btn"
-             th:text="#{home.hero.cta_en}"
-             data-bs-toggle="modal"
-             data-bs-target="#appStoreModal">Download the App</a>
+             th:text="#{home.hero.cta_en}">
+             Download the App</a>
         </div>
 
       </div>
@@ -857,64 +856,43 @@ body { padding-top: 3.5rem; }
 	    <div class="row g-0 cta-row">
 	
 	      <!-- LEFT: text/content -->
-	<div class="col-12 col-lg-7 cta-left">
-	  <div class="cta-left-inner">   <!-- NEW wrapper -->
-	    <h2 class="cta-title">Parenting,<br>just a tap away</h2>
-	
-	    <ul class="cta-bullets">
-	      <li>Do you wish you had expert-backed parenting advice, instantly?</li>
-	      <li>Want to track milestones without spreadsheets?</li>
-	      <li>Craving fun ways to build creativity &amp; learning at home?</li>
-	    </ul>
-	
-	    <p class="cta-tagline">
-	      Download Genius Parenting AI and make parenting feel… lighter.
-	    </p>
-	
-	    <hr class="cta-rule">
-	
-	    <div class="cta-download d-flex align-items-center gap-4 mt-4">
-	      <img src="/images/gpa-qr-code.png" alt="QR code" class="cta-qr">
-	      <div>
-	        <h3 class="cta-download-title mb-2">Download the App!</h3>
-	        <p class="cta-download-sub mb-3">Free to try. No credit card needed.</p>
-	        <div class="d-flex align-items-center gap-2">
-	          <a href="#"><img src="/images/index/index-image11.png" alt="Google Play" class="cta-store-badge"></a>
-	          <a href="#"><img src="/images/index/index-image12.png" alt="App Store" class="cta-store-badge"></a>
-	        </div>
-	      </div>
-	    </div>
-	  </div>
-	</div>
+			<div class="col-12 col-lg-7 cta-left">
+			  <div class="cta-left-inner">   <!-- NEW wrapper -->
+			    <h2 class="cta-title">Parenting,<br>just a tap away</h2>
+			
+			    <ul class="cta-bullets">
+			      <li>Do you wish you had expert-backed parenting advice, instantly?</li>
+			      <li>Want to track milestones without spreadsheets?</li>
+			      <li>Craving fun ways to build creativity &amp; learning at home?</li>
+			    </ul>
+			
+			    <p class="cta-tagline">
+			      Download Genius Parenting AI and make parenting feel… lighter.
+			    </p>
+			
+			    <hr class="cta-rule">
+			
+			    <div class="cta-download d-flex align-items-center gap-4 mt-4">
+			      <img src="/images/gpa-qr-code.png" alt="QR code" class="cta-qr">
+			      <div>
+			        <h3 class="cta-download-title mb-2">Download the App!</h3>
+			        <p class="cta-download-sub mb-3">Free to try. No credit card needed.</p>
+			        <div class="d-flex align-items-center gap-2">
+			          <!-- <a href="#"><img src="/images/index/index-image11.png" alt="Google Play" class="cta-store-badge"></a>  -->
+			          <a href="https://apps.apple.com/us/app/geniusparentingai/id6747332178?itscg=30200&itsct=apps_box_link&mttnsubad=6747332178">
+			          	<img src="/images/index/index-image12.png" alt="App Store" class="cta-store-badge">
+			          </a>
+			        </div>
+			      </div>
+			    </div>
+			  </div>
+			</div>
 	
 	      <!-- RIGHT: empty placeholder column (keeps grid space for art on lg+) -->
 	      <div class="col-lg-5 d-none d-lg-block"></div>
 	    </div>
 	  </div>
 	</section>
-
-
-
-
-
-
-  <!-- App Store availability modal -->
-  <div class="modal fade" id="appStoreModal" tabindex="-1" aria-labelledby="appStoreModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content gp-index-modal">
-        <div class="modal-header border-0">
-          <h5 class="modal-title" id="appStoreModalLabel" th:text="#{home.modal.title_en}">Coming soon</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <p class="mb-0" th:text="#{home.modal.body_en}">Available soon in Apple Store.</p>
-        </div>
-        <div class="modal-footer border-0">
-          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" th:text="#{home.modal.ok_en}">OK</button>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', function () {
