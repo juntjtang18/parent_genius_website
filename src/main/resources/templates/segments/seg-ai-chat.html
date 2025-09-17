@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Genius AI Chat – GeniusParenting AI</title>
+
+  <!-- Bootstrap + Fonts (match site) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    body{ padding-top:4rem; font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif; }
+    @media (min-width:1200px){ body{ padding-top:101px; } }
+
+    .gp-section{ padding:72px 0; }
+    .gp-section-tight{ padding:48px 0; }
+
+    .cta{ background: linear-gradient(90deg,#2ED3B7 0%, #1EC7E6 100%); color:#fff; border:0; padding:.9rem 2rem; border-radius:999px; font-weight:700; box-shadow:0 10px 24px rgba(30,199,230,.25); }
+    .cta:hover{ color:#fff; filter:brightness(1.02); transform: translateY(-1px); }
+
+    /* HERO */
+    .ai-hero{ position:relative; overflow:hidden; padding: 56px 0 24px; }
+    .ai-hero::before{ content:""; position:absolute; inset:-8px -8px 0 -8px; background: linear-gradient(180deg,#4f46e5 0%, #3b82f6 55%, #60a5fa 100%); z-index:0; }
+    .ai-hero .container-xxl{ position:relative; z-index:1; }
+    .ai-title{ color:#fff; font-weight:800; font-size:clamp(2rem,2.6vw + 1.2rem,3.25rem); line-height:1.1; }
+    .ai-sub{ color:#eaf1ff; font-weight:300; font-size:clamp(1rem,.9vw + .6rem,1.35rem); line-height:1.6; margin-top:.75rem; max-width:60ch; }
+    .ai-phones{ max-width:520px; width:100%; filter:drop-shadow(0 18px 40px rgba(0,0,0,.25)); transform: translateY(22px); }
+
+    /* Info rows / cards */
+    .lead-eyebrow{ text-transform: none; letter-spacing:.2px; color:#64748b; }
+    .ai-card{ height:100%; border:1px solid #eef2ff; border-radius:14px; padding:16px; box-shadow:0 12px 28px rgba(15,23,42,.06); background:#fff; }
+    .ai-ico{ width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center; border-radius:10px; background:#eef2ff; margin-bottom:8px; font-size:18px; color:#4f46e5; }
+    .ai-h{ font-weight:800; color:#0f172a; font-size:1rem; margin:2px 0 4px; }
+    .ai-p{ color:#64748b; font-size:.95rem; margin:0; }
+
+    /* Gradient strip */
+    .ai-strip{ position:relative; color:#fff; overflow:hidden; }
+    .ai-strip::before{ content:""; position:absolute; inset:0; background: linear-gradient(135deg, #3b82f6 0%, #6c6ff7 65%); z-index:0; }
+    .ai-strip > .container-xxl{ position:relative; z-index:1; }
+    .ai-strip-title{ font-weight:800; font-size:clamp(1.35rem,1.2vw + 1rem,1.9rem); }
+    .ai-bullet{ color:rgba(255,255,255,.95); margin:.25rem 0; }
+    .ai-tick{ width:44px; height:44px; display:inline-flex; align-items:center; justify-content:center; border-radius:9999px; background:#22c55e; color:#fff; font-weight:800; }
+
+    /* Chat style callouts */
+    .chat-bubble{ border-radius:16px; padding:14px 16px; box-shadow:0 10px 24px rgba(0,0,0,.08); display:inline-block; max-width: 520px; }
+    .chat-blue{ background:#e9f2ff; color:#0f172a; }
+    .chat-purple{ background:#efe9ff; color:#0f172a; }
+
+    /* Testimonials band */
+    .ai-results-band{ background: linear-gradient(180deg,#3b82f6 0%, #6c6ff7 100%); padding:48px 0 40px; color:#fff; }
+    .ai-results-title{ font-weight:800; font-size:clamp(1.25rem,.9vw + 1rem,1.6rem); }
+    .ai-viewport{ max-width:760px; margin:0 auto; overflow-x:auto; scroll-snap-type:x mandatory; -ms-overflow-style:none; scrollbar-width:none; }
+    .ai-viewport::-webkit-scrollbar{ display:none; }
+    .ai-track{ display:flex; gap:18px; }
+    .ai-quote{ flex:0 0 100%; scroll-snap-align:start; background:#fff; color:#111; border-radius:12px; box-shadow:0 10px 24px rgba(0,0,0,.08); padding:18px 20px; border-bottom:6px solid #2ED3B7; }
+    .ai-quote p{ margin:0 0 12px; font-size:1.05rem; line-height:1.7; font-style:italic; color:#1f2937; }
+    .ai-quote .who{ display:flex; align-items:center; gap:10px; }
+    .ai-avatar{ width:28px; height:28px; border-radius:50%; object-fit:cover; }
+    .ai-controls{ max-width:760px; margin:12px auto 0; display:flex; justify-content:flex-end; gap:14px; }
+    .ai-nav{ background:transparent; border:0; color:#eaf1ff; font-size:1.25rem; padding:4px 6px; }
+
+    /* Bottom CTA */
+    .ai-bottom{ position:relative; overflow:hidden; color:#fff; }
+    .ai-bottom::before{ content:""; position:absolute; inset:0; background: linear-gradient(135deg,#3b82f6 0%, #6c6ff7 60%); z-index:0; }
+    .ai-bottom > .container-xxl{ position:relative; z-index:1; }
+    .ai-bottom-title{ font-weight:800; font-size:clamp(1.6rem,1.4vw + 1rem,2.2rem); }
+    .store-badge{ height:38px; width:auto; display:block; filter: drop-shadow(0 6px 14px rgba(0,0,0,.18)); }
+    .ai-bottom-img{ max-width:520px; border-top-left-radius:36px; }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+  <!-- HERO -->
+  <section class="ai-hero">
+    <div class="container-xxl">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-6">
+          <h1 class="ai-title">Genius AI chat</h1>
+          <p class="ai-sub">Get expert-informed, warm, and judgment‑free support in seconds. Ask about behavior, routines, sleep, emotions, and more — available 24/7.</p>
+          <div class="mt-3 d-flex flex-wrap gap-2">
+            <a href="#download" class="btn cta">Start free</a>
+            <a href="#topics" class="btn btn-outline-light rounded-pill px-4">What can it help with?</a>
+          </div>
+        </div>
+        <div class="col-lg-6 text-center">
+          <img th:src="@{/images/index/index_image1.png}" alt="App preview phones" class="ai-phones img-fluid">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BUILT FOR PARENTS -->
+  <section class="gp-section bg-white">
+    <div class="container-xxl">
+      <p class="lead-eyebrow small text-center mb-2">Built for parents, not robots</p>
+      <h2 class="text-center fw-bold mb-4" style="color:#0f172a;">What can you talk to Genius Chat about?</h2>
+      <p class="text-center text-muted mb-5" style="max-width:68ch;margin:0 auto;">Your AI co‑pilot for everyday parenting — grounded in developmental psychology and tuned for empathy.</p>
+
+      <div id="topics" class="row g-3 g-md-4">
+        <div class="col-12 col-sm-6 col-lg-4"><div class="ai-card"><div class="ai-ico">😴</div><div class="ai-h">Sleep & routines</div><p class="ai-p">Bedtime pushback, naps, and morning routines.</p></div></div>
+        <div class="col-12 col-sm-6 col-lg-4"><div class="ai-card"><div class="ai-ico">🧠</div><div class="ai-h">Big feelings</div><p class="ai-p">Emotion coaching and regulation strategies.</p></div></div>
+        <div class="col-12 col-sm-6 col-lg-4"><div class="ai-card"><div class="ai-ico">🗣️</div><div class="ai-h">Communication</div><p class="ai-p">Scripts for tricky moments and family dialogs.</p></div></div>
+        <div class="col-12 col-sm-6 col-lg-4"><div class="ai-card"><div class="ai-ico">🍽️</div><div class="ai-h">Meals & picky eating</div><p class="ai-p">Pressure‑free tips that build healthy habits.</p></div></div>
+        <div class="col-12 col-sm-6 col-lg-4"><div class="ai-card"><div class="ai-ico">📱</div><div class="ai-h">Screens & boundaries</div><p class="ai-p">Plans that balance limits and connection.</p></div></div>
+        <div class="col-12 col-sm-6 col-lg-4"><div class="ai-card"><div class="ai-ico">🏫</div><div class="ai-h">School & peers</div><p class="ai-p">Friendship issues, homework, and teachers.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY IT FEELS SO HUMAN -->
+  <section class="gp-section-tight ai-strip">
+    <div class="container-xxl">
+      <div class="row align-items-center g-4">
+        <div class="col-md-6">
+          <h3 class="ai-strip-title">Why it feels so human</h3>
+          <p class="ai-bullet">✔︎ Trained with developmental psychology frameworks</p>
+          <p class="ai-bullet">✔︎ Calibrated with real parent conversations</p>
+          <p class="ai-bullet">✔︎ Solutions and scripts before shifting tools</p>
+        </div>
+        <div class="col-md-6 d-flex align-items-center gap-3">
+          <div class="ai-tick">✓</div>
+          <div>
+            <div class="fw-bold">Empathetic by design</div>
+            <div>Answers that are warm, contextual, and actionable — fast.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chat bubbles / mid CTA -->
+  <section class="gp-section bg-white">
+    <div class="container-xxl">
+      <h3 class="fw-bold mb-3" style="color:#0f172a;">Need a quick script?</h3>
+      <p class="text-muted mb-4">Ask for a sentence you can use right now — for bedtime, transitions, or sibling squabbles.</p>
+      <div class="d-flex flex-column flex-md-row align-items-start gap-3">
+        <div class="chat-bubble chat-blue">“How do I help my 3‑year‑old when they refuse to brush?”</div>
+        <div class="chat-bubble chat-purple">“Try this: <em>First we brush, then we pick a story. Do you want the lion or the panda?</em>”</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="ai-results-band">
+    <div class="container-xxl">
+      <h3 class="ai-results-title text-white mb-3">Real parents. Real results.</h3>
+      <div class="ai-viewport" id="aiViewport">
+        <div class="ai-track" id="aiTrack">
+          <article class="ai-quote">
+            <p>“Genius Parenting AI transformed my evenings. It gave me gentle scripts and concrete steps — our bedtime is calm again.”</p>
+            <div class="who"><img th:src="@{/images/index/avatar1.png}" class="ai-avatar" alt="Avatar"><strong> Erin, mom of two</strong></div>
+          </article>
+          <article class="ai-quote">
+            <p>“I voice‑type a question during nap time and get an answer that just makes sense. It feels like texting a coach.”</p>
+            <div class="who"><img th:src="@{/images/index/avatar2.png}" class="ai-avatar" alt="Avatar"><strong> Jacob, first‑time dad</strong></div>
+          </article>
+          <article class="ai-quote">
+            <p>“The ‘what to say’ examples are gold. I screenshot them and use them in the moment.”</p>
+            <div class="who"><img th:src="@{/images/index/avatar3.png}" class="ai-avatar" alt="Avatar"><strong> Alia</strong></div>
+          </article>
+        </div>
+      </div>
+      <div class="ai-controls">
+        <button class="ai-nav" type="button" data-dir="left" aria-label="Previous">←</button>
+        <button class="ai-nav" type="button" data-dir="right" aria-label="Next">→</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOTTOM CTA -->
+  <section id="download" class="gp-section ai-bottom">
+    <div class="container-xxl">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-6">
+          <h3 class="ai-bottom-title">Start talking to Genius AI — Free</h3>
+          <p class="mb-2">Download the app and message your AI co‑pilot anytime.</p>
+          <p class="mb-3">No credit card needed.</p>
+          <div class="d-flex align-items-center gap-2">
+            <a href="#" aria-label="Get it on Google Play"><img th:src="@{/images/index/index-image11.png}" alt="Google Play" class="store-badge"></a>
+            <a href="#" aria-label="Download on the App Store"><img th:src="@{/images/index/index-image12.png}" alt="App Store" class="store-badge"></a>
+            <img th:src="@{/images/index/index-image14.png}" alt="QR code" style="height:74px; width:auto; margin-left:6px;"/>
+          </div>
+        </div>
+        <div class="col-lg-6 text-center text-lg-end">
+          <img th:src="@{/images/index/index-image13.png}" alt="Family using the app" class="ai-bottom-img img-fluid">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chatbot + Footer -->
+  <div th:replace="~{fragments/chatbot :: chatbot}"></div>
+  <div th:replace="~{fragments/footer :: footer}"></div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      const viewport = document.getElementById('aiViewport');
+      if(!viewport) return;
+      const step = () => viewport.clientWidth;
+      document.querySelectorAll('.ai-nav').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const dir = btn.dataset.dir === 'left' ? -1 : 1;
+          viewport.scrollBy({ left: dir * step(), behavior: 'smooth' });
+        });
+      });
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
