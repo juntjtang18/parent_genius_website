@@ -152,144 +152,120 @@ body { padding-top: 3.5rem; }
    Section 3: RESULTS / TESTIMONIALS
 ========================== */
 
-.gp-index-results{ background:transparent; padding-top:32px; }
+/* =========================
+   Section 3: RESULTS / TESTIMONIALS (clean + merged)
+========================== */
+
+.gp-index-results{ background: transparent; padding-top: 32px; }
+
 .gp-index-results-box{
   background-image: linear-gradient(180deg, #3b82f6 0%, #6c6ff7 100%);
-  color:#fff; padding:48px 0 40px; overflow:hidden;
-  padding-bottom: 6rem;   /* ⟵ increase this to taste */
+  color: #fff;
+  overflow: hidden;
+  padding: 48px 0 6rem;        /* ↑ top 48px, bottom 6rem to push space under CTA */
 }
+
+/* Title (Poppins 400 / 50/61) */
 .gp-index-results-title{
   font-family: 'Poppins', sans-serif;
-  font-weight: 400;     /* Regular */
+  font-weight: 400;
   font-style: normal;
   font-size: 50px;
   line-height: 61px;
   letter-spacing: 0;
-  color: #fff;          /* keep current color */
-  margin-bottom: 50px;  /* keep current spacing */
+  color: #fff;
   margin-top: 100px;
+  margin-bottom: 50px;
 }
+
+/* One “rail” at 60vw for title, viewport, arrows, and CTA block */
+.gp-index-results .gp-index-results-title,
+.gp-index-results .gp-index-quote-viewport,
+.gp-index-results .gp-index-results-controls,
+.gp-index-results .gp-index-results-title ~ .mt-3{
+  width: 60vw;
+  max-width: 60vw;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+}
+
+/* Scroll-snap carousel */
 .gp-index-quote-viewport{
-  max-width:720px; margin:0 auto; overflow-x:auto;
-  scroll-snap-type:x mandatory; -ms-overflow-style:none; scrollbar-width:none;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
-.gp-index-quote-viewport::-webkit-scrollbar{ display:none; }
-.gp-index-quote-track{ display:flex; gap:18px; }
+.gp-index-quote-viewport::-webkit-scrollbar{ display: none; }
+
+.gp-index-quote-track{ display: flex; gap: 18px; }
+
 .gp-index-quote-card{
-  flex:0 0 100%; scroll-snap-align:start;
-  background:#fff; color:#111827; border-radius:12px;
-  box-shadow:0 10px 24px rgba(0,0,0,.08);
-  padding:18px 20px; border-bottom:6px solid #2ED3B7;
+  flex: 0 0 100%;                /* one card per viewport width (60vw rail) */
+  scroll-snap-align: start;
+  background: #fff;
+  color: #111827;
+  border-radius: 12px;
+  box-shadow: 0 10px 24px rgba(0,0,0,.08);
+  border-bottom: 6px solid #2ED3B7;
+  padding: 0;                    /* no padding on the card itself */
 }
+
+/* Inner content padding inside the card border */
+.gp-index-quote-inner{
+  padding: 4rem;
+  padding-bottom: 3rem;          /* slightly tighter bottom */
+}
+
+/* Quote text (Poppins 400 Italic / 38/56) */
 .gp-index-quote-text{
   font-family: 'Poppins', sans-serif;
-  font-weight: 400;        /* Regular */
-  font-style: italic;      /* Italic */
+  font-weight: 400;
+  font-style: italic;
   font-size: 38px;
   line-height: 56px;
   letter-spacing: 0;
   color: #1f2937;
-  margin: 0 0 14px;        /* keep existing spacing */
-    padding: 4rem;        /* top, right, bottom, left = 1.2rem */
-  
+  margin: 0 0 14px;
+  padding: 0;                    /* ensure padding lives on the inner wrapper only */
 }
-.gp-index-quote-author{ display:flex; align-items:center; gap:10px; }
-.gp-index-avatar{ width:48px; height:48px; border-radius:50%; object-fit:cover; }
-/* RESULTS author name spec override */
+
+/* Author row */
+.gp-index-quote-author{ display: flex; align-items: center; gap: 10px; }
+.gp-index-avatar{ width: 48px; height: 48px; border-radius: 50%; object-fit: cover; }
 .gp-index-author-name{
   font-family: 'Poppins', sans-serif;
-  font-weight: 700;    /* Bold */
+  font-weight: 700;
   font-style: normal;
   font-size: 18px;
   line-height: 34px;
   letter-spacing: 0;
-  color: #374151;      /* keep existing color */
+  color: #374151;
 }
 
+/* Controls (enlarged 200%) */
 .gp-index-results-controls{
-  position:static; width:100%; max-width:720px; 
-  display:flex; justify-content:flex-end; 
+  display: flex;
+  justify-content: flex-end;
+  gap: 20px;
   padding-top: 2rem;
 }
 .gp-index-nav{
-  background:transparent; border:0; color:#eaf1ff; font-size:1.25rem; line-height:1;
-  padding:4px 6px; cursor:pointer; transition: transform .12s ease, opacity .12s ease;
+  background: transparent;
+  border: 0;
+  color: #eaf1ff;
+  font-size: 2.5rem;             /* 200% */
+  line-height: 1;
+  padding: .25rem .5rem;
+  cursor: pointer;
+  transition: transform .12s ease, opacity .12s ease;
+  display: inline-flex; align-items: center; justify-content: center;
 }
-.gp-index-nav:hover{ transform:translateY(-1px); opacity:.9; }
+.gp-index-nav:hover{ transform: translateY(-1px); opacity: .9; }
+.gp-index-nav:disabled{ opacity: .35; cursor: default; transform: none; }
 
-/* RESULTS: make the quote viewport (and nav) 3/5 of the screen */
-.gp-index-results .gp-index-quote-viewport{
-  width: 60vw;          /* 3/5 of the screen */
-  max-width: 60vw;      /* override previous 720px cap */
-  margin-left: auto;    /* keep centered */
-  margin-right: auto;
-}
-.gp-index-results .gp-index-results-controls{
-  max-width: 60vw;      /* match the viewport width so arrows align */
-  margin-left: auto;
-  margin-right: auto;
-}
-/* The card already uses flex: 0 0 100%, so it will stay equal to viewport width */
-/* RESULTS: align H3 and CTA to the same left edge as the 60vw viewport */
-.gp-index-results .gp-index-results-title,
-.gp-index-results .gp-index-results-title + .mt-3{
-  width: 60vw;
-  max-width: 60vw;
-  margin-left: auto;
-  margin-right: auto;  /* centers the 60vw block so its left edge matches the viewport's */
-  text-align: left;    /* ensure text is left-aligned inside the 60vw rail */
-}
-
-/* RESULTS: use the same 60vw rail for H3, CTA, viewport, and arrows */
-.gp-index-results .gp-index-results-title,
-.gp-index-results .gp-index-results-title ~ .mt-3,   /* any later .mt-3 sibling */
-.gp-index-results .gp-index-quote-viewport,
-.gp-index-results .gp-index-results-controls{
-  width: 60vw;
-  max-width: 60vw;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-/* Ensure the CTA block isn’t centered by an inherited text-align */
-.gp-index-results .gp-index-results-title ~ .mt-3{
-  text-align: left;
-}
-
-/* Keep the button from stretching; align to the left edge of the 60vw rail */
-.gp-index-results .gp-index-results-title ~ .mt-3 .gp-cta-btn{
-  display: inline-block;
-}
-/* Card content wrapper for uniform padding inside the card border */
-.gp-index-quote-inner{
-  padding: 4rem;              /* ← your requested padding */
-  padding-bottom: 3rem;
-}
-
-/* If the card itself had padding, zero it so we don't double-pad */
-.gp-index-quote-card{
-  padding: 0;
-}
-
-/* Move padding off the blockquote if you previously added it */
-.gp-index-quote-text{
-  padding: 0 !important;        /* keep your typography overrides; just remove padding */
-}
-
-/* RESULTS: enlarge arrow controls by 200% */
-.gp-index-results .gp-index-nav{
-  font-size: 2.5rem;   /* was 1.25rem → 200% */
-  line-height: 1;      /* keep glyphs snug */
-  padding: .25rem .5rem;  /* slightly bigger hit area */
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* (optional) a bit more spacing between the two buttons */
-.gp-index-results .gp-index-results-controls{ gap: 20px; }
-
-/* (optional) if you want smaller on narrow screens */
+/* Responsive tweak for arrows if desired */
 @media (max-width: 575.98px){
   .gp-index-results .gp-index-nav{ font-size: 2rem; }
 }
@@ -302,14 +278,30 @@ body { padding-top: 3.5rem; }
 .gp-index-explore{ background:#f8fafc; padding:64px 0 72px; }
 
 .gp-index-ex-title{
-  font-family:"Poppins","Inter",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif;
-  font-weight:700;
-  font-size:clamp(1.5rem, 1.25vw + 1rem, 2rem);
-  line-height:1.25;
-  letter-spacing:.2px;
-  color:#111827;
-  margin-bottom:24px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;      /* Regular */
+  font-style: normal;
+  font-size: 50px;
+  line-height: 60px;
+  letter-spacing: 0;
+  text-align: center;
+  color: #111827;
+  margin-bottom: 4rem;
+  margin-top: 4rem;
+  /* new: constrain width so it wraps to ~2 lines on large screens */
+  max-width: 28ch;       /* tune 26–32ch to taste */
+  margin-left: auto;     /* center the narrower block */
+  margin-right: auto;
+  text-wrap: balance;    /* nicer break where supported */
+  word-break: normal;
 }
+
+/* Let it breathe on small screens (wraps naturally) */
+@media (max-width: 575.98px){
+  .gp-index-ex-title{ max-width: 100%; }
+}
+
+
 
 /* layout: top | divider | bottom; height will be set by JS equalizer */
 .gp-index-ex-card{
@@ -337,8 +329,29 @@ body { padding-top: 3.5rem; }
 .gp-index-ex-text{
   grid-row:3; display:flex; flex-direction:column; align-items:center; gap:4px; text-align:center;
 }
-.gp-index-ex-h{ margin:0; font-weight:800; color:#111827; text-align:center; }
-.gp-index-ex-p{ margin:0; color:#6B7280; text-align:center; }
+/* Explore card title (spec) */
+.gp-index-ex-h{
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;      /* SemiBold */
+  font-style: normal;
+  font-size: 24px;
+  line-height: 34px;
+  letter-spacing: 0;
+  text-align: center;    /* Center */
+  color: #111827;
+  margin: 0 0 12px;      /* paragraph spacing = 12px */
+}
+/* Explore card body text (spec) */
+.gp-index-ex-p{
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;       /* Regular */
+  font-style: normal;
+  font-size: 18px;
+  line-height: 30px;
+  color: #6B7280;
+  text-align: center;
+  margin: 0 0 12px;       /* paragraph spacing = 12px */
+}
 
 /* hover: gradient + light-on-dark text */
 .gp-index-ex-card:hover,
@@ -379,24 +392,205 @@ body { padding-top: 3.5rem; }
   .ex-square .gp-index-ex-card{ aspect-ratio: 4 / 3; }
 }
 
-
-/* =========================
-   Section 5: BOTTOM (Full-width gradient like hero)
-========================== */
-
-.gp-index-bottom{ position:relative; padding:64px 0; overflow:hidden; color:#fff; background:#fff; }
-.gp-index-bottom::before{
-  content:""; position:absolute; inset:0; background-image:linear-gradient(135deg, #3b82f6 0%, #6c6ff7 60%); z-index:0;
+@media (min-width: 576px){
+  .ex-square .gp-index-ex-card{
+    margin-left: auto;    /* center inside the Bootstrap col */
+    margin-right: auto;
+  }
 }
-.gp-index-bottom > .container-xxl{ position:relative; z-index:1; }
-.gp-index-bottom-box{ background:transparent!important; border-radius:0!important; padding:0!important; box-shadow:none!important; }
-.gp-index-btm-title{ font-weight:800; font-size:clamp(1.6rem, 1.4vw + 1rem, 2.2rem); line-height:1.2; margin-bottom:.75rem; color:#fff; }
-.gp-index-btm-bullet{ margin:.35rem 0; color:rgba(255,255,255,.92); line-height:1.6; }
-.gp-index-btm-tagline{ margin:1rem 0 1.25rem; color:rgba(255,255,255,.95); font-weight:600; }
-.gp-index-btm-sub{ margin:.25rem 0 .25rem; font-weight:800; color:#fff; }
-.gp-index-btm-free{ margin:0 0 .25rem; color:rgba(255,255,255,.78); font-size:.95rem; }
-.gp-index-store-badge{ height:38px; width:auto; display:block; filter:drop-shadow(0 6px 14px rgba(0,0,0,.18)); }
-.gp-index-bottom-img{ max-width:520px; border-top-left-radius:36px; }
+/* Optional: keep full width on very small screens */
+@media (max-width: 575.98px){
+  .ex-square .gp-index-ex-card{ width: 100%; }
+}
+
+/* EXPLORE — make cards smaller via column width (not inner 80%) */
+.gp-index-explore .row{
+  --bs-gutter-x: 1rem;  /* equal horizontal gap */
+  --bs-gutter-y: 1rem;  /* equal vertical gap   */
+}
+
+
+/* Mobile: keep full width; just use the equal gutters above */
+@media (max-width: 575.98px){
+  .gp-index-explore .row{
+    --bs-gutter-x: .75rem;
+    --bs-gutter-y: .25rem;
+  }
+}
+/* EXPLORE — make horizontal spacing 1.5× the vertical spacing */
+.gp-index-explore .row{
+  --ex-gutter-y: 1rem;                 /* vertical gap (baseline) */
+  --bs-gutter-y: var(--ex-gutter-y);   /* vertical = 1rem */
+  --bs-gutter-x: calc(var(--ex-gutter-y) * 2);  /* horizontal = 1.5rem */
+}
+
+/* Mobile tweak: keep proportions (horizontal = 1.5 × vertical) */
+@media (max-width: 575.98px){
+  .gp-index-explore .row{
+    --ex-gutter-y: .75rem;             /* vertical = .75rem */
+    /* horizontal becomes 1.125rem via calc above */
+  }
+}
+
+/* --- FIX: uniform square size for all Explore cards --- */
+
+
+/* Mobile: keep full width; let height follow aspect ratio for better fit */
+@media (max-width: 767.98px){
+  .ex-square .gp-index-ex-card{
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;             /* your existing mobile tweak */
+  }
+}
+
+/* Keep gutters tidy (horizontal a touch wider if you like) */
+.gp-index-explore .row{
+  --bs-gutter-y: 1rem;
+  --bs-gutter-x: calc(var(--bs-gutter-y) * 1.5);
+}
+/* EXPLORE: strict squares, same size in every row */
+.ex-square .gp-index-ex-card{
+  width: 100% !important;     /* fill the column */
+  max-width: none !important;
+  aspect-ratio: 1 / 1;        /* <- makes it a square */
+  height: auto !important;    /* ignore any past fixed heights */
+  display: grid;
+  grid-template: 1fr auto 1fr / 1fr;  /* top | divider | bottom */
+  align-items: center;
+}
+
+/* keep placements inside */
+.ex-square .gp-index-ex-img{ grid-row: 1; align-self: end; }
+.ex-square .gp-index-ex-divider{ grid-row: 2; }
+.ex-square .gp-index-ex-text{ grid-row: 3; display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
+
+/* Optional: mobile squares a bit shorter */
+@media (max-width: 575.98px){
+  .ex-square .gp-index-ex-card{ aspect-ratio: 4 / 3; }
+}
+
+/* ================================
+   CTA / Bottom Band — FINAL
+   ================================ */
+
+/* Band: full-bleed, no vertical padding on the section itself */
+.cta-band{
+  position: relative;
+  overflow: hidden;
+  padding: 0;                                 /* no top/bottom padding */
+  min-height: clamp(520px, 68vh, 760px);      /* tune height as needed */
+  color: #fff;
+}
+.cta-band::before{
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, #3b82f6 0%, #6c6ff7 60%);
+  z-index: 0;
+}
+
+/* Grid: remove gutters and stretch to full band height */
+.cta-row{ min-height: inherit; }
+.cta-row > [class*="col-"]{ padding-left: 0; padding-right: 0; }
+
+/* Left column: container + inner wrapper for vertical padding */
+.cta-left{
+  position: relative;
+  z-index: 2;                      /* above art */
+  display: flex;
+  align-items: stretch;
+}
+.cta-left-inner{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;         /* center content within padded area */
+  min-height: 100%;
+  padding-inline: clamp(24px, 5vw, 64px);  /* horizontal */
+  padding-block: 64px;                      /* vertical */
+}
+
+/* Typography */
+.cta-title{
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;      /* Regular */
+  font-style: normal;
+  font-size: 50px;
+  line-height: 60px;
+  letter-spacing: 0;
+  margin: 0 0 24px;
+}
+
+.cta-bullets{ list-style: none; margin: 0 0 6px; padding: 0; }
+.cta-bullets li{
+  margin: 0 0 12px;                 /* paragraph spacing = 12px */
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;                  /* Regular */
+  font-style: normal;
+  font-size: 18px;
+  line-height: 30px;
+  letter-spacing: 0;
+  color: rgba(255,255,255,.92);
+}
+.cta-bullets li:last-child{ margin-bottom: 0; }
+.cta-tagline{ margin: 14px 0; font-weight: 600; color: rgba(255,255,255,.96); }
+.cta-rule{ border: 0; height: 1px; background: rgba(255,255,255,.25); max-width: 520px; margin: 18px 0 0; }
+
+/* Download block */
+.cta-qr{ width: 132px; height: 132px; border-radius: 12px; display: block; }
+/* CTA download title — spec */
+.cta-download-title{
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;       /* SemiBold */
+  font-style: normal;
+  font-size: 30px;
+  line-height: 40px;
+  letter-spacing: 0;
+  margin: 0;
+}
+/* CTA download sub — spec */
+.cta-download-sub{
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;        /* Regular */
+  font-style: normal;
+  font-size: 18px;
+  line-height: 30px;
+  letter-spacing: 0;
+  color: rgba(255,255,255,.85);
+  margin: 0 0 12px;        /* paragraph spacing = 12px */
+}
+.cta-store-badge{
+  height: 38px; width: auto; display: block;
+  filter: drop-shadow(0 6px 14px rgba(0,0,0,.18));
+}
+
+/* Right art: flush to viewport right; never crop */
+.cta-art{
+  position: absolute;
+  right: 0; top: 0; bottom: 0;                /* fill band height */
+  width: min(46vw, 860px);                     /* art width; tune if needed */
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-end;
+  z-index: 1;                                  /* under text, above bg */
+  pointer-events: none;                        /* decorative */
+}
+.cta-art-img{
+  height: 100%;                                /* full height of band */
+  width: auto;                                 /* preserve aspect */
+  object-fit: contain;                         /* never crop */
+  object-position: right center;
+  display: block;
+}
+
+/* Responsive tweaks */
+@media (max-width: 991.98px){
+  .cta-art{ display: none; }                   /* hide large art on small screens */
+  .cta-left-inner{
+    padding-inline: 24px;
+    padding-block: 32px;
+  }
+}
+
 
 /* =========================
    Modal
@@ -651,58 +845,58 @@ body { padding-top: 3.5rem; }
 	</section>
 	
 	
-	<!-- BOTTOM CTA (mock-accurate) -->
-	<section class="gp-index-bottom">
+	<!-- BOTTOM CTA — edge-to-edge, no crop, image flush right -->
+	<section class="cta-band">
+	  <!-- Right-side art is outside the grid so it can hug the viewport -->
+	  <div class="cta-art" aria-hidden="true">
+	    <img src="/images/index/index-image13.png"
+	         alt=""
+	         class="cta-art-img">
+	  </div>
 	  <div class="container-xxl">
-	    <div class="gp-index-bottom-box p-4 p-lg-5">
-	      <div class="row align-items-center">
-	        <!-- Left: text -->
-	        <div class="col-lg-6">
-	          <h3 class="gp-index-btm-title" th:text="#{home.bottom2.title_en}">
-	            Parenting, just a tap away
-	          </h3>
+	    <div class="row g-0 cta-row">
 	
-	          <p class="gp-index-btm-bullet" th:text="#{home.bottom2.b1_en}">
-	            Do you wish you had expert-backed parenting advice, instantly?
-	          </p>
-	          <p class="gp-index-btm-bullet" th:text="#{home.bottom2.b2_en}">
-	            Want to track milestones without spreadsheets?
-	          </p>
-	          <p class="gp-index-btm-bullet" th:text="#{home.bottom2.b3_en}">
-	            Craving fun ways to build creativity & learning at home?
-	          </p>
+	      <!-- LEFT: text/content -->
+	<div class="col-12 col-lg-7 cta-left">
+	  <div class="cta-left-inner">   <!-- NEW wrapper -->
+	    <h2 class="cta-title">Parenting,<br>just a tap away</h2>
 	
-	          <p class="gp-index-btm-tagline" th:text="#{home.bottom2.tagline_en}">
-	            Download Genius Parenting AI and make parenting feel… lighter.
-	          </p>
+	    <ul class="cta-bullets">
+	      <li>Do you wish you had expert-backed parenting advice, instantly?</li>
+	      <li>Want to track milestones without spreadsheets?</li>
+	      <li>Craving fun ways to build creativity &amp; learning at home?</li>
+	    </ul>
 	
-	          <h5 class="gp-index-btm-sub" th:text="#{home.bottom2.sub_en}">
-	            Download the App now!
-	          </h5>
-	          <p class="gp-index-btm-free" th:text="#{home.bottom2.free_en}">
-	            Free to try. No credit card needed.
-	          </p>
+	    <p class="cta-tagline">
+	      Download Genius Parenting AI and make parenting feel… lighter.
+	    </p>
 	
-	          <div class="d-flex align-items-center gap-2 mt-2">
-	            <a href="#" aria-label="Get it on Google Play">
-	              <img th:src="@{/images/index/index-image11.png}" alt="Google Play" class="gp-index-store-badge">
-	            </a>
-	            <a href="#" aria-label="Download on the App Store">
-	              <img th:src="@{/images/index/index-image12.png}" alt="App Store" class="gp-index-store-badge">
-	            </a>
-	          </div>
-	        </div>
+	    <hr class="cta-rule">
 	
-	        <!-- Right: one composite PNG with irregular shape -->
-	        <div class="col-lg-6 text-center text-lg-end mt-4 mt-lg-0">
-	          <img th:src="@{/images/index/index-image13.png}"
-	               alt="Happy family using GenParenting"
-	               class="gp-index-bottom-img img-fluid">
+	    <div class="cta-download d-flex align-items-center gap-4 mt-4">
+	      <img src="/images/gpa-qr-code.png" alt="QR code" class="cta-qr">
+	      <div>
+	        <h3 class="cta-download-title mb-2">Download the App!</h3>
+	        <p class="cta-download-sub mb-3">Free to try. No credit card needed.</p>
+	        <div class="d-flex align-items-center gap-2">
+	          <a href="#"><img src="/images/index/index-image11.png" alt="Google Play" class="cta-store-badge"></a>
+	          <a href="#"><img src="/images/index/index-image12.png" alt="App Store" class="cta-store-badge"></a>
 	        </div>
 	      </div>
 	    </div>
 	  </div>
+	</div>
+	
+	      <!-- RIGHT: empty placeholder column (keeps grid space for art on lg+) -->
+	      <div class="col-lg-5 d-none d-lg-block"></div>
+	    </div>
+	  </div>
 	</section>
+
+
+
+
+
 
   <!-- App Store availability modal -->
   <div class="modal fade" id="appStoreModal" tabindex="-1" aria-labelledby="appStoreModalLabel" aria-hidden="true">
