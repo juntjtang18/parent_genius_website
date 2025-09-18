@@ -3,263 +3,591 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Mini Courses – GeniusParenting AI</title>
-  
-  <!-- Bootstrap (keep consistent with site) -->
+  <title th:text="#{seg-mini-course-caption-1}">Mini Courses – GeniusParenting AI</title>
+
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;600;700;800&display=swap" rel="stylesheet">
 
   <style>
-    /* =========================
-       Base / Utilities
-    ========================== */
     body { padding-top: 4rem; font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif; }
     @media (min-width: 1200px){ body { padding-top: 101px; } }
 
-    .gp-section { padding: 72px 0; }
-    .gp-section-tight { padding: 48px 0; }
-
+    /* CTA button */
     .gp-cta-btn{
       background: linear-gradient(90deg, #2ED3B7 0%, #1EC7E6 100%);
-      color: #fff; border: 0; padding: .9rem 2rem; border-radius: 9999px;
-      font-weight: 700; letter-spacing: .2px; box-shadow: 0 10px 24px rgba(30,199,230,.25);
+      color: #fff; border: 0; border-radius: 9999px;
+      padding: .9rem 2.6rem; font-family: 'Poppins', sans-serif;
+      font-weight: 600; font-size: 20pt; letter-spacing: .2px;
+      box-shadow: 0 10px 20px rgba(23,162,184,.25);
       transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
     }
-    .gp-cta-btn:hover{ color: #fff; transform: translateY(-1px); box-shadow: 0 12px 28px rgba(30,199,230,.32); filter: brightness(1.02) }
+    .gp-cta-btn:hover, .gp-cta-btn:focus{ transform: translateY(-1px); box-shadow: 0 12px 26px rgba(23,162,184,.32); filter: brightness(1.02); color:#fff; }
 
-    /* =========================
-       HERO
-    ========================== */
-    .mini-hero{ position:relative; overflow:hidden; padding: 56px 0 24px; }
-    .mini-hero::before{
-      content:""; position:absolute; inset:-8px -8px 0 -8px;
-      background-image: linear-gradient(180deg, #4f46e5 0%, #3b82f6 55%, #60a5fa 100%);
+    /* ========== HERO ========== */
+    .gp-hero { position: relative; overflow: visible; padding: 40px 0 8px; z-index: 3; }
+    .gp-hero::before{
+      content:""; position:absolute; inset:0; bottom:-56px;
+      background:#3b82f6;
+      background-image: linear-gradient(180deg, #3b82f6 0%, #2563eb 55%, #6c6ff7 100%);
       z-index:0;
     }
-    .mini-hero .container-xxl{ position:relative; z-index:1; }
-    .mini-hero-title{ color:#fff; font-weight:800; font-size: clamp(2rem, 2.6vw + 1.2rem, 3.25rem); line-height:1.1; }
-    .mini-hero-sub{ color:#eaf1ff; font-weight:300; font-size: clamp(1rem, .9vw + .6rem, 1.35rem); line-height:1.6; margin-top:.75rem; max-width: 50ch; }
-    .mini-phones{ max-width: 520px; width:100%; height:auto; filter: drop-shadow(0 18px 40px rgba(0,0,0,.25)); transform: translateY(22px); }
+    .gp-hero .container-xxl{ position:relative; z-index:3; }
+    .mini-hero-title{ font-weight:500; font-size:50px; line-height:60px; color:#fff; margin:2rem 0 1rem; }
+    .mini-hero-subtitle{ font-weight:200; font-size:20pt; line-height:32pt; color:#fff; margin-top:1rem; }
+    .gp-hero-image{ max-width:520px; width:100%; height:auto; filter: drop-shadow(0 18px 40px rgba(0,0,0,.25)); }
+    .gp-hero-image.hero-overhang{ position:relative; z-index:4; transform: translateY(52px); }
 
-    /* =========================
-       QUICK BENEFITS (6 up cards)
-    ========================== */
-    .mini-benefits{ background:#fff; margin-top: -24px; }
-    .mini-card{ height:100%; border: 1px solid #eef2ff; border-radius:14px; padding:16px; box-shadow:0 12px 28px rgba(15,23,42,.06); background:#fff; }
-    .mini-ico{ width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center; border-radius:10px; background:#eef2ff; margin-bottom:8px; font-size:18px; color:#4f46e5; }
-    .mini-h{ font-weight:800; color:#0f172a; font-size:1rem; margin:2px 0 4px; }
-    .mini-p{ color:#64748b; font-size:.95rem; margin:0; }
+    .mini-why{ padding-top: 174px; position: relative; z-index: 1; }
+    @media (max-width: 991.98px){
+      .gp-hero::before{ bottom:-32px; }
+      .gp-hero-image{ max-width:420px; }
+      .mini-why{ padding-top:116px; }
+    }
+    @media (max-width: 575.98px){
+      .gp-hero::before{ bottom:-24px; }
+      .gp-hero-image{ max-width:360px; }
+      .mini-why{ padding-top:96px; }
+    }
 
-    /* =========================
-       DIFFERENT FEATURES STRIP
-    ========================== */
-    .mini-strip{ position:relative; color:#fff; overflow:hidden; }
-    .mini-strip::before{ content:""; position:absolute; inset:0; background-image: linear-gradient(135deg, #3b82f6 0%, #6c6ff7 65%); z-index:0; }
-    .mini-strip > .container-xxl{ position:relative; z-index:1; }
-    .mini-strip-title{ font-weight:800; font-size: clamp(1.35rem, 1.2vw + 1rem, 1.9rem); margin-bottom: 12px; }
-    .mini-strip-bullet{ margin:.25rem 0; color: rgba(255,255,255,.95); }
-    .mini-tick{ width:44px; height:44px; display:inline-flex; align-items:center; justify-content:center; border-radius:9999px; background:#22c55e; color:#fff; font-weight:800; }
+/* =========================
+   Section 2: BENEFITS
+========================= */
+.mini-benefits{
+  /* spacing + grid variables */
+  --benefit-pad-top: 64px;
+  --benefit-pad-btm: 72px;
+  --ex-gutter-y: 1rem;
+  --ex-gutter-x: calc(var(--ex-gutter-y) * 1.5);
 
-    /* =========================
-       TESTIMONIALS (one-card carousel like index)
-    ========================== */
-    .mini-results-title{ color:#111827; font-weight:800; font-size: clamp(1.25rem, 0.9vw + 1rem, 1.6rem); }
-    .mini-results-band{ background-image: linear-gradient(180deg, #3b82f6 0%, #6c6ff7 100%); padding:48px 0 40px; color:#fff; }
-    .mini-quote-viewport{ max-width: 760px; margin:0 auto; overflow-x:auto; scroll-snap-type:x mandatory; -ms-overflow-style: none; scrollbar-width: none; }
-    .mini-quote-viewport::-webkit-scrollbar{ display:none; }
-    .mini-quote-track{ display:flex; gap:18px; }
-    .mini-quote-card{ flex:0 0 100%; scroll-snap-align:start; background:#fff; color:#111; border-radius:12px; box-shadow:0 10px 24px rgba(0,0,0,.08); padding:18px 20px; border-bottom:6px solid #2ED3B7; }
-    .mini-quote-text{ margin:0 0 12px; font-size:1.05rem; line-height:1.7; font-style:italic; color:#1f2937; }
-    .mini-quote-author{ display:flex; align-items:center; gap:10px; }
-    .mini-avatar{ width:28px; height:28px; border-radius:50%; object-fit:cover; }
-    .mini-author-name{ font-size:.9rem; font-weight:700; color:#374151; }
-    .mini-results-controls{ max-width:760px; margin:12px auto 0; display:flex; justify-content:flex-end; gap:14px; }
-    .mini-nav{ background:transparent; border:0; color:#eaf1ff; font-size:1.25rem; line-height:1; padding:4px 6px; cursor:pointer; }
+  background:#f8fafc;
+  padding: var(--benefit-pad-top) 0 var(--benefit-pad-btm);
+}
+@media (max-width:575.98px){
+  .mini-benefits{
+    --benefit-pad-top: 48px;
+    --benefit-pad-btm: 56px;
+    --ex-gutter-y: .75rem;
+  }
+}
+.mini-benefits .row{
+  --bs-gutter-y: var(--ex-gutter-y);
+  --bs-gutter-x: var(--ex-gutter-x);
+}
 
-    /* =========================
-       BOTTOM CTA (reuse look from index)
-    ========================== */
-    .mini-bottom{ position:relative; overflow:hidden; color:#fff; }
-    .mini-bottom::before{ content:""; position:absolute; inset:0; background-image: linear-gradient(135deg, #3b82f6 0%, #6c6ff7 60%); z-index:0; }
-    .mini-bottom > .container-xxl{ position:relative; z-index:1; }
-    .mini-bottom-title{ font-weight:800; font-size: clamp(1.6rem, 1.4vw + 1rem, 2.2rem); }
-    .mini-badge{ height:38px; width:auto; display:block; filter: drop-shadow(0 6px 14px rgba(0,0,0,.18)); }
-    .mini-bottom-img{ max-width:520px; border-top-left-radius:36px; }
+/* Headings align with first column by mirroring col padding */
+.mini-benefits-title{
+  font-family:'Poppins',sans-serif;
+  font-weight:400;
+  font-size:50px;
+  line-height:60px;
+  color:#111827;
+  text-align:left;
+  margin:4rem 0;
+  max-width:28ch;
+  padding-left: calc(var(--ex-gutter-x) / 2);
+  text-wrap: balance;
+}
+@media (max-width:575.98px){ .mini-benefits-title{ max-width:100%; } }
+
+.mini-benefits-sub{
+  font-family:'Poppins',sans-serif;
+  font-weight:300;
+  font-size:18px;
+  line-height:30px;
+  color:#6B7280;
+  text-align:left;
+  max-width:68ch;
+  margin:-1.25rem 0 2rem;
+  padding-left: calc(var(--ex-gutter-x) / 2);
+}
+
+/* Cards (strict squares) */
+.mini-benefit-card{
+  display:grid;
+  grid-template: 1fr auto 1fr / 1fr; /* icon | divider | text */
+  align-items:center;
+  background:#fff;
+  border:0;
+  border-radius:14px;
+  padding:22px 16px 20px;
+  box-shadow:0 12px 28px rgba(15,23,42,.08);
+  transition: background .18s, box-shadow .18s, transform .18s, color .18s;
+  margin-left:auto;
+  margin-right:auto;
+  overflow:hidden;
+}
+.mini-benefits-square .mini-benefit-card{ width:86%; aspect-ratio:1/1; height:auto !important; }
+@media (min-width:1200px){ .mini-benefits-square .mini-benefit-card{ width:80%; } }
+@media (max-width:575.98px){ .mini-benefits-square .mini-benefit-card{ width:100%; } }
+
+/* card parts */
+.mini-benefit-img{ grid-row:1; align-self:end; width:84px; height:84px; margin:12px auto 8px; display:flex; align-items:center; justify-content:center; }
+.mini-benefit-img .ex-emoji{ font-size:48px; line-height:1; }
+.mini-benefit-divider{ grid-row:2; height:1px; width:70%; background:#E5E7EB; margin:8px auto 10px; }
+.mini-benefit-text{ grid-row:3; display:flex; flex-direction:column; align-items:center; gap:4px; text-align:center; }
+.mini-benefit-h{ font-family:'Poppins',sans-serif; font-weight:600; font-size:24px; line-height:34px; color:#111827; margin:0 0 12px; }
+.mini-benefit-p{ font-family:'Poppins',sans-serif; font-weight:400; font-size:18px; line-height:30px; color:#6B7280; margin:0 0 12px; }
+
+/* clamp long text to keep square height */
+.mini-benefit-h{ display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden; text-overflow:ellipsis; }
+.mini-benefit-p{ display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:4; overflow:hidden; text-overflow:ellipsis; overflow-wrap:anywhere; }
+@media (max-width:575.98px){ .mini-benefit-p{ -webkit-line-clamp:3; } }
+
+/* hover state */
+.mini-benefit-card:hover,
+.mini-benefit-card:focus-within{
+  background:#4f46e5;
+  background-image:linear-gradient(180deg,#4f46e5 0%, #3b82f6 55%, #60a5fa 100%);
+  color:#fff;
+  transform:translateY(-2px);
+  box-shadow:0 16px 34px rgba(59,130,246,.28);
+}
+.mini-benefit-card:hover .mini-benefit-h,
+.mini-benefit-card:focus-within .mini-benefit-h{ color:#fff; }
+.mini-benefit-card:hover .mini-benefit-p,
+.mini-benefit-card:focus-within .mini-benefit-p{ color:#eef4ff; }
+.mini-benefit-card:hover .mini-benefit-divider,
+.mini-benefit-card:focus-within .mini-benefit-divider{ background:rgba(255,255,255,.45); }
+/* Reduce the column gutter from 1.5× to ~1.0× and widen the card */
+@media (min-width: 992px){
+  .mini-benefits{ --ex-gutter-x: 1rem; }                 /* was calc(1rem * 1.5) */
+  .mini-benefits-square .mini-benefit-card{ width: 96% !important; }
+}
+
+/* On xl+ screens, keep squares big and gaps small */
+@media (min-width: 1200px){
+  .mini-benefits-square .mini-benefit-card{ width: 94% !important; }  /* override old 80% */
+}
+
+/* On xxl, dial it in a touch more if you want it even tighter */
+@media (min-width: 1400px){
+  .mini-benefits-square .mini-benefit-card{ width: 92% !important; }
+}
+/* =========================
+   Section 3: FEATURE STRIP
+========================= */
+.mini-strip{ position:relative; color:#fff; overflow:hidden; padding:40px 0; }
+.mini-strip::before{ content:""; position:absolute; inset:0; background-image:linear-gradient(135deg,#3b82f6 0%, #6c6ff7 65%); z-index:0; }
+.mini-strip > .container-xxl{ position:relative; z-index:1; }
+.mini-strip-title{ font-weight:800; font-size:clamp(1.35rem,1.2vw + 1rem,1.9rem); margin-bottom:12px; }
+.mini-strip-bullet{ margin:.25rem 0; color:rgba(255,255,255,.95); }
+.mini-tick{ width:44px; height:44px; display:inline-flex; align-items:center; justify-content:center; border-radius:9999px; background:#22c55e; color:#fff; font-weight:800; }
+
+/* =========================
+   Section 4: TESTIMONIALS
+   (index layout; white section; shadow only on card)
+========================= */
+.gp-index-results{ background:#f6f9fc; padding:32px 0; }
+
+.gp-index-results-title{
+  font-family:'Poppins',sans-serif;
+  font-weight:400;
+  font-size:50px;
+  line-height:61px;
+  color:#111827;
+  margin:0 0 1rem;
+  padding-top: 6rem;
+  padding-bottom: 3rem;
+}
+
+/* viewport + track (1 card per view) */
+.gp-index-quote-viewport{
+  overflow-x:auto;
+  overflow-y:hidden;                /* prevent shadow from other cards leaking */
+  -ms-overflow-style:none;
+  scrollbar-width:none;
+}
+.gp-index-quote-viewport::-webkit-scrollbar{ display:none; }
+.gp-index-quote-track{ display:flex; gap:18px; }
+
+/* padding wrapper gives the card breathing room for its shadow */
+.gp-quote-pad{
+  flex:0 0 100%;
+  padding:0 24px 22px;              /* side + bottom space for blur */
+  scroll-snap-align:start;
+}
+
+/* the card itself */
+.gp-index-quote-card{
+  background:#fff;
+  color:#111827;
+  border-radius:12px;
+  box-shadow:0 12px 28px rgba(15,23,42,.08);   /* subtle, index-like */
+  border-bottom:6px solid #2ED3B7;             /* teal accent */
+}
+.gp-index-quote-inner{ padding:4rem 4rem 3rem; }
+.gp-index-quote-text{
+  font-family:'Poppins',sans-serif;
+  font-weight:400; font-style:italic;
+  font-size:38px; line-height:56px;
+  color:#1f2937; margin:0 0 14px;
+}
+
+/* author row */
+.gp-index-quote-author{ display:flex; align-items:center; gap:10px; }
+.gp-index-avatar{ width:48px; height:48px; border-radius:50%; object-fit:cover; }
+.gp-index-author-name{
+  font-family:'Poppins',sans-serif; font-weight:700;
+  font-size:18px; line-height:34px; color:#374151;
+}
+
+/* arrows below/right (outside the card) */
+.gp-index-results-controls{ display:flex; justify-content:flex-end; gap:20px; padding-top:1.25rem; }
+.gp-index-nav{
+  background:transparent; border:0; color:#334155;
+  font-size:2.5rem; line-height:1; padding:.25rem .5rem; cursor:pointer;
+  transition:transform .12s ease, opacity .12s ease; display:inline-flex; align-items:center; justify-content:center;
+  padding-bottom: 6rem;
+}
+.gp-index-nav:hover{ transform:translateY(-1px); opacity:.85; }
+.gp-index-nav:disabled{ opacity:.35; transform:none; cursor:default; }
+
+/* ================================
+   CTA / Bottom Band — FINAL (index layout)
+================================ */
+.cta-band{
+  position: relative;
+  overflow: hidden;
+  padding: 0;                                   /* no vertical padding on the section */
+  min-height: clamp(520px, 68vh, 760px);
+  color: #fff;
+}
+.cta-band::before{
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, #3b82f6 0%, #6c6ff7 60%);
+  z-index: 0;
+}
+
+/* Stretch grid to band height; remove gutters */
+.cta-row{ min-height: inherit; }
+.cta-row > [class*="col-"]{ padding-left: 0; padding-right: 0; }
+
+/* Left column (text) */
+.cta-left{ position: relative; z-index: 2; display: flex; align-items: stretch; }
+.cta-left-inner{
+  display: flex; flex-direction: column; justify-content: center;
+  min-height: 100%;
+  padding-inline: clamp(24px, 5vw, 64px);
+  padding-block: 64px;
+}
+
+/* Typography (match index) */
+.cta-title{
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400; font-size: 50px; line-height: 60px; letter-spacing: 0;
+  margin: 0 0 24px;
+}
+.cta-bullets{ list-style: none; margin: 0 0 6px; padding: 0; }
+.cta-bullets li{
+  margin: 0 0 12px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400; font-size: 18px; line-height: 30px;
+  color: rgba(255,255,255,.92);
+}
+.cta-bullets li:last-child{ margin-bottom: 0; }
+.cta-tagline{ margin: 14px 0; font-weight: 600; color: rgba(255,255,255,.96); }
+.cta-rule{ border: 0; height: 1px; background: rgba(255,255,255,.25); max-width: 520px; margin: 18px 0 0; }
+
+/* Download block */
+.cta-qr{ width: 132px; height: 132px; border-radius: 12px; display: block; }
+.cta-download-title{
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600; font-size: 30px; line-height: 40px; margin: 0;
+}
+.cta-download-sub{
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400; font-size: 18px; line-height: 30px;
+  color: rgba(255,255,255,.85); margin: 0 0 12px;
+}
+.cta-store-badge{
+  height: 38px; width: auto; display: block;
+  filter: drop-shadow(0 6px 14px rgba(0,0,0,.18));
+}
+
+/* Right-side art block (flush right, never cropped) */
+.cta-art{
+  position: absolute; right: 0; top: 0; bottom: 0;
+  width: min(46vw, 860px);
+  display: flex; align-items: stretch; justify-content: flex-end;
+  z-index: 1; pointer-events: none;
+}
+.cta-art-img{
+  height: 100%; width: auto; object-fit: contain; object-position: right center; display: block;
+}
+
+/* Responsive */
+@media (max-width: 991.98px){
+  .cta-art{ display: none; }
+  .cta-left-inner{ padding-inline: 24px; padding-block: 32px; }
+}
+.gp-index-ex-img{
+  grid-row:1; align-self:end;
+  width:84px; height:84px; object-fit:contain;
+  margin:12px auto 8px;
+}
+/* only change this one rule */
+.gp-hero-image.hero-overhang{
+  position: relative;
+  z-index: 4;
+  transform: translateY(40px) scale(1.4);  /* drop ~40px, enlarge 40% */
+  transform-origin: top center;            /* grow from the top edge */
+}
+
   </style>
 </head>
 <body>
-  <!-- Navbar -->
   <div th:replace="~{fragments/navbar :: navbar}"></div>
 
   <!-- HERO -->
-  <section class="mini-hero">
+  <section class="gp-hero">
     <div class="container-xxl">
       <div class="row align-items-center g-4">
         <div class="col-lg-6">
-          <h1 class="mini-hero-title">Mini courses that grow with you!</h1>
-          <p class="mini-hero-sub">Finally, parenting advice that fits into nap time. Short, science-backed lessons designed with real parents and child development experts.</p>
-          <div class="mt-3 d-flex flex-wrap gap-2">
-            <a href="#" class="btn gp-cta-btn">Download the App</a>
-            <a href="#benefits" class="btn btn-outline-light rounded-pill px-4">See what you’ll learn</a>
-          </div>
+          <h1 class="mini-hero-title" th:text="#{seg-mini-course-caption-2}">Mini courses that grow with you!</h1>
+          <p class="mini-hero-subtitle" th:text="#{seg-mini-course-caption-3}">Finally, parenting advice that fits into nap time. Short, science-backed lessons designed with real parents and child development experts.</p>
+          <div class="mt-4"><a href="#" class="btn gp-cta-btn" th:text="#{seg-mini-course-caption-4}">Download the App</a></div>
         </div>
         <div class="col-lg-6 text-center">
-          <img th:src="@{/images/index/index_image1.png}" alt="App preview phones" class="mini-phones img-fluid">
+          <img th:src="@{/images/seg-mini-course/course-image-01.png}" alt="App preview phones" class="gp-hero-image hero-overhang img-fluid">
         </div>
-      </div>
+     </div>
     </div>
   </section>
 
-  <!-- QUICK BENEFITS GRID -->
-  <section id="benefits" class="gp-section mini-benefits">
+  <!-- BENEFITS -->
+  <section id="benefits" class="mini-benefits mini-benefits-square mini-why">
     <div class="container-xxl">
-      <p class="text-center text-muted mb-2 small">What you’ll get</p>
-      <h2 class="text-center fw-bold mb-4" style="color:#0f172a;">Finally, parenting advice that fits into nap time.</h2>
-      <p class="text-center text-muted mb-5" style="max-width:68ch;margin:0 auto;">Bite-size, practical lessons you can start today. Built on developmental psychology and co-created with real families.</p>
+      <h2 class="mini-benefits-title" th:text="#{seg-mini-course-caption-7}">Finally, parenting advice that fits into nap time.</h2>
+      <p class="mini-benefits-sub text-muted" th:text="#{seg-mini-course-caption-8}">Bite-size, practical lessons you can start today. Built on developmental psychology and co-created with real families.</p>
 
-      <div class="row g-3 g-md-4">
-        <!-- 1 -->
+      <div class="row mt-4">
         <div class="col-12 col-sm-6 col-lg-4">
-          <div class="mini-card">
-            <div class="mini-ico">📘</div>
-            <div class="mini-h">Research-backed & practical</div>
-            <p class="mini-p">Strategies grounded in child development science — no fluff.</p>
-          </div>
+          <article class="mini-benefit-card">
+            <img th:src="@{/images/seg-mini-course/course-image-02.svg}" alt="Research backed" class="gp-index-ex-img">
+            <div class="mini-benefit-divider"></div>
+            <div class="mini-benefit-text">
+              <h6 class="mini-benefit-h" th:text="#{seg-mini-course-caption-9}">Research-backed & practical</h6>
+              <p class="mini-benefit-p" th:text="#{seg-mini-course-caption-10}">Strategies grounded in child development science — no fluff.</p>
+            </div>
+          </article>
         </div>
-        <!-- 2 -->
+
         <div class="col-12 col-sm-6 col-lg-4">
-          <div class="mini-card">
-            <div class="mini-ico">👪</div>
-            <div class="mini-h">Created with real parents</div>
-            <p class="mini-p">Tested with busy families to actually fit real life.</p>
-          </div>
+          <article class="mini-benefit-card">
+            <img th:src="@{/images/seg-mini-course/course-image-03.svg}" alt="Created with" class="gp-index-ex-img">
+            <div class="mini-benefit-divider"></div>
+            <div class="mini-benefit-text">
+              <h6 class="mini-benefit-h" th:text="#{seg-mini-course-caption-11}">Created with real parents</h6>
+              <p class="mini-benefit-p" th:text="#{seg-mini-course-caption-12}">Tested with busy families to actually fit real life.</p>
+            </div>
+          </article>
         </div>
-        <!-- 3 -->
+
         <div class="col-12 col-sm-6 col-lg-4">
-          <div class="mini-card">
-            <div class="mini-ico">⏱️</div>
-            <div class="mini-h">8–12 minute lessons</div>
-            <p class="mini-p">Learn between feedings, pickups, or coffee breaks.</p>
-          </div>
+          <article class="mini-benefit-card">
+            <img th:src="@{/images/seg-mini-course/course-image-04.svg}" alt="Preparing" class="gp-index-ex-img">
+            <div class="mini-benefit-divider"></div>
+            <div class="mini-benefit-text">
+              <h6 class="mini-benefit-h">Preparing for Parenthood (AI-Ready)</h6>
+              <p class="mini-benefit-p">Planning, expecting or adopting? Start strong with emotional tools, tech balance tips, and co-parenting communication skills.</p>
+            </div>
+          </article>
         </div>
-        <!-- 4 -->
+
         <div class="col-12 col-sm-6 col-lg-4">
-          <div class="mini-card">
-            <div class="mini-ico">🧩</div>
-            <div class="mini-h">Two difficulty levels</div>
-            <p class="mini-p">Choose your pace — simple starters or deeper dives.</p>
-          </div>
+          <article class="mini-benefit-card">
+            <img th:src="@{/images/seg-mini-course/course-image-05.svg}" alt="Two difficulty levels" class="gp-index-ex-img">
+            <div class="mini-benefit-divider"></div>
+            <div class="mini-benefit-text">
+              <h6 class="mini-benefit-h" th:text="#{seg-mini-course-caption-15}">Two difficulty levels</h6>
+              <p class="mini-benefit-p" th:text="#{seg-mini-course-caption-16}">Choose your pace — simple starters or deeper dives.</p>
+            </div>
+          </article>
         </div>
-        <!-- 5 -->
+
         <div class="col-12 col-sm-6 col-lg-4">
-          <div class="mini-card">
-            <div class="mini-ico">🗓️</div>
-            <div class="mini-h">Easy action plans</div>
-            <p class="mini-p">Step‑by‑step routines you can use the same day.</p>
-          </div>
+          <article class="mini-benefit-card">
+            <img th:src="@{/images/seg-mini-course/course-image-06.svg}" alt="Easy action plans" class="gp-index-ex-img">
+            <div class="mini-benefit-divider"></div>
+            <div class="mini-benefit-text">
+              <h6 class="mini-benefit-h" th:text="#{seg-mini-course-caption-17}">Easy action plans</h6>
+              <p class="mini-benefit-p" th:text="#{seg-mini-course-caption-18}">Step-by-step routines you can use the same day.</p>
+            </div>
+          </article>
         </div>
-        <!-- 6 -->
+
         <div class="col-12 col-sm-6 col-lg-4">
-          <div class="mini-card">
-            <div class="mini-ico">📅</div>
-            <div class="mini-h">Results this week</div>
-            <p class="mini-p">Small changes, real progress you can feel quickly.</p>
-          </div>
+          <article class="mini-benefit-card">
+            <img th:src="@{/images/seg-mini-course/course-image-07.svg}" alt="Results this week" class="gp-index-ex-img">
+            <div class="mini-benefit-divider"></div>
+            <div class="mini-benefit-text">
+              <h6 class="mini-benefit-h" th:text="#{seg-mini-course-caption-19}">Results this week</h6>
+              <p class="mini-benefit-p" th:text="#{seg-mini-course-caption-20}">Small changes, real progress you can feel quickly.</p>
+            </div>
+          </article>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- DIFFERENT FEATURES STRIP -->
-  <section class="gp-section-tight mini-strip">
+  <!-- FEATURE STRIP -->
+  <section class="mini-strip">
     <div class="container-xxl">
       <div class="row align-items-center g-4">
-        <div class="col-md-6">
-          <h3 class="mini-strip-title">Features that make our Mini Courses different</h3>
-          <p class="mini-strip-bullet">✔︎ Built with developmental psychology</p>
-          <p class="mini-strip-bullet">✔︎ Multicultural, inclusive examples</p>
-          <p class="mini-strip-bullet">✔︎ Designed for real schedules</p>
+        <div class="col-md-7">
+          <h3 class="mini-strip-title" th:text="#{seg-mini-course-caption-21}">Features that make our Mini Courses different</h3>
+          <p class="mini-strip-bullet" th:text="#{seg-mini-course-caption-22}">✔︎ Built with developmental psychology</p>
+          <p class="mini-strip-bullet" th:text="#{seg-mini-course-caption-23}">✔︎ Multicultural, inclusive examples</p>
+          <p class="mini-strip-bullet" th:text="#{seg-mini-course-caption-24}">✔︎ Designed for real schedules</p>
         </div>
-        <div class="col-md-6 d-flex align-items-center gap-3">
+        <div class="col-md-5 d-flex align-items-center gap-3">
           <div class="mini-tick">✓</div>
           <div>
-            <div class="fw-bold">Self‑paced</div>
-            <div>8–12 min lessons you can pause and resume anytime.</div>
+            <div class="fw-bold" th:text="#{seg-mini-course-caption-25}">Self-paced</div>
+            <div th:text="#{seg-mini-course-caption-26}">8–12 min lessons you can pause and resume anytime.</div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- TESTIMONIALS -->
-  <section class="mini-results-band">
-    <div class="container-xxl">
-      <h3 class="mini-results-title text-white mb-3">Real parents. Real results.</h3>
-      <div class="mini-quote-viewport" id="mcViewport">
-        <div class="mini-quote-track" id="mcTrack">
-          <article class="mini-quote-card">
-            <blockquote class="mini-quote-text">“The mini course on emotional regulation changed the way we parent — and helped my child feel truly understood.”</blockquote>
-            <div class="mini-quote-author">
-              <img th:src="@{/images/index/avatar1.png}" alt="Avatar" class="mini-avatar">
-              <span class="mini-author-name">Aisha, mom of a 4‑year‑old</span>
-            </div>
-          </article>
-          <article class="mini-quote-card">
-            <blockquote class="mini-quote-text">“I take one short course on Sunday nights — it sets us up for a calmer week.”</blockquote>
-            <div class="mini-quote-author">
-              <img th:src="@{/images/index/avatar2.png}" alt="Avatar" class="mini-avatar">
-              <span class="mini-author-name">Rene, single dad</span>
-            </div>
-          </article>
-          <article class="mini-quote-card">
-            <blockquote class="mini-quote-text">“Practical, reassuring, and fast. The checklists are gold.”</blockquote>
-            <div class="mini-quote-author">
-              <img th:src="@{/images/index/avatar3.png}" alt="Avatar" class="mini-avatar">
-              <span class="mini-author-name">Mei, first‑time parent</span>
-            </div>
-          </article>
-        </div>
-      </div>
-      <div class="mini-results-controls">
-        <button class="mini-nav" type="button" data-dir="left" aria-label="Previous">←</button>
-        <button class="mini-nav" type="button" data-dir="right" aria-label="Next">→</button>
-      </div>
-    </div>
-  </section>
+  <!-- TESTIMONIALS (index style) -->
+  <section class="gp-index-results">
+    <div class="gp-index-results-box">
+      <div class="container-xxl gp-index-results-inner">
 
-  <!-- BOTTOM CTA -->
-  <section class="gp-section mini-bottom">
-    <div class="container-xxl">
-      <div class="row align-items-center g-4">
-        <div class="col-lg-6">
-          <h3 class="mini-bottom-title">Start your first free mini course</h3>
-          <p class="mb-2">Download the app and begin a short, science‑based course today.</p>
-          <p class="mb-3">Free to try. No credit card needed.</p>
-          <div class="d-flex align-items-center gap-2">
-            <a href="#" aria-label="Get it on Google Play"><img th:src="@{/images/index/index-image11.png}" alt="Google Play" class="mini-badge"></a>
-            <a href="#" aria-label="Download on the App Store"><img th:src="@{/images/index/index-image12.png}" alt="App Store" class="mini-badge"></a>
+        <h3 class="gp-index-results-title" th:text="#{home.results.title_en}">
+          Real parents. Real results.
+        </h3>
+
+        <div class="gp-index-quote-viewport" id="resultsViewport">
+          <div class="gp-index-quote-track" id="resultsTrack">
+
+            <!-- Card 1 -->
+            <div class="gp-quote-pad">
+	            <article class="gp-index-quote-card">
+	              <div class="gp-index-quote-inner">
+	                <blockquote class="gp-index-quote-text" th:text="#{home.results.quote1_en}">
+	                  “The mini course on emotional regulation changed the way we parent — and helped my child feel truly understood.”
+	                </blockquote>
+	                <div class="gp-index-quote-author">
+	                  <img th:src="@{/images/index/avatar1.png}" alt="Aisha avatar" class="gp-index-avatar">
+	                  <span class="gp-index-author-name" th:text="#{home.results.author1_en}">Aisha, mom of a 4-year-old</span>
+	                </div>
+	              </div>
+            </article>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="gp-quote-pad">
+            <article class="gp-index-quote-card">
+              <div class="gp-index-quote-inner">
+                <blockquote class="gp-index-quote-text" th:text="#{home.results.quote2_en}">
+                  "I love the milestone tracker! It keeps me calm and helps me track my daughter's progress effortlessly."
+                </blockquote>
+                <div class="gp-index-quote-author">
+                  <img th:src="@{/images/index/avatar2.png}" alt="David avatar" class="gp-index-avatar">
+                  <span class="gp-index-author-name" th:text="#{home.results.author2_en}">David, Father of a 5-Year-Old</span>
+                </div>
+              </div>
+            </article>
+            </div>
+            
+            <!-- Card 3 -->
+            <div class="gp-quote-pad">
+            <article class="gp-index-quote-card">
+              <div class="gp-index-quote-inner">
+                <blockquote class="gp-index-quote-text" th:text="#{home.results.quote3_en}">
+                  "Practical, reassuring, and fast. The checklists are gold."
+                </blockquote>
+                <div class="gp-index-quote-author">
+                  <img th:src="@{/images/index/avatar3.png}" alt="Mei avatar" class="gp-index-avatar">
+                  <span class="gp-index-author-name" th:text="#{home.results.author3_en}">Mei, first-time parent</span>
+                </div>
+              </div>
+            </article>
+            </div>
+
           </div>
         </div>
-        <div class="col-lg-6 text-center text-lg-end">
-          <img th:src="@{/images/index/index-image13.png}" alt="Happy family using the app" class="mini-bottom-img img-fluid">
+
+        <div class="gp-index-results-controls">
+          <button class="gp-index-nav" type="button" data-dir="left" aria-label="Previous">←</button>
+          <button class="gp-index-nav" type="button" data-dir="right" aria-label="Next">→</button>
         </div>
+
       </div>
     </div>
   </section>
 
-  <!-- Chatbot (keep consistent with site) -->
-  <div th:replace="~{fragments/chatbot :: chatbot}"></div>
+<!-- BOTTOM CTA — identical layout to index -->
+<section class="cta-band">
+  <!-- Right-side art hugs the viewport edge -->
+  <div class="cta-art" aria-hidden="true">
+    <img th:src="@{/images/seg-mini-course/course-image-08.png}" alt="" class="cta-art-img">
+  </div>
 
-  <!-- Footer -->
+  <div class="container-xxl">
+    <div class="row g-0 cta-row">
+      <!-- LEFT: text/content (vertically centered) -->
+      <div class="col-12 col-lg-7 cta-left">
+        <div class="cta-left-inner">
+          <h2 class="cta-title" th:text="#{seg-mini-course-caption-36}">
+            Start your first free mini course
+          </h2>
+
+          <!-- Use bullet layout (text unchanged) -->
+          <ul class="cta-bullets">
+            <li th:text="#{seg-mini-course-caption-37}">
+              Download the app and begin a short, science-based course today.
+            </li>
+            <li th:text="#{seg-mini-course-caption-38}">
+              Free to try. No credit card needed.
+            </li>
+          </ul>
+
+          <hr class="cta-rule">
+
+          <!-- Download block: QR + store badges -->
+          <div class="cta-download d-flex align-items-center gap-4 mt-4">
+            <img th:src="@{/images/gpa-qr-code.png}" alt="QR code" class="cta-qr">
+            <div>
+              <h3 class="cta-download-title mb-2" th:text="#{seg-mini-course-caption-4}">
+                Download the App
+              </h3>
+              <p class="cta-download-sub mb-3" th:text="#{seg-mini-course-caption-38}">
+                Free to try. No credit card needed.
+              </p>
+              <div class="d-flex align-items-center gap-2">
+                <a href="#" aria-label="Get it on Google Play">
+                  <img th:src="@{/images/index/index-image11.png}" alt="Google Play" class="cta-store-badge">
+                </a>
+                <a href="#" aria-label="Download on the App Store">
+                  <img th:src="@{/images/index/index-image12.png}" alt="App Store" class="cta-store-badge">
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: empty grid column to reserve space for art on lg+ -->
+      <div class="col-lg-5 d-none d-lg-block"></div>
+    </div>
+  </div>
+</section>
+
+
   <div th:replace="~{fragments/footer :: footer}"></div>
 
   <script>
-    // Mini testimonials scroller
+    // Testimonials scroller using index IDs
     document.addEventListener('DOMContentLoaded', function(){
-      const viewport = document.getElementById('mcViewport');
+      const viewport = document.getElementById('resultsViewport');
       if(!viewport) return;
-      const step = () => viewport.clientWidth; // exactly one card per view
-      document.querySelectorAll('.mini-nav').forEach(btn => {
+      const step = () => viewport.clientWidth;
+      document.querySelectorAll('.gp-index-nav').forEach(btn => {
         btn.addEventListener('click', () => {
           const dir = btn.dataset.dir === 'left' ? -1 : 1;
           viewport.scrollBy({ left: dir * step(), behavior: 'smooth' });
