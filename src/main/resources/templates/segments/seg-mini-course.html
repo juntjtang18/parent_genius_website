@@ -163,15 +163,156 @@
 @media (min-width: 1400px){
   .mini-benefits-square .mini-benefit-card{ width: 92% !important; }
 }
+/* BENEFITS: make vertical spacing match horizontal spacing (md+) */
+@media (min-width: 992px){
+  .mini-benefits .row{
+    --bs-gutter-y: calc(var(--bs-gutter-x) + 14px);
+  }
+}
+
 /* =========================
    Section 3: FEATURE STRIP
 ========================= */
 .mini-strip{ position:relative; color:#fff; overflow:hidden; padding:40px 0; }
 .mini-strip::before{ content:""; position:absolute; inset:0; background-image:linear-gradient(135deg,#3b82f6 0%, #6c6ff7 65%); z-index:0; }
 .mini-strip > .container-xxl{ position:relative; z-index:1; }
-.mini-strip-title{ font-weight:800; font-size:clamp(1.35rem,1.2vw + 1rem,1.9rem); margin-bottom:12px; }
+    .mini-strip-title{ font-weight:500; font-size:50px; line-height:60px; color:#fff; margin:2rem 0 1rem; }
+
+
 .mini-strip-bullet{ margin:.25rem 0; color:rgba(255,255,255,.95); }
 .mini-tick{ width:44px; height:44px; display:inline-flex; align-items:center; justify-content:center; border-radius:9999px; background:#22c55e; color:#fff; font-weight:800; }
+/* 3-col variant */
+.mini-strip-3col .mini-line-col{
+  position: relative;
+  width: 100%;
+  min-height: 160px;              /* ensures a nice vertical span */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mini-strip-3col .mini-line{
+  position: absolute;
+  top: 0; bottom: 0; left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+  background: rgba(255,255,255,.35);
+  border-radius: 2px;
+}
+.mini-strip-3col .mini-tick{
+  /* your existing .mini-tick already styles this;
+     these small tweaks just make it pop in the middle column */
+  box-shadow: 0 8px 18px rgba(0,0,0,.18);
+}
+
+/* right column description spacing */
+.mini-desc > .fw-bold{ color:#fff; }
+.mini-desc > div:last-child{ color: rgba(255,255,255,.95); }
+
+/* Mobile: hide the vertical line, show just the check above the text */
+@media (max-width: 767.98px){
+  .mini-strip-3col .mini-line-col{ min-height: 0; }
+  .mini-strip-3col .mini-line{ display:none; }
+  .mini-strip-3col .mini-tick{ margin-bottom: .5rem; }
+}
+
+.mini-desc{
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;        /* SemiBold */
+  font-style: normal;
+  font-size: 30px;
+  line-height: 40px;
+  letter-spacing: 0;
+}
+
+/* FEATURE STRIP: make the middle line thicker & as tall as the right column */
+.mini-strip .mini-strip-3col{ align-items: stretch !important; }   /* row: equal column heights */
+
+.mini-strip-3col .mini-line-col{
+  position: relative;
+  width: 100%;
+  height: 100%;                 /* fill the full column height */
+  min-height: 0;                /* remove the earlier fixed min-height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mini-strip-3col .mini-line{
+  position: absolute;
+  left: 50%;
+  top: 0;                       /* span entire column height */
+  bottom: 0;                    /* …from top to bottom */
+  width: 6px;                   /* thicker line (was 2px) */
+  transform: translateX(-50%);
+  background: rgba(255,255,255,.55);
+  border-radius: 999px;         /* rounded edges */
+}
+
+/* keep the mobile behavior (hide the long line) */
+@media (max-width: 767.98px){
+  .mini-strip-3col .mini-line{ display:none; }
+  .mini-strip-3col .mini-line-col{ height: auto; }
+}
+/* FEATURE STRIP — left column vertically centered */
+.mini-strip .mini-strip-3col > .col-12.col-md-4{
+  display: flex;
+  align-items: center;          /* center the title block vertically */
+}
+
+/* keep all three columns the same height so the line can span it */
+.mini-strip .mini-strip-3col{ align-items: stretch !important; }
+
+.mini-strip-3col .mini-line-col{
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: center;          /* centers the check vertically */
+  justify-content: center;      /* centers the check horizontally on the line */
+}
+
+/* vertical line behind the check */
+.mini-strip-3col .mini-line{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 6px;                   /* thickness you set earlier */
+  transform: translateX(-50%);
+  background: rgba(255,255,255,.55);
+  border-radius: 999px;
+  z-index: 0;                   /* sit behind the check mark */
+}
+
+/* check mark sits above the line */
+.mini-strip-3col .mini-tick{
+  position: relative;
+  z-index: 1;                   /* ensure it’s on top of the line */
+  box-shadow: 0 8px 18px rgba(0,0,0,.18);
+}
+
+/* mobile: keep previous behavior */
+@media (max-width: 767.98px){
+  .mini-strip-3col .mini-line{ display:none; }
+  .mini-strip-3col .mini-line-col{ height:auto; }
+}
+/* FEATURE STRIP — SVG checkmark as an <img>, 2× size */
+.mini-strip-3col img.mini-tick{
+  width: 88px;            /* 2 × previous 44px */
+  height: 88px;
+  display: block;
+  object-fit: contain;
+  background: transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  position: relative;     /* stays above the line via existing z-index */
+  z-index: 1;
+}
+/* FEATURE STRIP — dim a description block to 20% */
+.mini-desc--muted > .fw-bold,
+.mini-desc--muted > div:last-child{
+  color: rgba(255, 255, 255, .20) !important;
+}
+
 
 /* =========================
    Section 4: TESTIMONIALS
@@ -431,26 +572,51 @@
     </div>
   </section>
 
-  <!-- FEATURE STRIP -->
-  <section class="mini-strip">
-    <div class="container-xxl">
-      <div class="row align-items-center g-4">
-        <div class="col-md-7">
-          <h3 class="mini-strip-title" th:text="#{seg-mini-course-caption-21}">Features that make our Mini Courses different</h3>
-          <p class="mini-strip-bullet" th:text="#{seg-mini-course-caption-22}">✔︎ Built with developmental psychology</p>
-          <p class="mini-strip-bullet" th:text="#{seg-mini-course-caption-23}">✔︎ Multicultural, inclusive examples</p>
-          <p class="mini-strip-bullet" th:text="#{seg-mini-course-caption-24}">✔︎ Designed for real schedules</p>
-        </div>
-        <div class="col-md-5 d-flex align-items-center gap-3">
-          <div class="mini-tick">✓</div>
-          <div>
-            <div class="fw-bold" th:text="#{seg-mini-course-caption-25}">Self-paced</div>
-            <div th:text="#{seg-mini-course-caption-26}">8–12 min lessons you can pause and resume anytime.</div>
-          </div>
+<!-- FEATURE STRIP -->
+<section class="mini-strip">
+  <div class="container-xxl">
+    <div class="row align-items-center g-4 mini-strip-3col">
+      <!-- Left: Title -->
+      <div class="col-12 col-md-4">
+        <h3 class="mini-strip-title" th:text="#{seg-mini-course-caption-21}">
+          Features that make our Mini Courses different
+        </h3>
+      </div>
+
+      <!-- Middle: vertical line + check -->
+      <div class="col-12 col-md-2 d-none d-md-flex justify-content-center">
+        <div class="mini-line-col">
+          <span class="mini-line"></span>
+          <img th:src="@{/images/seg-mini-course/course-image-09.svg}" alt="Check mark" class="mini-tick">
         </div>
       </div>
+
+      <!-- Right: descriptions -->
+      <div class="col-12 col-md-6">
+        <div class="mini-desc mini-desc--muted" style="padding-top:10rem">
+          <div class="fw-bold" th:text="#{seg-mini-course-caption-25}">Designed with developmental psychology + lived experience</div>
+        </div>
+        
+        <div class="mini-desc" style="padding-top:10rem">
+          <div class="fw-bold" th:text="#{seg-mini-course-caption-26}">Self-paced</div>
+          <div th:text="#{seg-mini-course-caption-260}">
+            (8–12 min lessons)
+          </div>
+        </div>
+        
+        <div class="mini-desc mini-desc--muted" style="padding-top:10rem; padding-bottom:10rem">
+          <div class="fw-bold" th:text="#{seg-mini-course-caption-261}">Designed with developmental psychology + lived experience</div>
+        </div>
+        <!-- add more items here if you like
+        <div class="mini-desc mt-3">
+          <div class="fw-bold">Designed with developmental psychology + lived experience</div>
+        </div>
+        -->
+      </div>
     </div>
-  </section>
+  </div>
+</section>
+
 
   <!-- TESTIMONIALS (index style) -->
   <section class="gp-index-results">
@@ -468,12 +634,12 @@
             <div class="gp-quote-pad">
 	            <article class="gp-index-quote-card">
 	              <div class="gp-index-quote-inner">
-	                <blockquote class="gp-index-quote-text" th:text="#{home.results.quote1_en}">
+	                <blockquote class="gp-index-quote-text" th:text="#{seg-mini-course-caption-262}">
 	                  “The mini course on emotional regulation changed the way we parent — and helped my child feel truly understood.”
 	                </blockquote>
 	                <div class="gp-index-quote-author">
 	                  <img th:src="@{/images/index/avatar1.png}" alt="Aisha avatar" class="gp-index-avatar">
-	                  <span class="gp-index-author-name" th:text="#{home.results.author1_en}">Aisha, mom of a 4-year-old</span>
+	                  <span class="gp-index-author-name" th:text="#{seg-mini-course-caption-263}">Aisha, mom of a 4-year-old</span>
 	                </div>
 	              </div>
             </article>
@@ -483,12 +649,12 @@
             <div class="gp-quote-pad">
             <article class="gp-index-quote-card">
               <div class="gp-index-quote-inner">
-                <blockquote class="gp-index-quote-text" th:text="#{home.results.quote2_en}">
+                <blockquote class="gp-index-quote-text" th:text="#{seg-mini-course-caption-264}">
                   "I love the milestone tracker! It keeps me calm and helps me track my daughter's progress effortlessly."
                 </blockquote>
                 <div class="gp-index-quote-author">
                   <img th:src="@{/images/index/avatar2.png}" alt="David avatar" class="gp-index-avatar">
-                  <span class="gp-index-author-name" th:text="#{home.results.author2_en}">David, Father of a 5-Year-Old</span>
+                  <span class="gp-index-author-name" th:text="#{seg-mini-course-caption-265}">David, Father of a 5-Year-Old</span>
                 </div>
               </div>
             </article>
@@ -498,12 +664,12 @@
             <div class="gp-quote-pad">
             <article class="gp-index-quote-card">
               <div class="gp-index-quote-inner">
-                <blockquote class="gp-index-quote-text" th:text="#{home.results.quote3_en}">
+                <blockquote class="gp-index-quote-text" th:text="#{seg-mini-course-caption-266}">
                   "Practical, reassuring, and fast. The checklists are gold."
                 </blockquote>
                 <div class="gp-index-quote-author">
                   <img th:src="@{/images/index/avatar3.png}" alt="Mei avatar" class="gp-index-avatar">
-                  <span class="gp-index-author-name" th:text="#{home.results.author3_en}">Mei, first-time parent</span>
+                  <span class="gp-index-author-name" th:text="#{seg-mini-course-caption-267}">Mei, first-time parent</span>
                 </div>
               </div>
             </article>
