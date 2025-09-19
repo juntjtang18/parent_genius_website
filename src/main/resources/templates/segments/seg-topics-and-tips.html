@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title th:text="#{seg-topics-chat.meta.title}">Hot Topics – GeniusParenting AI</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+/*========================
+  Design tokens
+==========================*/
+:root{
+  --gp-white: #fff;
+  --gp-blue-500: #3b82f6;
+  --gp-blue-700: #2563eb;
+  --gp-violet-500: #6c6ff7;
+  --gp-ink-900: #111827;
+  --gp-ink-500: #6B7280;
+
+  /* Gradients */
+  --grad-hero: linear-gradient(180deg, var(--gp-blue-500) 0%, var(--gp-blue-700) 55%, var(--gp-violet-500) 100%);
+  --grad-diag: linear-gradient(135deg, var(--gp-blue-500) 0%, var(--gp-violet-500) 65%);
+  --grad-hover: linear-gradient(180deg, #4f46e5 0%, var(--gp-blue-500) 55%, #60a5fa 100%);
+  --grad-cta: linear-gradient(135deg, var(--gp-blue-500) 0%, var(--gp-violet-500) 60%);
+  --grad-btn: linear-gradient(90deg, #2ED3B7 0%, #1EC7E6 100%);
+
+  /* Effects & radii */
+  --shadow-1: 0 12px 28px rgba(15,23,42,.08);
+  --shadow-2: 0 16px 34px rgba(59,130,246,.28);
+  --shadow-cta: 0 10px 20px rgba(23,162,184,.25);
+  --shadow-cta-hover: 0 12px 26px rgba(23,162,184,.32);
+  --radius-lg: 14px;
+  --radius-xl: 9999px;
+
+  /* Layout utilities */
+  --container-pad: clamp(24px, 5vw, 64px);
+}
+
+/*========================
+  Global/base
+==========================*/
+body{
+  padding-top: 4rem;
+  font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+}
+@media (min-width:1200px){ body{ padding-top: 101px; } }
+
+/*========================
+  Shared: CTA button
+==========================*/
+.seg-topics-cta-btn{
+  background: var(--grad-btn);
+  color: var(--gp-white);
+  border: 0; border-radius: var(--radius-xl);
+  padding: .9rem 2.6rem;
+  font-weight: 600; font-size: 20pt; letter-spacing: .2px;
+  box-shadow: var(--shadow-cta);
+  transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+}
+.seg-topics-cta-btn:hover,
+.seg-topics-cta-btn:focus{ transform: translateY(-1px); box-shadow: var(--shadow-cta-hover); filter: brightness(1.02); color:var(--gp-white); }
+
+/*========================
+  HERO (seg-ai) – matches mini-course
+==========================*/
+.seg-topics-hero{ position: relative; overflow: visible; padding: 40px 0 8px; z-index: 3; }
+.seg-topics-hero::before{ content:""; position:absolute; inset:0; bottom:-64px; background-image: var(--grad-hero); z-index:0; }
+.seg-topics-hero .container-xxl{ position:relative; z-index:2; }
+
+.seg-topics-hero-title{ font-weight:500; font-size:50px; line-height:60px; color:#fff; margin:2rem 0 1rem; }
+.seg-topics-hero-tagline, .seg-topics-hero-body{ font-weight:200; font-size:20pt; line-height:32pt; color:#fff; margin-top:1rem; }
+
+.seg-topics-hero-visual{ text-align:center; }
+@media (min-width:992px){ .seg-topics-hero-visual{ text-align:right; } }
+
+.seg-topics-hero-image{ max-width:520px; width:100%; height:auto; filter: drop-shadow(0 18px 40px rgba(0,0,0,.25)); }
+.seg-topics-hero-image.hero-overhang{ position:relative; z-index:3; transform: translateY(40px) scale(1.4); transform-origin: top center; }
+
+/* Space below the hero so the overhanging image doesn’t collide */
+.seg-topics-hero-spacer{
+  padding-top: 174px;
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width:991.98px){
+  .seg-topics-hero::before{ bottom:-32px; }
+  .seg-topics-hero-image{ max-width:420px; }
+  .seg-topics-hero-spacer{ padding-top: 116px; }
+}
+@media (max-width:575.98px){
+  .seg-topics-hero::before{ bottom:-24px; }
+  .seg-topics-hero-image{ max-width:360px; }
+  .seg-topics-hero-spacer{ padding-top: 96px; }
+}
+
+/*========================
+  BENEFITS (reg-ai) – titles + layout
+==========================*/
+.reg-ai-benefits{
+  --benefit-pad-top: 64px; --benefit-pad-btm: 72px;
+  --ex-gutter-y: 1rem; --ex-gutter-x: calc(var(--ex-gutter-y) * 1.5);
+  background:#f8fafc; padding: var(--benefit-pad-top) 0 var(--benefit-pad-btm);
+}
+.reg-ai-benefits .row{ --bs-gutter-y: var(--ex-gutter-y); --bs-gutter-x: var(--ex-gutter-x); }
+
+.reg-ai-benefits-title{
+  font-weight:400; font-size:50px; line-height:60px; color:#111827;
+  text-align:left; margin:4rem 0; max-width:28ch; padding-left: calc(var(--ex-gutter-x) / 2); text-wrap: balance;
+}
+.reg-ai-benefits-sub{
+  font-weight:300; font-size:18px; line-height:30px; color:#6B7280;
+  text-align:left; max-width:68ch; margin:-1.25rem 0 2rem; padding-left: calc(var(--ex-gutter-x) / 2);
+}
+.reg-ai-benefits-intro{ padding-left: calc(var(--ex-gutter-x) / 2); max-width: 68ch; }
+.reg-ai-benefits-lead-title{ font-weight:600; font-size:50px; line-height:60px; color:#111827; margin:0 0 .5rem; }
+.reg-ai-benefits-lead-sub{ font-weight:300; font-size:18px; line-height:30px; color:#6B7280; margin:0; max-width:72ch; }
+.reg-ai-benefits-divider-space{ height: clamp(28px, 6vw, 56px); }
+
+/* Equal card gaps (same X/Y) */
+.reg-ai-benefits #topics.row{ --reg-ai-gap: 28px; --bs-gutter-x: var(--reg-ai-gap); --bs-gutter-y: var(--reg-ai-gap); }
+@media (max-width:575.98px){ .reg-ai-benefits #topics.row{ --reg-ai-gap: 16px; } }
+
+/*========================
+  BENEFIT CARDS (reg-ai)
+==========================*/
+.reg-ai-benefit-card{
+  display:grid; grid-template-rows: auto auto auto 1fr; align-items:center;
+  background:#fff; border:0; border-radius:14px;
+  padding:22px 16px 20px; box-shadow:var(--shadow-1);
+  transition: background .18s, box-shadow .18s, transform .18s, color .18s;
+  margin:0; overflow:hidden;
+}
+.reg-ai-benefits-square .reg-ai-benefit-card{ width:100%; aspect-ratio:1/1; }
+
+.reg-ai-benefit-img{ grid-row:1; align-self:end; width:84px; height:84px; margin:12px auto 8px; display:flex; align-items:center; justify-content:center; }
+.reg-ai-benefit-badge{ display:inline-flex; align-items:center; justify-content:center; width:56px; height:56px; border-radius:9999px; background:#22d3ee; color:#fff; font-weight:800; font-size:20px; box-shadow: 0 10px 22px rgba(34,211,238,.25); }
+
+.reg-ai-benefit-kicker{ grid-row:2; font-weight:800; font-size:12px; line-height:18px; letter-spacing:.12em; text-transform:uppercase; color:#6B7280; margin-top:12px; text-align:center; }
+
+.reg-ai-benefit-divider{ grid-row:3; display:block; height:2px; width:68%; margin:10px auto 0; background:#E5E7EB; border-radius:2px; }
+
+.reg-ai-benefit-text{ grid-row:4; display:flex; flex-direction:column; align-items:center; }
+.reg-ai-benefit-quote{
+  font-family:"Poppins",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif;
+  font-weight:600; font-style:normal; font-size:24px; line-height:34px; letter-spacing:0;
+  color:#111827; text-align:center; margin:16px 0 12px; padding-bottom: 3rem;
+}
+.reg-ai-benefit-subtitle {padding-top:3rem;}
+
+.reg-ai-benefit-card:hover,
+.reg-ai-benefit-card:focus-within{
+  background-image: var(--grad-hover); color:#fff; transform:translateY(-2px); box-shadow:var(--shadow-2);
+}
+.reg-ai-benefit-card:hover .reg-ai-benefit-quote,
+.reg-ai-benefit-card:focus-within .reg-ai-benefit-quote{ color:#fff; }
+.reg-ai-benefit-card:hover .reg-ai-benefit-kicker,
+.reg-ai-benefit-card:focus-within .reg-ai-benefit-kicker{ color: rgba(255,255,255,.9); }
+.reg-ai-benefit-card:hover .reg-ai-benefit-divider,
+.reg-ai-benefit-card:focus-within .reg-ai-benefit-divider{ background: rgba(255,255,255,.35); }
+
+
+
+/*========================
+  Feature strip (seg-ai)
+==========================*/
+.seg-topics-strip{ position:relative; color:#fff; overflow:hidden; padding:40px 0; }
+.seg-topics-strip::before{ content:""; position:absolute; inset:0; background-image: var(--grad-diag); z-index:0; }
+.seg-topics-strip > .container-xxl{ position:relative; z-index:1; }
+
+.seg-topics-strip-title{ font-weight:600; font-size:50px; line-height:60px; letter-spacing:0; color:#fff; margin:2rem 0 .25rem; }
+.seg-topics-strip-sub{ font-weight:400; font-size:16px; line-height:28px; color:rgba(255,255,255,.90); margin:.25rem 0 0; }
+
+.seg-topics-strip-3col{ align-items:stretch !important; }
+.seg-topics-line-col{ position:relative; width:100%; height:100%; display:flex; align-items:center; justify-content:center; }
+.seg-topics-line{ position:absolute; left:50%; top:0; bottom:0; width:6px; transform:translateX(-50%); background:rgba(255,255,255,.55); border-radius:999px; z-index:0; }
+.seg-topics-line::before, .seg-topics-line::after{ content:""; position:absolute; left:50%; transform:translateX(-50%); width:8px; height:8px; background:#fff; border-radius:999px; }
+.seg-topics-line::before{ top:0; } .seg-topics-line::after{ bottom:0; }
+.seg-topics-tick{ width:88px; height:88px; display:block; object-fit:contain; position:relative; z-index:1; }
+
+.seg-topics-desc{ font-weight:600; font-size:30px; line-height:40px; color:#fff; }
+.seg-topics-desc > .seg-topics-desc-sub{ font-weight:400; font-size:18px; line-height:30px; color:rgba(255,255,255,.95); }
+.seg-topics-desc--muted > .seg-topics-desc-main, .seg-topics-desc--muted > .seg-topics-desc-sub{ color: rgba(255,255,255,.20) !important; }
+
+@media (max-width:767.98px){ .seg-topics-line{ display:none; } .seg-topics-line-col{ height:auto; } }
+
+/*========================
+  Testimonials: layout + slider
+==========================*/
+.seg-topics-index-results{ background:#f6f9fc; padding:32px 0; }
+.seg-topics-index-results-title{ font-weight:600; font-size:50px; line-height:61px; color:var(--gp-ink-900); margin:0 0 1rem; padding-top:1.75rem; padding-bottom:1.25rem; }
+
+.seg-topics-index-quote-viewport{ overflow-x:auto; overflow-y:hidden; -ms-overflow-style:none; scrollbar-width:none; }
+.seg-topics-index-quote-viewport::-webkit-scrollbar{ display:none; }
+.seg-topics-index-quote-track{ display:flex; gap:18px; }
+.seg-topics-quote-pad{ flex:0 0 100%; padding:0 24px 22px; scroll-snap-align:start; }
+
+.seg-topics-index-quote-card{ background:#fff; color:#111827; border-radius:12px; box-shadow:var(--shadow-1); border-bottom:6px solid #2ED3B7; }
+.seg-topics-index-quote-inner{ padding:4rem 4rem 3rem; }
+.seg-topics-index-quote-text{ font-weight:400; font-style:italic; font-size:38px; line-height:56px; color:#1f2937; margin:0 0 14px; }
+.seg-topics-index-quote-author{ display:flex; align-items:center; gap:10px; }
+.seg-topics-index-avatar{ width:48px; height:48px; border-radius:50%; object-fit:cover; }
+.seg-topics-index-author-name{ font-weight:700; font-size:18px; line-height:34px; color:#374151; }
+
+.seg-topics-index-results-controls{ display:flex; justify-content:flex-end; gap:20px; padding-top:1.25rem; }
+.seg-topics-index-nav{ background:transparent; border:0; color:#334155; font-size:2.5rem; line-height:1; padding:.25rem .5rem .25rem; cursor:pointer; transition:transform .12s ease, opacity .12s ease; padding-bottom:6rem; }
+.seg-topics-index-nav:hover{ transform:translateY(-1px); opacity:.85; }
+.seg-topics-index-nav:disabled{ opacity:.35; transform:none; cursor:default; }
+
+/*========================
+  Testimonials: chat bubbles + callouts
+==========================*/
+.seg-topics-dialog{ position:relative; display:flex; justify-content:center; align-items:flex-start; gap:clamp(18px, 6vw, 40px); padding:18px 0 8px; }
+.seg-topics-bubble-wrap{ position:relative; max-width:520px; padding-bottom:44px; }
+.seg-topics-bubble{
+  border-radius:12px; padding:18px 22px; box-shadow:0 14px 30px rgba(15,23,42,.12); color:#fff;
+  font-family:"Poppins",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif; font-weight:600; font-size:16px; line-height:26px;
+}
+.seg-topics-bubble--user{ background:#22d3ee; }
+/* no triangle tails */
+.seg-topics-bubble--user::after, .seg-topics-bubble--bot::after{ content:none; display:none; }
+.seg-topics-bubble--bot{ background-image: linear-gradient(135deg,#6c6ff7 0%, #7b70f7 100%); }
+
+.seg-topics-callout{
+  position:absolute; left:50%; bottom:-26px; transform:translateX(-50%);
+  width:60px; height:60px; border-radius:999px; display:flex; align-items:center; justify-content:center;
+  border:3px solid #fff; box-shadow:0 8px 18px rgba(15,23,42,.18);
+}
+.seg-topics-callout--user{ background:#fff; overflow:hidden; }
+.seg-topics-callout-img{ width:100%; height:100%; object-fit:cover; display:block; }
+.seg-topics-callout--bot{ background-image: linear-gradient(180deg,#6c6ff7 0%, #3b82f6 100%); }
+.seg-topics-callout--bot svg{ width:22px; height:22px; display:block; }
+.seg-topics-callout--bot svg *{ stroke:#fff; }
+.seg-topics-callout--bot .seg-topics-bot-eye{ fill:#fff; stroke:none; }
+
+.seg-topics-testimonials-divider{
+  opacity:1; border:0; height:1px; background:#CBD5E1; width:100%;
+  margin:24px 0 16px;
+}
+.seg-topics-testimonials-divider::before{ content:""; display:block; height:1px; width:100%; background:currentColor; color:#CBD5E1; }
+
+/*========================
+  Bottom CTA (seg-ai)
+==========================*/
+.seg-topics-cta-band{ position:relative; overflow:hidden; padding:0; min-height:clamp(520px, 68vh, 760px); color:#fff; }
+.seg-topics-cta-band::before{ content:""; position:absolute; inset:0; background: var(--grad-cta); z-index:0; }
+
+.seg-topics-cta-row{ min-height:inherit; }
+.seg-topics-cta-row > [class*="col-"]{ padding-left:0; padding-right:0; }
+
+.seg-topics-cta-left{ position:relative; z-index:2; display:flex; align-items:stretch; }
+.seg-topics-cta-left-inner{ display:flex; flex-direction:column; justify-content:center; min-height:100%; padding-inline: var(--container-pad); padding-block:64px; }
+.seg-topics-cta-title{ font-weight:600; font-size:50px; line-height:60px; margin:0 0 24px; }
+.seg-topics-cta-bullets{ list-style:none; margin:0 0 6px; padding:0; }
+.seg-topics-cta-bullets li{ margin:0 0 12px; font-weight:400; font-size:18px; line-height:30px; color:rgba(255,255,255,.92); }
+.seg-topics-cta-rule{ border:0; height:1px; background:rgba(255,255,255,.25); max-width:520px; margin:18px 0 0; }
+
+.seg-topics-cta-qr{ width:132px; height:132px; border-radius:12px; display:block; }
+.seg-topics-cta-download-title{ font-weight:600; font-size:30px; line-height:40px; margin:0; }
+.seg-topics-cta-download-sub{ font-weight:400; font-size:18px; line-height:30px; color:rgba(255,255,255,.85); margin:0 0 12px; }
+.seg-topics-cta-store-badge{ height:38px; width:auto; display:block; filter: drop-shadow(0 6px 14px rgba(0,0,0,.18)); }
+
+.seg-topics-cta-art{ position:absolute; right:0; top:0; bottom:0; width:min(46vw, 860px); display:flex; align-items:stretch; justify-content:flex-end; z-index:1; pointer-events:none; }
+.seg-topics-cta-art-img{ height:100%; width:auto; object-fit:contain; object-position:right center; display:block; }
+
+@media (max-width:991.98px){
+  .seg-topics-cta-art{ display:none; }
+  .seg-topics-cta-left-inner{ padding-inline:24px; padding-block:32px; }
+}
+
+</style>
+
+</head>
+<body>
+  <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<!-- HERO -->
+<section class="seg-topics-hero">
+  <div class="container-xxl">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-6">
+        <h1 class="seg-topics-hero-title" th:text="#{seg-topics-chat.hero.title}">Hot topics, real talk</h1>
+        <p class="seg-topics-hero-tagline" th:text="#{seg-topics-chat.hero.tagline}">
+          Parenting changes fast. We keep up — so you don’t have to.
+        </p>
+        <p class="seg-topics-hero-body" th:text="#{seg-topics-chat.hero.body}">
+          Ever feel like you're the only one wondering about screen time limits, friendship drama, or what’s “too early” for social media? Hot Topics brings together trending questions, quick expert takes, and real parent stories — all in one scroll.
+        </p>
+        <div class="mt-4">
+          <a href="#download" class="btn seg-topics-cta-btn" th:text="#{seg-topics-chat.hero.startBtn}">Download the App</a>
+        </div>
+      </div>
+      <div class="col-lg-6 text-center">
+        <img th:src="@{/images/seg-topic/topics-image-01.png}" alt="App preview phones"
+             class="seg-topics-hero-image hero-overhang img-fluid">
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- BENEFITS (topics) -->
+<section id="benefits" class="reg-ai-benefits reg-ai-benefits-square seg-topics-hero-spacer">
+  <div class="container-xxl">
+    <div class="reg-ai-benefits-divider-space"></div>
+
+    <!-- Lead header block -->
+    <div class="row">
+      <div class="col-12 col-xl-10 reg-ai-benefits-intro">
+        <h2 class="reg-ai-benefits-title" th:text="#{seg-topics-chat.benefits.leadTitle}">
+          What’s hot this week?
+        </h2>
+      </div>
+    </div>
+
+
+	<!-- Topics grid -->
+	<div id="topics" class="row reg-ai-cards-row mt-4">
+	  <!-- Card 1 -->
+	  <div class="col-12 col-sm-6 col-lg-4">
+	    <article class="reg-ai-benefit-card">
+	      <div class="reg-ai-benefit-text">
+	        <p class="reg-ai-benefit-quote" th:text="#{seg-topics-chat.topics.card1.title}">Is My Child Falling Behind Emotionally?</p>
+	        <span class="reg-ai-benefit-divider"></span>
+	        <p class="reg-ai-benefit-subtitle mb-0" style="text-align:center" th:text="#{seg-topics-chat.topics.card1.subtitle}">
+	          What to look for — and how to support without pressure.
+	        </p>
+	      </div>
+	    </article>
+	  </div>
+	
+	  <!-- Card 2 -->
+	  <div class="col-12 col-sm-6 col-lg-4">
+	    <article class="reg-ai-benefit-card">
+	      <div class="reg-ai-benefit-text">
+	        <p class="reg-ai-benefit-quote" th:text="#{seg-topics-chat.topics.card2.title}">Tech Tantrums: How Much Screen Time Is Too Much?</p>
+	        <span class="reg-ai-benefit-divider"></span>
+	        <p class="reg-ai-benefit-subtitle mb-0" style="text-align:center" th:text="#{seg-topics-chat.topics.card2.subtitle}">
+	          What science says + how real families manage it.
+	        </p>
+	      </div>
+	    </article>
+	  </div>
+	
+	  <!-- Card 3 -->
+	  <div class="col-12 col-sm-6 col-lg-4">
+	    <article class="reg-ai-benefit-card">
+	      <div class="reg-ai-benefit-text">
+	        <p class="reg-ai-benefit-quote" th:text="#{seg-topics-chat.topics.card3.title}">Raising Kids in Two Cultures</p>
+	        <span class="reg-ai-benefit-divider"></span>
+	        <p class="reg-ai-benefit-subtitle mb-0" style="text-align:center" th:text="#{seg-topics-chat.topics.card3.subtitle}">
+	          Navigating language, identity, and intergenerational values.
+	        </p>
+	      </div>
+	    </article>
+	  </div>
+	
+	  <!-- Card 4 -->
+	  <div class="col-12 col-sm-6 col-lg-4">
+	    <article class="reg-ai-benefit-card">
+	      <div class="reg-ai-benefit-text">
+	        <p class="reg-ai-benefit-quote" th:text="#{seg-topics-chat.topics.card4.title}">When Siblings Fight Dirty</p>
+	        <span class="reg-ai-benefit-divider"></span>
+	        <p class="reg-ai-benefit-subtitle mb-0" style="text-align:center" th:text="#{seg-topics-chat.topics.card4.subtitle}">
+	          Scripts, consequences, and peace plans that work.
+	        </p>
+	      </div>
+	    </article>
+	  </div>
+	
+	  <!-- Card 5 -->
+	  <div class="col-12 col-sm-6 col-lg-4">
+	    <article class="reg-ai-benefit-card">
+	      <div class="reg-ai-benefit-text">
+	        <p class="reg-ai-benefit-quote" th:text="#{seg-topics-chat.topics.card5.title}">Sensory Overload or “Just Being Difficult”?</p>
+	        <span class="reg-ai-benefit-divider"></span>
+	        <p class="reg-ai-benefit-subtitle mb-0" style="text-align:center" th:text="#{seg-topics-chat.topics.card5.subtitle}">
+	          How to tell the difference — and support their nervous system.
+	        </p>
+	      </div>
+	    </article>
+	  </div>
+	
+	  <!-- Card 6 -->
+	  <div class="col-12 col-sm-6 col-lg-4">
+	    <article class="reg-ai-benefit-card">
+	      <div class="reg-ai-benefit-text">
+	        <p class="reg-ai-benefit-quote" th:text="#{seg-topics-chat.topics.card6.title}">
+	          My Child Says 'I Hate You' — Now What?
+	        </p>
+	        <span class="reg-ai-benefit-divider"></span>
+	        <p class="reg-ai-benefit-subtitle mb-0" style="text-align:center" th:text="#{seg-topics-chat.topics.card6.subtitle}">
+	          Emotional honesty, boundary-setting, and healing after hard words.
+	        </p>
+	      </div>
+	    </article>
+	  </div>
+	</div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- FEATURE STRIP -->
+<section class="seg-topics-strip">
+  <div class="container-xxl">
+    <div class="row g-4 seg-topics-strip-3col align-items-center">
+      <!-- Left: Title + subline -->
+      <div class="col-12 col-md-4 d-flex align-items-center">
+        <div>
+          <h3 class="seg-topics-strip-title" th:text="#{seg-topics-chat.strip.title}">
+            What makes Hot Topics unique?
+          </h3>
+        </div>
+      </div>
+
+      <!-- Middle: vertical line + check -->
+      <div class="col-12 col-md-2 d-none d-md-flex justify-content-center">
+        <div class="seg-topics-line-col">
+          <span class="seg-topics-line"></span>
+          <img th:src="@{/images/seg-mini-course/course-image-09.svg}" alt="" class="seg-topics-tick" />
+        </div>
+      </div>
+
+      <!-- Right: three items (middle emphasized, others muted) -->
+      <div class="col-12 col-md-6">
+        <div class="seg-topics-desc seg-topics-desc--muted" style="padding-top:8rem">
+          <div class="seg-topics-desc-main" th:text="#{seg-topics-chat.strip.item1}">
+            Curated by parenting coaches + AI trend detection
+          </div>
+        </div>
+
+        <div class="seg-topics-desc" style="padding-top:8rem">
+          <div class="seg-topics-desc-main" th:text="#{seg-topics-chat.strip.item2}">
+            Culturally inclusive, reflecting Canadian family dynamics
+          </div>
+        </div>
+
+        <div class="seg-topics-desc seg-topics-desc--muted" style="padding-top:8rem; padding-bottom:8rem">
+          <div class="seg-topics-desc-main" th:text="#{seg-topics-chat.strip.item3}">
+            Blends quick-read expert advice with real parent voices
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+    <div class="reg-ai-benefits-divider-space"></div>
+
+	<!-- TESTIMONIALS -->
+	<section class="seg-topics-index-results">
+	  <div class="container-xxl" style="padding-bottom:5rem;">
+	    <div class="seg-topics-index-results-box">
+	      <h3 class="seg-topics-index-results-title" th:text="#{seg-topics-chat.testimonials.title}">
+	        Community pulse
+	      </h3>
+	    </div>
+	      <div class="text-center mb-4">
+	        <img th:src="@{/images/seg-topic/topic-image-speech.png}"
+	             alt="Community pulse highlights"
+	             class="img-fluid"
+	             style="max-width:960px;">
+	      </div>	    
+	  </div>
+	</section>
+
+
+	<!-- BOTTOM CTA -->
+	<section id="download" class="seg-topics-cta-band">
+	  <div class="seg-topics-cta-art" aria-hidden="true">
+	    <img th:src="@{/images/seg-topic/topics-image-09.png}" alt="" class="seg-topics-cta-art-img">
+	  </div>
+	
+	  <div class="container-xxl">
+	    <div class="row g-0 seg-topics-cta-row">
+	      <!-- LEFT: content -->
+	      <div class="col-12 col-lg-7 seg-topics-cta-left">
+	        <div class="seg-topics-cta-left-inner">
+	          <h2 class="seg-topics-cta-title" th:text="#{seg-topics-chat.cta.title}">
+	            Curious about what parents are talking about this week?
+	          </h2>
+	
+	          <ul class="seg-topics-cta-bullets">
+	            <li th:text="#{seg-topics-chat.cta.bullet1}">
+	              Join Genius Parenting AI and never parent in isolation again.
+	            </li>
+	          </ul>
+	        <div class="mt-4">
+	          <a href="#download" class="btn seg-topics-cta-btn" th:text="#{seg-topics-chat.hero.startBtn2}">Explore Hot Topics</a>
+	        </div>
+	
+	          <hr class="seg-topics-cta-rule">
+	
+	          <!-- Download block: QR + store badges -->
+	          <div class="d-flex align-items-center gap-4 mt-4">
+	            <img th:src="@{/images/gpa-qr-code.png}" alt="QR code" class="seg-topics-cta-qr">
+	            <div>
+	              <h3 class="seg-topics-cta-download-title mb-2" th:text="#{seg-topics-chat.cta.downloadTitle}">
+	                Download the App
+	              </h3>
+	              <p class="seg-topics-cta-download-sub mb-3" th:text="#{seg-topics-chat.cta.downloadSub}">
+	                Free to try. No credit card needed.
+	              </p>
+	              <div class="d-flex align-items-center gap-2">
+	              <!-- 
+	                <a href="#" aria-label="Get it on Google Play">
+	                  <img th:src="@{/images/index/index-image11.png}" alt="Google Play" class="seg-topics-cta-store-badge">
+	                </a>
+	                 -->
+	                <a href="#" aria-label="Download on the App Store">
+	                  <img th:src="@{/images/index/index-image12.png}" alt="App Store" class="seg-topics-cta-store-badge">
+	                </a>
+	              </div>
+	            </div>
+	          </div>
+	        </div>
+	      </div>
+	
+	      <!-- RIGHT: empty grid area to keep space for the art on lg+ -->
+	      <div class="col-lg-5 d-none d-lg-block"></div>
+	    </div>
+	  </div>
+	</section>
+
+
+  <div th:replace="~{fragments/chatbot :: chatbot}"></div>
+  <div th:replace="~{fragments/footer :: footer}"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

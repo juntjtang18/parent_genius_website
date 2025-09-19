@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title th:text="#{seg-community-chat.meta.title}">Genius AI Chat – GeniusParenting AI</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+/*========================
+  Design tokens
+==========================*/
+:root{
+  --gp-white: #fff;
+  --gp-blue-500: #3b82f6;
+  --gp-blue-700: #2563eb;
+  --gp-violet-500: #6c6ff7;
+  --gp-ink-900: #111827;
+  --gp-ink-500: #6B7280;
+
+  /* Gradients */
+  --grad-hero: linear-gradient(180deg, var(--gp-blue-500) 0%, var(--gp-blue-700) 55%, var(--gp-violet-500) 100%);
+  --grad-diag: linear-gradient(135deg, var(--gp-blue-500) 0%, var(--gp-violet-500) 65%);
+  --grad-hover: linear-gradient(180deg, #4f46e5 0%, var(--gp-blue-500) 55%, #60a5fa 100%);
+  --grad-cta: linear-gradient(135deg, var(--gp-blue-500) 0%, var(--gp-violet-500) 60%);
+  --grad-btn: linear-gradient(90deg, #2ED3B7 0%, #1EC7E6 100%);
+
+  /* Effects & radii */
+  --shadow-1: 0 12px 28px rgba(15,23,42,.08);
+  --shadow-2: 0 16px 34px rgba(59,130,246,.28);
+  --shadow-cta: 0 10px 20px rgba(23,162,184,.25);
+  --shadow-cta-hover: 0 12px 26px rgba(23,162,184,.32);
+  --radius-lg: 14px;
+  --radius-xl: 9999px;
+
+  /* Layout utilities */
+  --container-pad: clamp(24px, 5vw, 64px);
+}
+
+/*========================
+  Global/base
+==========================*/
+body{
+  padding-top: 4rem;
+  font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+}
+@media (min-width:1200px){ body{ padding-top: 101px; } }
+
+/*========================
+  Shared: CTA button
+==========================*/
+.seg-community-cta-btn{
+  background: var(--grad-btn);
+  color: var(--gp-white);
+  border: 0; border-radius: var(--radius-xl);
+  padding: .9rem 2.6rem;
+  font-weight: 600; font-size: 20pt; letter-spacing: .2px;
+  box-shadow: var(--shadow-cta);
+  transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+}
+.seg-community-cta-btn:hover,
+.seg-community-cta-btn:focus{ transform: translateY(-1px); box-shadow: var(--shadow-cta-hover); filter: brightness(1.02); color:var(--gp-white); }
+
+/*========================
+  HERO (seg-ai) – matches mini-course
+==========================*/
+.seg-community-hero{ position: relative; overflow: visible; padding: 40px 0 8px; z-index: 3; }
+.seg-community-hero::before{ content:""; position:absolute; inset:0; bottom:-64px; background-image: var(--grad-hero); z-index:0; }
+.seg-community-hero .container-xxl{ position:relative; z-index:2; }
+
+.seg-community-hero-title{ font-weight:500; font-size:50px; line-height:60px; color:#fff; margin:2rem 0 1rem; }
+.seg-community-hero-tagline, .seg-community-hero-body{ font-weight:200; font-size:20pt; line-height:32pt; color:#fff; margin-top:1rem; }
+
+.seg-community-hero-visual{ text-align:center; }
+@media (min-width:992px){ .seg-community-hero-visual{ text-align:right; } }
+
+.seg-community-hero-image{ max-width:520px; width:100%; height:auto; filter: drop-shadow(0 18px 40px rgba(0,0,0,.25)); }
+.seg-community-hero-image.hero-overhang{ position:relative; z-index:3; transform: translateY(40px) scale(1.4); transform-origin: top center; }
+
+/* Space below the hero so the overhanging image doesn’t collide */
+.seg-community-hero-spacer{
+  padding-top: 174px;
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width:991.98px){
+  .seg-community-hero::before{ bottom:-32px; }
+  .seg-community-hero-image{ max-width:420px; }
+  .seg-community-hero-spacer{ padding-top: 116px; }
+}
+@media (max-width:575.98px){
+  .seg-community-hero::before{ bottom:-24px; }
+  .seg-community-hero-image{ max-width:360px; }
+  .seg-community-hero-spacer{ padding-top: 96px; }
+}
+
+/* =========================
+   Section 2: WHY
+========================== */
+
+.seg-community-why{ background:#F5F7FA; padding-bottom:80px; }
+.seg-community-why-title{
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;      /* Regular */
+  font-style: normal;
+  font-size: 50px;
+  line-height: 60px;
+  letter-spacing: 0;     /* 0px */
+  color: #111827;        /* keep your current color */
+  padding-bottom: 2rem;  /* ← added */
+}
+.seg-community-why-card{ display:block; }
+.seg-community-why-img{ width:100%; height:auto; border-radius:12px; display:block; }
+.seg-community-why-card-title{
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;        /* SemiBold */
+  font-style: normal;
+  font-size: 30px;
+  line-height: 38px;
+  letter-spacing: 0;
+  color: #111827;
+  padding-top: 1.6rem;     /* added */
+  /* keeps your existing margin-top: 18px unless you remove it */
+}
+.seg-community-why-card-text{
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;        /* Regular */
+  font-style: normal;
+  font-size: 18px;
+  line-height: 30px;       /* 30px */
+  letter-spacing: 0;       /* 0% */
+  color: #6B7280;
+  margin-top: 10px;        /* keep your existing top offset */
+  margin-bottom: 12px;     /* paragraph spacing */
+  max-width: 42ch;
+}
+/* WHY link spec override (left-aligned) */
+.seg-community-why-link{
+  /* Typography */
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;       /* SemiBold */
+  font-style: normal;
+  font-size: 18px;
+  line-height: 30px;
+  letter-spacing: 0;
+
+  /* Spacing (keeps existing left alignment and inline-flex layout) */
+  margin-top: 14px;       /* existing */
+  margin-bottom: 12px;    /* paragraph spacing */
+  display: inline-flex;   /* keep */
+  align-items: center;    /* keep */
+  gap: .35rem;            /* keep */
+
+  /* Visuals (unchanged) */
+  color: #111827;
+  text-decoration: none;
+}
+.seg-community-why-link::after{ content:"→"; line-height:1; transform: translateY(1px); }
+.seg-community-why-link:hover{ text-decoration: underline; }
+
+
+
+
+/*========================
+  Feature strip (seg-ai)
+==========================*/
+.seg-community-strip{ position:relative; color:#fff; overflow:hidden; padding:40px 0; }
+.seg-community-strip::before{ content:""; position:absolute; inset:0; background-image: var(--grad-diag); z-index:0; }
+.seg-community-strip > .container-xxl{ position:relative; z-index:1; }
+
+.seg-community-strip-title{ font-weight:600; font-size:50px; line-height:60px; letter-spacing:0; color:#fff; margin:2rem 0 .25rem; }
+.seg-community-strip-sub{ font-weight:400; font-size:16px; line-height:28px; color:rgba(255,255,255,.90); margin:.25rem 0 0; }
+
+.seg-community-strip-3col{ align-items:stretch !important; }
+.seg-community-line-col{ position:relative; width:100%; height:100%; display:flex; align-items:center; justify-content:center; }
+.seg-community-line{ position:absolute; left:50%; top:0; bottom:0; width:6px; transform:translateX(-50%); background:rgba(255,255,255,.55); border-radius:999px; z-index:0; }
+.seg-community-line::before, .seg-community-line::after{ content:""; position:absolute; left:50%; transform:translateX(-50%); width:8px; height:8px; background:#fff; border-radius:999px; }
+.seg-community-line::before{ top:0; } .seg-community-line::after{ bottom:0; }
+.seg-community-tick{ width:88px; height:88px; display:block; object-fit:contain; position:relative; z-index:1; }
+
+.seg-community-desc{ font-weight:600; font-size:30px; line-height:40px; color:#fff; }
+.seg-community-desc > .seg-community-desc-sub{ font-weight:400; font-size:18px; line-height:30px; color:rgba(255,255,255,.95); }
+.seg-community-desc--muted > .seg-community-desc-main, .seg-community-desc--muted > .seg-community-desc-sub{ color: rgba(255,255,255,.20) !important; }
+
+@media (max-width:767.98px){ .seg-community-line{ display:none; } .seg-community-line-col{ height:auto; } }
+
+/*========================
+  Testimonials: layout + slider
+==========================*/
+.seg-community-index-results{ background:#f6f9fc; padding:32px 0; }
+.seg-community-index-results-title{ font-weight:600; font-size:50px; line-height:61px; color:var(--gp-ink-900); margin:0 0 1rem; padding-top:1.75rem; padding-bottom:1.25rem; }
+
+.seg-community-index-quote-viewport{ overflow-x:auto; overflow-y:hidden; -ms-overflow-style:none; scrollbar-width:none; }
+.seg-community-index-quote-viewport::-webkit-scrollbar{ display:none; }
+.seg-community-index-quote-track{ display:flex; gap:18px; }
+.seg-community-quote-pad{ flex:0 0 100%; padding:0 24px 22px; scroll-snap-align:start; }
+
+.seg-community-index-quote-card{ background:#fff; color:#111827; border-radius:12px; box-shadow:var(--shadow-1); border-bottom:6px solid #2ED3B7; }
+.seg-community-index-quote-inner{ padding:4rem 4rem 3rem; }
+.seg-community-index-quote-text{ font-weight:400; font-style:italic; font-size:38px; line-height:56px; color:#1f2937; margin:0 0 14px; }
+.seg-community-index-quote-author{ display:flex; align-items:center; gap:10px; }
+.seg-community-index-avatar{ width:48px; height:48px; border-radius:50%; object-fit:cover; }
+.seg-community-index-author-name{ font-weight:700; font-size:18px; line-height:34px; color:#374151; }
+
+.seg-community-index-results-controls{ display:flex; justify-content:flex-end; gap:20px; padding-top:1.25rem; }
+.seg-community-index-nav{ background:transparent; border:0; color:#334155; font-size:2.5rem; line-height:1; padding:.25rem .5rem .25rem; cursor:pointer; transition:transform .12s ease, opacity .12s ease; padding-bottom:6rem; }
+.seg-community-index-nav:hover{ transform:translateY(-1px); opacity:.85; }
+.seg-community-index-nav:disabled{ opacity:.35; transform:none; cursor:default; }
+
+/* =========================
+   Section 4: TESTIMONIALS
+   (index layout; white section; shadow only on card)
+========================= */
+.gp-index-results{ background:#f6f9fc; padding:32px 0; }
+
+.gp-index-results-title{
+  font-family:'Poppins',sans-serif;
+  font-weight:400;
+  font-size:50px;
+  line-height:61px;
+  color:#111827;
+  margin:0 0 1rem;
+  padding-top: 6rem;
+  padding-bottom: 3rem;
+}
+
+/* viewport + track (1 card per view) */
+.gp-index-quote-viewport{
+  overflow-x:auto;
+  overflow-y:hidden;                /* prevent shadow from other cards leaking */
+  -ms-overflow-style:none;
+  scrollbar-width:none;
+}
+.gp-index-quote-viewport::-webkit-scrollbar{ display:none; }
+.gp-index-quote-track{ display:flex; gap:18px; }
+
+/* padding wrapper gives the card breathing room for its shadow */
+.gp-quote-pad{
+  flex:0 0 100%;
+  padding:0 24px 22px;              /* side + bottom space for blur */
+  scroll-snap-align:start;
+}
+
+/* the card itself */
+.gp-index-quote-card{
+  background:#fff;
+  color:#111827;
+  border-radius:12px;
+  box-shadow:0 12px 28px rgba(15,23,42,.08);   /* subtle, index-like */
+  border-bottom:6px solid #2ED3B7;             /* teal accent */
+}
+.gp-index-quote-inner{ padding:4rem 4rem 3rem; }
+.gp-index-quote-text{
+  font-family:'Poppins',sans-serif;
+  font-weight:400; font-style:italic;
+  font-size:38px; line-height:56px;
+  color:#1f2937; margin:0 0 14px;
+}
+
+/* author row */
+.gp-index-quote-author{ display:flex; align-items:center; gap:10px; }
+.gp-index-avatar{ width:48px; height:48px; border-radius:50%; object-fit:cover; }
+.gp-index-author-name{
+  font-family:'Poppins',sans-serif; font-weight:700;
+  font-size:18px; line-height:34px; color:#374151;
+}
+
+/* arrows below/right (outside the card) */
+.gp-index-results-controls{ display:flex; justify-content:flex-end; gap:20px; padding-top:1.25rem; }
+.gp-index-nav{
+  background:transparent; border:0; color:#334155;
+  font-size:2.5rem; line-height:1; padding:.25rem .5rem; cursor:pointer;
+  transition:transform .12s ease, opacity .12s ease; display:inline-flex; align-items:center; justify-content:center;
+  padding-bottom: 6rem;
+}
+.gp-index-nav:hover{ transform:translateY(-1px); opacity:.85; }
+.gp-index-nav:disabled{ opacity:.35; transform:none; cursor:default; }
+
+/*========================
+  Bottom CTA (seg-ai)
+==========================*/
+.seg-community-cta-band{ position:relative; overflow:hidden; padding:0; min-height:clamp(520px, 68vh, 760px); color:#fff; }
+.seg-community-cta-band::before{ content:""; position:absolute; inset:0; background: var(--grad-cta); z-index:0; }
+
+.seg-community-cta-row{ min-height:inherit; }
+.seg-community-cta-row > [class*="col-"]{ padding-left:0; padding-right:0; }
+
+.seg-community-cta-left{ position:relative; z-index:2; display:flex; align-items:stretch; }
+.seg-community-cta-left-inner{ display:flex; flex-direction:column; justify-content:center; min-height:100%; padding-inline: var(--container-pad); padding-block:64px; }
+.seg-community-cta-title{ font-weight:600; font-size:50px; line-height:60px; margin:0 0 24px; }
+.seg-community-cta-bullets{ list-style:none; margin:0 0 6px; padding:0; }
+.seg-community-cta-bullets li{ margin:0 0 12px; font-weight:400; font-size:18px; line-height:30px; color:rgba(255,255,255,.92); }
+.seg-community-cta-rule{ border:0; height:1px; background:rgba(255,255,255,.25); max-width:520px; margin:18px 0 0; }
+
+.seg-community-cta-qr{ width:132px; height:132px; border-radius:12px; display:block; }
+.seg-community-cta-download-title{ font-weight:600; font-size:30px; line-height:40px; margin:0; }
+.seg-community-cta-download-sub{ font-weight:400; font-size:18px; line-height:30px; color:rgba(255,255,255,.85); margin:0 0 12px; }
+.seg-community-cta-store-badge{ height:38px; width:auto; display:block; filter: drop-shadow(0 6px 14px rgba(0,0,0,.18)); }
+
+.seg-community-cta-art{ position:absolute; right:0; top:0; bottom:0; width:min(46vw, 860px); display:flex; align-items:stretch; justify-content:flex-end; z-index:1; pointer-events:none; }
+.seg-community-cta-art-img{ height:100%; width:auto; object-fit:contain; object-position:right center; display:block; }
+
+@media (max-width:991.98px){
+  .seg-community-cta-art{ display:none; }
+  .seg-community-cta-left-inner{ padding-inline:24px; padding-block:32px; }
+}
+
+</style>
+
+</head>
+<body>
+  <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<!-- HERO -->
+<section class="seg-community-hero">
+  <div class="container-xxl">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-6">
+        <h1 class="seg-community-hero-title" th:text="#{seg-community.hero.title}">
+        	Welcome to the Genius Parenting Community
+        </h1>
+        <p class="seg-community-hero-tagline" th:text="#{seg-community-chat.hero.tagline}" style="padding-top: 1.5rem; padding-bottom: 3rem">
+          Because parenting is better together.
+        </p>
+        <div class="mt-4">
+          <a href="#download" class="btn seg-community-cta-btn" th:text="#{seg-community-chat.hero.startBtn}">Download the App</a>
+        </div>
+      </div>
+      <div class="col-lg-6 text-center">
+        <img th:src="@{/images/seg-community/community-image-01.png}" alt="App preview phones"
+             class="seg-community-hero-image hero-overhang img-fluid">
+      </div>
+    </div>
+  </div>
+</section>
+
+  <!-- WHY GENPARENTING (mock-accurate) -->
+  <section class="seg-community-why">
+    <div class="container-xxl" style="padding-top:12rem">
+
+      <h2 class="seg-community-why-title" th:text="#{seg-community.why.title_en}">What's Inside?</h2>
+
+      <div class="row gy-5 gx-4">
+        <!-- Card 1 -->
+        <div class="col-12 col-md-6 col-lg-4">
+          <article class="seg-community-why-card">
+            <img th:src="@{/images/seg-community/community-image-02.png}" alt="Personalized support"
+                 class="seg-community-why-img">
+            <h3 class="seg-community-why-card-title" th:text="#{seg-community.why.card1.title_en}">
+              Parent Circles
+            </h3>
+            <p class="seg-community-why-card-text" th:text="#{seg-community.why.card1.text_en}">
+              Get daily insights tailored to your child’s age, needs & growth pace — backed by experts.
+            </p>
+            <a class="seg-community-why-link" th:href="@{/segments(segment=1)}" th:text="#{seg-community.why.learn_en}">Learn More →</a>
+          </article>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="col-12 col-md-6 col-lg-4">
+          <article class="seg-community-why-card">
+            <img th:src="@{/images/seg-community/community-image-03.png}" alt="Creativity & Learning Hub"
+                 class="seg-community-why-img">
+            <h3 class="seg-community-why-card-title" th:text="#{seg-community.why.card2.title_en}">
+              Live Q&As + Weekly Check-ins
+            </h3>
+            <p class="seg-community-why-card-text" th:text="#{seg-community.why.card2.text_en}">
+              Unlock art, stories, and games that spark emotional & cognitive growth.
+            </p>
+            <a class="seg-community-why-link" th:href="@{/segments(segment=2)}" th:text="#{seg-community.why.learn_en}">Learn More →</a>
+          </article>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="col-12 col-md-6 col-lg-4">
+          <article class="seg-community-why-card">
+            <img th:src="@{/images/seg-community/community-image-04.png}" alt="Community and expert access"
+                 class="seg-community-why-img">
+            <h3 class="seg-community-why-card-title" th:text="#{seg-community.why.card3.title_en}">
+              Parent-to-Parent Tips Exchange
+            </h3>
+            <p class="seg-community-why-card-text" th:text="#{seg-community.why.card3.text_en}">
+              Learn with real parents and vetted experts, any time you need.
+            </p>
+            <a class="seg-community-why-link" th:href="@{/segments(segment=3)}" th:text="#{seg-community.why.learn_en}">Learn More →</a>
+          </article>
+        </div>
+      </div>
+      <div class="text-center mt-5 mb-5">
+        <!-- separate line first (span full row width) -->
+        <hr class="my-5" style="max-width:100%;border-top:1px solid #111111;">
+
+        <!-- mockup image -->
+        <img th:src="@{/images/seg-community/community-image-speech.png}"
+             alt="Community highlights mockup"
+             class="img-fluid mb-4"
+             style="max-width:960px;">
+
+        <!-- CTA button -->
+        <a href="#"
+           class="btn seg-community-cta-btn">
+          See what’s resonating with families right now
+        </a>
+      </div>
+      
+    </div>
+  </section>
+
+
+<!-- FEATURE STRIP -->
+<section class="seg-community-strip">
+  <div class="container-xxl">
+    <div class="row g-4 seg-community-strip-3col align-items-center">
+      <!-- Left: Title + subline -->
+      <div class="col-12 col-md-4 d-flex align-items-center">
+        <div>
+          <h3 class="seg-community-strip-title" th:text="#{seg-community-chat.strip.title}">
+            Why Join the Community?
+          </h3>
+        </div>
+      </div>
+
+      <!-- Middle: vertical line + check -->
+      <div class="col-12 col-md-2 d-none d-md-flex justify-content-center">
+        <div class="seg-community-line-col">
+          <span class="seg-community-line"></span>
+          <img th:src="@{/images/seg-mini-course/course-image-09.svg}" alt="" class="seg-community-tick" />
+        </div>
+      </div>
+
+      <!-- Right: three items (middle emphasized, others muted) -->
+      <div class="col-12 col-md-6">
+        <div class="seg-community-desc seg-community-desc--muted" style="padding-top:8rem">
+          <div class="seg-community-desc-main" th:text="#{seg-community-chat.strip.item1}">
+            You’re not alone — connect with people who get it
+          </div>
+        </div>
+
+        <div class="seg-community-desc" style="padding-top:8rem">
+          <div class="seg-community-desc-main" th:text="#{seg-community-chat.strip.item2}">
+            Feel inspired, not judged
+          </div>
+        </div>
+
+        <div class="seg-community-desc seg-community-desc--muted" style="padding-top:8rem; padding-bottom:8rem">
+          <div class="seg-community-desc-main" th:text="#{seg-community-chat.strip.item3}">
+            Get real-world solutions from parents walking the same road
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+  <!-- TESTIMONIALS (index style) -->
+  <section class="gp-index-results">
+    <div class="gp-index-results-box">
+      <div class="container-xxl gp-index-results-inner">
+
+        <h3 class="gp-index-results-title" th:text="#{seg-community-testmonials.title_en}">
+          Real parents. Real results.
+        </h3>
+
+        <div class="gp-index-quote-viewport" id="resultsViewport">
+          <div class="gp-index-quote-track" id="resultsTrack">
+
+            <!-- Card 1 -->
+            <div class="gp-quote-pad">
+	            <article class="gp-index-quote-card">
+	              <div class="gp-index-quote-inner">
+	                <blockquote class="gp-index-quote-text" th:text="#{seg-community-caption-262}">
+	                  "Genius Parenting AI transformed my approach — it's part emotional support, part creative spark, all in one app."”
+	                </blockquote>
+	                <div class="gp-index-quote-author">
+	                  <img th:src="@{/images/index/avatar1.png}" alt="Aisha avatar" class="gp-index-avatar">
+	                  <span class="gp-index-author-name" th:text="#{seg-community-caption-263}">Aisha, mom of a 4-year-old</span>
+	                </div>
+	              </div>
+            </article>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="gp-quote-pad">
+            <article class="gp-index-quote-card">
+              <div class="gp-index-quote-inner">
+                <blockquote class="gp-index-quote-text" th:text="#{seg-community-caption-264}">
+                   "I love the milestone tracker! It keeps me calm and helps me track my daughter’s progress effortlessly."
+                </blockquote>
+                <div class="gp-index-quote-author">
+                  <img th:src="@{/images/index/avatar2.png}" alt="David avatar" class="gp-index-avatar">
+                  <span class="gp-index-author-name" th:text="#{seg-community-caption-265}">David, Father of a 5-Year-Old</span>
+                </div>
+              </div>
+            </article>
+            </div>
+            
+            <!-- Card 3 -->
+            <div class="gp-quote-pad">
+            <article class="gp-index-quote-card">
+              <div class="gp-index-quote-inner">
+                <blockquote class="gp-index-quote-text" th:text="#{seg-community-caption-266}">
+                  "Practical, reassuring, and fast. The checklists are gold."
+                </blockquote>
+                <div class="gp-index-quote-author">
+                  <img th:src="@{/images/index/avatar3.png}" alt="Mei avatar" class="gp-index-avatar">
+                  <span class="gp-index-author-name" th:text="#{seg-community-caption-267}">Mei, first-time parent</span>
+                </div>
+              </div>
+            </article>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="gp-index-results-controls">
+          <button class="gp-index-nav" type="button" data-dir="left" aria-label="Previous">←</button>
+          <button class="gp-index-nav" type="button" data-dir="right" aria-label="Next">→</button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+
+<!-- BOTTOM CTA -->
+<section id="download" class="seg-community-cta-band">
+  <div class="seg-community-cta-art" aria-hidden="true">
+    <img th:src="@{/images/seg-community/community-image-08.png}" alt="" class="seg-community-cta-art-img">
+  </div>
+
+  <div class="container-xxl">
+    <div class="row g-0 seg-community-cta-row">
+      <!-- LEFT: content -->
+      <div class="col-12 col-lg-7 seg-community-cta-left">
+        <div class="seg-community-cta-left-inner">
+          <h2 class="seg-community-cta-title" th:text="#{seg-community-chat.cta.title}">
+            Join the community today — Free
+          </h2>
+
+          <ul class="seg-community-cta-bullets">
+            <li th:text="#{seg-community-chat.cta.bullet1}">
+              Share your experience in the community. 
+            </li>
+          </ul>
+        <div class="mt-4">
+          <a href="#download" class="btn seg-community-cta-btn" th:text="#{seg-community-chat.hero.startBtn}">Download the App</a>
+        </div>
+
+          <hr class="seg-community-cta-rule">
+
+          <!-- Download block: QR + store badges -->
+          <div class="d-flex align-items-center gap-4 mt-4">
+            <img th:src="@{/images/gpa-qr-code.png}" alt="QR code" class="seg-community-cta-qr">
+            <div>
+              <h3 class="seg-community-cta-download-title mb-2" th:text="#{seg-community-chat.cta.downloadTitle}">
+                Download the App
+              </h3>
+              <p class="seg-community-cta-download-sub mb-3" th:text="#{seg-community-chat.cta.downloadSub}">
+                Free to try. No credit card needed.
+              </p>
+              <div class="d-flex align-items-center gap-2">
+              <!-- 
+                <a href="#" aria-label="Get it on Google Play">
+                  <img th:src="@{/images/index/index-image11.png}" alt="Google Play" class="seg-community-cta-store-badge">
+                </a>
+                 -->
+                <a href="#" aria-label="Download on the App Store">
+                  <img th:src="@{/images/index/index-image12.png}" alt="App Store" class="seg-community-cta-store-badge">
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: empty grid area to keep space for the art on lg+ -->
+      <div class="col-lg-5 d-none d-lg-block"></div>
+    </div>
+  </div>
+</section>
+
+
+  <div th:replace="~{fragments/chatbot :: chatbot}"></div>
+  <div th:replace="~{fragments/footer :: footer}"></div>
+
+  <script>
+    // Testimonials scroller using index IDs
+    document.addEventListener('DOMContentLoaded', function(){
+      const viewport = document.getElementById('resultsViewport');
+      if(!viewport) return;
+      const step = () => viewport.clientWidth;
+      document.querySelectorAll('.gp-index-nav').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const dir = btn.dataset.dir === 'left' ? -1 : 1;
+          viewport.scrollBy({ left: dir * step(), behavior: 'smooth' });
+        });
+      });
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
