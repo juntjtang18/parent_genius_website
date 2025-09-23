@@ -1,113 +1,625 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="#{vision.title}">Vision - Parent Genius AI</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link th:href="@{/css/style.css}" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
-    <style>
-        section {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            padding: 100px;
-            box-sizing: border-box;
-            margin: 0;
-            height: auto;
-        }
-        section img {
-            width: 40%;
-            height: auto;
-        }
-        section h2 {
-            font-family: 'Roboto', sans-serif; 
-            font-size: 80px;
-        }
-        section p {
-            font-size: 28px;
-        }
-        section .content {
-            width: 50%;
-        }
-        .section-vision { background-color: #FFDD57; }
-        .section-mission { background-color: #FF6F61; }
-        .section-about { background-color: #6B9AC4; }
-        .section-contact { background-color: #64B97E; }
-        .section-img {
-            max-width: 100%;
-            height: auto;
-            max-height: 50vh;
-            object-fit: cover;
-            width: 100%;
-        }
-        @media (max-width: 767.98px) {
-            .vision-img {
-                max-height: 40vh;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>About – GeniusParenting AI</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+  :root{
+    --gp-white: #fff;
+    --gp-blue-500: #3b82f6;
+    --gp-blue-700: #2563eb;
+    --gp-violet-500: #6c6ff7;
+    --gp-ink-900: #111827;
+    --gp-ink-600: #374151;
+    --gp-ink-500: #6B7280;
+    --grad-hero: linear-gradient(180deg, var(--gp-blue-500) 0%, var(--gp-blue-700) 55%, var(--gp-violet-500) 100%);
+    --grad-cta: linear-gradient(135deg, var(--gp-blue-500) 0%, var(--gp-violet-500) 60%);
+    --grad-btn: linear-gradient(90deg, #2ED3B7 0%, #1EC7E6 100%);
+    --shadow-1: 0 12px 28px rgba(15,23,42,.08);
+    --shadow-2: 0 16px 34px rgba(59,130,246,.28);
+    --shadow-cta: 0 10px 20px rgba(23,162,184,.25);
+    --shadow-cta-hover: 0 12px 26px rgba(23,162,184,.32);
+    --radius-xl: 9999px;
+    --container-pad: clamp(24px, 5vw, 64px);
+  }
+  body{ padding-top:4rem; font-family:"Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif; }
+  @media (min-width:1200px){ body{ padding-top:101px; } }
+  .about-cta-btn{ background:var(--grad-btn); color:#fff; border:0; border-radius:9999px; padding:.9rem 2.2rem; font-weight:600; font-size:18pt; box-shadow:var(--shadow-cta); text-decoration:none; }
+  .about-cta-btn:hover{ color:#fff; filter:brightness(1.02); }
+
+  .about-hero{ position:relative; overflow:hidden; color:#fff; }
+  .about-hero::before{ content:""; position:absolute; inset:0; background: var(--grad-hero); z-index:0; }
+  .about-hero .container-xxl{ position:relative; z-index:2; }
+  .about-hero-row{ min-height: clamp(520px, 72vh, 820px); }
+  .about-hero-title{ font-weight:600; font-size: clamp(36px, 4.2vw, 56px); line-height:1.1; margin:0 0 12px; }
+  .about-hero-sub{ font-size:30px; line-height: 40px; font-weight:600; font-size: clamp(16px, 1.4vw, 20px);  max-width: 60ch; color: rgba(255,255,255,.95); }
+  .about-hero-left{ display:flex; align-items:center; }
+  .about-hero-left-inner{ padding-block:64px; padding-inline: clamp(24px, 5vw, 64px); }
+
+  .about-hero-art {
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: min(46vw, 860px);
+    display: flex; align-items: stretch; justify-content: flex-end;
+    z-index: 1; pointer-events: none;
+  }
+  .about-hero-art-img { height: 100%; width: auto; object-fit: contain; object-position: right center; display:block; }
+  @media (max-width: 991.98px){ .about-hero-art{ display:none; } }
+  
+  /*========================
+    WHY WE BUILT THIS APP
+  ==========================*/
+  .about-why{ background:#f7f9fb; padding-block: clamp(56px, 8vw, 96px); }
+  .about-why .about-title{ text-align:center; font-weight:700; color:#0f172a; font-size: clamp(28px,3vw,42px); }
+  .about-why .about-lead{ max-width: 90ch; margin-inline:auto; text-align:center; color:#6b7280; line-height: 1.8; }
+  .about-why .about-rule{ max-width: 920px; margin: 36px auto; border:0; height:1px; background:#e5e7eb; }
+
+  .about-why .about-bullets{ padding-left:0; list-style:none; margin:0; }
+  .about-why .about-bullet{ display:flex; justify-content:space-between; align-items:center; padding:22px 30px; border-bottom:1px solid #e5e7eb; color:#374151; cursor:default; }
+  .about-why .about-bullet:first-child{ border-top:1px solid #e5e7eb; }
+  .about-why .about-bullet .about-text{ margin:0; font-weight:500; }
+  .about-why .about-bullet .about-chevron{ font-weight:700; color:#9ca3af; }
+  .about-why .about-bullet.active{ color:#0f172a; }
+  .about-why .about-bullet.active .about-text{ font-weight:600; }
+  .about-why .about-bullet.active{ position:relative; }
+  .about-why .about-bullet.active::after{
+    content:""; position:absolute; left:0; right:0; bottom:-1px; height:3px; background: var(--gp-blue-500);
+  }
+
+  .about-why .about-phone{
+    width: 320px; max-width: 90%; display:block; margin-inline:auto;
+    filter: drop-shadow(0 18px 32px rgba(15,23,42,.18));
+  }
+  @media (min-width: 992px){
+    .about-why .about-phone{ margin-inline: 0 0; }
+  }
+.seg-ai-testimonials-divider{
+  opacity:1; border:0; height:1px; background:#CBD5E1; width:100%;
+  margin:24px 0 16px;
+}
+
+/*========================
+  Vision & Mission
+=========================*/
+.about-vm {
+  background: linear-gradient(180deg, var(--gp-blue-500) 0%, var(--gp-violet-500) 100%);
+  padding-block: clamp(64px, 10vw, 120px);
+  color: #fff;
+}
+.about-vm-title {
+  font-weight: 600;
+  font-size: clamp(26px, 3vw, 38px);
+  margin-bottom: 16px;
+}
+.about-vm-text {
+  font-size: 18px;
+  line-height: 1.7;
+  max-width: 65ch;
+  color: rgba(255,255,255,.95);
+}
+.about-vm-img {
+  max-width: 100%;
+  border-radius: 14px;
+  box-shadow: 0 10px 24px rgba(15,23,42,.2);
+}
+.about-vm-img {
+  width: 100%;          /* fills the col-6 width */
+  height: auto;         /* keep aspect ratio */
+  border-radius: 14px;
+  box-shadow: 0 10px 24px rgba(15,23,42,.2);
+}
+.about-vm-text {
+  max-width: 100%;      /* don’t artificially restrict text width */
+}
+  /*========================
+    Brand Identity
+  ==========================*/
+  .about-brand{ background:#f5f7fb; padding-block: clamp(56px, 8vw, 96px); }
+  .about-brand-title{ text-align:center; font-weight:700; color:#111827; font-size: clamp(26px, 3vw, 36px); }
+  .about-brand-sub{ text-align:center; color:#6b7280; max-width: 70ch; margin:8px auto 28px; }
+
+  .about-brand-card{
+    background:#fff; border-radius:14px; box-shadow: 0 12px 28px rgba(15,23,42,.08);
+    padding: clamp(18px, 3vw, 28px);
+  }
+  .about-brand-logo{ max-width: 360px; width:100%; height:auto; display:block; margin-inline:auto; }
+  .about-brand-points{ list-style:none; padding-left:0; margin:0; }
+  .about-brand-points li{ display:flex; gap:10px; align-items:flex-start; margin-bottom:16px; color:#374151; }
+  .about-brand-points svg{ flex:0 0 auto; margin-top:3px; }
+  .about-brand-divider{ border-left: none; padding-left:0; }
+  @media (min-width: 992px){
+    .about-brand-divider{ border-left: 1px solid #e5e7eb; padding-left: 28px; }
+  }
+
+  /*========================
+    Stages
+  ==========================*/
+  .about-stages{ background:#f7f9fb; padding-block: clamp(56px, 8vw, 96px); }
+  .about-stages-title{ font-weight:700; color:#0f172a; font-size: clamp(24px, 2.4vw, 32px); margin-bottom: 20px; }
+  .about-stage-card{ display:block; text-decoration:none; }
+  .about-stage-img{ width:100%; height:auto; border-radius:10px; box-shadow: 0 8px 18px rgba(15,23,42,.08); }
+  .about-stage-name{ font-weight:600; color:#111827; margin:10px 0 2px; }
+  .about-stage-desc{ color:#6b7280; font-size:14px; max-width:50ch; }
+
+  /*========================
+    Contact Us (final section)
+  ==========================*/
+  .about-contact-us{ background:#eef2f6; padding-block: clamp(40px,5vw,72px); }
+  .about-contact-card{ background:#fff; border-radius:12px; box-shadow: 0 16px 34px rgba(15,23,42,.08); padding: clamp(20px,2.6vw,28px); }
+  .about-contact-title{ font-weight:700; color:#111827; font-size: clamp(24px,2.6vw,34px); margin:0; }
+  .about-contact-rule{ height:2px; background:#e5e7eb; border:0; width:60%; margin:10px 0 18px; }
+  .about-contact-body p{ margin:0 0 10px; color:#334155; }
+  .about-contact-body b{ color:#111827; font-weight:600; }
+  .about-contact-email a{ color:#2563eb; text-decoration:none; }
+  .about-contact-email a:hover{ text-decoration:underline; }
+  .about-contact-photo{ border-radius:10px; overflow:hidden; }
+  .about-contact-photo img{ width:100%; height:auto; display:block; }
+/* ================================
+   CTA / Bottom Band — FINAL
+   ================================ */
+
+/* Band: full-bleed, no vertical padding on the section itself */
+.cta-band{
+  position: relative;
+  overflow: hidden;
+  padding: 0;                                 /* no top/bottom padding */
+  min-height: clamp(520px, 68vh, 760px);      /* tune height as needed */
+  color: #fff;
+}
+.cta-band::before{
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, #3b82f6 0%, #6c6ff7 60%);
+  z-index: 0;
+}
+
+/* Grid: remove gutters and stretch to full band height */
+.cta-row{ min-height: inherit; }
+.cta-row > [class*="col-"]{ padding-left: 0; padding-right: 0; }
+
+/* Left column: container + inner wrapper for vertical padding */
+.cta-left{
+  position: relative;
+  z-index: 2;                      /* above art */
+  display: flex;
+  align-items: stretch;
+}
+.cta-left-inner{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;         /* center content within padded area */
+  min-height: 100%;
+  padding-inline: clamp(24px, 5vw, 64px);  /* horizontal */
+  padding-block: 64px;                      /* vertical */
+}
+
+/* Typography */
+.cta-title{
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;      /* Regular */
+  font-style: normal;
+  font-size: 50px;
+  line-height: 60px;
+  letter-spacing: 0;
+  margin: 0 0 24px;
+}
+
+.cta-bullets{ list-style: none; margin: 0 0 6px; padding: 0; }
+.cta-bullets li{
+  margin: 0 0 12px;                 /* paragraph spacing = 12px */
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;                  /* Regular */
+  font-style: normal;
+  font-size: 18px;
+  line-height: 30px;
+  letter-spacing: 0;
+  color: rgba(255,255,255,.92);
+}
+.cta-bullets li:last-child{ margin-bottom: 0; }
+.cta-tagline{ margin: 14px 0; font-weight: 600; color: rgba(255,255,255,.96); }
+.cta-rule{ border: 0; height: 1px; background: rgba(255,255,255,.25); max-width: 520px; margin: 18px 0 0; }
+
+/* Download block */
+.cta-qr{ width: 132px; height: 132px; border-radius: 12px; display: block; }
+/* CTA download title — spec */
+.cta-download-title{
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;       /* SemiBold */
+  font-style: normal;
+  font-size: 30px;
+  line-height: 40px;
+  letter-spacing: 0;
+  margin: 0;
+}
+/* CTA download sub — spec */
+.cta-download-sub{
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;        /* Regular */
+  font-style: normal;
+  font-size: 18px;
+  line-height: 30px;
+  letter-spacing: 0;
+  color: rgba(255,255,255,.85);
+  margin: 0 0 12px;        /* paragraph spacing = 12px */
+}
+.cta-store-badge{
+  height: 38px; width: auto; display: block;
+  filter: drop-shadow(0 6px 14px rgba(0,0,0,.18));
+}
+
+/* Right art: flush to viewport right; never crop */
+.cta-art{
+  position: absolute;
+  right: 0; top: 0; bottom: 0;                /* fill band height */
+  width: min(46vw, 860px);                     /* art width; tune if needed */
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-end;
+  z-index: 1;                                  /* under text, above bg */
+  pointer-events: none;                        /* decorative */
+}
+.cta-art-img{
+  height: 100%;                                /* full height of band */
+  width: auto;                                 /* preserve aspect */
+  object-fit: contain;                         /* never crop */
+  object-position: right center;
+  display: block;
+}
+
+/* Responsive tweaks */
+@media (max-width: 991.98px){
+  .cta-art{ display: none; }                   /* hide large art on small screens */
+  .cta-left-inner{
+    padding-inline: 24px;
+    padding-block: 32px;
+  }
+}
+
+.gp-index-ex-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}    
+  </style>
 </head>
 <body>
-    <div th:replace="~{fragments/navbar :: navbar}"></div>
+  <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-    <section id="vision" class="container my-5">
-        <div class="row align-items-center">
-            <div class="col-md-6">
-                <img th:src="@{/images/vision.jpg}" alt="Vision Image" class="img-fluid section-img">
+  <section class="about-hero">
+    <div class="about-hero-art" aria-hidden="true">
+      <img th:src="@{/images/about/about-image-01.png}" alt="" class="about-hero-art-img">
+    </div>
+    <div class="container-xxl">
+      <div class="row g-0 about-hero-row">
+        <div class="col-12 col-lg-7 about-hero-left">
+          <div class="about-hero-left-inner">
+            <h1 class="about-hero-title" th:text="#{about-caption-34}">The beginning of our story</h1>
+            <p class="about-hero-sub">
+              <span th:text="#{about-caption-35}">Every parent’s journey begins with a question:</span>
+              <em th:text="#{about-caption-36}">“Am I ready? Am I doing this right?”</em>
+            </p>
+            <div class="mt-4">
+              <a href="#download" class="about-cta-btn" th:text="#{about-caption-37}">Download the App</a>
             </div>
-            <div class="col-md-6">
-                <h2 th:text="#{vision.title1}">Vision</h2>
-                <p th:text="#{vision.vision}">To empower parents with the knowledge, tools, and support they need to create loving, supportive families that nurture growth, foster resilience, and inspire the next generation to thrive with confidence, compassion, and curiosity.</p>
-            </div>
+          </div>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <section id="mission" class="container">
-        <div class="row align-items-center flex-row-reverse">
-            <div class="col-md-6">
-                <img th:src="@{/images/mission.jpg}" alt="Mission Image" class="img-fluid section-img">
-            </div>
-            <div class="col-md-6">
-                <h2 th:text="#{vision.title2}">Mission Statement</h2>
-                <p th:text="#{vision.mission}">Our mission is to provide parents with actionable insights, expert advice, and innovative resources, helping them create nurturing environments where children can grow, thrive, and develop the skills they need to succeed in life.</p>
-            </div>
+
+  <!-- WHY WE BUILT THIS APP -->
+  <section class="about-why">
+  	<div class="container-xxl">
+  		<div class="row justify-content-center">
+  			<div class="col-lg-1">
+  			</div>
+  			<div class="col-lg-10">
+  				<h2 class="about-title" th:text="#{about-caption-38}">Parenting doesn't come with a manual</h2>
+  				<p class="about-lead mt-3" th:text="#{about-caption-39}">
+  				Some are dreamers, full of hope as they imagine holding a child for the first time. Some are expecting hearts, learning to navigate the joy and nerves of pregnancy. Some are new nests, awake at 3AM with a crying baby in their arms. Others are foundation builders, setting boundaries with toddlers who are testing the world, or explorer guides, helping little ones take their first steps into school and independence.
+  				</p>
+  				<p class="about-lead mt-3" th:text="#{about-caption-40}">
+  				Parenting looks different for everyone, but one feeling is universal — the need for support, reassurance, and guidance that actually fits your life.
+  				</p>
+  				<p class="about-lead mt-3" th:text="#{about-caption-41}">
+  				That’s why we created GenParenting AI (formerly Genius Parenting AI).
+  				</p>
+  			</div>
+  			<div class="col-lg-1">
+  			</div>
+  		</div>
+	     <div class="text-center mt-4" style="padding-top:22px;">
+	       <a href="#features" class="btn about-cta-btn " th:text="#{about-caption-42}">View Features</a>
+	     </div>
+  	</div>
+     <div style="padding-top:60px; padding-bottom:60px;">
+    	<hr class="seg-ai-testimonials-divider">
+    </div>
+    <div class="container-xxl">
+      <div class="row justify-content-center">
+        <div class="col-lg-10">
+          <h2 class="about-title" th:text="#{about-caption-43}">Why we built this app</h2>
+          <p class="about-lead mt-3" th:utext="#{about-caption-44}">
+            We saw a gap. Too often, parents are given generic advice that doesn’t reflect their culture, personality,
+            or stage of life. Parenting isn’t one‑size‑fits‑all.<br/>
+            So we asked: What if parents had a tool that could meet them exactly where they are?
+          </p>
         </div>
-    </section>
+      </div>
 
-    <section id="about-us" class="container my-5">
-        <div class="row align-items-center">
-            <div class="col-md-6">
-                <img th:src="@{/images/about-us.jpg}" alt="About Us Image" class="img-fluid section-img">
-            </div>
-            <div class="col-md-6">
-                <h2 th:text="#{vision.title3}">About Us</h2>
-                <p th:text="#{vision.aboutus}">Parent Genius AI is committed to providing comprehensive, accessible, and personalized parenting resources. Our team of child development experts, educators, and technologists work together to offer the best tools for parents to raise happy, healthy, and successful children.</p>
-            </div>
+
+	<div class="row align-items-center g-4 g-lg-5">
+	  <div class="col-lg-2"></div>
+	  <!-- Text / bullets: 2/3 width -->
+	  <div class="col-lg-5">
+	    <ul class="about-bullets">
+	      <li class="about-bullet active">
+	        <p class="about-text mb-0" th:text="#{about-caption-45}">A quiz that takes just 30 seconds to understand you.</p>
+	        <span class="about-chevron">›</span>
+	      </li>
+	      <li class="about-bullet">
+	        <p class="about-text mb-0" th:text="#{about-caption-46}">A community where parents connect, share, and grow together.</p>
+	        <span class="about-chevron">›</span>
+	      </li>
+	      <li class="about-bullet">
+	        <p class="about-text mb-0" th:text="#{about-caption-47}">An AI chat assistant that never sleeps, ready when nobody else can be.</p>
+	        <span class="about-chevron">›</span>
+	      </li>
+	      <li class="about-bullet">
+	        <p class="about-text mb-0" th:text="#{about-caption-48}">Tips and courses that are matched to your personality, not just your child’s age.</p>
+	        <span class="about-chevron">›</span>
+	      </li>
+	    </ul>
+	  </div>
+	
+	  <!-- Image: 1/3 width -->
+	  <div class="col-lg-4 text-center text-lg-start">
+	    <img th:src="@{/images/about/about-image-02.png}" 
+	         alt="GenParenting mobile preview" 
+	         class="about-phone">
+	  </div>
+	  <div class="col-lg-1"></div>
+	</div>
+
+
+      <div class="row mt-5 justify-content-center">
+        <div class="col-lg-10">
+          <p class="about-lead" th:text="#{about-caption-49}">
+            We built GenParenting AI to be that partner. Not another “how‑to” manual, but a guide that listens first,
+            then responds in a way that feels personal, practical, and compassionate.
+          </p>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <section id="contact-us" class="container my-5">
-        <div class="row align-items-center flex-row-reverse">
-            <div class="col-md-6">
-                <img th:src="@{/images/contact-us.jpg}" alt="Contact Us Image" class="img-fluid section-img">
-            </div>
-            <div class="col-md-6">
-                <h2 th:text="#{vision.title4}">Contact Us</h2>
-                <p th:text="#{vision.contactus}">If you have any questions or need assistance, feel free to reach out to us. Our team is always ready to help you with the resources and support you need.</p>
-                <p><strong>Email:</strong> <a href="mailto:support@geniusParentingAI.ca">support@geniusParentingAI.ca</a></p>
-                <p><strong>Company Name:</strong> GNM399 Ventures Corp.</p>
-                <p><strong>Address:</strong> 2112 W Broadway, Unit 208, Vancouver, BC V6K 2C8, Canada</p>
-            </div>
+<!-- VISION & MISSION -->
+<section class="about-vm">
+  <div class="container-xxl">
+
+    <!-- Vision -->
+    <div class="row align-items-center g-5 mb-5">
+      <div class="col-lg-6">
+        <h2 class="about-vm-title" th:text="#{about-caption-50}">Our Vision</h2>
+        <p class="about-vm-text" th:text="#{about-caption-51}">
+          To empower parents with the knowledge, tools, and support they need to create loving,
+          supportive families that nurture growth, foster resilience, and inspire the next generation
+          to thrive with confidence, compassion, and curiosity.
+        </p>
+      </div>
+      <div class="col-lg-6 text-center">
+        <img th:src="@{/images/about/about-image-06.png}" alt="Family vision" class="about-vm-img">
+      </div>
+    </div>
+
+    <!-- Mission -->
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6 text-center">
+        <img th:src="@{/images/about/about-image-07.png}" alt="Family mission" class="about-vm-img">
+      </div>
+      <div class="col-lg-6">
+        <h2 class="about-vm-title" th:text="#{about-caption-52}">Our Mission</h2>
+        <p class="about-vm-text" th:text="#{about-caption-53}">
+          Our mission is to provide parents with actionable insights, expert advice, and innovative
+          resources, helping them create nurturing environments where children can grow, thrive,
+          and develop the skills they need to succeed in life.
+        </p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+  <!-- BRAND IDENTITY -->
+  <section class="about-brand">
+    <div class="container-xxl">
+  		<div class="row justify-content-center">
+  			<div class="col-lg-1"></div>
+  			<div class="col-lg-10">
+  			
+			      <h2 class="about-brand-title" th:text="#{about-caption-54}">Our logo &amp; brand identity</h2>
+			      <p class="about-brand-sub" th:text="#{about-caption-55}">Our logo is more than design — it’s a symbol of what we believe in.</p>
+			
+			      <div class="about-brand-card">
+			        <div class="row g-4 align-items-center" style="padding-top:70px; padding-bottom:70px;">
+			          <div class="col-lg-6">
+			            <img th:src="@{/images/about/about-image-08.svg}" alt="GenParenting logo" class="about-brand-logo">
+			          </div>
+			          <div class="col-lg-6 about-brand-divider">
+			            <ul class="about-brand-points">
+			              <li style="padding-top:20px; padding-bottom:20px;">
+				              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							  	<circle cx="12" cy="12" r="12" fill="#20C4D7" fill-opacity=".15"/>
+							  	<path d="M7 12.5l3.2 3L17 9" stroke="#20C4D7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+							  </svg>
+							  <span th:text="#{about-caption-56}">The colors represent diversity, inclusivity, and the warmth of family love.</span>
+						  </li>
+						  <li style="padding-top:20px; padding-bottom:20px;">
+					  		<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							  	<circle cx="12" cy="12" r="12" fill="#20C4D7" fill-opacity=".15"/>
+							  	<path d="M7 12.5l3.2 3L17 9" stroke="#20C4D7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+							</svg>
+							<span th:text="#{about-caption-57}">The circular form mirrors the never‑ending journey of parenting — growth, connection, and new beginnings.</span>
+						  </li>
+						  <li style="padding-top:20px; padding-bottom:20px;">
+						    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							    <circle cx="12" cy="12" r="12" fill="#20C4D7" fill-opacity=".15"/>
+							    <path d="M7 12.5l3.2 3L17 9" stroke="#20C4D7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+						    </svg>
+						    <span th:text="#{about-caption-58}">The modern, clean style shows our commitment to keeping things simple and approachable.</span>
+					      </li>
+			            </ul>
+			          </div>
+			        </div>
+			      </div>
+
+			      <div class="row justify-content-center mt-4">
+			        <div class="col-lg-10">
+			          <p class="about-lead" style="text-align:center; color:#6b7280; padding-top:50px;" th:text="#{about-caption-601}">
+			            We began as Genius Parenting AI. As our mission grew global, we simplified to GenParenting AI — a name
+			            that’s modern, memorable, and easy to find across platforms. Both names carry the same promise:
+			            to make parenting easier, more personal, and deeply supportive.
+			          </p>
+			        </div>
+			      </div>
+		      </div>
+ 			<div class="col-lg-1"></div>
+		      
+	      </div>
+    </div>
+  </section>
+
+
+<!-- Section Stage -->
+  <section class="about-stages">
+    <div class="container-xxl">
+      <h3 class="about-stages-title" th:text="#{about-caption-60}">For every parent, at every stage</h3>
+
+      <div class="row g-4">
+        <div class="col-md-4">
+          <a href="#" class="about-stage-card">
+            <img th:src="@{/images/about/about-image-10.png}" alt="" class="about-stage-img">
+            <h5 class="about-stage-name" th:text="#{about-caption-61}">The Dreamer</h5>
+            <p class="about-stage-desc" th:text="#{about-caption-62}">Preparing emotionally and physically for parenthood.</p>
+          </a>
         </div>
-    </section>
+        <div class="col-md-4">
+          <a href="#" class="about-stage-card">
+            <img th:src="@{/images/about/about-image-11.png}" alt="" class="about-stage-img">
+            <h5 class="about-stage-name" th:text="#{about-caption-63}">The Expecting Heart</h5>
+            <p class="about-stage-desc" th:text="#{about-caption-64}">Looking for reassurance and guidance during pregnancy.</p>
+          </a>
+        </div>
+        <div class="col-md-4">
+          <a href="#" class="about-stage-card">
+            <img th:src="@{/images/about/about-image-12.png}" alt="" class="about-stage-img">
+            <h5 class="about-stage-name" th:text="#{about-caption-65}">The New Nest</h5>
+            <p class="about-stage-desc" th:text="#{about-caption-66}">Adjusting to baby cues, sleepless nights, and bonding.</p>
+          </a>
+        </div>
 
-    <!-- Include the Chatbot Fragment -->
-    <div th:replace="~{fragments/chatbot :: chatbot}"></div>
+        <div class="col-md-4">
+          <a href="#" class="about-stage-card">
+            <img th:src="@{/images/about/about-image-13.png}" alt="" class="about-stage-img">
+            <h5 class="about-stage-name" th:text="#{about-caption-67}">The Foundation Builder</h5>
+            <p class="about-stage-desc" th:text="#{about-caption-68}">Navigating tantrums and toddler independence.</p>
+          </a>
+        </div>
+        <div class="col-md-4">
+          <a href="#" class="about-stage-card">
+            <img th:src="@{/images/about/about-image-14.png}" alt="" class="about-stage-img">
+            <h5 class="about-stage-name" th:text="#{about-caption-69}">The Explorer’s Guide</h5>
+            <p class="about-stage-desc" th:text="#{about-caption-70}">Supporting early school years, curiosity, and social skills.</p>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  
+  <!-- CONTACT US (bottom) -->
+  <section class="about-contact-us">
+    <div class="container-xxl">
+      <div class="row justify-content-center">
+        <div class="col-lg-10">
+          <div class="about-contact-card">
+            <div class="row g-4 align-items-center">
+              <!-- Left copy -->
+              <div class="col-lg-7">
+                <h3 class="about-contact-title" th:text="#{about-caption-71}">Contact Us</h3>
+                <hr class="about-contact-rule"/>
+                <div class="about-contact-body">
+                  <p th:text="#{about-caption-72}">Have questions or need support? We’re here for you every step of the way.</p>
+                  <p class="about-contact-email"><b th:text="#{about-caption-73}">Email:</b> <a href="mailto:support@geniusParentingAI.ca" th:text="#{about-caption-74}">support@geniusParentingAI.ca</a></p>
+                  <p><b th:text="#{about-caption-75}">Company:</b> <span th:text="#{about-caption-76}">GNM399 Ventures Corp.</span></p>
+                  <p><b th:text="#{about-caption-77}">Address:</b> <span th:text="#{about-caption-78}">2112 W Broadway, Unit 208, Vancouver, BC V6K 2C8, Canada</span></p>
+                </div>
+              </div>
+              <!-- Right image -->
+              <div class="col-lg-5">
+                <div class="about-contact-photo">
+                  <img th:src="@{/images/about/about-image-15.png}" alt="Support specialist photo">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <div th:replace="~{fragments/footer :: footer}"></div>
+	<!-- BOTTOM CTA — edge-to-edge, no crop, image flush right -->
+	<section class="cta-band">
+	  <!-- Right-side art is outside the grid so it can hug the viewport -->
+	  <div class="cta-art" aria-hidden="true">
+	    <img src="/images/about/about-image-16.png" alt="" class="cta-art-img">
+	  </div>
+	  <div class="container-xxl" style="padding-top:80px;">
+	    <div class="row g-0 cta-row">
+	
+	      <!-- LEFT: text/content -->
+			<div class="col-12 col-lg-7 cta-left">
+			  <div class="cta-left-inner">   <!-- NEW wrapper -->
+			    <h2 class="cta-title"><span th:text="#{index-caption-19}">Parenting</span>,<br><span th:text="#{index-caption-20}">just a tap away</span></h2>
+			    <ul class="cta-bullets">
+			      <li>
+			        <span th:text="#{about-caption-33}">
+			          At GenParenting AI, we believe when parents feel supported, children flourish. And when children flourish, the future becomes brighter for us all.
+					</span>
+				  </li>
+			    </ul>
+			    <hr class="cta-rule">
+			
+			    <div class="cta-download d-flex align-items-center gap-4 mt-4">
+			      <img src="/images/gpa-qr-code.png" alt="QR code" class="cta-qr">
+			      <div>
+			        <h3 class="cta-download-title mb-2" th:text="#{index-caption-24}">Download the App!</h3>
+			        <p class="cta-download-sub mb-3" th:text="#{index-caption-25}">Free to try. No credit card needed.</p>
+			        <div class="d-flex align-items-center gap-2">
+			          <!-- <a href="#"><img src="/images/index/index-image11.png" alt="Google Play" class="cta-store-badge"></a>  -->
+			          <a href="https://apps.apple.com/us/app/geniusparentingai/id6747332178?itscg=30200&itsct=apps_box_link&mttnsubad=6747332178">
+			          	<img src="/images/index/index-image12.png" alt="App Store" class="cta-store-badge">
+			          </a>
+			        </div>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+	
+	      <!-- RIGHT: empty placeholder column (keeps grid space for art on lg+) -->
+	      <div class="col-lg-5 d-none d-lg-block"></div>
+	    </div>
+	  </div>
+	</section>  
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Footer -->
+  <div th:replace="~{fragments/footer :: footer}"></div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
