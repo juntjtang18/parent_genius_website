@@ -1,0 +1,179 @@
+<div th:fragment="seg-parenting-bottom">
+
+  <style>
+
+  .about-cta-btn{ background:var(--grad-btn); color:#fff; border:0; border-radius:9999px; padding:.9rem 2.2rem; font-weight:600; font-size:18pt; box-shadow:var(--shadow-cta); text-decoration:none; }
+  .about-cta-btn:hover{ color:#fff; filter:brightness(1.02); }
+  
+/* ================================
+   CTA / Bottom Band — FINAL
+   ================================ */
+
+/* Band: full-bleed, no vertical padding on the section itself */
+.cta-band{
+  position: relative;
+  overflow: hidden;
+  padding: 0;                                 /* no top/bottom padding */
+  min-height: clamp(520px, 68vh, 760px);      /* tune height as needed */
+  color: #fff;
+}
+.cta-band::before{
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, #3b82f6 0%, #6c6ff7 60%);
+  z-index: 0;
+}
+
+/* Grid: remove gutters and stretch to full band height */
+.cta-row{ min-height: inherit; }
+.cta-row > [class*="col-"]{ padding-left: 0; padding-right: 0; }
+
+/* Left column: container + inner wrapper for vertical padding */
+.cta-left{
+  position: relative;
+  z-index: 2;                      /* above art */
+  display: flex;
+  align-items: stretch;
+}
+.cta-left-inner{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;         /* center content within padded area */
+  min-height: 100%;
+  padding-inline: clamp(24px, 5vw, 64px);  /* horizontal */
+  padding-block: 64px;                      /* vertical */
+}
+
+/* Typography */
+.cta-title{
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;      /* Regular */
+  font-style: normal;
+  font-size: 50px;
+  line-height: 60px;
+  letter-spacing: 0;
+  margin: 0 0 24px;
+}
+
+.cta-bullets{ list-style: none; margin: 0 0 6px; padding: 0; }
+.cta-bullets li{
+  margin: 0 0 12px;                 /* paragraph spacing = 12px */
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;                  /* Regular */
+  font-style: normal;
+  font-size: 18px;
+  line-height: 30px;
+  letter-spacing: 0;
+  color: rgba(255,255,255,.92);
+}
+.cta-bullets li:last-child{ margin-bottom: 0; }
+.cta-tagline{ margin: 14px 0; font-weight: 600; color: rgba(255,255,255,.96); }
+.cta-rule{ border: 0; height: 1px; background: rgba(255,255,255,.25); max-width: 520px; margin: 18px 0 0; }
+
+/* Download block */
+.cta-qr{ width: 132px; height: 132px; border-radius: 12px; display: block; }
+/* CTA download title — spec */
+.cta-download-title{
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;       /* SemiBold */
+  font-style: normal;
+  font-size: 30px;
+  line-height: 40px;
+  letter-spacing: 0;
+  margin: 0;
+}
+/* CTA download sub — spec */
+.cta-download-sub{
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;        /* Regular */
+  font-style: normal;
+  font-size: 18px;
+  line-height: 30px;
+  letter-spacing: 0;
+  color: rgba(255,255,255,.85);
+  margin: 0 0 12px;        /* paragraph spacing = 12px */
+}
+.cta-store-badge{
+  height: 38px; width: auto; display: block;
+  filter: drop-shadow(0 6px 14px rgba(0,0,0,.18));
+}
+
+/* Right art: flush to viewport right; never crop */
+.cta-art{
+  position: absolute;
+  right: 0; top: 0; bottom: 0;                /* fill band height */
+  width: min(46vw, 860px);                     /* art width; tune if needed */
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-end;
+  z-index: 1;                                  /* under text, above bg */
+  pointer-events: none;                        /* decorative */
+}
+.cta-art-img{
+  height: 100%;                                /* full height of band */
+  width: auto;                                 /* preserve aspect */
+  object-fit: contain;                         /* never crop */
+  object-position: right center;
+  display: block;
+}
+
+/* Responsive tweaks */
+@media (max-width: 991.98px){
+  .cta-art{ display: none; }                   /* hide large art on small screens */
+  .cta-left-inner{
+    padding-inline: 24px;
+    padding-block: 32px;
+  }
+}
+
+.gp-index-ex-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}    
+  </style>
+  
+ 	<!-- BOTTOM CTA — edge-to-edge, no crop, image flush right -->
+	<section class="cta-band">
+	  <!-- Right-side art is outside the grid so it can hug the viewport -->
+	  <div class="cta-art" aria-hidden="true">
+	    <img src="/images/segments/emotional-image-08.png" alt="" class="cta-art-img">
+	  </div>
+	  <div class="container-xxl" style="padding-top:80px;">
+	    <div class="row g-0 cta-row">
+	
+	      <!-- LEFT: text/content -->
+			<div class="col-12 col-lg-7 cta-left">
+			  <div class="cta-left-inner">   <!-- NEW wrapper -->
+			    <h2 class="cta-title"><span th:text="#{seg-parenting-bottom-caption-19}">Parenting</span>,<br><span th:text="#{seg-parenting-bottom-caption-20}">just a tap away</span></h2>
+			    <ul class="cta-bullets">
+			      <li>
+			        <span th:text="#{seg-parenting-bottom-caption-33}">
+			          Download Genius Parenting AI and make parenting feel... lighter.
+					</span>
+				  </li>
+			    </ul>
+			    <hr class="cta-rule">
+			
+			    <div class="cta-download d-flex align-items-center gap-4 mt-4">
+			      <img src="/images/gpa-qr-code.png" alt="QR code" class="cta-qr">
+			      <div>
+			        <h3 class="cta-download-title mb-2" th:text="#{seg-parenting-bottom-caption-24}">Download the App!</h3>
+			        <p class="cta-download-sub mb-3" th:text="#{seg-parenting-bottom-caption-25}">Free to try. No credit card needed.</p>
+			        <div class="d-flex align-items-center gap-2">
+			          <!-- <a href="#"><img src="/images/index/index-image11.png" alt="Google Play" class="cta-store-badge"></a>  -->
+			          <a href="https://apps.apple.com/us/app/geniusparentingai/id6747332178?itscg=30200&itsct=apps_box_link&mttnsubad=6747332178">
+			          	<img src="/images/index/index-image12.png" alt="App Store" class="cta-store-badge">
+			          </a>
+			        </div>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+	
+	      <!-- RIGHT: empty placeholder column (keeps grid space for art on lg+) -->
+	      <div class="col-lg-5 d-none d-lg-block"></div>
+	    </div>
+	  </div>
+	</section>  
+</div>

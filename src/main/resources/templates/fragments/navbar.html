@@ -78,11 +78,12 @@
             <a class="nav-link" href="/signin" th:text="#{navbar.caption8}">Login</a>
           </li>
           <li class="nav-item dropdown" th:if="${auth}">
-            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown"
-               role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="fas fa-user-circle gp-avatar"></i>
-              <span th:text="${auth.name}"></span>
-            </a>
+			<a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown"
+			   role="button" data-bs-toggle="dropdown" aria-expanded="false">
+			  <i class="fas fa-user-circle gp-avatar"></i>
+			  <span th:text="${#strings.substring(auth.name, 0, 5)}"></span>
+			</a>
+
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
               <li><a class="dropdown-item" href="/profile" th:text="#{navbar.profile}">Profile</a></li>
               <li><a class="dropdown-item" href="/logout" th:text="#{navbar_logout}">Sign Out</a></li>
@@ -175,6 +176,11 @@
     .gp-brand-light {
       font-weight: 300; color: #fff; letter-spacing: .2px; font-size: 1.35rem;
     }
+    
+    .gp-navbar .navbar-nav {
+	  align-items: center;
+	}
+    
   </style>
 
   <!-- JS keeps your dynamic language list and cache clearing -->

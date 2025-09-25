@@ -6,7 +6,7 @@
     <title th:text="#{functions.title}">Functions - Parent Genius AI</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link th:href="@{/css/style.css}" rel="stylesheet" />
+    
     <!-- START PERFORMANCE CHANGES -->
     <th:block th:each="func : ${functions}" th:if="${func.id == selectedFunctionId}">
         <th:block th:each="article : ${func.articles}">
@@ -15,95 +15,169 @@
     </th:block>
     <!-- END PERFORMANCE CHANGES -->
     <style>
-        .carousel-inner { height: 80vh; }
-        .carousel-item img { width: 100%; height: 80vh; object-fit: cover; }
-        .carousel-caption {
-            top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: rgb(79, 192, 65, 0.5); padding: 20px; border-radius: 10px;
-            width: 80%; box-sizing: border-box; height: 42vh; max-height: 55vh; overflow-y: auto;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        .carousel-caption h2 {
-            font-size: 5rem; font-weight: bold; color: #0F2A24;
-            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.6); margin-bottom: 20px;
-        }
-        .carousel-caption ul {
-            list-style: none; padding: 0; font-size: 1.5rem; margin: 0 auto;
-            display: inline-block;
-        }
-        .carousel-caption ul li {
-            line-height: 1.5; margin-bottom: 10px; display: flex; align-items: center;
-            justify-content: center;
-        }
-        .carousel-caption ul li:last-child { margin-bottom: 0; }
-        .carousel-caption ul li a { color: white; text-decoration: none; }
-        .carousel-caption ul li a:hover { text-decoration: underline; }
-        .carousel-caption ul li img {
-            width: 24px; height: 24px; margin-right: 8px; object-fit: cover;
-        }
-        .carousel-indicators {
-            position: absolute; bottom: 30px; left: 0; right: 0; margin: 0 auto; padding: 0; z-index: 15;
-        }
-        .carousel-indicators button {
-            width: 10px; height: 10px; border-radius: 50%; margin: 0 5px; background-color: #fff;
-            opacity: 0.5; transition: opacity 0.3s;
-        }
-        .carousel-indicators .active { opacity: 1; }
+    	body {padding-top: 4rem; }
+    	@media (min-width:1200px){ body{ padding-top: 101px; } }     
+    	   
+        /* Articles grid (scoped) */
+		#fn-articles .card {
+		  height: 100%;
+		  border-radius: .75rem;
+		}
+		#fn-articles .card-img-top {
+		  width: 100%;
+		  height: 160px;
+		  object-fit: cover;
+		}
+		#fn-articles .card-title {
+		  font-size: 24px;
+		  line-height: 34px;
+		  margin-bottom: .25rem;
+		}
+		#fn-articles .card-text {
+		  font-size: .9rem;
+		  color: #6c757d;
+		}
+		
+		/* Poppins (regular + 600) */
+		@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+		
+		#fn-articles #fn-title {
+		  font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+		  font-weight: 400;
+		  font-size: 50px;
+		  line-height: 60px;
+		  letter-spacing: 0;
+		  margin-bottom: 8px;
+		  padding-bottom: 3rem;
+		}
+		
+		/* Grid spacing already handled by Bootstrap's g-4/row-cols classes */
+		
+		/* Card look */
+		#fn-articles .card {
+		  border: 0;
+		  border-radius: 12px;
+		  box-shadow: 
+		    0 4px 12px rgba(0,0,0,0.12),   /* subtle soft base */
+		    0 6px 20px rgba(0,0,0,0.18) !important;  /* stronger outer shadow */
+   		  height: 100%;
+		}
+		#fn-articles .card:hover {
+		  box-shadow: 
+		    0 6px 16px rgba(0,0,0,0.15),
+		    0 12px 28px rgba(0,0,0,0.25) !important;  /* more lift on hover */
+		}
+		#fn-articles .card-img-top {
+		  height: 180px;                 /* keeps consistent image height like the mock */
+		  object-fit: cover;
+		  border-top-left-radius: 12px;
+		  border-top-right-radius: 12px;
+		}
+		
+		#fn-articles .card-body {
+		  padding: 16px 18px 18px;
+		}
+		
+		/* Date (18/30, 12px gap) */
+		#fn-articles .card .text-muted,
+		#fn-articles .card .fn-date {
+		  font-family: "Poppins", sans-serif;
+		  font-weight: 400;
+		  font-size: 18px;
+		  line-height: 30px;
+		  margin-bottom: 12px;
+		}
+		
+		/* Title (24/34, semi-bold) */
+		#fn-articles .card-title,
+		#fn-articles .card .fn-title {
+		  font-family: "Poppins", sans-serif;
+		  font-weight: 600;
+		  font-size: 24px;
+		  line-height: 34px;
+		  color: #2B2F38;
+		  margin-bottom: 14px;
+		  padding-top:20px;
+		}
+		
+		/* View Blog CTA (18/30, semi-bold + little arrow nudge) */
+		#fn-articles .card a,
+		#fn-articles .card .btn-link,
+		#fn-articles .card .fn-cta {
+		  font-family: "Poppins", sans-serif;
+		  font-weight: 600;
+		  font-size: 18px;
+		  line-height: 30px;
+		  text-decoration: none;
+		  display: inline-flex;
+		  align-items: center;
+		  gap: 8px;
+		}
+		
+		#fn-articles .card a:hover { text-decoration: underline; }
+		
+		#fn-articles .card a .arrow {
+		  transition: transform 0.2s ease;
+		}
+		#fn-articles .card a:hover .arrow {
+		  transform: translateX(3px);
+		}
+  #fn-articles.container {
+    max-width: 1120px;   /* same as seg-emotion-top */
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+#fn-articles .fn-cta {
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 30px;
+  color: #000;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#fn-articles .fn-cta:hover {
+  text-decoration: underline;
+}
+
+#fn-articles .fn-cta .arrow {
+  transition: transform 0.2s ease;
+}
+
+#fn-articles .fn-cta:hover .arrow {
+  transform: translateX(3px);
+}
+        
     </style>
 </head>
 <body>
     <div th:replace="~{fragments/navbar :: navbar}"></div>
+<div th:replace="~{${segTopTemplate} :: ${segTopName}}"></div>
 
-    <div id="functionsCarousel" class="carousel slide" data-bs-ride="carousel">
-        <div th:if="${#lists.isEmpty(functions)}">
-            <p>No functions available.</p>
-        </div>
-        <div class="carousel-indicators" th:unless="${#lists.isEmpty(functions)}">
-            <th:block th:each="func, iter : ${functions}">
-                <button type="button" 
-                        data-bs-target="#functionsCarousel" 
-                        th:attr="data-bs-slide-to=${iter.index}, class=${func.id == selectedFunctionId ? 'active' : ''}"
-                        th:attrappend="aria-current=${func.id == selectedFunctionId ? 'true' : null}"
-                        th:aria-label="'Slide ' + ${iter.index + 1}"></button>
-            </th:block>
-        </div>
-        <div class="carousel-inner" th:unless="${#lists.isEmpty(functions)}">
-            <th:block th:each="func, iter : ${functions}">
-                <div class="carousel-item" 
-                     th:classappend="${func.id == selectedFunctionId ? 'active' : ''}"
-                     th:id="${func.name.toLowerCase().replaceAll('[\\s&]+', '-')}">
-                    <img th:src="${func.iconName != null ? '/images/' + func.iconName : '/images/default-function.jpg'}" 
-                         th:alt="${func.name}" class="d-block w-100">
-                    <div class="carousel-caption">
-                        <h2 th:text="${func.name}"></h2>
-                        <ul>
-                            <th:block th:each="article : ${func.articles}">
-                                <li>
-                                    <!-- START PERFORMANCE CHANGES -->
-                                    <img th:src="${article.iconImageUrl != null ? article.iconImageUrl : '/images/default-article-icon.png'}" 
-                                         th:alt="${article.title}" 
-                                         th:attr="loading=${func.id == selectedFunctionId ? 'eager' : 'lazy'}" />
-                                    <!-- END PERFORMANCE CHANGES -->
-                                    <a th:href="@{/function-article-list(function=${func.id}, article=${article.id})}"
-                                       th:text="${article.title}"></a>
-                                </li>
-                            </th:block>
-                            <li th:if="${#lists.isEmpty(func.articles)}">No articles available</li>
-                        </ul>
-                    </div>
-                </div>
-            </th:block>
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#functionsCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#functionsCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
-    </div>
+
+<!-- Function Articles -->
+<section id="fn-articles" class="container my-5" style="padding-bottom: 8rem;">
+  <div class="d-flex align-items-baseline justify-content-between mb-3">
+    <h2 id="fn-title" class="h3 m-0"></h2>
+    <small id="fn-count" class="text-muted"></small>
+  </div>
+
+  <!-- keep the same IDs so the existing JS continues to work -->
+  <div id="fn-article-grid" class="row g-4 row-cols-1 row-cols-md-2 row-cols-lg-3"></div>
+
+  <div class="text-center mt-3">
+    <button id="fn-load-more" class="btn btn-primary d-none">Load more</button>
+  </div>
+</section>
+
+
+
+<!-- include the seg bottom -->
+<div th:replace="~{${segBottomTemplate} :: ${segBottomName}}"></div> 
+    
     <!-- Include the Chatbot Fragment -->
     <div th:replace="~{fragments/chatbot :: chatbot}"></div>
 
@@ -111,18 +185,138 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script th:inline="javascript">
-        document.addEventListener('DOMContentLoaded', function () {
-            console.log('DOM loaded, selectedFunctionId:', /*[[${selectedFunctionId}]]*/);
-            const myCarousel = document.querySelector('#functionsCarousel');
-            if (!myCarousel) {
-                console.error('Carousel element not found!');
-                return;
-            }
-            const carousel = new bootstrap.Carousel(myCarousel, {
-                interval: 5000,
-                ride: 'carousel'
-            });
-        });
-    </script>
+		(function() {
+		  // ====== Config from server (Thymeleaf) ======
+		  const STRAPI_URL = /*[[${strapiUrl}]]*/ '';      // ✅ Thymeleaf outputs a proper JS string value
+		  const AUTH_TOKEN = /*[[${strapiToken}]]*/ '';    // ✅
+		  const FUNCTION_ID = /*[[${selectedFunctionId}]]*/ 0;
+		
+		  const API = STRAPI_URL
+		  ? (STRAPI_URL.endsWith('/') ? STRAPI_URL : STRAPI_URL + '/')
+		  : '/'; // fallback to site root if empty (won't be used if you set strapiUrl)
+		  console.log('[functions] STRAPI_URL=', STRAPI_URL, 'API=', API, 'FUNCTION_ID=', FUNCTION_ID);
+		
+		  // ====== State ======
+		  let page = 1;
+		  const pageSize = 12;
+		  let totalPages = 1;
+		  let loading = false;
+		
+		  // ====== Elements ======
+		  const titleEl = document.getElementById('fn-title');
+		  const countEl = document.getElementById('fn-count');
+		  const gridEl  = document.getElementById('fn-article-grid');
+		  const moreBtn = document.getElementById('fn-load-more');
+		
+		  // ====== Helpers ======
+		  const authHeaders = () => AUTH_TOKEN
+		    ? { 'Authorization': 'Bearer ' + AUTH_TOKEN }
+		    : {};
+		
+		  const fullUrl = (u) => {
+		    if (!u) return '';
+		    // Absolute or protocol-relative → return as-is
+		    if (u.startsWith('http://') || u.startsWith('https://') || u.startsWith('//')) return u;
+		    return STRAPI_URL.replace(/\/$/, '') + (u.startsWith('/') ? u : '/' + u);
+		  };
+		
+		  function articleCard(a) {
+		    const attr = a.attributes || {};
+		    const title = attr.title || 'Untitled';
+		    const summary = attr.summary || '';
+		    const slug = attr.slug || a.id;
+		
+		    // Try icon_image.formats.thumbnail.url; fall back to main url; else placeholder
+		    let img = '';
+		    const icon = attr.icon_image?.data?.attributes;
+		    if (icon?.formats?.thumbnail?.url) img = icon.formats.thumbnail.url;
+		    else if (icon?.url) img = icon.url;
+		    img = img ? fullUrl(img) : '/images/default-article-icon.png';
+		
+		    const col = document.createElement('div');
+		    col.className = 'col-12 col-md-6 col-lg-4';
+		
+		    col.innerHTML = `
+		      <div class="card h-100 shadow-sm">
+		        <img class="card-img-top" alt="">
+		        <div class="card-body d-flex flex-column">
+		          <h3 class="card-title">${title}</h3>
+		          <p class="card-text flex-grow-1">${summary}</p>
+		          <div style="padding-bottom:2rem;">
+			          <a class="fn-cta" href="/article?article=${a.id}">
+				          View Blog <span class="arrow">→</span>
+				      </a>
+			      </div>
+		        </div>
+		      </div>
+		    `;
+		    col.querySelector('img').src = img;
+		    col.querySelector('img').alt = title;
+		    return col;
+		  }
+		
+		  async function fetchFunctionName() {
+			    const u = `${API}functions/${FUNCTION_ID}?populate=*`;
+			    console.log('[functions] GET', u);    try {
+		      const res = await fetch(`${API}functions/${FUNCTION_ID}?populate=*`, { headers: authHeaders() });
+		      if (!res.ok) throw new Error('Failed to load function');
+		      const json = await res.json();
+		      const name = json?.data?.attributes?.name || `Function ${FUNCTION_ID}`;
+		      titleEl.textContent = "Blog Feed";
+		    } catch {
+		      titleEl.textContent = `Function ${FUNCTION_ID}`;
+		    }
+		  }
+		
+		  async function fetchArticles() {
+		    if (loading || page > totalPages) return;
+		    loading = true;
+		    moreBtn.classList.add('d-none');
+		
+		    const url = new URL(`${API}articles`);
+		    url.searchParams.set('filters[functions][id][$in]', String(FUNCTION_ID));
+		    url.searchParams.set('pagination[page]', String(page));
+		    url.searchParams.set('pagination[pageSize]', String(pageSize));
+		    url.searchParams.set('sort[0]', 'sortScore:desc');
+		    url.searchParams.set('sort[1]', 'createdAt:desc');
+		    url.searchParams.set('populate[icon_image][populate]', 'formats');
+		    console.log('[functions] GET', url.toString());
+		
+		    try {
+		      const res = await fetch(url.toString(), { headers: authHeaders() });
+		      if (!res.ok) throw new Error('Failed to load articles');
+		      const json = await res.json();
+		      const items = json?.data || [];
+		      const meta = json?.meta?.pagination || {};
+		      totalPages = meta?.pageCount || 1;
+		
+		      // Render
+		      items.forEach(a => gridEl.appendChild(articleCard(a)));
+		
+		      // Update counters & pager
+		      const total = meta?.total ?? (page * pageSize);
+		      countEl.textContent = `${gridEl.children.length} / ${total}`;
+		      page++;
+		      if (page <= totalPages) {
+		        moreBtn.classList.remove('d-none');
+		      }
+		    } catch (e) {
+		      console.error(e);
+		    } finally {
+		      loading = false;
+		    }
+		  }
+		
+		  // ====== Init ======
+		  document.addEventListener('DOMContentLoaded', () => {
+		    // If this page is used without tokens, it still works for public content
+		    fetchFunctionName();
+		    fetchArticles();
+		
+		    moreBtn.addEventListener('click', fetchArticles);
+		  });
+		})();
+</script>
+    
 </body>
 </html>

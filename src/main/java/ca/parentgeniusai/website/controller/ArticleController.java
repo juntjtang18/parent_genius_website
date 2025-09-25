@@ -72,7 +72,15 @@ public class ArticleController {
         model.addAttribute("strapiUrl", strapiApiUrl);
         model.addAttribute("strapiToken", strapiToken);
         logger.info("strapiApiUrl={}", strapiApiUrl);
-        return "function-article-list";
+        String[] htmlnames = {
+                "seg-emotion",
+                "seg-school",
+                "seg-growth",
+                "seg-parenting",
+                "seg-experts"
+            };        
+        
+        return "/segments/" + htmlnames[selectedFunctionId.intValue()];
     }
     
     @GetMapping("/new-article")

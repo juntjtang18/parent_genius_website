@@ -1,0 +1,121 @@
+<div th:fragment="seg-parenting-top">
+  <section class="about-hero">
+    <div class="about-hero-art" aria-hidden="true">
+      <img th:src="@{/images/segments/emotional-image-01.png}" alt="" class="about-hero-art-img">
+    </div>
+    <div class="container-xxl">
+      <div class="row g-0 about-hero-row">
+        <div class="col-12 col-lg-7 about-hero-left">
+          <div class="about-hero-left-inner">
+            <h1 class="about-hero-title" th:text="#{seg-parenting-top-caption-34}">Parenting Resources</h1>
+            <p class="about-hero-sub">
+              <span th:text="#{seg-parenting-top-caption-35}">Parenting isn’t meant to be done alone. This pillar brings you practical guides, tools, and tips — everything from daily routines to tech boundaries — so you feel supported, not overwhelmed.</span>
+            </p>
+            <div class="mt-4">
+              <a href="#download" class="about-cta-btn" th:text="#{seg-parenting-top-caption-37}">Download the App</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <style>
+  :root{
+    --gp-white: #fff;
+    --gp-blue-500: #3b82f6;
+    --gp-blue-700: #2563eb;
+    --gp-violet-500: #6c6ff7;
+    --gp-ink-900: #111827;
+    --gp-ink-600: #374151;
+    --gp-ink-500: #6B7280;
+    --grad-hero: linear-gradient(180deg, var(--gp-blue-500) 0%, var(--gp-blue-700) 55%, var(--gp-violet-500) 100%);
+    --grad-cta: linear-gradient(135deg, var(--gp-blue-500) 0%, var(--gp-violet-500) 60%);
+    --grad-btn: linear-gradient(90deg, #2ED3B7 0%, #1EC7E6 100%);
+    --shadow-1: 0 12px 28px rgba(15,23,42,.08);
+    --shadow-2: 0 16px 34px rgba(59,130,246,.28);
+    --shadow-cta: 0 10px 20px rgba(23,162,184,.25);
+    --shadow-cta-hover: 0 12px 26px rgba(23,162,184,.32);
+    --radius-xl: 9999px;
+    --container-pad: clamp(24px, 5vw, 64px);
+  }
+  body{ font-family:"Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif; }
+  .about-cta-btn{ background:var(--grad-btn); color:#fff; border:0; border-radius:9999px; padding:.9rem 2.2rem; font-weight:600; font-size:18pt; box-shadow:var(--shadow-cta); text-decoration:none; }
+  .about-cta-btn:hover{ color:#fff; filter:brightness(1.02); }
+
+  .about-hero{ position:relative; overflow:hidden; color:#fff; }
+  .about-hero::before{ content:""; position:absolute; inset:0; background: var(--grad-hero); z-index:0; }
+  .about-hero .container-xxl{ position:relative; z-index:2; }
+  .about-hero-row{ min-height: clamp(520px, 72vh, 820px); }
+  .about-hero-title{ font-weight:600; font-size: 60px; line-height:70px; margin:0 0 12px; }
+  .about-hero-sub{ font-size:20px; line-height: 32px; font-weight:400; max-width: 60ch; color: rgba(255,255,255,.95); padding-bottom: 60px}
+  .about-hero-left{ display:flex; align-items:center; }
+  .about-hero-left-inner{ padding-block:64px; padding-inline: clamp(24px, 5vw, 64px); }
+
+  .about-hero-art {
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: min(46vw, 860px);
+    display: flex; align-items: stretch; justify-content: flex-end;
+    z-index: 1; pointer-events: none;
+  }
+  .about-hero-art-img { height: 100%; width: auto; object-fit: contain; object-position: right center; display:block; }
+  @media (max-width: 991.98px){ .about-hero-art{ display:none; } }
+  
+
+  </style>
+
+<!-- Why it matters -->
+<section class="why-it-matters">
+  <div class="container">
+    <h2 class="why-title" th:text="#{seg-parenting-top-caption-101}">Why it matters</h2>
+    <p class="why-desc" th:text="#{seg-parenting-top-caption-102}"}>
+   	Parenting is the only job without formal training. Access to evidence-based resources helps parents feel less isolated and more empowered. It’s not about “perfect parenting” — it’s about having the right tools at the right time.
+    </p>
+  </div>
+</section>
+
+<style>
+  /* === Emotional Development: Why it matters === */
+  .why-it-matters {
+    background: #f7f9fc;       /* subtle light background like your mock */
+    padding: 80px 0;
+  }
+
+  .why-it-matters .container {
+    max-width: 1120px;          /* matches your site’s content width */
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+
+  .why-title {
+    font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 400;           /* Regular */
+    font-size: 50px;            /* required */
+    line-height: 60px;          /* required */
+    letter-spacing: 0px;        /* required */
+    color: #1f2937;             /* near your heading color */
+    margin: 0 0 24px 0;
+  }
+
+  .why-desc {
+    font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 400;           /* Regular */
+    font-size: 18px;            /* required */
+    line-height: 30px;          /* required */
+    color: #374151;             /* comfortable body text color */
+    max-width: 860px;           /* keeps the paragraph pleasantly narrow */
+    margin: 0;
+  }
+
+  /* Responsive comfort */
+  @media (max-width: 1024px) {
+    .why-title { font-size: 42px; line-height: 52px; }
+  }
+  @media (max-width: 640px) {
+    .why-it-matters { padding: 56px 0; }
+    .why-title { font-size: 32px; line-height: 40px; }
+    .why-desc { font-size: 16px; line-height: 28px; }
+  }
+</style>
+</div>  
