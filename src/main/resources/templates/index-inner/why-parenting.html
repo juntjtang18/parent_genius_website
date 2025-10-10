@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title th:text="#{why-parenting.title_en}">GenParenting AI</title>
+
+  <!-- Bootstrap (include once globally if you already do) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* =========================
+   Base / Utilities
+========================== */
+
+/* Reserve space for fixed-top navbar */
+body { padding-top: 3.5rem; }
+@media (min-width: 768px){ body { padding-top: 4rem; } }
+@media (min-width: 1200px){ body { padding-top: 101px; } }
+
+/* =========================
+   BOTTOM CTA — Edge-to-edge band
+========================== */
+.cta-band{
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+  min-height: clamp(520px, 68vh, 760px);
+  color: #fff;
+}
+.cta-band::before{
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, #3b82f6 0%, #6c6ff7 60%);
+  z-index: 0;
+}
+.cta-row{ min-height: inherit; }
+.cta-row > [class*="col-"]{ padding-left: 0; padding-right: 0; }
+
+.cta-left{
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: stretch;
+}
+.cta-left-inner{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100%;
+  padding-inline: clamp(24px, 5vw, 64px);
+  padding-block: 64px;
+}
+
+/* CTA typography */
+.cta-title{
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 50px;
+  line-height: 60px;
+  margin: 0 0 24px;
+}
+.cta-bullets{ list-style: none; margin: 0 0 6px; padding: 0; }
+.cta-bullets li{
+  margin: 0 0 12px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 30px;
+  color: rgba(255,255,255,.92);
+}
+.cta-bullets li:last-child{ margin-bottom: 0; }
+.cta-tagline{ margin: 14px 0; font-weight: 600; color: rgba(255,255,255,.96); }
+.cta-rule{ border: 0; height: 1px; background: rgba(255,255,255,.25); max-width: 520px; margin: 18px 0 0; }
+
+/* Download block */
+.cta-qr{ width: 132px; height: 132px; border-radius: 12px; display: block; }
+.cta-download-title{
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 30px;
+  line-height: 40px;
+  margin: 0;
+}
+.cta-download-sub{
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 30px;
+  color: rgba(255,255,255,.85);
+  margin: 0 0 12px;
+}
+.cta-store-badge{
+  height: 38px; width: auto; display: block;
+  filter: drop-shadow(0 6px 14px rgba(0,0,0,.18));
+}
+
+/* Right art */
+.cta-art{
+  position: absolute;
+  right: 0; top: 0; bottom: 0;
+  width: min(46vw, 860px);
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-end;
+  z-index: 1;
+  pointer-events: none;
+}
+.cta-art-img{
+  height: 100%;
+  width: auto;
+  object-fit: contain;
+  object-position: right center;
+  display: block;
+}
+
+@media (max-width: 991.98px){
+  .cta-art{ display: none; }
+  .cta-left-inner{
+    padding-inline: 24px;
+    padding-block: 32px;
+  }
+}
+
+/* =========================
+   WHY-PARENTING HERO (single-column, centered)
+========================== */
+.why-parenting-hero{
+  position: relative;
+  padding: 72px 0 48px;
+  background: linear-gradient(180deg, #3b82f6 0%, #2563eb 55%, #6c6ff7 100%);
+  color: #fff;
+  overflow: visible;               /* allow overhang */
+}
+.why-parenting-hero .container-xxl{ max-width: 1080px; }
+.why-parenting-hero-head{ text-align: center; margin: 0 auto 24px; }
+
+.why-parenting-hero-above-title {
+ font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 34px;
+  margin: 0 0 8px;
+  color: #fff;
+}
+.why-parenting-hero-title{
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 60px;
+  line-height: 70px;
+  margin: 0 0 8px;
+  color: #fff;
+}
+.why-parenting-hero-subtitle{
+  font-family: 'Poppins', sans-serif;
+  font-weight: 300;
+  font-size: 20px;
+  line-height: 32px;
+  color: rgba(255,255,255,.95);
+  margin: 0 auto;
+  max-width: 68ch;
+}
+
+.why-parenting-hero-image-wrap{
+  margin: 24px auto 0;
+  max-width: 860px;
+  background: #fff;
+  padding: 10px;
+  border-radius: 14px;
+  border: 3px solid #60a5fa;
+  box-shadow: 0 12px 28px rgba(0,0,0,.18);
+}
+.why-parenting-hero-image{
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+/* Overhang variant */
+.why-parenting-hero-image-wrap.hero-overhang{
+  transform: translateY(52px);
+  margin-bottom: -90px;
+  position: relative;
+  z-index: 4;
+}
+@media (max-width: 991.98px){
+  .why-parenting-hero{ padding: 56px 0 36px; }
+  .why-parenting-hero-image-wrap.hero-overhang{ transform: translateY(52px); margin-bottom: -52px; }
+}
+@media (max-width: 575.98px){
+  .why-parenting-hero-image-wrap.hero-overhang{ transform: translateY(38px); margin-bottom: -38px; }
+}
+
+/* =========================
+   Section 2: WHAT YOU'LL GET
+========================== */
+.why-parenting-get{
+  background: #F5F7FA;
+  padding: 56px 0 24px;
+}
+.wp-get-title{
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 50px;
+  line-height: 60px;
+  color: #111827;
+  margin: 0 0 24px;
+}
+.wp-get-row{ margin-top: 100px; margin-bottom: 156px; }
+
+.wp-get-media{
+  position: relative;
+  max-width: 980px;
+  margin: 0 auto;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 24px rgba(0,0,0,.08);
+}
+.wp-get-media.borderless{
+  box-shadow: none;
+  border-radius: 0;
+  overflow: visible;
+}
+
+.wp-get-img{ display:block; width:100%; height:auto; }
+
+.wp-get-card{
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 12px 28px rgba(15,23,42,.12);
+  padding: 18px 22px;
+  max-width: 360px;
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+.wp-get-card.left{ left: 24px; right: auto; }
+
+.wp-get-sub{
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 30px;
+  line-height: 40px;
+  color: #111827;
+  margin: 0 0 8px;
+}
+.wp-get-desc{
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 30px;
+  color: #6B7280;
+  margin: 0;
+}
+
+/* Static variant used inside grid splits */
+.wp-get-card.static {
+  position: static;
+  max-width: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 220px;
+}
+
+/* Floating cards at lg+ */
+@media (min-width: 992px){
+  .insights-float-col,
+  .wp-float-left-col{ position: relative; }
+
+  /* Float over right column (overlaps into left) */
+  .wp-get-card.static.float-overlap{
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translate(-50%, -50%);
+    width: 33.3333%;
+    min-width: 380px;
+    max-width: 500px;
+    z-index: 3;
+  }
+
+  /* Mirror: anchored in LEFT col, overlaps into RIGHT col */
+  .wp-get-card.static.float-overlap-4-left{
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translate(50%, -50%);
+    width: 33.3333%;
+    min-width: 380px;
+    max-width: 500px;
+    z-index: 3;
+  }
+}
+
+/* Responsive: stack the card under the image on small screens */
+@media (max-width: 575.98px){
+  .wp-get-card{
+    position: static;
+    margin: 10px 12px 0;
+    max-width: 100%;
+  }
+  .wp-get-row{ margin-bottom: 28px; }
+}
+
+/* === Align hero image to full row width (container width) === */
+.why-parenting-hero-image-wrap{
+  max-width: 100%;          /* was 860px */
+  margin-left: 0;           /* ensure it hugs the left like the row below */
+  margin-right: 0;
+}
+
+/* keep the overhang behavior exactly as before */
+.why-parenting-hero-image-wrap.hero-overhang{
+  transform: translateY(52px);
+  margin-bottom: -90px;
+}
+
+@media (max-width: 991.98px){
+  /* still full-width on tablet; keep your existing transform tweak */
+  .why-parenting-hero-image-wrap.hero-overhang{
+    transform: translateY(52px);
+    margin-bottom: -52px;
+  }
+}
+@media (max-width: 575.98px){
+  .why-parenting-hero-image-wrap.hero-overhang{
+    transform: translateY(38px);
+    margin-bottom: -38px;
+  }
+}
+
+/* Align hero image with 10/12 + 2/12 grid below */
+.why-parenting-hero-image-wrap{
+  max-width: 100%;           /* allow scaling */
+  margin: 0 auto;            /* center within container */
+  width: calc(100% - (100% / 12)); 
+  /* = 11/12 of container width */
+}
+
+/* Make sure inner <img> fills the wrapper */
+.why-parenting-hero-image{
+  width: 100%;
+  height: auto;
+}
+
+</style>
+
+</head>
+<body>
+
+  <!-- Navbar fragment (do not change path) -->
+  <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+  <!-- HERO -->
+  <section class="why-parenting-hero">
+    <div class="container-xxl">
+      <div class="why-parenting-hero-head">
+      	<p class="why-parenting-hero-above-title" th:text="#{why-parenting-hero-above-title-en}">
+      	Personalized Parenting Support
+      	</p>
+        <h1 class="why-parenting-hero-title" th:text="#{why-parenting.hero.title_en}" style="padding-top:12px;">
+          Parenting Made Personal
+        </h1>
+        <p class="why-parenting-hero-subtitle" th:text="#{why-parenting.hero.subtitle_en}">
+          No two families are the same. That’s why GenParenting AI begins by learning about you — your style, your values, your stage of parenting. Through our quick personality quiz and child profile setup, we create a daily experience that feels custom-built for your home.
+        </p>
+      </div>
+      <div class="why-parenting-hero-image-wrap hero-overhang">
+        <img th:src="@{/images/why-parenting/parenting-image-01.png}" alt="GenParenting app preview" class="why-parenting-hero-image">
+      </div>
+    </div>
+  </section>
+
+
+  <!-- WHAT YOU'LL GET -->
+  <section class="why-parenting-get" style="padding-top:17rem;">
+    <div class="container-xxl">
+      <h2 class="wp-get-title" th:text="#{why-parenting.get.title_en}">What You’ll Get:</h2>
+
+<!-- Row 1: Insights (image left 10/12, card right 2/12, centered) -->
+<div class="wp-get-row">
+  <div class="row align-items-center g-3">
+    <!-- LEFT: image (10/12 on lg+) -->
+    <div class="col-12 col-lg-10">
+      <div class="wp-get-media borderless">
+        <img th:src="@{/images/why-parenting/parenting-image-02.png}" alt="Insights" class="wp-get-img rounded-3 shadow-sm">
+      </div>
+    </div>
+
+<!-- RIGHT: floating card column -->
+<div class="col-12 col-lg-2 d-flex insights-float-col">
+  <div class="wp-get-card static float-overlap">
+    <h3 class="wp-get-sub" th:text="#{why-parenting.get.insights.title_en}">Insights</h3>
+    <p class="wp-get-desc" th:text="#{why-parenting.get.insights.desc_en}">
+      Daily insights tailored to your child's age, needs, and pace of growth.
+    </p>
+  </div>
+</div>
+
+  </div>
+</div>
+
+<!-- Row 2: Strategies (card left, image right; card floats 4/12 wide, half-overlap) -->
+<div class="wp-get-row">
+  <div class="row align-items-center g-3">
+    <!-- LEFT: floating card anchor (2/12 on lg+) -->
+    <div class="col-12 col-lg-2 d-flex wp-float-left-col">
+      <div class="wp-get-card static float-overlap-4-left">
+        <h3 class="wp-get-sub" th:text="#{why-parenting.get.strategies.title_en}">Strategies</h3>
+        <p class="wp-get-desc" th:text="#{why-parenting.get.strategies.desc_en}">
+          Parenting strategies that match your personality style.
+        </p>
+      </div>
+    </div>
+
+    <!-- RIGHT: image (10/12 on lg+) -->
+    <div class="col-12 col-lg-10">
+      <div class="wp-get-media borderless">
+        <img th:src="@{/images/why-parenting/parenting-image-03.png}" alt="Strategies" class="wp-get-img rounded-3 shadow-sm">
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Row 3: Tips (image left 10/12, floating card right 2/12 that overlaps left by half) -->
+<div class="wp-get-row">
+  <div class="row align-items-center g-3">
+    <!-- LEFT: image (10/12 on lg+) -->
+    <div class="col-12 col-lg-10">
+      <div class="wp-get-media borderless">
+        <img th:src="@{/images/why-parenting/parenting-image-04.png}" alt="Tips" class="wp-get-img rounded-3 shadow-sm">
+      </div>
+    </div>
+
+<!-- RIGHT: floating card column -->
+<div class="col-12 col-lg-2 d-flex insights-float-col">
+  <div class="wp-get-card static float-overlap">
+    <h3 class="wp-get-sub" th:text="#{why-parenting.get.tips.title_en}">Insights</h3>
+    <p class="wp-get-desc" th:text="#{why-parenting.get.tips.desc_en}">
+      Daily insights tailored to your child's age, needs, and pace of growth.
+    </p>
+  </div>
+</div>
+  </div>
+</div>
+
+
+<!-- Row 4: Strategies (card left, image right; card floats 4/12 wide, half-overlap) -->
+<div class="wp-get-row">
+  <div class="row align-items-center g-3">
+    <!-- LEFT: floating card anchor (2/12 on lg+) -->
+    <div class="col-12 col-lg-2 d-flex wp-float-left-col">
+      <div class="wp-get-card static float-overlap-4-left">
+        <h3 class="wp-get-sub" th:text="#{why-parenting.get.Confidence.title_en}">Confidence</h3>
+        <p class="wp-get-desc" th:text="#{why-parenting.get.Confidence.desc_en}">
+			Confidence that the advice you’re seeing is backed by child development experts.        
+		</p>
+      </div>
+    </div>
+
+    <!-- RIGHT: image (10/12 on lg+) -->
+    <div class="col-12 col-lg-10">
+      <div class="wp-get-media borderless">
+        <img th:src="@{/images/why-parenting/parenting-image-05.png}" alt="Confidence" class="wp-get-img rounded-3 shadow-sm">
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    </div>
+  </section>
+
+	<!-- BOTTOM CTA — edge-to-edge, no crop, image flush right -->
+	<section class="cta-band">
+	  <!-- Right-side art is outside the grid so it can hug the viewport -->
+	  <div class="cta-art" aria-hidden="true">
+	    <img src="/images/why-parenting/parenting-image-06.png"
+	         alt=""
+	         class="cta-art-img">
+	  </div>
+	  <div class="container-xxl">
+	    <div class="row g-0 cta-row">
+	
+	      <!-- LEFT: text/content -->
+			<div class="col-12 col-lg-7 cta-left">
+			  <div class="cta-left-inner">   <!-- NEW wrapper -->
+			    <h2 class="cta-title">
+			    	<span th:text="#{why-parenting-caption-19}">
+			    		Because parenting guidance only works if it works for you.
+			    	</span>
+		    	</h2>
+			
+			    <ul class="cta-bullets">
+			      <li><span th:text="#{why-parenting-caption-21}">Take the 30-Second Quiz to Get Your Personalized Plan</span></li>
+			    </ul>
+			
+			    <p class="cta-tagline" th:text="#{why-parenting-caption-24}">
+			      Download Genius Parenting AI and make parenting feel… lighter.
+			    </p>
+			
+			    <hr class="cta-rule">
+			
+			    <div class="cta-download d-flex align-items-center gap-4 mt-4">
+			      <img src="/images/gpa-qr-code.png" alt="QR code" class="cta-qr">
+			      <div>
+			        <h3 class="cta-download-title mb-2" th:text="#{why-parenting-caption-24}">Download the App!</h3>
+			        <p class="cta-download-sub mb-3" th:text="#{why-parenting-caption-25}">Free to try. No credit card needed.</p>
+			        <div class="d-flex align-items-center gap-2">
+			          <!-- <a href="#"><img src="/images/index/index-image11.png" alt="Google Play" class="cta-store-badge"></a>  -->
+			          <a href="https://apps.apple.com/us/app/geniusparentingai/id6747332178?itscg=30200&itsct=apps_box_link&mttnsubad=6747332178">
+			          	<img src="/images/index/index-image12.png" alt="App Store" class="cta-store-badge">
+			          </a>
+			        </div>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+	
+	      <!-- RIGHT: empty placeholder column (keeps grid space for art on lg+) -->
+	      <div class="col-lg-5 d-none d-lg-block"></div>
+	    </div>
+	  </div>
+	</section>
+
+  <!-- Footer fragment (as before) -->
+  <div th:replace="~{fragments/footer :: footer}"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
