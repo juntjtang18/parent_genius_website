@@ -60,65 +60,120 @@
   .about-why .about-lead{ max-width: 90ch; margin-inline:auto; text-align:center; color:#6b7280; font-size:18px; line-height: 30px; }
   .about-why .about-rule{ max-width: 920px; margin: 36px auto; border:0; height:1px; background:#e5e7eb; }
 
-  .about-why .about-bullets{ padding-left:0; list-style:none; margin:0; }
-  .about-why .about-bullet{ display:flex; justify-content:space-between; align-items:center; padding:22px 30px; border-bottom:1px solid #e5e7eb; color:#374151; cursor:default; }
-  .about-why .about-bullet:first-child{ border-top:1px solid #e5e7eb; }
-  .about-why .about-bullet .about-text{ margin:0; font-weight:500; font-size:20px; line-height:32px;}
-  .about-why .about-bullet .about-chevron{ font-weight:700; color:#9ca3af; }
-  .about-why .about-bullet.active{ color:#0f172a; }
-  .about-why .about-bullet.active .about-text{ font-weight:600; }
-  .about-why .about-bullet.active{ position:relative; }
-  .about-why .about-bullet.active::after{
-    content:""; position:absolute; left:0; right:0; bottom:-1px; height:3px; background: var(--gp-blue-500);
-  }
-
-  .about-why .about-phone{
-    width: 320px; max-width: 90%; display:block; margin-inline:auto;
-    filter: drop-shadow(0 18px 32px rgba(15,23,42,.18));
-  }
-  @media (min-width: 992px){
-    .about-why .about-phone{ margin-inline: 0 0; }
-  }
-.seg-ai-testimonials-divider{
-  opacity:1; border:0; height:1px; background:#CBD5E1; width:100%;
-  margin:24px 0 16px;
+/* === WHY WE BUILT THIS APP — bullet list with trailing arrow image === */
+.about-why .about-bullets {
+  padding-left: 0;
+  list-style: none;
+  margin: 0;
 }
 
-/*========================
-  Vision & Mission
-=========================*/
-.about-vm {
-  background: linear-gradient(180deg, var(--gp-blue-500) 0%, var(--gp-violet-500) 100%);
-  padding-block: clamp(64px, 10vw, 120px);
-  color: #fff;
+.about-why .about-bullet {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 22px 30px;
+  border-bottom: 1px solid #e5e7eb;
+  color: #a3aab6;                 /* lighter default text */
+  cursor: pointer;
+  transition: color 0.2s ease;
 }
-.about-vm-title {
-  font-weight: 600;
-  font-size: 50px;
-  line-height:60px;
-  margin-bottom: 16px;
+
+.about-why .about-bullet:first-child {
+  border-top: 1px solid #e5e7eb;
 }
-.about-vm-text {
-  font-size: 18px;
-  line-height: 30px;
-  line-height: 1.7;
-  max-width: 65ch;
-  color: rgba(255,255,255,.95);
+
+/* Text style */
+.about-why .about-bullet .about-text {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 32px;
+  flex: 1;
 }
-.about-vm-img {
-  max-width: 100%;
-  border-radius: 14px;
-  box-shadow: 0 10px 24px rgba(15,23,42,.2);
+
+/* Arrow image — hidden by default, shows after text */
+.about-why .about-bullet::after {
+  content: "";
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  background: url("/images/arrow.svg") no-repeat center;
+  background-size: contain;
+  opacity: 0;
+  transform: translateX(6px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  position: relative;
+  margin-left: 10px;
 }
-.about-vm-img {
-  width: 100%;          /* fills the col-6 width */
-  height: auto;         /* keep aspect ratio */
-  border-radius: 14px;
-  box-shadow: 0 10px 24px rgba(15,23,42,.2);
+
+/* Hover/active state */
+.about-why .about-bullet:hover,
+.about-why .about-bullet:focus-within,
+.about-why .about-bullet.active {
+  color: #333333;                 /* darker text on hover/click */
 }
-.about-vm-text {
-  max-width: 100%;      /* don’t artificially restrict text width */
+
+/* Show arrow on hover/active */
+.about-why .about-bullet:hover::after,
+.about-why .about-bullet:focus-within::after,
+.about-why .about-bullet.active::after {
+  opacity: 1;
+  transform: translateX(0);
 }
+
+/* Blue underline for hover/active */
+.about-why .about-bullet:hover::before,
+.about-why .about-bullet:focus-within::before,
+.about-why .about-bullet.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 4px;
+  background: #3d91fd;
+  border-radius: 2px;
+}
+
+
+  /*========================
+    Vision & Mission
+  =========================*/
+  .about-vm {
+    background: linear-gradient(180deg, var(--gp-blue-500) 0%, var(--gp-violet-500) 100%);
+    padding-block: clamp(64px, 10vw, 120px);
+    color: #fff;
+  }
+  .about-vm-title {
+    font-weight: 600;
+    font-size: 50px;
+    line-height:60px;
+    margin-bottom: 16px;
+  }
+  .about-vm-text {
+    font-size: 18px;
+    line-height: 30px;
+    line-height: 1.7;
+    max-width: 65ch;
+    color: rgba(255,255,255,.95);
+  }
+  .about-vm-img {
+    max-width: 100%;
+    border-radius: 14px;
+    box-shadow: 0 10px 24px rgba(15,23,42,.2);
+  }
+  .about-vm-img {
+    width: 100%;
+    height: auto;
+    border-radius: 14px;
+    box-shadow: 0 10px 24px rgba(15,23,42,.2);
+  }
+  .about-vm-text {
+    max-width: 100%;
+  }
+
   /*========================
     Brand Identity
   ==========================*/
@@ -164,132 +219,128 @@
   .about-contact-email a:hover{ text-decoration:underline; font-size:18px; line-height:30px;}
   .about-contact-photo{ border-radius:10px; overflow:hidden; }
   .about-contact-photo img{ width:100%; height:auto; display:block; }
-/* ================================
-   CTA / Bottom Band — FINAL
-   ================================ */
 
-/* Band: full-bleed, no vertical padding on the section itself */
-.cta-band{
-  position: relative;
-  overflow: hidden;
-  padding: 0;                                 /* no top/bottom padding */
-  min-height: clamp(520px, 68vh, 760px);      /* tune height as needed */
-  color: #fff;
-}
-.cta-band::before{
-  content: "";
-  position: absolute; inset: 0;
-  background: linear-gradient(135deg, #3b82f6 0%, #6c6ff7 60%);
-  z-index: 0;
-}
-
-/* Grid: remove gutters and stretch to full band height */
-.cta-row{ min-height: inherit; }
-.cta-row > [class*="col-"]{ padding-left: 0; padding-right: 0; }
-
-/* Left column: container + inner wrapper for vertical padding */
-.cta-left{
-  position: relative;
-  z-index: 2;                      /* above art */
-  display: flex;
-  align-items: stretch;
-}
-.cta-left-inner{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;         /* center content within padded area */
-  min-height: 100%;
-  padding-inline: clamp(24px, 5vw, 64px);  /* horizontal */
-  padding-block: 64px;                      /* vertical */
-}
-
-/* Typography */
-.cta-title{
-  font-family: 'Poppins', sans-serif;
-  font-weight: 400;      /* Regular */
-  font-style: normal;
-  font-size: 50px;
-  line-height: 60px;
-  letter-spacing: 0;
-  margin: 0 0 24px;
-}
-
-.cta-bullets{ list-style: none; margin: 0 0 6px; padding: 0; }
-.cta-bullets li{
-  margin: 0 0 12px;                 /* paragraph spacing = 12px */
-  font-family: 'Poppins', sans-serif;
-  font-weight: 400;                  /* Regular */
-  font-style: normal;
-  font-size: 18px;
-  line-height: 30px;
-  letter-spacing: 0;
-  color: rgba(255,255,255,.92);
-}
-.cta-bullets li:last-child{ margin-bottom: 0; }
-.cta-tagline{ margin: 14px 0; font-weight: 600; color: rgba(255,255,255,.96); }
-.cta-rule{ border: 0; height: 1px; background: rgba(255,255,255,.25); max-width: 520px; margin: 18px 0 0; }
-
-/* Download block */
-.cta-qr{ width: 132px; height: 132px; border-radius: 12px; display: block; }
-/* CTA download title — spec */
-.cta-download-title{
-  font-family: 'Poppins', sans-serif;
-  font-weight: 600;       /* SemiBold */
-  font-style: normal;
-  font-size: 30px;
-  line-height: 40px;
-  letter-spacing: 0;
-  margin: 0;
-}
-/* CTA download sub — spec */
-.cta-download-sub{
-  font-family: 'Poppins', sans-serif;
-  font-weight: 400;        /* Regular */
-  font-style: normal;
-  font-size: 18px;
-  line-height: 30px;
-  letter-spacing: 0;
-  color: rgba(255,255,255,.85);
-  margin: 0 0 12px;        /* paragraph spacing = 12px */
-}
-.cta-store-badge{
-  height: 38px; width: auto; display: block;
-  filter: drop-shadow(0 6px 14px rgba(0,0,0,.18));
-}
-
-/* Right art: flush to viewport right; never crop */
-.cta-art{
-  position: absolute;
-  right: 0; top: 0; bottom: 0;                /* fill band height */
-  width: min(46vw, 860px);                     /* art width; tune if needed */
-  display: flex;
-  align-items: stretch;
-  justify-content: flex-end;
-  z-index: 1;                                  /* under text, above bg */
-  pointer-events: none;                        /* decorative */
-}
-.cta-art-img{
-  height: 100%;                                /* full height of band */
-  width: auto;                                 /* preserve aspect */
-  object-fit: contain;                         /* never crop */
-  object-position: right center;
-  display: block;
-}
-
-/* Responsive tweaks */
-@media (max-width: 991.98px){
-  .cta-art{ display: none; }                   /* hide large art on small screens */
-  .cta-left-inner{
-    padding-inline: 24px;
-    padding-block: 32px;
+  /* ================================
+     CTA / Bottom Band — FINAL
+     ================================ */
+  .cta-band{
+    position: relative;
+    overflow: hidden;
+    padding: 0;
+    min-height: clamp(520px, 68vh, 760px);
+    color: #fff;
   }
-}
+  .cta-band::before{
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, #3b82f6 0%, #6c6ff7 60%);
+    z-index: 0;
+  }
+  .cta-row{ min-height: inherit; }
+  .cta-row > [class*="col-"]{ padding-left: 0; padding-right: 0; }
+  .cta-left{
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: stretch;
+  }
+  .cta-left-inner{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100%;
+    padding-inline: clamp(24px, 5vw, 64px);
+    padding-block: 64px;
+  }
+  .cta-title{
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 50px;
+    line-height: 60px;
+    letter-spacing: 0;
+    margin: 0 0 24px;
+  }
+  .cta-bullets{ list-style: none; margin: 0 0 6px; padding: 0; }
+  .cta-bullets li{
+    margin: 0 0 12px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 18px;
+    line-height: 30px;
+    letter-spacing: 0;
+    color: rgba(255,255,255,.92);
+  }
+  .cta-bullets li:last-child{ margin-bottom: 0; }
+  .cta-tagline{ margin: 14px 0; font-weight: 600; color: rgba(255,255,255,.96); }
+  .cta-rule{ border: 0; height: 1px; background: rgba(255,255,255,.25); max-width: 520px; margin: 18px 0 0; }
+  .cta-qr{ width: 132px; height: 132px; border-radius: 12px; display: block; }
+  .cta-download-title{
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 30px;
+    line-height: 40px;
+    letter-spacing: 0;
+    margin: 0;
+  }
+  .cta-download-sub{
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 18px;
+    line-height: 30px;
+    letter-spacing: 0;
+    color: rgba(255,255,255,.85);
+    margin: 0 0 12px;
+  }
+  .cta-store-badge{
+    height: 38px; width: auto; display: block;
+    filter: drop-shadow(0 6px 14px rgba(0,0,0,.18));
+  }
+  .cta-art{
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: min(46vw, 860px);
+    display: flex;
+    align-items: stretch;
+    justify-content: flex-end;
+    z-index: 1;
+    pointer-events: none;
+  }
+  .cta-art-img{
+    height: 100%;
+    width: auto;
+    object-fit: contain;
+    object-position: right center;
+    display: block;
+  }
+  @media (max-width: 991.98px){
+    .cta-art{ display: none; }
+    .cta-left-inner{
+      padding-inline: 24px;
+      padding-block: 32px;
+    }
+  }
 
-.gp-index-ex-card-link {
-  text-decoration: none;
-  color: inherit;
-  display: block;
-}    
+  .gp-index-ex-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }    
+
+  /* Reserve space for the fixed navbar when scrolling to #anchors */
+  :root{
+    --nav-offset: 120px;           /* desktop navbar height */
+  }
+  @media (max-width: 991.98px){
+    :root{ --nav-offset: 70px; }   /* smaller navbar on tablets/phones */
+  }
+  html{
+    scroll-behavior: smooth;       /* nice animation */
+    scroll-padding-top: var(--nav-offset);
+  }
   </style>
 </head>
 <body>
@@ -350,9 +401,9 @@
     <div class="container-xxl">
       <div class="row justify-content-center">
         <div class="col-lg-10">
-          <h2 class="about-title" th:text="#{about-caption-43}">Why we built this app</h2>
+          <h2 id="features" class="about-title" th:text="#{about-caption-43}">Why we built this app</h2>
           <p class="about-lead mt-3" th:text="#{about-caption-44}">
-            We saw a gap. Too often, parents are given generic advice that doesn’t reflect their culture, personality,or stage of life. Parenting isn’t one‑size‑fits‑all.
+            We saw a gap. Too often, parents are given generic advice that doesn’t reflect their culture, personality,or stage of life. Parenting isn’t one-size-fits-all.
          </p>
          <p class="about-lead mt-3" th:text="#{about-caption-441}">
             So we asked: What if parents had a tool that could meet them exactly where they are?
@@ -365,24 +416,21 @@
 	  <div class="col-lg-2"></div>
 	  <!-- Text / bullets: 2/3 width -->
 	  <div class="col-lg-5">
-	    <ul class="about-bullets">
-	      <li class="about-bullet active">
-	        <p class="about-text mb-0" th:text="#{about-caption-45}">A quiz that takes just 30 seconds to understand you.</p>
-	        <span class="about-chevron">›</span>
-	      </li>
-	      <li class="about-bullet">
-	        <p class="about-text mb-0" th:text="#{about-caption-46}">A community where parents connect, share, and grow together.</p>
-	        <span class="about-chevron">›</span>
-	      </li>
-	      <li class="about-bullet">
-	        <p class="about-text mb-0" th:text="#{about-caption-47}">An AI chat assistant that never sleeps, ready when nobody else can be.</p>
-	        <span class="about-chevron">›</span>
-	      </li>
-	      <li class="about-bullet">
-	        <p class="about-text mb-0" th:text="#{about-caption-48}">Tips and courses that are matched to your personality, not just your child’s age.</p>
-	        <span class="about-chevron">›</span>
-	      </li>
-	    </ul>
+<ul class="about-bullets">
+  <li class="about-bullet" tabindex="0">
+    <p class="about-text mb-0" th:text="#{about-caption-45}">A quiz that takes just 30 seconds to understand you.</p>
+  </li>
+  <li class="about-bullet" tabindex="0">
+    <p class="about-text mb-0" th:text="#{about-caption-46}">A community where parents connect, share, and grow together.</p>
+  </li>
+  <li class="about-bullet" tabindex="0">
+    <p class="about-text mb-0" th:text="#{about-caption-47}">An AI chat assistant that never sleeps, ready when nobody else can be.</p>
+  </li>
+  <li class="about-bullet" tabindex="0">
+    <p class="about-text mb-0" th:text="#{about-caption-48}">Tips and courses that are matched to your personality, not just your child’s age.</p>
+  </li>
+</ul>
+
 	  </div>
 	
 	  <!-- Image: 1/3 width -->
@@ -398,7 +446,7 @@
       <div class="row mt-5 justify-content-center">
         <div class="col-lg-10">
           <p class="about-lead" th:text="#{about-caption-49}">
-            We built GenParenting AI to be that partner. Not another “how‑to” manual, but a guide that listens first,
+            We built GenParenting AI to be that partner. Not another “how-to” manual, but a guide that listens first,
             then responds in a way that feels personal, practical, and compassionate.
           </p>
         </div>
@@ -472,7 +520,7 @@
 							  	<circle cx="12" cy="12" r="12" fill="#20C4D7" fill-opacity=".15"/>
 							  	<path d="M7 12.5l3.2 3L17 9" stroke="#20C4D7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 							</svg>
-							<span class="about-logo-text" th:text="#{about-caption-57}">The circular form mirrors the never‑ending journey of parenting — growth, connection, and new beginnings.</span>
+							<span class="about-logo-text" th:text="#{about-caption-57}">The circular form mirrors the never-ending journey of parenting — growth, connection, and new beginnings.</span>
 						  </li>
 						  <li style="padding-top:20px; padding-bottom:20px;">
 						    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -592,7 +640,7 @@
 	
 	      <!-- LEFT: text/content -->
 			<div class="col-12 col-lg-7 cta-left">
-			  <div class="cta-left-inner">   <!-- NEW wrapper -->
+			  <div class="cta-left-inner">
 			    <h2 class="cta-title"><span th:text="#{index-caption-19}">Parenting</span>,<br><span th:text="#{index-caption-20}">just a tap away</span></h2>
 			    <ul class="cta-bullets">
 			      <li>
