@@ -28,12 +28,13 @@
             <a class="nav-link dropdown-toggle" href="/segments" id="segmentsDDLink" role="button"
                data-bs-toggle="dropdown" aria-expanded="false"
                th:text="#{navbar_segments}">Segments</a>
-            <ul class="dropdown-menu" aria-labelledby="segmentsDDLink">
-              <li><a class="dropdown-item" th:href="@{/functions(function=1)}" th:text="#{navbar_seg1}">Emotional Development</a></li>
-              <li><a class="dropdown-item" th:href="@{/functions(function=2)}" th:text="#{navbar_seg2}">School & Social Life</a></li>
-              <li><a class="dropdown-item" th:href="@{/functions(function=3)}" th:text="#{navbar_seg3}">Growth & Milestones</a></li>
-              <li><a class="dropdown-item" th:href="@{/functions(function=4)}" th:text="#{navbar_seg4}">Parenting Resources</a></li>
-              <li><a class="dropdown-item" th:href="@{/functions(function=5)}" th:text="#{navbar_seg5}">Child Experts</a></li>
+            <!-- STYLE ONLY: add gp-cta-menu; add gp-cta-item to each link -->
+            <ul class="dropdown-menu gp-cta-menu" aria-labelledby="segmentsDDLink">
+              <li><a class="dropdown-item gp-cta-item" th:href="@{/functions(function=1)}" th:text="#{navbar_seg1}">Emotional Development</a></li>
+              <li><a class="dropdown-item gp-cta-item" th:href="@{/functions(function=2)}" th:text="#{navbar_seg2}">School & Social Life</a></li>
+              <li><a class="dropdown-item gp-cta-item" th:href="@{/functions(function=3)}" th:text="#{navbar_seg3}">Growth & Milestones</a></li>
+              <li><a class="dropdown-item gp-cta-item" th:href="@{/functions(function=4)}" th:text="#{navbar_seg4}">Parenting Resources</a></li>
+              <li><a class="dropdown-item gp-cta-item" th:href="@{/functions(function=5)}" th:text="#{navbar_seg5}">Child Experts</a></li>
             </ul>
           </li>
 
@@ -41,9 +42,10 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="faqDropdown" role="button" data-bs-toggle="dropdown"
                aria-expanded="false" th:text="#{navbar_faq}">FAQ</a>
-            <ul class="dropdown-menu" aria-labelledby="faqDropdown">
-              <li><a class="dropdown-item" href="/faq" th:text="#{navbar_faq.caption1}">Parents</a></li>
-              <li><a class="dropdown-item" href="/feedback" th:text="#{navbar_faq.caption2}">Feedback</a></li>
+            <!-- STYLE ONLY -->
+            <ul class="dropdown-menu gp-cta-menu" aria-labelledby="faqDropdown">
+              <li><a class="dropdown-item gp-cta-item" href="/faq" th:text="#{navbar_faq.caption1}">Parents</a></li>
+              <li><a class="dropdown-item gp-cta-item" href="/feedback" th:text="#{navbar_faq.caption2}">Feedback</a></li>
             </ul>
           </li>
 
@@ -51,9 +53,10 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="communityDropdown" role="button"
                data-bs-toggle="dropdown" aria-expanded="false" th:text="#{navbar.caption3}">Community</a>
-            <ul class="dropdown-menu" aria-labelledby="communityDropdown">
-              <li><a class="dropdown-item" href="/posts" th:text="#{navbar.caption5}">Connect</a></li>
-              <li><a class="dropdown-item" href="/join-us" th:text="#{navbar.caption6}">Join Us</a></li>
+            <!-- STYLE ONLY -->
+            <ul class="dropdown-menu gp-cta-menu" aria-labelledby="communityDropdown">
+              <li><a class="dropdown-item gp-cta-item" href="/posts" th:text="#{navbar.caption5}">Connect</a></li>
+              <li><a class="dropdown-item gp-cta-item" href="/join-us" th:text="#{navbar.caption6}">Join Us</a></li>
             </ul>
           </li>
 
@@ -127,60 +130,85 @@
 }
 
 @media (min-width: 768px) {
-  .gp-navbar {
-    --gp-navbar-pad: 0.75rem; /* tablets */
-  }
+  .gp-navbar { --gp-navbar-pad: 0.75rem; }
 }
-
 @media (min-width: 1200px) {
-  .gp-navbar {
-    --gp-navbar-pad: 1.5rem; /* desktops */
-  }
+  .gp-navbar { --gp-navbar-pad: 1.5rem; }
 }
 
-    .gp-logo { height: 32px; width: auto; }
+.gp-logo { height: 32px; width: auto; }
 
-    /* Apply Poppins Medium 18pt to menu items */
-    .gp-menu .nav-link,
-    .gp-right .nav-link {
-      font-family: 'Poppins', sans-serif;
-      font-weight: 500;   /* Medium */
-      font-size: 18px;
-      color: #eaf1ff !important;
-      padding: .5rem .9rem;
-    }
+/* Poppins Medium 18pt for menu items */
+.gp-menu .nav-link,
+.gp-right .nav-link {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  color: #eaf1ff !important;
+  padding: .5rem .9rem;
+}
+.gp-menu .nav-link:hover, 
+.gp-right .nav-link:hover { 
+  color: #ffffff !important; 
+  text-decoration: underline; 
+}
 
-    .gp-menu .nav-link:hover, 
-    .gp-right .nav-link:hover { 
-      color: #ffffff !important; 
-      text-decoration: underline; 
-    }
+.gp-divider {
+  display: inline-block; width: 1px; height: 22px; 
+  background: rgba(255,255,255,.45); margin: 0 .4rem;
+}
+.gp-avatar { font-size: 1.4rem; margin-right: .4rem; }
+.gp-toggler { border: 1px solid rgba(255,255,255,.6); }
+.gp-toggler .navbar-toggler-icon { filter: invert(1) brightness(2); }
 
-    .gp-divider {
-      display: inline-block; width: 1px; height: 22px; 
-      background: rgba(255,255,255,.45); margin: 0 .4rem;
-    }
-    .gp-avatar { font-size: 1.4rem; margin-right: .4rem; }
-    .navbar .dropdown-menu { border-radius: .75rem; }
-    .gp-toggler { border: 1px solid rgba(255,255,255,.6); }
-    .gp-toggler .navbar-toggler-icon { filter: invert(1) brightness(2); }
+.navbar .dropdown-menu { border-radius: .75rem; }
+@media (max-width: 991.98px) {
+  .gp-divider { display: none !important; }
+  .gp-menu { padding-top: .5rem; }
+}
 
-    @media (max-width: 991.98px) {
-      .gp-divider { display: none !important; }
-      .gp-menu { padding-top: .5rem; }
-    }
+.gp-brand-strong { font-weight: 700; color: #fff; letter-spacing: .2px; font-size: 1.35rem; }
+.gp-brand-light  { font-weight: 300; color: #fff; letter-spacing: .2px; font-size: 1.35rem; }
 
-    .gp-brand-strong {
-      font-weight: 700; color: #fff; letter-spacing: .2px; font-size: 1.35rem;
-    }
-    .gp-brand-light {
-      font-weight: 300; color: #fff; letter-spacing: .2px; font-size: 1.35rem;
-    }
-    
-    .gp-navbar .navbar-nav {
-	  align-items: center;
-	}
-    
+.gp-navbar .navbar-nav { align-items: center; }
+
+/* ===== Card-style dropdown to match mock (style only) ===== */
+.gp-cta-menu {
+  --gp-card-radius: 14px;
+  --gp-card-shadow: 0 10px 22px rgba(0,0,0,.12);
+  --gp-text-muted: #5b667a;
+  --gp-text-hover: #2563eb;
+
+  min-width: 320px;
+  padding: 18px 22px;
+  border: none;
+  border-radius: var(--gp-card-radius);
+  box-shadow: var(--gp-card-shadow);
+  background: #fff;
+}
+.gp-cta-item {
+  display: block;
+  padding: 8px 6px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  color: var(--gp-text-muted);
+  white-space: normal;
+  line-height: 1.35;
+  border-radius: 8px;
+}
+.gp-cta-item:hover,
+.gp-cta-item:focus {
+  color: var(--gp-text-hover);
+  text-decoration: underline;
+  background: transparent;
+}
+.gp-cta-item.active,
+.gp-cta-item:active {
+  background: transparent;
+  color: var(--gp-text-hover);
+  text-decoration: underline;
+}
   </style>
 
   <!-- JS keeps your dynamic language list and cache clearing -->
