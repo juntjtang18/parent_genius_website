@@ -43,10 +43,10 @@
   Global/base
 ==========================*/
 body{
-  padding-top: 4rem;
+  padding-top: 3rem;
   font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
 }
-@media (min-width:1200px){ body{ padding-top: 101px; } }
+@media (min-width:1200px){ body{ padding-top: 80px; } }
 
 /*========================
   Shared: CTA button
@@ -278,7 +278,7 @@ body{
 <section class="seg-ai-hero">
   <div class="container-xxl">
     <div class="row align-items-center g-4">
-      <div class="col-lg-6">
+      <div class="col-lg-5">
         <h1 class="seg-ai-hero-title" th:text="#{seg-topic.hero.title}">Hot topics, real talk</h1>
         <p class="seg-ai-hero-tagline" th:text="#{seg-ai-chat.hero.tagline}">
           It’s not just smart — It gets you
@@ -287,10 +287,10 @@ body{
           Parenting is full of questions, doubts, and “Am I doing this right?” moments...
         </p>
         <div class="mt-4">
-          <a href="#download" class="btn seg-ai-cta-btn" th:text="#{seg-ai-chat.hero.startBtn}">Download the App</a>
+          <a href="https://apps.apple.com/us/app/geniusparentingai/id6747332178" class="btn seg-ai-cta-btn" th:text="#{seg-ai-chat.hero.startBtn}">Download the App</a>
         </div>
       </div>
-      <div class="col-lg-6 text-center">
+      <div class="col-lg-6 offset-lg-1 text-center">
         <img th:src="@{/images/seg-ai/ai-image-01.png}" alt="App preview phones"
              class="seg-ai-hero-image hero-overhang img-fluid">
       </div>

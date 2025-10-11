@@ -5,28 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title th:text="#{home.title_en}">GenParenting AI</title>
 
-  <!-- Bootstrap (include once globally if you already do) -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
-<style>
+
+  <style>
 /* =========================
    Base / Utilities
 ========================== */
 
-/* Reserve space for fixed-top navbar */
-body { padding-top: 3.5rem; }
-@media (min-width: 768px){ body { padding-top: 4rem; } }
-@media (min-width: 1200px){ body { padding-top: 101px; } }
 
-.gp-section { padding: 64px 0; }
-.gp-section-tight { padding: 40px 0; }
-
-/* CTA button */
 .gp-cta-btn{
   background: linear-gradient(90deg, #2ED3B7 0%, #1EC7E6 100%);
   color: #fff; border: 0; border-radius: 9999px;
   padding: .9rem 2.6rem; font-family: 'Poppins', sans-serif;
-  font-weight: 600; font-size: 20pt; letter-spacing: .2px;
+  font-weight: 600; font-size: 18px; line-height:26px; letter-spacing: .2px;
   box-shadow: 0 10px 20px rgba(23,162,184,.25);
   transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
 }
@@ -37,35 +29,36 @@ body { padding-top: 3.5rem; }
   color: #fff;
 }
 
-/* Keep hero above Section 2 (overhang look) */
-.gp-hero{ position: relative; z-index: 3; padding: 40px 0 8px; overflow: visible; }
-.gp-hero > .container-xxl{ position: relative; z-index: 3; }
-.hero-overhang{ position: relative; z-index: 4; }
-
-/* Ensure Section 2 stays underneath */
-.gp-index-why{ position: relative; z-index: 1; }
-
 /* =========================
    Section 1: HERO
 ========================== */
+.gp-hero{ position: relative; z-index: 3; padding: 40px 0 8px; overflow: visible; }
+.gp-hero > .container-xxl{ position: relative; z-index: 3; }
+.hero-overhang{ position: relative; z-index: 4; }
+.gp-index-why{ position: relative; z-index: 1; }
 
 .gp-hero::before{
-  content:""; position:absolute; inset:0; bottom:-56px;
-  background:#3b82f6;
-  background-image: linear-gradient(180deg, #3b82f6 0%, #2563eb 55%, #6c6ff7 100%);
+  content:"";
+  position:absolute;
+  inset:0;
+  bottom:-56px;
+  background-image: linear-gradient(180deg,#3D91FD 0%,#6A84FF 50%,#8977FF 100%);
   z-index:0;
 }
 .gp-index-hero-title{
   font-family:'Poppins',sans-serif; font-weight:500;
-  font-size:50px; line-height:60px; color:#fff; margin-bottom:1rem; margin-top:2rem
+  font-size:60px; line-height:70px; color:#fff; margin-bottom:1rem; margin-top:2rem
 }
 .gp-index-hero-subtitle{
   font-family:'Poppins',sans-serif; font-weight:200;
-  font-size:20pt; line-height:32pt; color:#fff; margin-top:1rem;
+  font-size:20px; line-height:32px; color:#fff; margin-top:1rem;
 }
-.gp-hero-image{ max-width:520px; width:100%; height:auto; filter:drop-shadow(0 18px 40px rgba(0,0,0,.25)); }
-
-/* Final overhang spacing (desktop + responsive) */
+.gp-hero-image{
+  width: auto;           /* render at intrinsic width */
+  max-width: 100%;       /* but don’t overflow the column/viewport */
+  height: auto;
+  filter: drop-shadow(0 18px 40px rgba(0,0,0,.25));
+}
 .hero-overhang{ transform: translateY(52px); margin-bottom: -90px; }
 .gp-index-why{ padding-top: 174px; }
 @media (max-width: 991.98px){
@@ -84,269 +77,121 @@ body { padding-top: 3.5rem; }
 /* =========================
    Section 2: WHY
 ========================== */
-
 .gp-index-why{ background:#F5F7FA; padding-bottom:80px; }
 .gp-index-why-title{
   font-family: 'Poppins', sans-serif;
-  font-weight: 400;      /* Regular */
-  font-style: normal;
-  font-size: 50px;
-  line-height: 60px;
-  letter-spacing: 0;     /* 0px */
-  color: #111827;        /* keep your current color */
-  padding-bottom: 2rem;  /* ← added */
+  font-weight: 400; font-style: normal;
+  font-size: 50px; line-height: 60px; letter-spacing: 0;
+  color: #333333; padding-bottom: 2rem;
 }
 .gp-index-why-card{ display:block; }
 .gp-index-why-img{ width:100%; height:auto; border-radius:12px; display:block; }
 .gp-index-why-card-title{
   font-family: 'Poppins', sans-serif;
-  font-weight: 600;        /* SemiBold */
-  font-style: normal;
-  font-size: 30px;
-  line-height: 38px;
-  letter-spacing: 0;
-  color: #111827;
-  padding-top: 1.6rem;     /* added */
-  /* keeps your existing margin-top: 18px unless you remove it */
+  font-weight: 600; font-style: normal;
+  font-size: 30px; line-height: 38px; letter-spacing: 0;
+  color: #111827; padding-top: 1.6rem;
 }
 .gp-index-why-card-text{
   font-family: 'Poppins', sans-serif;
-  font-weight: 400;        /* Regular */
-  font-style: normal;
-  font-size: 18px;
-  line-height: 30px;       /* 30px */
-  letter-spacing: 0;       /* 0% */
-  color: #6B7280;
-  margin-top: 10px;        /* keep your existing top offset */
-  margin-bottom: 12px;     /* paragraph spacing */
-  max-width: 42ch;
+  font-weight: 400; font-style: normal;
+  font-size: 18px; line-height: 30px; letter-spacing: 0;
+  color: #666666; margin-top: 10px; margin-bottom: 12px; max-width: 42ch;
 }
-/* WHY link spec override (left-aligned) */
 .gp-index-why-link{
-  /* Typography */
   font-family: 'Poppins', sans-serif;
-  font-weight: 600;       /* SemiBold */
-  font-style: normal;
-  font-size: 18px;
-  line-height: 30px;
-  letter-spacing: 0;
-
-  /* Spacing (keeps existing left alignment and inline-flex layout) */
-  margin-top: 14px;       /* existing */
-  margin-bottom: 12px;    /* paragraph spacing */
-  display: inline-flex;   /* keep */
-  align-items: center;    /* keep */
-  gap: .35rem;            /* keep */
-
-  /* Visuals (unchanged) */
-  color: #111827;
-  text-decoration: none;
+  font-weight: 600; font-style: normal;
+  font-size: 18px; line-height: 30px; letter-spacing: 0;
+  margin-top: 14px; margin-bottom: 12px;
+  display: inline-flex; align-items: center; gap: .35rem;
+  color: #111827; text-decoration: none;
 }
 .gp-index-why-link::after{ content:"→"; line-height:1; transform: translateY(1px); }
 .gp-index-why-link:hover{ text-decoration: underline; }
 
 /* =========================
-   Section 3: RESULTS / TESTIMONIALS (clean + merged)
+   Section 3: RESULTS
 ========================== */
-
-.gp-index-results{ background: transparent; padding-top: 32px; }
-
+.gp-index-results{ background: transparent; }
 .gp-index-results-box{
-  background-image: linear-gradient(180deg, #3b82f6 0%, #6c6ff7 100%);
-  color: #fff;
-  overflow: hidden;
-  padding: 48px 0 6rem;        /* ↑ top 48px, bottom 6rem to push space under CTA */
+  background-image: linear-gradient(180deg,#3D91FD 0%,#6A84FF 50%,#8977FF 100%);
+  color: #fff; overflow: hidden; padding: 48px 0 6rem;
 }
-
-/* Title (Poppins 400 / 50/61) */
 .gp-index-results-title{
   font-family: 'Poppins', sans-serif;
-  font-weight: 400;
-  font-style: normal;
-  font-size: 50px;
-  line-height: 61px;
-  letter-spacing: 0;
-  color: #fff;
-  margin-top: 100px;
-  margin-bottom: 50px;
+  font-weight: 400; font-style: normal;
+  font-size: 50px; line-height: 61px; letter-spacing: 0;
+  color: #fff; margin-top: 100px; margin-bottom: 50px;
 }
-
-/* One “rail” at 60vw for title, viewport, arrows, and CTA block */
 .gp-index-results .gp-index-results-title,
 .gp-index-results .gp-index-quote-viewport,
 .gp-index-results .gp-index-results-controls,
 .gp-index-results .gp-index-results-title ~ .mt-3{
-  width: 60vw;
-  max-width: 60vw;
-  margin-left: auto;
-  margin-right: auto;
-  text-align: left;
+  width: 60vw; max-width: 60vw; margin-left: auto; margin-right: auto; text-align: left;
 }
-
-/* Scroll-snap carousel */
-.gp-index-quote-viewport{
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-.gp-index-quote-viewport::-webkit-scrollbar{ display: none; }
-
-.gp-index-quote-track{ display: flex; gap: 18px; }
-
+.gp-index-quote-viewport{ overflow-x:auto; scroll-snap-type:x mandatory; -ms-overflow-style:none; scrollbar-width:none; }
+.gp-index-quote-viewport::-webkit-scrollbar{ display:none; }
+.gp-index-quote-track{ display:flex; gap:18px; }
 .gp-index-quote-card{
-  flex: 0 0 100%;                /* one card per viewport width (60vw rail) */
-  scroll-snap-align: start;
-  background: #fff;
-  color: #111827;
-  border-radius: 12px;
-  box-shadow: 0 10px 24px rgba(0,0,0,.08);
-  border-bottom: 6px solid #2ED3B7;
-  padding: 0;                    /* no padding on the card itself */
+  flex:0 0 100%; scroll-snap-align:start;
+  background:#fff; color:#111827; border-radius:12px;
+  box-shadow:0 10px 24px rgba(0,0,0,.08);
+  border-bottom:6px solid #2ED3B7; padding:0;
 }
-
-/* Inner content padding inside the card border */
-.gp-index-quote-inner{
-  padding: 4rem;
-  padding-bottom: 3rem;          /* slightly tighter bottom */
-}
-
-/* Quote text (Poppins 400 Italic / 38/56) */
+.gp-index-quote-inner{ padding:4rem 4rem 3rem; }
 .gp-index-quote-text{
-  font-family: 'Poppins', sans-serif;
-  font-weight: 400;
-  font-style: italic;
-  font-size: 38px;
-  line-height: 56px;
-  letter-spacing: 0;
-  color: #1f2937;
-  margin: 0 0 14px;
-  padding: 0;                    /* ensure padding lives on the inner wrapper only */
+  font-family:'Poppins',sans-serif; font-weight:400; font-style:italic;
+  font-size:38px; line-height:56px; letter-spacing:0; color:#1f2937; margin:0 0 14px;
 }
-
-/* Author row */
-.gp-index-quote-author{ display: flex; align-items: center; gap: 10px; }
-.gp-index-avatar{ width: 48px; height: 48px; border-radius: 50%; object-fit: cover; }
+.gp-index-quote-author{ display:flex; align-items:center; gap:10px; }
+.gp-index-avatar{ width:48px; height:48px; border-radius:50%; object-fit:cover; }
 .gp-index-author-name{
-  font-family: 'Poppins', sans-serif;
-  font-weight: 700;
-  font-style: normal;
-  font-size: 18px;
-  line-height: 34px;
-  letter-spacing: 0;
-  color: #374151;
+  font-family:'Poppins',sans-serif; font-weight:700; font-style:normal;
+  font-size:18px; line-height:34px; letter-spacing:0; color:#374151;
 }
-
-/* Controls (enlarged 200%) */
 .gp-index-results-controls{
-  display: flex;
-  justify-content: flex-end;
-  gap: 20px;
-  padding-top: 2rem;
+  display:flex; justify-content:flex-end; gap:20px; padding-top:2rem;
 }
 .gp-index-nav{
-  background: transparent;
-  border: 0;
-  color: #eaf1ff;
-  font-size: 2.5rem;             /* 200% */
-  line-height: 1;
-  padding: .25rem .5rem;
-  cursor: pointer;
-  transition: transform .12s ease, opacity .12s ease;
-  display: inline-flex; align-items: center; justify-content: center;
+  background:transparent; border:0; color:#eaf1ff;
+  font-size:2.5rem; line-height:1; padding:.25rem .5rem; cursor:pointer;
+  transition:transform .12s ease, opacity .12s ease; display:inline-flex; align-items:center; justify-content:center;
 }
-.gp-index-nav:hover{ transform: translateY(-1px); opacity: .9; }
-.gp-index-nav:disabled{ opacity: .35; cursor: default; transform: none; }
-
-/* Responsive tweak for arrows if desired */
-@media (max-width: 575.98px){
-  .gp-index-results .gp-index-nav{ font-size: 2rem; }
-}
+.gp-index-nav:hover{ transform:translateY(-1px); opacity:.9; }
+.gp-index-nav:disabled{ opacity:.35; cursor:default; transform:none; }
+@media (max-width: 575.98px){ .gp-index-results .gp-index-nav{ font-size: 2rem; } }
 
 /* =========================
-   Section 4: EXPLORE (3 + 2 cards)
+   Section 4: EXPLORE
 ========================== */
-
-/* ===== EXPLORE (3 + 2 cards) — stable version ===== */
 .gp-index-explore{ background:#f8fafc; padding:64px 0 72px; }
-
 .gp-index-ex-title{
-  font-family: 'Poppins', sans-serif;
-  font-weight: 400;      /* Regular */
-  font-style: normal;
-  font-size: 50px;
-  line-height: 60px;
-  letter-spacing: 0;
-  text-align: center;
-  color: #111827;
-  margin-bottom: 4rem;
-  margin-top: 4rem;
-  /* new: constrain width so it wraps to ~2 lines on large screens */
-  max-width: 28ch;       /* tune 26–32ch to taste */
-  margin-left: auto;     /* center the narrower block */
-  margin-right: auto;
-  text-wrap: balance;    /* nicer break where supported */
-  word-break: normal;
+  font-family:'Poppins',sans-serif; font-weight:400; font-style:normal;
+  font-size:50px; line-height:60px; letter-spacing:0; text-align:center; color:#111827;
+  margin:4rem auto; max-width:28ch; text-wrap:balance;
 }
+@media (max-width:575.98px){ .gp-index-ex-title{ max-width:100%; } }
 
-/* Let it breathe on small screens (wraps naturally) */
-@media (max-width: 575.98px){
-  .gp-index-ex-title{ max-width: 100%; }
-}
-
-
-
-/* layout: top | divider | bottom; height will be set by JS equalizer */
 .gp-index-ex-card{
-  display:grid;
-  grid-template: 1fr auto 1fr / 1fr;  /* top | divider | bottom */
-  align-items:center;
-  background:#fff;
-  border:0; border-radius:14px;
-  padding:22px 16px 20px;
+  display:grid; grid-template: 1fr auto 1fr / 1fr; align-items:center;
+  background:#fff; border:0; border-radius:14px; padding:22px 16px 20px;
   box-shadow:0 12px 28px rgba(15,23,42,.08);
   transition: background .18s ease, box-shadow .18s ease, transform .18s ease, color .18s ease;
+  position: relative; overflow: hidden;
 }
-
-.gp-index-ex-img{
-  grid-row:1; align-self:end;
-  width:84px; height:84px; object-fit:contain;
-  margin:12px auto 8px;
-}
-.gp-index-ex-divider{
-  grid-row:2; height:1px; width:70%;
-  background:#E5E7EB; margin:8px auto 10px;
-}
-
-/* bottom half — both lines stacked (wrap <h6> + <p> in .gp-index-ex-text) */
-.gp-index-ex-text{
-  grid-row:3; display:flex; flex-direction:column; align-items:center; gap:4px; text-align:center;
-}
-/* Explore card title (spec) */
+.gp-index-ex-img{ grid-row:1; align-self:end; width:84px; height:84px; object-fit:contain; margin:12px auto 8px; }
+.gp-index-ex-divider{ grid-row:2; height:1px; width:70%; background:#E5E7EB; margin:8px auto 10px; }
+.gp-index-ex-text{ grid-row:3; display:flex; flex-direction:column; align-items:center; gap:4px; text-align:center; }
 .gp-index-ex-h{
-  font-family: 'Poppins', sans-serif;
-  font-weight: 600;      /* SemiBold */
-  font-style: normal;
-  font-size: 24px;
-  line-height: 34px;
-  letter-spacing: 0;
-  text-align: center;    /* Center */
-  color: #111827;
-  margin: 0 0 12px;      /* paragraph spacing = 12px */
+  font-family:'Poppins',sans-serif; font-weight:600; font-style:normal;
+  font-size:24px; line-height:34px; letter-spacing:0; text-align:center; color:#111827; margin:0 0 12px;
 }
-/* Explore card body text (spec) */
 .gp-index-ex-p{
-  font-family: 'Poppins', sans-serif;
-  font-weight: 400;       /* Regular */
-  font-style: normal;
-  font-size: 18px;
-  line-height: 30px;
-  color: #6B7280;
-  text-align: center;
-  margin: 0 0 12px;       /* paragraph spacing = 12px */
+  font-family:'Poppins',sans-serif; font-weight:400; font-style:normal;
+  font-size:18px; line-height:30px; color:#6B7280; text-align:center; margin:0 0 12px;
 }
 
-/* hover: gradient + light-on-dark text */
+/* hover for generic cards */
 .gp-index-ex-card:hover,
 .gp-index-ex-card:focus-within{
   background:#4f46e5;
@@ -365,263 +210,119 @@ body { padding-top: 3.5rem; }
   .gp-index-explore{ padding:48px 0 56px; }
   .gp-index-ex-img{ width:72px; height:72px; }
 }
-/* === Explore: square cards === */
+
+/* SQUARE cards */
 .ex-square .gp-index-ex-card{
-  width: 100%;
-  aspect-ratio: 1 / 1;           /* height auto-calculated = width */
-  height: auto !important;       /* ignore any past inline heights */
-  display: grid;                 /* keep your existing layout */
-  grid-template: 1fr auto 1fr / 1fr;  /* top | divider | bottom */
-  align-items: center;
+  width:100%; aspect-ratio:1 / 1; height:auto !important;
+  display:grid; grid-template:1fr auto 1fr / 1fr; align-items:center;
 }
+@media (max-width:575.98px){ .ex-square .gp-index-ex-card{ aspect-ratio:4 / 3; } }
+@media (min-width:576px){ .ex-square .gp-index-ex-card{ margin-left:auto; margin-right:auto; } }
+.gp-index-explore .row{ --bs-gutter-y:1rem; --bs-gutter-x:calc(var(--bs-gutter-y) * 1.5); }
+@media (max-width:575.98px){ .gp-index-explore .row{ --bs-gutter-y:.75rem; } }
 
-/* Keep existing placements inside the square */
-.ex-square .gp-index-ex-img{ grid-row: 1; align-self: end; }
-.ex-square .gp-index-ex-divider{ grid-row: 2; }
-.ex-square .gp-index-ex-text{ grid-row: 3; display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
+/* ---------- INSIGHTS CARD (clean overlay; mirrors normal face) ---------- */
+:root{ --ins-pad:16px; --ins-headroom:44px; }
 
-/* Optional: if mobile squares feel too tall, make them 4:3 below 576px */
-@media (max-width: 575.98px){
-  .ex-square .gp-index-ex-card{ aspect-ratio: 4 / 3; }
+.ex-square .gp-index-ex-card.is-insights{
+  position: relative; padding:0; aspect-ratio:1 / 1; overflow:hidden; border-radius:14px;
 }
-
-@media (min-width: 576px){
-  .ex-square .gp-index-ex-card{
-    margin-left: auto;    /* center inside the Bootstrap col */
-    margin-right: auto;
-  }
+.gp-index-ex-card.is-insights .gp-index-ex-face{
+  position:absolute; inset:var(--ins-pad);
+  display:grid; grid-template-rows:48% auto 52%; align-items:center; border-radius:12px;
 }
-/* Optional: keep full width on very small screens */
-@media (max-width: 575.98px){
-  .ex-square .gp-index-ex-card{ width: 100%; }
+.gp-index-ex-card.is-insights .gp-index-ex-face .gp-index-ex-img{ grid-row:1; align-self:end; }
+.gp-index-ex-card.is-insights .gp-index-ex-face .gp-index-ex-divider{ grid-row:2; width:70%; height:1px; background:#E5E7EB; margin:0 auto; }
+.gp-index-ex-card.is-insights .gp-index-ex-face .gp-index-ex-text{ grid-row:3; align-self:start; }
+.gp-index-ex-card.is-insights .gp-index-ex-h{ padding-top:44px; }
+
+.gp-index-ex-card.is-insights .gp-index-ex-overlay{
+  position:absolute; inset:0; border-radius:inherit;
+  background: linear-gradient(180deg,#3D91FD 0%,#5A84FF 55%,#8977FF 100%);
+  color:#fff;
+  display:grid; grid-template-rows:auto 1fr auto; align-items:start;
+  padding: var(--ins-headroom) 28px 28px;
+  opacity:0; transform: translateY(6px) scale(.98);
+  transition:opacity .18s ease, transform .18s ease;
+  pointer-events:none; text-align:center;
 }
-
-/* EXPLORE — make cards smaller via column width (not inner 80%) */
-.gp-index-explore .row{
-  --bs-gutter-x: 1rem;  /* equal horizontal gap */
-  --bs-gutter-y: 1rem;  /* equal vertical gap   */
+.gp-index-ex-card.is-insights:hover .gp-index-ex-face{
+  opacity:0; transform: translateY(6px) scale(.98); transition:opacity .18s ease, transform .18s ease;
 }
-
-
-/* Mobile: keep full width; just use the equal gutters above */
-@media (max-width: 575.98px){
-  .gp-index-explore .row{
-    --bs-gutter-x: .75rem;
-    --bs-gutter-y: .25rem;
-  }
+.gp-index-ex-card.is-insights:hover .gp-index-ex-overlay{
+  opacity:1; transform:none; pointer-events:auto;
 }
-/* EXPLORE — make horizontal spacing 1.5× the vertical spacing */
-.gp-index-explore .row{
-  --ex-gutter-y: 1rem;                 /* vertical gap (baseline) */
-  --bs-gutter-y: var(--ex-gutter-y);   /* vertical = 1rem */
-  --bs-gutter-x: calc(var(--ex-gutter-y) * 2);  /* horizontal = 1.5rem */
+.gp-index-ex-card.is-insights .gp-ol-title{
+  grid-row:1; font-family:'Poppins',sans-serif; font-weight:600; font-size:26px; line-height:34px; margin:0;
 }
-
-/* Mobile tweak: keep proportions (horizontal = 1.5 × vertical) */
-@media (max-width: 575.98px){
-  .gp-index-explore .row{
-    --ex-gutter-y: .75rem;             /* vertical = .75rem */
-    /* horizontal becomes 1.125rem via calc above */
-  }
+.gp-index-ex-card.is-insights .gp-index-ex-overlay .gp-index-ex-divider{
+  grid-row:1; justify-self:center; width:72%; height:1px; background:rgba(255,255,255,.35); margin:12px 0 18px;
 }
-
-/* --- FIX: uniform square size for all Explore cards --- */
-
-
-/* Mobile: keep full width; let height follow aspect ratio for better fit */
-@media (max-width: 767.98px){
-  .ex-square .gp-index-ex-card{
-    width: 100%;
-    height: auto;
-    aspect-ratio: 4 / 3;             /* your existing mobile tweak */
-  }
+.gp-index-ex-card.is-insights .gp-ol-text{
+  grid-row:1; font-family:'Poppins',sans-serif; font-weight:400; font-size:16px; line-height:26px;
+  color:rgba(255,255,255,.95); max-width:34ch; margin:0 auto 0;
 }
-
-/* Keep gutters tidy (horizontal a touch wider if you like) */
-.gp-index-explore .row{
-  --bs-gutter-y: 1rem;
-  --bs-gutter-x: calc(var(--bs-gutter-y) * 1.5);
+.gp-index-ex-card.is-insights .gp-ol-link{
+  grid-row:3; justify-self:center; font-family:'Poppins',sans-serif; font-weight:600; font-size:16px; line-height:24px;
+  color:#fff; text-decoration:none;
 }
-/* EXPLORE: strict squares, same size in every row */
-.ex-square .gp-index-ex-card{
-  width: 100% !important;     /* fill the column */
-  max-width: none !important;
-  aspect-ratio: 1 / 1;        /* <- makes it a square */
-  height: auto !important;    /* ignore any past fixed heights */
-  display: grid;
-  grid-template: 1fr auto 1fr / 1fr;  /* top | divider | bottom */
-  align-items: center;
-}
-
-/* keep placements inside */
-.ex-square .gp-index-ex-img{ grid-row: 1; align-self: end; }
-.ex-square .gp-index-ex-divider{ grid-row: 2; }
-.ex-square .gp-index-ex-text{ grid-row: 3; display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
-
-/* Optional: mobile squares a bit shorter */
-@media (max-width: 575.98px){
-  .ex-square .gp-index-ex-card{ aspect-ratio: 4 / 3; }
+.gp-index-ex-card.is-insights .gp-ol-link:hover{ text-decoration:underline; }
+@media (max-width:575.98px){
+  .gp-index-ex-card.is-insights .gp-index-ex-face{ inset:12px; }
+  .gp-index-ex-card.is-insights .gp-index-ex-overlay{ padding:36px 20px 24px; }
 }
 
 /* ================================
-   CTA / Bottom Band — FINAL
-   ================================ */
-
-/* Band: full-bleed, no vertical padding on the section itself */
-.cta-band{
-  position: relative;
-  overflow: hidden;
-  padding: 0;                                 /* no top/bottom padding */
-  min-height: clamp(520px, 68vh, 760px);      /* tune height as needed */
-  color: #fff;
-}
-.cta-band::before{
-  content: "";
-  position: absolute; inset: 0;
-  background: linear-gradient(135deg, #3b82f6 0%, #6c6ff7 60%);
-  z-index: 0;
-}
-
-/* Grid: remove gutters and stretch to full band height */
+   CTA / Bottom Band
+================================ */
+.cta-band{ position:relative; overflow:hidden; padding:0; min-height: clamp(520px, 68vh, 760px); color:#fff; }
+.cta-band::before{ content:""; position:absolute; inset:0; background-image:linear-gradient(180deg,#3D91FD 0%,#6A84FF 50%,#8977FF 100%); z-index:0; }
 .cta-row{ min-height: inherit; }
-.cta-row > [class*="col-"]{ padding-left: 0; padding-right: 0; }
-
-/* Left column: container + inner wrapper for vertical padding */
-.cta-left{
-  position: relative;
-  z-index: 2;                      /* above art */
-  display: flex;
-  align-items: stretch;
-}
-.cta-left-inner{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;         /* center content within padded area */
-  min-height: 100%;
-  padding-inline: clamp(24px, 5vw, 64px);  /* horizontal */
-  padding-block: 64px;                      /* vertical */
-}
-
-/* Typography */
-.cta-title{
-  font-family: 'Poppins', sans-serif;
-  font-weight: 400;      /* Regular */
-  font-style: normal;
-  font-size: 50px;
-  line-height: 60px;
-  letter-spacing: 0;
-  margin: 0 0 24px;
-}
-
-.cta-bullets{ list-style: none; margin: 0 0 6px; padding: 0; }
-.cta-bullets li{
-  margin: 0 0 12px;                 /* paragraph spacing = 12px */
-  font-family: 'Poppins', sans-serif;
-  font-weight: 400;                  /* Regular */
-  font-style: normal;
-  font-size: 18px;
-  line-height: 30px;
-  letter-spacing: 0;
-  color: rgba(255,255,255,.92);
-}
-.cta-bullets li:last-child{ margin-bottom: 0; }
-.cta-tagline{ margin: 14px 0; font-weight: 600; color: rgba(255,255,255,.96); }
-.cta-rule{ border: 0; height: 1px; background: rgba(255,255,255,.25); max-width: 520px; margin: 18px 0 0; }
-
-/* Download block */
-.cta-qr{ width: 132px; height: 132px; border-radius: 12px; display: block; }
-/* CTA download title — spec */
-.cta-download-title{
-  font-family: 'Poppins', sans-serif;
-  font-weight: 600;       /* SemiBold */
-  font-style: normal;
-  font-size: 30px;
-  line-height: 40px;
-  letter-spacing: 0;
-  margin: 0;
-}
-/* CTA download sub — spec */
-.cta-download-sub{
-  font-family: 'Poppins', sans-serif;
-  font-weight: 400;        /* Regular */
-  font-style: normal;
-  font-size: 18px;
-  line-height: 30px;
-  letter-spacing: 0;
-  color: rgba(255,255,255,.85);
-  margin: 0 0 12px;        /* paragraph spacing = 12px */
-}
-.cta-store-badge{
-  height: 38px; width: auto; display: block;
-  filter: drop-shadow(0 6px 14px rgba(0,0,0,.18));
-}
-
-/* Right art: flush to viewport right; never crop */
-.cta-art{
-  position: absolute;
-  right: 0; top: 0; bottom: 0;                /* fill band height */
-  width: min(46vw, 860px);                     /* art width; tune if needed */
-  display: flex;
-  align-items: stretch;
-  justify-content: flex-end;
-  z-index: 1;                                  /* under text, above bg */
-  pointer-events: none;                        /* decorative */
-}
-.cta-art-img{
-  height: 100%;                                /* full height of band */
-  width: auto;                                 /* preserve aspect */
-  object-fit: contain;                         /* never crop */
-  object-position: right center;
-  display: block;
-}
-
-/* Responsive tweaks */
+.cta-row > [class*="col-"]{ padding-left:0; padding-right:0; }
+.cta-left{ position:relative; z-index:2; display:flex; align-items:stretch; }
+.cta-left-inner{ display:flex; flex-direction:column; justify-content:center; min-height:100%; padding-inline: clamp(24px, 5vw, 64px); padding-block:64px; }
+.cta-title{ font-family:'Poppins',sans-serif; font-weight:400; font-size:50px; line-height:60px; margin:0 0 24px; }
+.cta-bullets{ list-style:none; margin:0 0 6px; padding:0; }
+.cta-bullets li{ margin:0 0 12px; font-family:'Poppins'; font-weight:400; font-size:18px; line-height:36px; color:rgba(255,255,255,.92); }
+.cta-tagline{ margin:14px 0; font-family:'Poppins'; font-size:18px; line-height:36px; font-weight:600; color:rgba(255,255,255,.96); }
+.cta-rule{ border:0; height:1px; background:rgba(255,255,255,.25); max-width:520px; margin:18px 0 0; }
+.cta-qr{ width:132px; height:132px; border-radius:12px; display:block; }
+.cta-download-title{ font-family:'Poppins',sans-serif; font-weight:600; font-size:30px; line-height:40px; margin:0; }
+.cta-download-sub{ font-family:'Poppins',sans-serif; font-weight:400; font-size:18px; line-height:30px; color:rgba(255,255,255,.85); margin:0 0 12px; }
+.cta-store-badge{ height:38px; width:auto; display:block; filter:drop-shadow(0 6px 14px rgba(0,0,0,.18)); }
+.cta-art{ position:absolute; right:0; top:0; bottom:0; width:min(46vw, 860px); display:flex; align-items:stretch; justify-content:flex-end; z-index:1; pointer-events:none; }
+.cta-art-img{ height:100%; width:auto; object-fit:contain; object-position:right center; display:block; }
 @media (max-width: 991.98px){
-  .cta-art{ display: none; }                   /* hide large art on small screens */
-  .cta-left-inner{
-    padding-inline: 24px;
-    padding-block: 32px;
-  }
+  .cta-art{ display:none; }
+  .cta-left-inner{ padding-inline:24px; padding-block:32px; }
 }
 
-.gp-index-ex-card-link {
-  text-decoration: none;
-  color: inherit;
-  display: block;
-}
+.gp-index-ex-card-link{ text-decoration:none; color:inherit; display:block; }
 
-/* =========================
-   Modal
-========================== */
 .gp-index-modal{ border-radius:16px; box-shadow:0 18px 50px rgba(0,0,0,.25); }
 
-/* =========================
-   Extra responsive tweaks
-========================== */
 @media (max-width: 991.98px){
-  .gp-index-quote-viewport,
-  .gp-index-results-controls{ max-width:600px; }
+  .gp-index-quote-viewport, .gp-index-results-controls{ max-width:600px; }
   .gp-index-bottom-img{ max-width:440px; }
 }
 @media (max-width: 575.98px){
-  .gp-index-quote-viewport,
-  .gp-index-results-controls{ max-width:100%; }
+  .gp-index-quote-viewport, .gp-index-results-controls{ max-width:100%; }
   .gp-index-bottom-img{ max-width:360px; }
 }
 
-</style>
 
+
+  </style>
 </head>
 <body>
 
-  <!-- Navbar fragment (do not change path) -->
   <div th:replace="~{fragments/navbar :: navbar}"></div>
 
   <!-- HERO -->
-  <section class="gp-hero">
+  <section class="gp-hero" style="padding-top:180px;">
     <div class="container-xxl">
       <div class="row align-items-center">
-        <div class="col-lg-6 mb-5 mb-lg-0">
+        <div class="col-lg-5 mb-5 mb-lg-0">
           <h1 class="gp-index-hero-title" th:text="#{home.hero.title_en}">
             Every parent needs a helping hand. Meet yours.
           </h1>
@@ -631,12 +332,12 @@ body { padding-top: 3.5rem; }
           <div class="mt-4">
             <a href="https://apps.apple.com/us/app/geniusparentingai/id6747332178"
                class="btn gp-cta-btn"
-               th:text="#{home.hero.cta_en}"
-               >
+               th:text="#{home.hero.cta_en}">
+               Download the App
             </a>
           </div>
         </div>
-        <div class="col-lg-6">
+        <div class="col-lg-6 offset-lg-1">
           <img th:src="@{/images/index/index_image1.png}"
                alt="GenParenting app preview"
                class="gp-hero-image hero-overhang mx-auto d-block">
@@ -645,18 +346,15 @@ body { padding-top: 3.5rem; }
     </div>
   </section>
 
-  <!-- WHY GENPARENTING (mock-accurate) -->
+  <!-- WHY -->
   <section class="gp-index-why">
     <div class="container-xxl">
-
       <h2 class="gp-index-why-title" th:text="#{home.why.title_en}">Why GenParenting AI?</h2>
 
       <div class="row gy-5 gx-4">
-        <!-- Card 1 -->
         <div class="col-12 col-md-6 col-lg-4">
           <article class="gp-index-why-card">
-            <img th:src="@{/images/index/index-image2.png}" alt="Personalized support"
-                 class="gp-index-why-img">
+            <img th:src="@{/images/index/index-image2.png}" alt="Personalized support" class="gp-index-why-img">
             <h3 class="gp-index-why-card-title" th:text="#{home.why.card1.title_en}">
               Personalized Parenting Support:
             </h3>
@@ -667,11 +365,9 @@ body { padding-top: 3.5rem; }
           </article>
         </div>
 
-        <!-- Card 2 -->
         <div class="col-12 col-md-6 col-lg-4">
           <article class="gp-index-why-card">
-            <img th:src="@{/images/index/index-image3.png}" alt="Creativity & Learning Hub"
-                 class="gp-index-why-img">
+            <img th:src="@{/images/index/index-image3.png}" alt="Creativity & Learning Hub" class="gp-index-why-img">
             <h3 class="gp-index-why-card-title" th:text="#{home.why.card2.title_en}">
               Creativity & Learning, in one hub
             </h3>
@@ -682,11 +378,9 @@ body { padding-top: 3.5rem; }
           </article>
         </div>
 
-        <!-- Card 3 -->
         <div class="col-12 col-md-6 col-lg-4">
           <article class="gp-index-why-card">
-            <img th:src="@{/images/index/index-image4.png}" alt="Community and expert access"
-                 class="gp-index-why-img">
+            <img th:src="@{/images/index/index-image4.png}" alt="Community and expert access" class="gp-index-why-img">
             <h3 class="gp-index-why-card-title" th:text="#{home.why.card3.title_en}">
               Community & Expert Access
             </h3>
@@ -697,11 +391,10 @@ body { padding-top: 3.5rem; }
           </article>
         </div>
       </div>
-
     </div>
   </section>
 
-  <!-- RESULTS / TESTIMONIALS (one-card carousel) -->
+  <!-- RESULTS -->
   <section class="gp-index-results">
     <div class="gp-index-results-box">
       <div class="container-xxl gp-index-results-inner">
@@ -711,50 +404,44 @@ body { padding-top: 3.5rem; }
         </h3>
 
         <div class="gp-index-quote-viewport" id="resultsViewport">
-		  <div class="gp-index-quote-track" id="resultsTrack">
-		
-		    <!-- Card 1 -->
-		    <article class="gp-index-quote-card">
-		      <div class="gp-index-quote-inner">
-		        <blockquote class="gp-index-quote-text" th:text="#{home.results.quote1_en}">
-		          "Genius Parenting AI transformed my approach — it’s part emotional support, part creative spark, all in one app."
-		        </blockquote>
-		        <div class="gp-index-quote-author">
-		          <img th:src="@{/images/index/avatar1.png}" alt="Sarah avatar" class="gp-index-avatar">
-		          <span class="gp-index-author-name" th:text="#{home.results.author1_en}">Sarah, Mom of Two</span>
-		        </div>
-		      </div>
-		    </article>
-		
-		    <!-- Card 2 -->
-		    <article class="gp-index-quote-card">
-		      <div class="gp-index-quote-inner">
-		        <blockquote class="gp-index-quote-text" th:text="#{home.results.quote2_en}">
-		          "I love the milestone tracker! It keeps me calm and helps me track my daughter's progress effortlessly."
-		        </blockquote>
-		        <div class="gp-index-quote-author">
-		          <img th:src="@{/images/index/avatar2.png}" alt="David avatar" class="gp-index-avatar">
-		          <span class="gp-index-author-name" th:text="#{home.results.author2_en}">David, Father of a 5-Year-Old</span>
-		        </div>
-		      </div>
-		    </article>
-		
-		    <!-- Card 3 -->
-		    <article class="gp-index-quote-card">
-		      <div class="gp-index-quote-inner">
-		        <blockquote class="gp-index-quote-text" th:text="#{home.results.quote3_en}">
-		          "I finally feel confident about my child's social skills thanks to the MindBridge feature. It's like having a coach!"
-		        </blockquote>
-		        <div class="gp-index-quote-author">
-		          <img th:src="@{/images/index/avatar3.png}" alt="James avatar" class="gp-index-avatar">
-		          <span class="gp-index-author-name" th:text="#{home.results.author3_en}">James, Dad of a 7-Year-Old</span>
-		        </div>
-		      </div>
-		    </article>
-		
-		  </div>
-		</div>
+          <div class="gp-index-quote-track" id="resultsTrack">
+            <article class="gp-index-quote-card">
+              <div class="gp-index-quote-inner">
+                <blockquote class="gp-index-quote-text" th:text="#{home.results.quote1_en}">
+                  "Genius Parenting AI transformed my approach — it’s part emotional support, part creative spark, all in one app."
+                </blockquote>
+                <div class="gp-index-quote-author">
+                  <img th:src="@{/images/index/avatar1.png}" alt="Sarah avatar" class="gp-index-avatar">
+                  <span class="gp-index-author-name" th:text="#{home.results.author1_en}">Sarah, Mom of Two</span>
+                </div>
+              </div>
+            </article>
 
+            <article class="gp-index-quote-card">
+              <div class="gp-index-quote-inner">
+                <blockquote class="gp-index-quote-text" th:text="#{home.results.quote2_en}">
+                  "I love the milestone tracker! It keeps me calm and helps me track my daughter's progress effortlessly."
+                </blockquote>
+                <div class="gp-index-quote-author">
+                  <img th:src="@{/images/index/avatar2.png}" alt="David avatar" class="gp-index-avatar">
+                  <span class="gp-index-author-name" th:text="#{home.results.author2_en}">David, Father of a 5-Year-Old</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="gp-index-quote-card">
+              <div class="gp-index-quote-inner">
+                <blockquote class="gp-index-quote-text" th:text="#{home.results.quote3_en}">
+                  "I finally feel confident about my child's social skills thanks to the MindBridge feature. It's like having a coach!"
+                </blockquote>
+                <div class="gp-index-quote-author">
+                  <img th:src="@{/images/index/avatar3.png}" alt="James avatar" class="gp-index-avatar">
+                  <span class="gp-index-author-name" th:text="#{home.results.author3_en}">James, Dad of a 7-Year-Old</span>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
 
         <div class="gp-index-results-controls">
           <button class="gp-index-nav" type="button" data-dir="left" aria-label="Previous">←</button>
@@ -772,143 +459,155 @@ body { padding-top: 3.5rem; }
     </div>
   </section>
 
-	<!-- EXPLORE WHAT YOU CAN DO (mock-accurate, 3 + 2 cards) -->
-	<section class="gp-index-explore ex-square">
-	  <div class="container-xxl">
-	    <h3 class="gp-index-ex-title text-center" th:text="#{home.explore.title_en}">
-	      Explore what you can do with GenParenting AI
-	    </h3>
-	
-	    <!-- Row 1: 3 cards -->
-	    <div class="row g-4 justify-content-center mb-5">
-	      <div class="col-12 col-md-6 col-lg-4">
-	        <a th:href="@{/seg-mini-course}" class="gp-index-ex-card-link" aria-label="Mini Courses">
-	          <article class="gp-index-ex-card text-center">
-	            <img th:src="@{/images/index/index-image5.png}" alt="Mini Courses" class="gp-index-ex-img">
-	            <div class="gp-index-ex-divider"></div>
-	            <div class="gp-index-ex-text">
-	              <h6 class="gp-index-ex-h" th:text="#{home.explore.tile1.title_en}">Mini Courses that grow with you</h6>
-	              <p class="gp-index-ex-p" th:text="#{home.explore.tile1.text_en}">Short, science-based growth guides.</p>
-	            </div>
-	          </article>
-	        </a>
-	      </div>
-	
-	      <div class="col-12 col-md-6 col-lg-4">
-	        <a th:href="@{/seg-ai-chat}" class="gp-index-ex-card-link" aria-label="Personalized AI Insights">
-	          <article class="gp-index-ex-card text-center">
-	            <img th:src="@{/images/index/index-image6.png}" alt="Personalized AI Insights" class="gp-index-ex-img">
-	            <div class="gp-index-ex-divider"></div>
-	            <div class="gp-index-ex-text">
-	              <h6 class="gp-index-ex-h" th:text="#{home.explore.tile2.title_en}">Get Personalized AI Insights</h6>
-	              <p class="gp-index-ex-p" th:text="#{home.explore.tile2.text_en}">Guidance matched to your child.</p>
-	            </div>
-	          </article>
-	        </a>
-	      </div>
-	
-	      <div class="col-12 col-md-6 col-lg-4">
-	        <a th:href="@{/seg-topics-and-tips}" class="gp-index-ex-card-link" aria-label="Hot Topics and Tips">
-	          <article class="gp-index-ex-card text-center">
-	            <img th:src="@{/images/index/index-image7.png}" alt="Hot Topics and Tips" class="gp-index-ex-img">
-	            <div class="gp-index-ex-divider"></div>
-	            <div class="gp-index-ex-text">
-	              <h6 class="gp-index-ex-h" th:text="#{home.explore.tile3.title_en}">Hot Topics and Tips</h6>
-	              <p class="gp-index-ex-p" th:text="#{home.explore.tile3.text_en}">Bite-size reads that matter today.</p>
-	            </div>
-	          </article>
-	        </a>
-	      </div>
-	    </div>
-	
-	    <!-- Row 2: 2 cards centered -->
-	    <div class="row g-4 justify-content-center">
-	      <div class="col-12 col-md-6 col-lg-4">
-	        <a href="#" class="gp-index-ex-card-link" aria-label="Build Emotional Awareness">
-	          <article class="gp-index-ex-card text-center">
-	            <img th:src="@{/images/index/index-image8.png}" alt="Build Emotional Awareness" class="gp-index-ex-img">
-	            <div class="gp-index-ex-divider"></div>
-	            <div class="gp-index-ex-text">
-	              <h6 class="gp-index-ex-h" th:text="#{home.explore.tile4.title_en}">Build Emotional Awareness</h6>
-	              <p class="gp-index-ex-p" th:text="#{home.explore.tile4.text_en}">Grow social-emotional skills together.</p>
-	            </div>
-	          </article>
-	        </a>
-	      </div>
-	
-	      <div class="col-12 col-md-6 col-lg-4">
-	        <a th:href="@{/seg-join-community}" class="gp-index-ex-card-link" aria-label="Inclusive Parenting Community">
-	          <article class="gp-index-ex-card text-center">
-	            <img th:src="@{/images/index/index-image9.png}" alt="Inclusive Parenting Community" class="gp-index-ex-img">
-	            <div class="gp-index-ex-divider"></div>
-	            <div class="gp-index-ex-text">
-	              <h6 class="gp-index-ex-h" th:text="#{home.explore.tile5.title_en}">Join a Multicultural, Inclusive Parenting Community</h6>
-	              <p class="gp-index-ex-p" th:text="#{home.explore.tile5.text_en}">Learn with real families & experts.</p>
-	            </div>
-	          </article>
-	        </a>
-	      </div>
-	    </div>
-	  </div>
-	</section>
+  <!-- EXPLORE (3 + 2 cards) -->
+  <section class="gp-index-explore ex-square">
+    <div class="container-xxl">
+      <h3 class="gp-index-ex-title text-center" th:text="#{home.explore.title_en}">
+        Explore what you can do with GenParenting AI
+      </h3>
 
-	
-	
-	<!-- BOTTOM CTA — edge-to-edge, no crop, image flush right -->
-	<section class="cta-band">
-	  <!-- Right-side art is outside the grid so it can hug the viewport -->
-	  <div class="cta-art" aria-hidden="true">
-	    <img src="/images/index/index-image13.png"
-	         alt=""
-	         class="cta-art-img">
-	  </div>
-	  <div class="container-xxl">
-	    <div class="row g-0 cta-row">
-	
-	      <!-- LEFT: text/content -->
-			<div class="col-12 col-lg-7 cta-left">
-			  <div class="cta-left-inner">   <!-- NEW wrapper -->
-			    <h2 class="cta-title"><span th:text="#{index-caption-19}">Parenting</span>,<br><span th:text="#{index-caption-20}">just a tap away</span></h2>
-			
-			    <ul class="cta-bullets">
-			      <li><span th:text="#{index-caption-21}">Do you wish you had expert-backed parenting advice, instantly?</span></li>
-			      <li><span th:text="#{index-caption-22}">Want to track milestones without spreadsheets?</span></li>
-			      <li><span th:text="#{index-caption-23}">Craving fun ways to build creativity &amp; learning at home?</span></li>
-			    </ul>
-			
-			    <p class="cta-tagline" th:text="#{index-caption-24}">
-			      Download Genius Parenting AI and make parenting feel… lighter.
-			    </p>
-			
-			    <hr class="cta-rule">
-			
-			    <div class="cta-download d-flex align-items-center gap-4 mt-4">
-			      <img src="/images/gpa-qr-code.png" alt="QR code" class="cta-qr">
-			      <div>
-			        <h3 class="cta-download-title mb-2" th:text="#{index-caption-24}">Download the App!</h3>
-			        <p class="cta-download-sub mb-3" th:text="#{index-caption-25}">Free to try. No credit card needed.</p>
-			        <div class="d-flex align-items-center gap-2">
-			          <!-- <a href="#"><img src="/images/index/index-image11.png" alt="Google Play" class="cta-store-badge"></a>  -->
-			          <a href="https://apps.apple.com/us/app/geniusparentingai/id6747332178?itscg=30200&itsct=apps_box_link&mttnsubad=6747332178">
-			          	<img src="/images/index/index-image12.png" alt="App Store" class="cta-store-badge">
-			          </a>
-			        </div>
-			      </div>
-			    </div>
-			  </div>
-			</div>
-	
-	      <!-- RIGHT: empty placeholder column (keeps grid space for art on lg+) -->
-	      <div class="col-lg-5 d-none d-lg-block"></div>
-	    </div>
-	  </div>
-	</section>
+      <div class="row g-4 justify-content-center mb-5">
+        <div class="col-12 col-md-6 col-lg-4">
+          <a th:href="@{/seg-mini-course}" class="gp-index-ex-card-link" aria-label="Mini Courses">
+            <article class="gp-index-ex-card text-center">
+              <img th:src="@{/images/index/index-image5.png}" alt="Mini Courses" class="gp-index-ex-img">
+              <div class="gp-index-ex-divider"></div>
+              <div class="gp-index-ex-text">
+                <h6 class="gp-index-ex-h" th:text="#{home.explore.tile1.title_en}">Mini Courses that grow with you</h6>
+                <p class="gp-index-ex-p" th:text="#{home.explore.tile1.text_en}">Short, science-based growth guides.</p>
+              </div>
+            </article>
+          </a>
+        </div>
+
+        <!-- INSIGHTS card -->
+        <div class="col-12 col-md-6 col-lg-4">
+          <a th:href="@{/seg-ai-chat}" class="gp-index-ex-card-link" aria-label="Personalized AI Insights">
+            <article class="gp-index-ex-card text-center is-insights">
+              <!-- normal face -->
+              <div class="gp-index-ex-face">
+                <img th:src="@{/images/index/index-image6.png}" alt="Personalized AI Insights" class="gp-index-ex-img">
+                <div class="gp-index-ex-divider"></div>
+                <div class="gp-index-ex-text">
+                  <h6 class="gp-index-ex-h" th:text="#{home.explore.tile2.title_en}">Get Personalized AI Insights</h6>
+                  <p class="gp-index-ex-p" th:text="#{home.explore.tile2.text_en}">Guidance matched to your child.</p>
+                </div>
+              </div>
+
+              <!-- hover overlay -->
+              <div class="gp-index-ex-overlay" aria-hidden="true">
+				<h6 class="gp-ol-title" style="padding-top:30px; padding-bottom:30px;">
+				  <span th:text="#{home.explore.tile2.hover_title_l1_en}">Get Personalized</span><br/>
+				  <span class="gp-ol-title-line2" th:text="#{home.explore.tile2.hover_title_l2_en}">AI Insights</span>
+				</h6>
+
+                <div class="gp-index-ex-divider"></div>
+                <div style="padding-top:20px;">
+                <p class="gp-ol-text" th:text="#{home.explore.tile2.hover_text_en}">
+                  Daily Boost based on child’s mood, progress & upcoming needs
+                </p>
+                </div>
+                <div style="padding-top:30px; padding-bottom:20px;">
+                <a href="#" class="gp-ol-link" th:text="#{home.explore.learn_more_en}">Learn More →</a>
+                </div>
+              </div>
+            </article>
+          </a>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-4">
+          <a th:href="@{/seg-topics-and-tips}" class="gp-index-ex-card-link" aria-label="Hot Topics and Tips">
+            <article class="gp-index-ex-card text-center">
+              <img th:src="@{/images/index/index-image7.png}" alt="Hot Topics and Tips" class="gp-index-ex-img">
+              <div class="gp-index-ex-divider"></div>
+              <div class="gp-index-ex-text">
+                <h6 class="gp-index-ex-h" th:text="#{home.explore.tile3.title_en}">Hot Topics and Tips</h6>
+                <p class="gp-index-ex-p" th:text="#{home.explore.tile3.text_en}">Bite-size reads that matter today.</p>
+              </div>
+            </article>
+          </a>
+        </div>
+      </div>
+
+      <!-- Row 2 -->
+      <div class="row g-4 justify-content-center">
+        <div class="col-12 col-md-6 col-lg-4">
+          <a th:href="@{/seg-emotion}" class="gp-index-ex-card-link" aria-label="Build Emotional Awareness">
+            <article class="gp-index-ex-card text-center">
+              <img th:src="@{/images/index/index-image8.png}" alt="Build Emotional Awareness" class="gp-index-ex-img">
+              <div class="gp-index-ex-divider"></div>
+              <div class="gp-index-ex-text">
+                <h6 class="gp-index-ex-h" th:text="#{home.explore.tile4.title_en}">Build Emotional Awareness</h6>
+                <p class="gp-index-ex-p" th:text="#{home.explore.tile4.text_en}">Grow social-emotional skills together.</p>
+              </div>
+            </article>
+          </a>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-4">
+          <a th:href="@{/seg-join-community}" class="gp-index-ex-card-link" aria-label="Inclusive Parenting Community">
+            <article class="gp-index-ex-card text-center">
+              <img th:src="@{/images/index/index-image9.png}" alt="Inclusive Parenting Community" class="gp-index-ex-img">
+              <div class="gp-index-ex-divider"></div>
+              <div class="gp-index-ex-text">
+                <h6 class="gp-index-ex-h" th:text="#{home.explore.tile5.title_en}">Join a Multicultural, Inclusive Parenting Community</h6>
+                <p class="gp-index-ex-p" th:text="#{home.explore.tile5.text_en}">Learn with real families & experts.</p>
+              </div>
+            </article>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA band -->
+  <section class="cta-band">
+    <div class="cta-art" aria-hidden="true">
+      <img src="/images/index/index-image13.png" alt="" class="cta-art-img">
+    </div>
+    <div class="container-xxl">
+      <div class="row g-0 cta-row">
+        <div class="col-12 col-lg-7 cta-left">
+          <div class="cta-left-inner">
+            <h2 class="cta-title"><span th:text="#{index-caption-19}">Parenting</span>,<br><span th:text="#{index-caption-20}">just a tap away</span></h2>
+
+            <ul class="cta-bullets">
+              <li><span th:text="#{index-caption-21}">Do you wish you had expert-backed parenting advice, instantly?</span></li>
+              <li><span th:text="#{index-caption-22}">Want to track milestones without spreadsheets?</span></li>
+              <li><span th:text="#{index-caption-23}">Craving fun ways to build creativity & learning at home?</span></li>
+            </ul>
+
+            <p class="cta-tagline" th:text="#{index-caption-241}">
+              Download Genius Parenting AI and make parenting feel… lighter.
+            </p>
+
+            <hr class="cta-rule">
+
+            <div class="cta-download d-flex align-items-center gap-4 mt-4">
+              <img src="/images/gpa-qr-code.png" alt="QR code" class="cta-qr">
+              <div>
+                <h3 class="cta-download-title mb-2" th:text="#{index-caption-24}">Download the App!</h3>
+                <p class="cta-download-sub mb-3" th:text="#{index-caption-25}">Free to try. No credit card needed.</p>
+                <div class="d-flex align-items-center gap-2">
+                  <a href="https://apps.apple.com/us/app/geniusparentingai/id6747332178?itscg=30200&itsct=apps_box_link&mttnsubad=6747332178">
+                    <img src="/images/index/index-image12.png" alt="App Store" class="cta-store-badge">
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-5 d-none d-lg-block"></div>
+      </div>
+    </div>
+  </section>
 
   <script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', function () {
       const viewport = document.getElementById('resultsViewport');
       if (!viewport) return;
-      const step = () => viewport.clientWidth;  // exactly one card
+      const step = () => viewport.clientWidth;
       document.querySelectorAll('.gp-index-nav').forEach(btn => {
         btn.addEventListener('click', () => {
           const dir = btn.dataset.dir === 'left' ? -1 : 1;
@@ -918,64 +617,7 @@ body { padding-top: 3.5rem; }
     });
   </script>
 
-  <!-- Footer fragment (as before) -->
   <div th:replace="~{fragments/footer :: footer}"></div>
-<script>
-(function () {
-  const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
-  const MIN_H = 220;   // adjust if you want a taller minimum
-  const MAX_H = 520;   // hard ceiling so it never balloons
-
-  function equalizeExploreCards(){
-    if (document.querySelector('.gp-index-explore.ex-square')) return;
-    
-    const cards = document.querySelectorAll('.gp-index-ex-card');
-    cards.forEach(card => {
-      const divider = card.querySelector('.gp-index-ex-divider');
-      if (!divider) return;
-
-      // 1) reset to natural height so measurements are clean
-      card.style.height = 'auto';
-
-      // 2) measure using DOM geometry
-      const cr = card.getBoundingClientRect();
-      const dr = divider.getBoundingClientRect();
-
-      // distance from card top to divider center
-      const topHalf = (dr.top - cr.top) + (dr.height / 2);
-
-      // natural content height (without forced height)
-      const natural = card.scrollHeight;
-
-      // bottom half size from divider center down
-      const bottomHalf = natural - topHalf;
-
-      // 3) choose the larger half so nothing clips; total = 2 × larger half
-      const target = Math.ceil(2 * Math.max(topHalf, bottomHalf));
-
-      // 4) clamp to a sane range to avoid pathological growth
-      const clamped = clamp(target, MIN_H, MAX_H);
-
-      // 5) set once
-      card.style.height = clamped + 'px';
-    });
-  }
-
-  // Debounced resize
-  let t;
-  window.addEventListener('resize', () => {
-    clearTimeout(t);
-    t = setTimeout(equalizeExploreCards, 120);
-  });
-
-  // Run after layout and again shortly to catch late paints (fonts/images)
-  window.addEventListener('load', () => {
-    equalizeExploreCards();
-    setTimeout(equalizeExploreCards, 120);
-    setTimeout(equalizeExploreCards, 360);
-  });
-})();
-</script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

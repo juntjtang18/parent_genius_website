@@ -27,8 +27,11 @@
     --radius-xl: 9999px;
     --container-pad: clamp(24px, 5vw, 64px);
   }
-  body{ padding-top:4rem; font-family:"Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif; }
-  @media (min-width:1200px){ body{ padding-top:101px; } }
+body{
+  padding-top: 3rem;
+  font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+}
+@media (min-width:1200px){ body{ padding-top: 80px; } }
   .about-cta-btn{ background:var(--grad-btn); color:#fff; border:0; border-radius:9999px; padding:.9rem 2.2rem; font-weight:600; font-size:18pt; box-shadow:var(--shadow-cta); text-decoration:none; }
   .about-cta-btn:hover{ color:#fff; filter:brightness(1.02); }
 
@@ -308,7 +311,7 @@
               <span th:text="#{about-caption-36}">“Am I ready? Am I doing this right?”</span>
             </p>
             <div class="mt-4">
-              <a href="#download" class="about-cta-btn" th:text="#{about-caption-37}">Download the App</a>
+              <a href="https://apps.apple.com/us/app/geniusparentingai/id6747332178" class="about-cta-btn" th:text="#{about-caption-37}">Download the App</a>
             </div>
           </div>
         </div>

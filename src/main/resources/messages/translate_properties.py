@@ -123,9 +123,8 @@ def process_directory(input_dir):
                     translate_properties_file(file_path, lang_code)
 
 if __name__ == '__main__':
-    default_directory = os.getcwd()
-    input_directory = input(f"📁 Enter the path to your properties folder (or press Enter to use current directory: '{default_directory}'): ").strip()
-
+    input_directory = os.getcwd()
+	
     if not input_directory:
         input_directory = default_directory
 

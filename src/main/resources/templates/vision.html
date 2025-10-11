@@ -27,12 +27,13 @@
     --radius-xl: 9999px;
     --container-pad: clamp(24px, 5vw, 64px);
   }
-  body{ padding-top:4rem; font-family:"Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif; }
-  @media (min-width:1200px){ body{ padding-top:101px; } }
+  body{ padding-top:1rem; font-family:"Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif; }
+  @media (min-width:1200px){ body{ padding-top:10px; } }
+  
   .about-cta-btn{ background:var(--grad-btn); color:#fff; border:0; border-radius:9999px; padding:.9rem 2.2rem; font-weight:600; font-size:18pt; box-shadow:var(--shadow-cta); text-decoration:none; }
   .about-cta-btn:hover{ color:#fff; filter:brightness(1.02); }
 
-  .about-hero{ position:relative; overflow:hidden; color:#fff; }
+  .about-hero{ position:relative; overflow:hidden; color:#fff; padding-top:180px}
   .about-hero::before{ content:""; position:absolute; inset:0; background: var(--grad-hero); z-index:0; }
   .about-hero .container-xxl{ position:relative; z-index:2; }
   .about-hero-row{ min-height: clamp(520px, 72vh, 820px); }
@@ -300,7 +301,7 @@
     </div>
     <div class="container-xxl">
       <div class="row g-0 about-hero-row">
-        <div class="col-12 col-lg-7 about-hero-left">
+        <div class="col-12 col-lg-6 about-hero-left">
           <div class="about-hero-left-inner">
             <h1 class="about-hero-title" th:text="#{about-caption-34}">The beginning of our story</h1>
             <p class="about-hero-sub">
@@ -308,7 +309,7 @@
               <span th:text="#{about-caption-36}">“Am I ready? Am I doing this right?”</span>
             </p>
             <div class="mt-4">
-              <a href="#download" class="about-cta-btn" th:text="#{about-caption-37}">Download the App</a>
+              <a href="https://apps.apple.com/us/app/geniusparentingai/id6747332178" class="about-cta-btn" th:text="#{about-caption-37}">Download the App</a>
             </div>
           </div>
         </div>

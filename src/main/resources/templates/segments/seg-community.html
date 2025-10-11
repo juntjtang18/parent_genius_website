@@ -43,10 +43,10 @@
   Global/base
 ==========================*/
 body{
-  padding-top: 4rem;
+  padding-top: 3rem;
   font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
 }
-@media (min-width:1200px){ body{ padding-top: 101px; } }
+@media (min-width:1200px){ body{ padding-top: 80px; } }
 
 /*========================
   Shared: CTA button
@@ -318,7 +318,7 @@ body{
 <section class="seg-community-hero">
   <div class="container-xxl">
     <div class="row align-items-center g-4">
-      <div class="col-lg-6">
+      <div class="col-lg-5">
         <h1 class="seg-community-hero-title" th:text="#{seg-community.hero.title}">
         	Welcome to the Genius Parenting Community
         </h1>
@@ -326,10 +326,10 @@ body{
           Because parenting is better together.
         </p>
         <div class="mt-4">
-          <a href="#download" class="btn seg-community-cta-btn" th:text="#{seg-community-chat.hero.startBtn}">Download the App</a>
+          <a href="https://apps.apple.com/us/app/geniusparentingai/id6747332178" class="btn seg-community-cta-btn" th:text="#{seg-community-chat.hero.startBtn}">Download the App</a>
         </div>
       </div>
-      <div class="col-lg-6 text-center">
+      <div class="col-lg-6 offset-lg-1 text-center">
         <img th:src="@{/images/seg-community/community-image-01.png}" alt="App preview phones"
              class="seg-community-hero-image hero-overhang img-fluid">
       </div>
