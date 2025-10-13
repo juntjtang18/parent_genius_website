@@ -22,6 +22,7 @@ import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -69,7 +70,19 @@ public class StrapiAuthenticationFilter extends UsernamePasswordAuthenticationFi
             String jwt = (String) authResult.getCredentials();
             HttpSession session = request.getSession(true); // true = create if doesn't exist
             session.setAttribute("STRAPI_JWT", jwt);
+            
             log.info("JWT successfully stored in HttpSession for user: {}", authResult.getName());
+            log.info("JWT stored is: {}", session.getAttribute("STRAPI_JWT"));
+            
+            ResponseCookie cookie = ResponseCookie.from("STRAPI_JWT", jwt)
+                    .path("/")            // visible to all pages
+                    .httpOnly(false)      // MUST be false so JS can read it
+                    .secure(true)         // true in HTTPS prod; set false ONLY for local http
+                    .sameSite("Lax")      // if Spring site != Strapi site & you do cross-site, use "None"
+                    .maxAge(Duration.ofDays(7))
+                    .build();
+                response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
         } else {
             log.warn("Could not store JWT in session because it was not found in the Authentication object's credentials.");
         }

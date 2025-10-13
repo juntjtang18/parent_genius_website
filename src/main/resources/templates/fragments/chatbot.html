@@ -1,296 +1,316 @@
 <!-- fragments/chatbot.html -->
 <div xmlns:th="http://www.thymeleaf.org" th:fragment="chatbot">
-    <!-- Floating Chatbot Icon with Popup -->
-    <div class="chatbot-container" id="chatbot-container">
-        <img src="images/chatbot03.png" alt="Chatbot" class="chatbot-icon" id="chatbot-icon">
-        <span class="chatbot-popup">What can I help you?</span>
+  <!-- Floating Chatbot Icon with Popup -->
+  <div class="chatbot-container" id="chatbot-container">
+    <img src="images/chatbot03.png" alt="Chatbot" class="chatbot-icon" id="chatbot-icon">
+    <span class="chatbot-popup">What can I help you?</span>
+  </div>
+
+  <!-- Chat Modal (Hidden by Default) -->
+  <div class="chat-modal" id="chat-modal">
+    <div class="chat-header">
+      <span>Chat with Bot</span>
+      <span class="close-btn" id="close-modal">×</span>
     </div>
-
-    <!-- Chat Modal (Hidden by Default) -->
-    <div class="chat-modal" id="chat-modal">
-        <div class="chat-header">
-            <span>Chat with Bot</span>
-            <span class="close-btn" id="close-modal">×</span>
-        </div>
-        <div class="chat-body" id="chat-body">
-            <!-- Chat messages will be appended here -->
-        </div>
-        <div class="chat-footer">
-            <input type="text" id="chat-input" placeholder="Type your message...">
-            <button id="send-btn">Send</button>
-        </div>
+    <div class="chat-body" id="chat-body">
+      <!-- Chat messages will be appended here -->
     </div>
+    <div class="chat-footer">
+      <input type="text" id="chat-input" placeholder="Type your message...">
+      <button id="send-btn">Send</button>
+    </div>
+  </div>
 
-    <!-- Inline Styles -->
-    <style>
-        /* Chatbot Container for relative positioning */
-        .chatbot-container {
-            position: fixed;
-            bottom: 10vh; /* 10% of viewport height from bottom */
-            right: 5vw; /* 5% of viewport width from right */
-            z-index: 1000;
+  <!-- Inline Styles -->
+  <style>
+    /* Chatbot Container for relative positioning */
+    .chatbot-container {
+      position: fixed;
+      bottom: 10vh; /* 10% of viewport height from bottom */
+      right: 5vw; /* 5% of viewport width from right */
+      z-index: 1000;
+    }
+
+    /* Floating Chatbot Icon */
+    .chatbot-icon {
+      width: 60px;
+      height: 60px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .chatbot-icon:hover {
+      transform: scale(1.1);
+    }
+
+    .chatbot-popup {
+      display: none;
+      position: absolute;
+      bottom: 70px;
+      right: 0;
+      background-color: #4A90E2;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 5px;
+      font-size: 14px;
+      white-space: nowrap;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      z-index: 1001;
+    }
+
+    .chatbot-container:hover .chatbot-popup {
+      display: block;
+    }
+
+    /* Modal Window */
+    .chat-modal {
+      display: none;
+      position: fixed;
+      bottom: 15vh;
+      right: 8vw;
+      width: 600px;
+      max-height: 80vh;
+      background-color: rgba(240, 240, 240, 0.95);
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      z-index: 1001;
+      flex-direction: column;
+    }
+
+    .chat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      background-color: #FF9AA2;
+      border-bottom: 1px solid #ccc;
+      border-radius: 10px 10px 0 0;
+    }
+
+    .chat-header .close-btn {
+      cursor: pointer;
+      font-size: 20px;
+      color: #333;
+    }
+
+    .chat-body {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-message {
+      display: flex;
+      margin: 10px 0;
+      align-items: center;
+      width: 100%;
+    }
+
+    .chat-message.bot {
+      justify-content: flex-start;
+    }
+
+    .chat-message.user {
+      justify-content: flex-end;
+    }
+
+    .chat-message img {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      margin: 0 10px;
+    }
+
+    .chat-message .bubble {
+      max-width: 70%;
+      padding: 8px 12px;
+      border-radius: 8px;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+    }
+
+    .chat-message.bot .bubble {
+      background-color: white;
+      text-align: left;
+    }
+
+    .chat-message.user .bubble {
+      background-color: #8BC34A;
+      color: white;
+      text-align: right;
+    }
+
+    .chat-footer {
+      display: flex;
+      padding: 10px;
+      border-top: 1px solid #ccc;
+    }
+
+    .chat-footer input {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin-right: 10px;
+    }
+
+    .chat-footer button {
+      padding: 8px 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .chat-footer button:hover {
+      background-color: #0056b3;
+    }
+
+    /* Media Queries for Smaller Screens */
+    @media (max-width: 768px) {
+      .chatbot-container { bottom: 5vh; right: 3vw; }
+      .chat-modal { bottom: 10vh; right: 3vw; width: 90vw; }
+      .chatbot-icon { width: 50px; height: 50px; }
+    }
+
+    /* Typing indicator */
+    .typing { opacity: 0.7; font-style: italic; }
+  </style>
+
+  <!-- Chatbot JavaScript -->
+  <script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', () => {
+      const chatbotIcon = document.getElementById('chatbot-icon');
+      const chatModal   = document.getElementById('chat-modal');
+      const closeModal  = document.getElementById('close-modal');
+      const chatBody    = document.getElementById('chat-body');
+      const chatInput   = document.getElementById('chat-input');
+      const sendBtn     = document.getElementById('send-btn');
+
+      // Read from application.properties (Option A)
+      const STRAPI_ROOT = /*[[${@environment.getProperty('strapi.root.url','http://localhost:8080')}]]*/ 'http://localhost:8080'
+        .replace(/\/+$/,'');
+
+      // Read JWT primarily from cookie: STRAPI_JWT (set by Spring Security on login)
+      async function getAuthToken() {
+        const m =
+          document.cookie.match(/(?:^|;\s*)STRAPI_JWT=([^;]+)/) ||
+          document.cookie.match(/(?:^|;\s*)strapi_jwt=([^;]+)/);
+        if (m) return decodeURIComponent(m[1]);
+
+        // Optional: fallback to a tiny endpoint if you kept it HttpOnly / session-only
+        // try {
+        //   const r = await fetch('/auth/strapi-jwt', { credentials: 'same-origin' });
+        //   if (r.ok) { const j = await r.json(); if (j?.jwt) return j.jwt; }
+        // } catch (_) {}
+        return null;
+      }
+
+      function adjustChatLayout() {
+        const vh = window.innerHeight, vw = window.innerWidth;
+        const maxH = vh * 0.8, desired = Math.max(300, Math.min(maxH, 600));
+        chatModal.style.height = desired + 'px';
+        chatModal.style.width = (vw < 768 ? '90vw' : '600px');
+      }
+
+      chatbotIcon.addEventListener('click', () => {
+        adjustChatLayout();
+        chatModal.style.display = 'flex';
+        if (!chatBody.querySelector('.chat-message')) {
+          addMessage('bot', 'Hello! How can I assist you today?');
+        }
+      });
+
+      closeModal.addEventListener('click', () => { chatModal.style.display = 'none'; });
+
+      sendBtn.addEventListener('click', sendMessage);
+      chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+      window.addEventListener('resize', adjustChatLayout);
+
+      function addMessage(sender, text, {typing=false} = {}) {
+        const msg = document.createElement('div');
+        msg.className = `chat-message ${sender}`;
+
+        const bubble = document.createElement('span');
+        bubble.className = `bubble${typing ? ' typing' : ''}`;
+        bubble.innerText = text; // safe (no HTML injection)
+
+        const avatar = document.createElement('img');
+        avatar.src = sender === 'bot' ? 'images/chatbot03.png' : 'images/user-avatar.png';
+        avatar.alt = sender;
+
+        if (sender === 'bot') {
+          msg.appendChild(avatar);
+          msg.appendChild(bubble);
+        } else {
+          msg.appendChild(bubble);
+          msg.appendChild(avatar);
         }
 
-        /* Floating Chatbot Icon */
-        .chatbot-icon {
-            width: 60px;
-            height: 60px;
-            cursor: pointer;
-            transition: transform 0.3s ease;
+        chatBody.appendChild(msg);
+        chatBody.scrollTop = chatBody.scrollHeight;
+        return msg;
+      }
+
+      function setSendingState(sending) {
+        sendBtn.disabled = sending;
+        chatInput.disabled = sending;
+      }
+
+      async function sendMessage() {
+        const message = chatInput.value.trim();
+        if (!message) return;
+
+        addMessage('user', message);
+        chatInput.value = '';
+
+        // typing indicator
+        const typingEl = addMessage('bot', 'Typing…', { typing: true });
+        setSendingState(true);
+
+        try {
+          const token = await getAuthToken();
+          if (!token) throw new Error('You are not logged in.');
+
+          const resp = await fetch(`${STRAPI_ROOT}/api/ai/chat`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+              message,             // required
+              return_history: false, // we only need the reply bubble
+              // you can pass user overrides if you like:
+              // word_cap: 120, bullets: 5, language: 'en'
+            }),
+            credentials: 'include'
+          });
+
+          if (!resp.ok) {
+            const txt = await resp.text().catch(() => '');
+            throw new Error(`Chat failed (${resp.status}): ${txt || 'Unknown error'}`);
+          }
+
+          const json = await resp.json();
+          const reply = json?.data?.attributes?.reply || 'No response.';
+          // replace typing bubble with final text
+          typingEl.querySelector('.bubble').classList.remove('typing');
+          typingEl.querySelector('.bubble').innerText = reply;
+
+        } catch (err) {
+          typingEl.remove();
+          addMessage('bot', `Sorry, something went wrong: ${err.message}`);
+        } finally {
+          setSendingState(false);
+          chatBody.scrollTop = chatBody.scrollHeight;
         }
-
-        .chatbot-icon:hover {
-            transform: scale(1.1);
-        }
-
-        .chatbot-popup {
-            display: none;
-            position: absolute;
-            bottom: 70px;
-            right: 0;
-            background-color: #4A90E2;
-            color: white;
-            padding: 8px 12px;
-            border-radius: 5px;
-            font-size: 14px;
-            white-space: nowrap;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            z-index: 1001;
-        }
-
-        .chatbot-container:hover .chatbot-popup {
-            display: block;
-        }
-
-        /* Modal Window */
-        .chat-modal {
-            display: none;
-            position: fixed;
-            bottom: 15vh; /* 15% of viewport height from bottom */
-            right: 8vw; /* 8% of viewport width from right */
-            width: 600px;
-            max-height: 80vh;
-            background-color: rgba(240, 240, 240, 0.95);
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            z-index: 1001;
-            flex-direction: column;
-        }
-
-        .chat-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            background-color: #FF9AA2;
-            border-bottom: 1px solid #ccc;
-            border-radius: 10px 10px 0 0;
-        }
-
-        .chat-header .close-btn {
-            cursor: pointer;
-            font-size: 20px;
-            color: #333;
-        }
-
-        .chat-body {
-            flex: 1;
-            padding: 10px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .chat-message {
-            display: flex;
-            margin: 10px 0;
-            align-items: center;
-            width: 100%;
-        }
-
-        .chat-message.bot {
-            justify-content: flex-start;
-        }
-
-        .chat-message.user {
-            justify-content: flex-end;
-        }
-
-        .chat-message img {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            margin: 0 10px;
-        }
-
-        .chat-message .text {
-            max-width: 70%;
-            padding: 8px 12px;
-            border-radius: 8px;
-        }
-
-        .chat-message.bot .text {
-            background-color: white;
-            text-align: left;
-        }
-
-        .chat-message.user .text {
-            background-color: #8BC34A;
-            color: white;
-            text-align: right;
-        }
-
-        .chat-footer {
-            display: flex;
-            padding: 10px;
-            border-top: 1px solid #ccc;
-        }
-
-        .chat-footer input {
-            flex: 1;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            margin-right: 10px;
-        }
-
-        .chat-footer button {
-            padding: 8px 16px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .chat-footer button:hover {
-            background-color: #0056b3;
-        }
-
-        /* Media Queries for Smaller Screens */
-        @media (max-width: 768px) {
-            .chatbot-container {
-                bottom: 5vh;
-                right: 3vw;
-            }
-            .chat-modal {
-                bottom: 10vh;
-                right: 3vw;
-                width: 90vw; /* Take up most of the screen width */
-            }
-            .chatbot-icon {
-                width: 50px;
-                height: 50px;
-            }
-        }
-    </style>
-
-    <!-- Chatbot JavaScript -->
-    <script th:inline="javascript">
-        document.addEventListener('DOMContentLoaded', () => {
-            const chatbotIcon = document.getElementById('chatbot-icon');
-            const chatbotContainer = document.getElementById('chatbot-container');
-            const chatModal = document.getElementById('chat-modal');
-            const closeModal = document.getElementById('close-modal');
-            const chatBody = document.getElementById('chat-body');
-            const chatInput = document.getElementById('chat-input');
-            const sendBtn = document.getElementById('send-btn');
-
-            // Function to adjust chat height and position
-            function adjustChatLayout() {
-                const viewportHeight = window.innerHeight;
-                const viewportWidth = window.innerWidth;
-                const maxHeight = viewportHeight * 0.8;
-                const minHeight = 300;
-                const desiredHeight = Math.max(minHeight, Math.min(maxHeight, 600));
-                chatModal.style.height = `${desiredHeight}px`;
-
-                // Optional: Fine-tune position dynamically if needed
-                if (viewportWidth < 768) {
-                    chatModal.style.width = '90vw'; // Match media query
-                } else {
-                    chatModal.style.width = '600px'; // Default width
-                }
-            }
-
-            chatbotIcon.addEventListener('click', () => {
-                adjustChatLayout();
-                chatModal.style.display = 'flex';
-                if (!chatBody.querySelector('.chat-message')) {
-                    addMessage('bot', 'Hello! How can I assist you today?');
-                }
-            });
-
-            closeModal.addEventListener('click', () => {
-                chatModal.style.display = 'none';
-            });
-
-            sendBtn.addEventListener('click', sendMessage);
-            chatInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') sendMessage();
-            });
-
-            // Adjust layout on window resize
-            window.addEventListener('resize', adjustChatLayout);
-
-            async function sendMessage() {
-                const message = chatInput.value.trim();
-                if (!message) return;
-
-                addMessage('user', message);
-                chatInput.value = '';
-
-                try {
-                    console.log('Sending request to backend with message:', message);
-                    const response = await fetch('https://parentgenius-backend-852311377699.us-west1.run.app/ask', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json'
-                        },
-                        body: JSON.stringify({ question: message })
-                    });
-
-                    console.log('Response status:', response.status);
-                    console.log('Response headers:', [...response.headers.entries()]);
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-
-                    const data = await response.json();
-                    console.log('Response data:', data);
-                    if (data.error) {
-                        addMessage('bot', `Error: ${data.error}`);
-                    } else {
-                        addMessage('bot', data.answer || 'No response from the server.');
-                    }
-                } catch (error) {
-                    console.error('Error fetching bot response:', error);
-                    addMessage('bot', 'Sorry, something went wrong: ' + error.message);
-                }
-            }
-
-            function addMessage(sender, text) {
-                const messageDiv = document.createElement('div');
-                messageDiv.classList.add('chat-message', sender);
-                const avatarSrc = sender === 'bot' ? 'images/chatbot03.png' : 'images/user-avatar.png';
-
-                if (sender === 'bot') {
-                    messageDiv.innerHTML = `
-                        <img src="${avatarSrc}" alt="${sender}">
-                        <span class="text">${text}</span>
-                    `;
-                } else {
-                    messageDiv.innerHTML = `
-                        <span class="text">${text}</span>
-                        <img src="${avatarSrc}" alt="${sender}">
-                    `;
-                }
-
-                chatBody.appendChild(messageDiv);
-                chatBody.scrollTop = chatBody.scrollHeight;
-            }
-        });
-    </script>
+      }
+    });
+  </script>
 </div>
