@@ -394,8 +394,7 @@ body { padding-top: 3rem; }
     </div>
 
     <div style="padding-top:60px;">
-      <img src="/images/membership/membership-image-01.png"
-           th:src="@{/images/membership/membership-image-01.png}"
+      <img th:src="@{/images/membership/membership-image-01.png}"
            alt="GenParenting app mockup"
            class="membership-hero-image" />
     </div>
@@ -481,7 +480,7 @@ body { padding-top: 3rem; }
       <!-- Card 1 -->
       <div class="col-12 col-md-6 col-lg-4">
         <article class="gp-benefit-card text-center">
-          <img src="/images/membership/membership-image-02.svg" alt="" class="gp-benefit-icon">
+          <img th:src="@{/images/membership/membership-image-02.svg}" alt="" class="gp-benefit-icon">
           <div class="gp-benefit-divider"></div>
           <p class="gp-benefit-text" th:text="#{membership.benefits.item1}">
             Advanced courses not available in the free plan
@@ -492,7 +491,7 @@ body { padding-top: 3rem; }
       <!-- Card 2 -->
       <div class="col-12 col-md-6 col-lg-4">
         <article class="gp-benefit-card text-center">
-          <img src="/images/membership/membership-image-03.svg" alt="" class="gp-benefit-icon">
+          <img th:src="@{/images/membership/membership-image-03.svg}" alt="" class="gp-benefit-icon">
           <div class="gp-benefit-divider"></div>
           <p class="gp-benefit-text" th:text="#{membership.benefits.item2}">
             Live Q&As with parenting experts
@@ -503,7 +502,7 @@ body { padding-top: 3rem; }
       <!-- Card 3 -->
       <div class="col-12 col-md-6 col-lg-4">
         <article class="gp-benefit-card text-center">
-          <img src="/images/membership/membership-image-04.svg" alt="" class="gp-benefit-icon">
+          <img th:src="@{/images/membership/membership-image-04.svg}" alt="" class="gp-benefit-icon">
           <div class="gp-benefit-divider"></div>
           <p class="gp-benefit-text" th:text="#{membership.benefits.item3}">
             Invitation-only Parent Circles for deeper connections
@@ -517,7 +516,7 @@ body { padding-top: 3rem; }
       <!-- Card 4 -->
       <div class="col-12 col-md-6 col-lg-4">
         <article class="gp-benefit-card text-center">
-          <img src="/images/membership/membership-image-05.svg" alt="" class="gp-benefit-icon">
+          <img th:src="@{/images/membership/membership-image-05.svg}" alt="" class="gp-benefit-icon">
           <div class="gp-benefit-divider"></div>
           <p class="gp-benefit-text" th:text="#{membership.benefits.item4}">
             Early access to new tools and features
@@ -528,7 +527,7 @@ body { padding-top: 3rem; }
       <!-- Card 5 -->
       <div class="col-12 col-md-6 col-lg-4">
         <article class="gp-benefit-card text-center">
-          <img src="/images/membership/membership-image-06.svg" alt="" class="gp-benefit-icon">
+          <img th:src="@{/images/membership/membership-image-06.svg}" alt="" class="gp-benefit-icon">
           <div class="gp-benefit-divider"></div>
           <p class="gp-benefit-text" th:text="#{membership.benefits.item5}">
             Discounts on partner resources and workshops
@@ -552,7 +551,7 @@ body { padding-top: 3rem; }
       <div class="col-12 col-lg-4">
         <article class="gp-who-card">
           <div class="gp-who-media">
-            <img src="/images/membership/membership-image-07.png"
+            <img th:src="@{/images/membership/membership-image-07.png}"
                  alt=""
                  class="gp-who-img">
           </div>
@@ -565,9 +564,9 @@ body { padding-top: 3rem; }
 
       <!-- Card 2 (highlighted with blue outline like the mockup) -->
       <div class="col-12 col-lg-4">
-        <article class="gp-who-card is-active">
+        <article class="gp-who-card">
           <div class="gp-who-media">
-            <img src="/images/membership/membership-image-08.png"
+            <img th:src="@{/images/membership/membership-image-08.png}"
                  alt=""
                  class="gp-who-img">
           </div>
@@ -582,7 +581,7 @@ body { padding-top: 3rem; }
       <div class="col-12 col-lg-4">
         <article class="gp-who-card">
           <div class="gp-who-media">
-            <img src="/images/membership/membership-image-09.png"
+            <img th:src="@{/images/membership/membership-image-09.png}"
                  alt=""
                  class="gp-who-img">
           </div>
@@ -621,7 +620,7 @@ body { padding-top: 3rem; }
           </div>
         </div>
         <div class="gp-how-node">
-          <img src="/images/membership/membership-image-10.svg" alt="Step 1" class="gp-how-badge">
+          <img th:src="@{/images/membership/membership-image-10.svg}" alt="Step 1" class="gp-how-badge">
         </div>
         <div class="gp-how-spacer"></div>
       </div>
@@ -630,7 +629,7 @@ body { padding-top: 3rem; }
       <div class="gp-how-row">
         <div class="gp-how-spacer"></div>
         <div class="gp-how-node">
-          <img src="/images/membership/membership-image-11.svg" alt="Step 2" class="gp-how-badge">
+          <img th:src="@{/images/membership/membership-image-11.svg}" alt="Step 2" class="gp-how-badge">
         </div>
         <div class="gp-how-box gp-right">
           <div class="gp-how-card">
@@ -651,7 +650,7 @@ body { padding-top: 3rem; }
           </div>
         </div>
         <div class="gp-how-node">
-          <img src="/images/membership/membership-image-12.svg" alt="Step 3" class="gp-how-badge">
+          <img th:src="@{/images/membership/membership-image-12.svg}" alt="Step 3" class="gp-how-badge">
         </div>
         <div class="gp-how-spacer"></div>
       </div>
@@ -743,7 +742,7 @@ body { padding-top: 3rem; }
 	<section class="cta-band">
 	  <!-- Right-side art is outside the grid so it can hug the viewport -->
 	  <div class="cta-art" aria-hidden="true">
-	    <img src="/images/why-parenting/parenting-image-06.png"
+	    <img th:src="@{/images/why-parenting/parenting-image-06.png}"
 	         alt=""
 	         class="cta-art-img">
 	  </div>
@@ -770,14 +769,14 @@ body { padding-top: 3rem; }
 			    <hr class="cta-rule">
 			
 			    <div class="cta-download d-flex align-items-center gap-4 mt-4">
-			      <img src="/images/gpa-qr-code.png" alt="QR code" class="cta-qr">
+			      <img th:src="@{/images/gpa-qr-code.png}" alt="QR code" class="cta-qr">
 			      <div>
 			        <h3 class="cta-download-title mb-2" th:text="#{membership-caption-24}">Download the App!</h3>
 			        <p class="cta-download-sub mb-3" th:text="#{membership-caption-25}">Free to try. No credit card needed.</p>
 			        <div class="d-flex align-items-center gap-2">
-			          <!-- <a href="#"><img src="/images/index/index-image11.png" alt="Google Play" class="cta-store-badge"></a>  -->
+			          <!-- <a href="#"><img th:src="@{/images/index/index-image11.png}" alt="Google Play" class="cta-store-badge"></a>  -->
 			          <a href="https://apps.apple.com/us/app/geniusparentingai/id6747332178?itscg=30200&itsct=apps_box_link&mttnsubad=6747332178">
-			          	<img src="/images/index/index-image12.png" alt="App Store" class="cta-store-badge">
+			          	<img th:src="@{/images/index/index-image12.png}" alt="App Store" class="cta-store-badge">
 			          </a>
 			        </div>
 			      </div>

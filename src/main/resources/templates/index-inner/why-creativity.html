@@ -478,7 +478,7 @@ body { padding-top: 3rem; }
 	<section class="cta-band">
 	  <!-- Right-side art is outside the grid so it can hug the viewport -->
 	  <div class="cta-art" aria-hidden="true">
-	    <img src="/images/why-creativity/creativity-image-06.png"
+	    <img th:src="@{/images/why-creativity/creativity-image-06.png}"
 	         alt=""
 	         class="cta-art-img">
 	  </div>
@@ -505,14 +505,14 @@ body { padding-top: 3rem; }
 			    <hr class="cta-rule">
 			
 			    <div class="cta-download d-flex align-items-center gap-4 mt-4">
-			      <img src="/images/gpa-qr-code.png" alt="QR code" class="cta-qr">
+			      <img th:src="@{/images/gpa-qr-code.png}" alt="QR code" class="cta-qr">
 			      <div>
 			        <h3 class="cta-download-title mb-2" th:text="#{why-creativity-caption-24}">Download the App!</h3>
 			        <p class="cta-download-sub mb-3" th:text="#{why-creativity-caption-25}">Free to try. No credit card needed.</p>
 			        <div class="d-flex align-items-center gap-2">
-			          <!-- <a href="#"><img src="/images/index/index-image11.png" alt="Google Play" class="cta-store-badge"></a>  -->
+			          <!-- <a href="#"><img th:src="@{/images/index/index-image11.png}" alt="Google Play" class="cta-store-badge"></a>  -->
 			          <a href="https://apps.apple.com/us/app/geniusparentingai/id6747332178?itscg=30200&itsct=apps_box_link&mttnsubad=6747332178">
-			          	<img src="/images/index/index-image12.png" alt="App Store" class="cta-store-badge">
+			          	<img th:src="@{/images/index/index-image12.png}" alt="App Store" class="cta-store-badge">
 			          </a>
 			        </div>
 			      </div>

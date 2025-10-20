@@ -345,8 +345,9 @@
 </head>
 <body>
   <div th:replace="~{fragments/navbar :: navbar}"></div>
-
   <section class="about-hero">
+    <h2>This is a test</h2>
+  
     <div class="about-hero-art" aria-hidden="true">
       <img th:src="@{/images/about/about-image-01.png}" alt="" class="about-hero-art-img">
     </div>
@@ -367,7 +368,6 @@
       </div>
     </div>
   </section>
-
 
   <!-- WHY WE BUILT THIS APP -->
   <section class="about-why">
@@ -612,8 +612,10 @@
                 <div class="about-contact-body">
                   <p th:text="#{about-caption-72}">Have questions or need support? We’re here for you every step of the way.</p>
                   <p class="about-contact-email"><b th:text="#{about-caption-73}">Email:</b> <a href="mailto:support@geniusParentingAI.ca" th:text="#{about-caption-74}">support@geniusParentingAI.ca</a></p>
+                  <!-- 
                   <p><b th:text="#{about-caption-75}">Company:</b> <span th:text="#{about-caption-76}">GNM399 Ventures Corp.</span></p>
                   <p><b th:text="#{about-caption-77}">Address:</b> <span th:text="#{about-caption-78}">2112 W Broadway, Unit 208, Vancouver, BC V6K 2C8, Canada</span></p>
+                   -->
                 </div>
               </div>
               <!-- Right image -->
@@ -633,7 +635,7 @@
 	<section class="cta-band">
 	  <!-- Right-side art is outside the grid so it can hug the viewport -->
 	  <div class="cta-art" aria-hidden="true">
-	    <img src="/images/about/about-image-16.png" alt="" class="cta-art-img">
+	    <img th:src="@{/images/about/about-image-16.png}" alt="" class="cta-art-img">
 	  </div>
 	  <div class="container-xxl" style="padding-top:80px;">
 	    <div class="row g-0 cta-row">
@@ -652,14 +654,14 @@
 			    <hr class="cta-rule">
 			
 			    <div class="cta-download d-flex align-items-center gap-4 mt-4">
-			      <img src="/images/gpa-qr-code.png" alt="QR code" class="cta-qr">
+			      <img th:src="@{/images/gpa-qr-code.png}" alt="QR code" class="cta-qr">
 			      <div>
 			        <h3 class="cta-download-title mb-2" th:text="#{index-caption-24}">Download the App!</h3>
 			        <p class="cta-download-sub mb-3" th:text="#{index-caption-25}">Free to try. No credit card needed.</p>
 			        <div class="d-flex align-items-center gap-2">
-			          <!-- <a href="#"><img src="/images/index/index-image11.png" alt="Google Play" class="cta-store-badge"></a>  -->
+			          <!-- <a href="#"><img th:src="@{/images/index/index-image11.png}" alt="Google Play" class="cta-store-badge"></a>  -->
 			          <a href="https://apps.apple.com/us/app/geniusparentingai/id6747332178?itscg=30200&itsct=apps_box_link&mttnsubad=6747332178">
-			          	<img src="/images/index/index-image12.png" alt="App Store" class="cta-store-badge">
+			          	<img th:src="@{/images/index/index-image12.png}" alt="App Store" class="cta-store-badge">
 			          </a>
 			        </div>
 			      </div>

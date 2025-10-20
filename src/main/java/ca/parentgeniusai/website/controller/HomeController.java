@@ -33,17 +33,17 @@ public class HomeController {
     
     @GetMapping("/index-inner/why-parenting")
     public String indexWhyParenting() {
-    	return "/index-inner/why-parenting";
+    	return "index-inner/why-parenting";
     }
     
     @GetMapping("/index-inner/why-creativity")
     public String indexWhyCreativity() {
-    	return "/index-inner/why-creativity";
+    	return "index-inner/why-creativity";
     }
     
     @GetMapping("/index-inner/why-community")
     public String indexWhyCommunity() {
-    	return "/index-inner/why-community";
+    	return "index-inner/why-community";
     }
     
     @GetMapping("/membership")

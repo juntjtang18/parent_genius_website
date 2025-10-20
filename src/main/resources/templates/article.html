@@ -89,9 +89,23 @@
         }
 
         document.getElementById('back-button').addEventListener('click', () => {
-            const backUrl = `/function-article-list?function=${functionId}&article=${articleId}`;
-            window.location.href = backUrl;
-        });
+       	  // Prefer explicit function list if we have an id
+       	  if (functionId) {
+       	    window.location.href = `/functions?function=${functionId}`;
+       	    return;
+       	  }
+       	  // Otherwise try to return to the referrer if it’s same-origin
+       	  try {
+       	    const ref = document.referrer;
+       	    if (ref && new URL(ref).origin === location.origin) {
+       	      window.location.href = ref;
+       	      return;
+       	    }
+       	  } catch (e) {}
+       	  // Last resort: go home
+       	  window.location.href = '/';
+       	});
+
         
         // ADDED DELETE BUTTON LOGIC
         // Check if the delete button exists on the page (it will only be rendered for editors)

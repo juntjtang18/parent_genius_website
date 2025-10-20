@@ -563,7 +563,7 @@
   <!-- CTA band -->
   <section class="cta-band">
     <div class="cta-art" aria-hidden="true">
-      <img src="/images/index/index-image13.png" alt="" class="cta-art-img">
+      <img th:src="@{/images/index/index-image13.png}" alt="" class="cta-art-img">
     </div>
     <div class="container-xxl">
       <div class="row g-0 cta-row">
@@ -584,13 +584,13 @@
             <hr class="cta-rule">
 
             <div class="cta-download d-flex align-items-center gap-4 mt-4">
-              <img src="/images/gpa-qr-code.png" alt="QR code" class="cta-qr">
+              <img th:src="@{/images/gpa-qr-code.png}" alt="QR code" class="cta-qr">
               <div>
                 <h3 class="cta-download-title mb-2" th:text="#{index-caption-24}">Download the App!</h3>
                 <p class="cta-download-sub mb-3" th:text="#{index-caption-25}">Free to try. No credit card needed.</p>
                 <div class="d-flex align-items-center gap-2">
                   <a href="https://apps.apple.com/us/app/geniusparentingai/id6747332178?itscg=30200&itsct=apps_box_link&mttnsubad=6747332178">
-                    <img src="/images/index/index-image12.png" alt="App Store" class="cta-store-badge">
+                    <img th:src="@{/images/index/index-image12.png}" alt="App Store" class="cta-store-badge">
                   </a>
                 </div>
               </div>

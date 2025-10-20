@@ -155,34 +155,34 @@
 </head>
 <body>
     <div th:replace="~{fragments/navbar :: navbar}"></div>
-<div th:replace="~{${segTopTemplate} :: ${segTopName}}"></div>
+	<div th:replace="~{${segTopTemplate} :: ${segTopName}}"></div>
 
 
-<!-- Function Articles -->
-<section id="fn-articles" class="container my-5" style="padding-bottom: 8rem;">
-  <div class="d-flex align-items-baseline justify-content-between mb-3">
-    <h2 id="fn-title" class="h3 m-0"></h2>
-    <small id="fn-count" class="text-muted"></small>
-  </div>
+	<!-- Function Articles -->
+	<section id="fn-articles" class="container my-5" style="padding-bottom: 8rem;">
+	  <div class="d-flex align-items-baseline justify-content-between mb-3">
+	    <h2 id="fn-title" class="h3 m-0"></h2>
+	    <small id="fn-count" class="text-muted"></small>
+	  </div>
+	
+	  <!-- keep the same IDs so the existing JS continues to work -->
+	  <div id="fn-article-grid" class="row g-4 row-cols-1 row-cols-md-2 row-cols-lg-3"></div>
+	
+	  <div class="text-center mt-3">
+	    <button id="fn-load-more" class="btn btn-primary d-none">Load more</button>
+	  </div>
+	</section>
 
-  <!-- keep the same IDs so the existing JS continues to work -->
-  <div id="fn-article-grid" class="row g-4 row-cols-1 row-cols-md-2 row-cols-lg-3"></div>
-
-  <div class="text-center mt-3">
-    <button id="fn-load-more" class="btn btn-primary d-none">Load more</button>
-  </div>
-</section>
 
 
-
-<!-- include the seg bottom -->
-<div th:replace="~{${segBottomTemplate} :: ${segBottomName}}"></div> 
-    
+	<!-- include the seg bottom -->
+	<div th:replace="~{${segBottomTemplate} :: ${segBottomName}}"></div> 
+	    
     <!-- Include the Chatbot Fragment -->
     <div th:replace="~{fragments/chatbot :: chatbot}"></div>
 
     <div th:replace="~{fragments/footer :: footer}"></div>
-
+	
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script th:inline="javascript">
 		(function() {
@@ -198,7 +198,7 @@
 		
 		  // ====== State ======
 		  let page = 1;
-		  const pageSize = 12;
+		  const pageSize = 3;
 		  let totalPages = 1;
 		  let loading = false;
 		
@@ -243,7 +243,7 @@
 		          <h3 class="card-title">${title}</h3>
 		          <p class="card-text flex-grow-1">${summary}</p>
 		          <div style="padding-bottom:2rem;">
-			          <a class="fn-cta" href="/article?article=${a.id}">
+	          		  <a class="fn-cta" href="/article?function=${FUNCTION_ID}&article=${a.id}">
 				          View Blog <span class="arrow">→</span>
 				      </a>
 			      </div>
@@ -256,8 +256,8 @@
 		  }
 		
 		  async function fetchFunctionName() {
-			    const u = `${API}functions/${FUNCTION_ID}?populate=*`;
-			    console.log('[functions] GET', u);    try {
+		    const u = `${API}functions/${FUNCTION_ID}?populate=*`;
+		    console.log('[functions] GET', u);    try {
 		      const res = await fetch(`${API}functions/${FUNCTION_ID}?populate=*`, { headers: authHeaders() });
 		      if (!res.ok) throw new Error('Failed to load function');
 		      const json = await res.json();
@@ -316,7 +316,7 @@
 		    moreBtn.addEventListener('click', fetchArticles);
 		  });
 		})();
-</script>
-    
+	</script>
+	   
 </body>
 </html>
