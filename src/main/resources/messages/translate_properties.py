@@ -26,6 +26,12 @@ TARGET_LANGUAGES = {
 # Regular expression to match files with language suffixes (e.g., *_fr.properties)
 LANG_SUFFIX_PATTERN = re.compile(r'.*_[a-z]{2}(-[A-Z]{2})?\.properties$')
 
+OUTPUT_SUFFIX_OVERRIDES = {
+    'zh-CN': 'zh',   # write messages_zh.properties
+    # add more overrides later if needed
+}
+
+
 def to_unicode_escape(text):
     """Convert text to Unicode escape sequences."""
     return text.encode('unicode_escape').decode('ascii')
@@ -46,13 +52,20 @@ def translate_properties_file(input_file, lang_code):
     Translate a single .properties file to the target language using a thread pool
     for concurrent network requests.
     """
-    output_file = f"{os.path.splitext(input_file)[0]}_{lang_code.replace('-', '_')}.properties"
-    is_chinese = lang_code == 'zh-CN'
+    # --- CHANGED: decide the output suffix separately from translator target ---
+    # Replace '-' with '_' for standard Java resource suffixes, then apply overrides.
+    default_suffix = lang_code.replace('-', '_')
+    output_suffix = OUTPUT_SUFFIX_OVERRIDES.get(lang_code, default_suffix)
+
+    # Write to messages_<suffix>.properties (e.g., zh-CN -> zh)
+    output_file = f"{os.path.splitext(input_file)[0]}_{output_suffix}.properties"
+
+    # Keep using zh-CN for the actual translation:
+    is_chinese = lang_code.lower().startswith('zh')  # True for zh, zh-CN, zh-TW, etc.
 
     lines_to_process = []
-    other_lines = [] # For comments, blank lines, etc.
-    
-    # --- MODIFIED: First, read all lines to prepare for batch processing ---
+    other_lines = []
+
     with codecs.open(input_file, 'r', 'utf-8') as infile:
         for i, line in enumerate(infile):
             if '=' in line and not line.strip().startswith('#'):
@@ -64,39 +77,34 @@ def translate_properties_file(input_file, lang_code):
     values_to_translate = [item['value'] for item in lines_to_process]
     translated_values = []
 
-    # --- NEW: Use ThreadPoolExecutor to translate all values concurrently ---
     if values_to_translate:
         with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
-            # Create a future for each translation task
-            future_to_value = {executor.submit(translate_text, value, lang_code): value for value in values_to_translate}
-            
-            # Use a dictionary to map original values to translated ones
-            # This is more robust than relying on the order of results from executor.map
+            future_to_value = {
+                executor.submit(translate_text, value, lang_code): value
+                for value in values_to_translate
+            }
             results_map = {}
             for future in concurrent.futures.as_completed(future_to_value):
                 original_value = future_to_value[future]
                 try:
                     translated_value = future.result()
-                    results_map[original_value] = translated_value
                 except Exception as exc:
                     print(f"⚠️ Generated an exception: {original_value} -> {exc}")
-                    results_map[original_value] = original_value # Fallback
+                    translated_value = original_value
+                results_map[original_value] = translated_value
 
-            # Reconstruct translated values in the original order
             translated_values = [results_map.get(val, val) for val in values_to_translate]
 
-    # Combine translated lines with other lines and sort them to maintain original file order
     final_lines = []
     for i, item in enumerate(lines_to_process):
         translated_text = translated_values[i]
         if is_chinese and translated_text:
             translated_text = to_unicode_escape(translated_text)
         final_lines.append({'line': f"{item['key']}={translated_text}\n", 'index': item['index']})
-    
+
     final_lines.extend(other_lines)
     final_lines.sort(key=lambda x: x['index'])
 
-    # --- MODIFIED: Write all processed lines at once ---
     with codecs.open(output_file, 'w', 'utf-8') as outfile:
         for item in final_lines:
             outfile.write(item['line'])
