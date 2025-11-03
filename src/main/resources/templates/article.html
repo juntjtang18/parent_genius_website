@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:lang="${#locale}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -35,6 +35,11 @@
     </style>
 </head>
 <body>
+  <!-- bind Spring/Thymeleaf locale to JS -->
+  <script th:inline="javascript">
+    window.CURRENT_LOCALE = /*[[${#locale}]]*/ 'en';
+  </script>
+
     <div th:replace="~{fragments/navbar :: navbar}"></div>
 
     <div class="article-panel">
@@ -142,5 +147,167 @@
 
         window.onload = fetchArticle;
     </script>
+
+<!-- DEBUG/locale-aware fetch override -->
+<script>
+(() => {
+  console.log("[article] override init");
+  // Detect locale: URL (?lang|locale) -> localStorage -> window.CURRENT_LOCALE -> <html lang> -> 'en'
+  (function(){
+    try {
+      const qs = new URLSearchParams(window.location.search);
+      const qp = (qs.get('lang') || qs.get('locale') || '').trim();
+      if (qp) { window.__LOCALE_SOURCE = 'url'; window.__LOCALE_VALUE = qp; throw 'done'; }
+
+      const ls = (localStorage.getItem('currentLocale') || '').trim();
+      if (ls) { window.__LOCALE_SOURCE = 'localStorage'; window.__LOCALE_VALUE = ls; throw 'done'; }
+
+      if (typeof window.CURRENT_LOCALE !== 'undefined' && window.CURRENT_LOCALE) {
+        window.__LOCALE_SOURCE = 'window.CURRENT_LOCALE';
+        window.__LOCALE_VALUE = String(window.CURRENT_LOCALE);
+        throw 'done';
+      }
+
+      const htmlLang = (document.documentElement.lang || '').trim();
+      if (htmlLang) { window.__LOCALE_SOURCE = 'html[lang]'; window.__LOCALE_VALUE = htmlLang; throw 'done'; }
+
+      window.__LOCALE_SOURCE = 'default';
+      window.__LOCALE_VALUE = 'en';
+    } catch(e) {
+      if (e !== 'done') console.warn('[article] locale detect note:', e);
+    }
+  })();
+
+  const currentLocale = (window.__LOCALE_VALUE || 'en').split('-')[0];
+  console.log("[article] detected locale =", currentLocale, "source =", window.__LOCALE_SOURCE);
+
+
+  // Resolve current locale (fallback to <html lang> or 'en'), normalize zh-CN -> zh
+
+
+  // Grab template values if they exist
+  const STRAPI_URL  = (window.STRAPI_URL || (typeof strapiUrl !== 'undefined' ? strapiUrl : 'http://localhost:8080/api/'));
+  const STRAPI_TOKEN = (window.STRAPI_TOKEN || (typeof strapiToken !== 'undefined' ? strapiToken : ''));
+  const ARTICLE_ID = (window.ARTICLE_ID || (typeof articleId !== 'undefined' ? articleId : null));
+
+  console.log("[article] STRAPI_URL =", STRAPI_URL, "ARTICLE_ID =", ARTICLE_ID);
+
+  function authHeaders() {
+    const h = { 'Content-Type': 'application/json' };
+    if (STRAPI_TOKEN) h['Authorization'] = `Bearer ${STRAPI_TOKEN}`;
+    return h;
+  }
+
+  async function fetchArticle() {
+    const loadingEl = document.getElementById('loading');
+    const contentWrap = document.getElementById('article-content');
+    const titleEl = document.getElementById('article-title');
+    const bodyEl = document.getElementById('article-body');
+    const errorEl = document.getElementById('error');
+
+    try {
+      if (!ARTICLE_ID) throw new Error("Missing articleId");
+
+      const url = new URL(`${STRAPI_URL}articles/${ARTICLE_ID}`);
+      // Always fetch base EN (relations & localization set live here)
+      url.searchParams.set('locale', 'en');
+      // Ask Strapi to include only the desired localization (zh) if it exists
+      url.searchParams.set('populate[localizations][filters][locale][$eq]', currentLocale);
+      url.searchParams.set('populate[localizations][fields][0]', 'id');
+      url.searchParams.set('populate[localizations][fields][1]', 'locale');
+      url.searchParams.set('populate[localizations][fields][2]', 'title');
+      url.searchParams.set('populate[localizations][fields][3]', 'content');
+
+      console.log("[article] GET", url.toString());
+      const res = await fetch(url.toString(), { headers: authHeaders() });
+      const text = await res.text();
+      console.log("[article] status", res.status, "body(first 200) =>", text.slice(0,200));
+      if (!res.ok) throw new Error(`HTTP ${res.status}: ${text}`);
+
+      const json = JSON.parse(text);
+      const base = json?.data;
+      const attr = base?.attributes || {};
+      const locs = Array.isArray(attr?.localizations?.data) ? attr.localizations.data : [];
+      const localized = locs.find(l => l?.attributes?.locale === currentLocale);
+      const showTitle = localized?.attributes?.title ?? attr.title ?? '';
+      const showContent = localized?.attributes?.content ?? attr.content ?? '';
+
+      console.log("[article] using", localized ? "localized" : "base", "title:", showTitle.slice(0,80));
+
+      if (loadingEl) loadingEl.style.display = 'none';
+      if (contentWrap) contentWrap.style.display = 'block';
+      if (titleEl) titleEl.textContent = showTitle;
+      if (bodyEl) bodyEl.innerHTML = showContent;
+      if (errorEl) errorEl.style.display = 'none';
+    } catch (err) {
+      console.error("[article] fetchArticle error:", err);
+      if (loadingEl) loadingEl.style.display = 'none';
+      if (errorEl) {
+        errorEl.style.display = 'block';
+        errorEl.textContent = 'Failed to load article: ' + (err?.message || err);
+      }
+    }
+  }
+
+  // Attach/override window.fetchArticle so existing onload wiring still works
+  window.fetchArticle = fetchArticle;
+
+  // If page already loaded and no one else calls it, call once:
+  if (document.readyState === "complete") {
+    fetchArticle();
+  } else {
+    window.addEventListener("load", fetchArticle, { once: true });
+  }
+})();
+</script>
+
+  <!-- BEGIN: Thymeleaf-locale fetch (authoritative) -->
+  <script th:inline="javascript">
+  (async () => {
+    try {
+      window.onload = null; // prevent earlier repaint
+
+      const locale = (typeof window.CURRENT_LOCALE !== 'undefined' && window.CURRENT_LOCALE) ? window.CURRENT_LOCALE : /*[[${#locale}]]*/ 'en';
+
+      const STRAPI_URL = /*[[${strapiUrl}]]*/ 'http://localhost:8080/api/';
+      const ARTICLE_ID = /*[[${articleId}]]*/ 14;
+      const TOKEN      = /*[[${strapiToken}]]*/ '';
+
+      const url = `${STRAPI_URL}articles/${ARTICLE_ID}?locale=en&populate[localizations][filters][locale][$eq]=${encodeURIComponent(locale)}&populate[localizations][fields][0]=id&populate[localizations][fields][1]=locale&populate[localizations][fields][2]=title&populate[localizations][fields][3]=content`;
+
+      const res = await fetch(url, { headers: TOKEN ? { Authorization: `Bearer ${TOKEN}` } : {} });
+      const data = await res.json();
+      if (!res.ok || !data?.data) throw new Error(`HTTP ${res.status}`);
+
+      const article = data.data;
+      const loc = article.attributes?.localizations?.data?.[0]?.attributes;
+      const localized = (loc && loc.locale) ? loc : article.attributes;
+
+      const loading = document.getElementById('loading');
+      if (loading) loading.style.display = 'none';
+      const content = document.getElementById('article-content');
+      if (content) content.style.display = 'block';
+
+      const titleEl = document.getElementById('article-title');
+      const bodyEl  = document.getElementById('article-body');
+      if (titleEl) titleEl.textContent = localized.title || '';
+      if (bodyEl)  bodyEl.innerHTML    = localized.content || '';
+    } catch (err) {
+      const loading = document.getElementById('loading');
+      if (loading) loading.style.display = 'none';
+      const e = document.getElementById('error') || (() => {
+        const div = document.createElement('div');
+        div.id = 'error';
+        div.style.color = 'red';
+        document.body.appendChild(div);
+        return div;
+      })();
+      e.style.display = 'block';
+      e.textContent = 'Failed to load article: ' + (err?.message || err);
+      console.error('[article] error', err);
+    }
+  })();
+  </script>
+  <!-- END: Thymeleaf-locale fetch -->
 </body>
 </html>

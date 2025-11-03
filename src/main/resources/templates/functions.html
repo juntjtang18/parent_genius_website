@@ -185,6 +185,16 @@
 	
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script th:inline="javascript">
+// put this near the top of functions.html, before fetchArticles/articleCard
+// prefer server-injected locale; fallback to <html lang> or 'en'
+let currentLocale =
+  (window.CURRENT_LOCALE /* if you set it elsewhere */) ||
+  (document.documentElement.lang || 'en');
+currentLocale = currentLocale.split('-')[0]; // normalize e.g. zh-CN -> zh
+console.log('[functions] currentLocale =', currentLocale);
+</script>
+
+    <script th:inline="javascript">
 		(function() {
 		  // ====== Config from server (Thymeleaf) ======
 		  const STRAPI_URL = /*[[${strapiUrl}]]*/ '';      // ✅ Thymeleaf outputs a proper JS string value
@@ -220,10 +230,14 @@
 		    return STRAPI_URL.replace(/\/$/, '') + (u.startsWith('/') ? u : '/' + u);
 		  };
 		
-		  function articleCard(a) {
-		    const attr = a.attributes || {};
-		    const title = attr.title || 'Untitled';
-		    const summary = attr.summary || '';
+		  function articleCard(a, locale) {
+			  const attr = a.attributes || {};
+			  const locs = attr.localizations?.data || [];
+			  const preferred = locs.find(l => l.attributes?.locale === locale) || locs[0];
+			  const title = preferred?.attributes?.title || attr.title || 'Untitled';
+			  const content = preferred?.attributes?.content || attr.content || '';
+
+			  //const summary = attr.content?.substring(0, 180) || '';
 		    const slug = attr.slug || a.id;
 		
 		    // Try icon_image.formats.thumbnail.url; fall back to main url; else placeholder
@@ -241,7 +255,7 @@
 		        <img class="card-img-top" alt="">
 		        <div class="card-body d-flex flex-column">
 		          <h3 class="card-title">${title}</h3>
-		          <p class="card-text flex-grow-1">${summary}</p>
+		          
 		          <div style="padding-bottom:2rem;">
 	          		  <a class="fn-cta" href="/article?function=${FUNCTION_ID}&article=${a.id}">
 				          View Blog <span class="arrow">→</span>
@@ -269,43 +283,68 @@
 		  }
 		
 		  async function fetchArticles() {
-		    if (loading || page > totalPages) return;
-		    loading = true;
-		    moreBtn.classList.add('d-none');
-		
-		    const url = new URL(`${API}articles`);
-		    url.searchParams.set('filters[functions][id][$in]', String(FUNCTION_ID));
-		    url.searchParams.set('pagination[page]', String(page));
-		    url.searchParams.set('pagination[pageSize]', String(pageSize));
-		    url.searchParams.set('sort[0]', 'sortScore:desc');
-		    url.searchParams.set('sort[1]', 'createdAt:desc');
-		    url.searchParams.set('populate[icon_image][populate]', 'formats');
-		    console.log('[functions] GET', url.toString());
-		
-		    try {
-		      const res = await fetch(url.toString(), { headers: authHeaders() });
-		      if (!res.ok) throw new Error('Failed to load articles');
-		      const json = await res.json();
-		      const items = json?.data || [];
-		      const meta = json?.meta?.pagination || {};
-		      totalPages = meta?.pageCount || 1;
-		
-		      // Render
-		      items.forEach(a => gridEl.appendChild(articleCard(a)));
-		
-		      // Update counters & pager
-		      const total = meta?.total ?? (page * pageSize);
-		      countEl.textContent = `${gridEl.children.length} / ${total}`;
-		      page++;
-		      if (page <= totalPages) {
-		        moreBtn.classList.remove('d-none');
-		      }
-		    } catch (e) {
-		      console.error(e);
-		    } finally {
-		      loading = false;
-		    }
-		  }
+			  if (loading || page > totalPages) return;
+			  loading = true;
+			  moreBtn.classList.add('d-none');
+
+			  // ===== Determine current locale from Spring/WebConfig =====
+			  const currentLocale = /*[[${#locale}]]*/ 'en';   // Thymeleaf injects the current locale
+			  console.log('[functions] currentLocale =', currentLocale);
+
+			  const buildUrl = (locale) => {
+				  const u = new URL(`${API}articles`);
+				  u.searchParams.set('locale', 'en'); // always query base locale
+				  u.searchParams.set('filters[functions][id][$in]', String(FUNCTION_ID));
+				  u.searchParams.set('pagination[page]', String(page));
+				  u.searchParams.set('pagination[pageSize]', String(pageSize));
+				  u.searchParams.set('sort[0]', 'sortScore:desc');
+				  u.searchParams.set('sort[1]', 'createdAt:desc');
+				  // populate localization in the requested locale (like zh)
+				  u.searchParams.set('populate[localizations][filters][locale][$eq]', locale);
+				  u.searchParams.set('populate[localizations][fields][0]', 'id');
+				  u.searchParams.set('populate[localizations][fields][1]', 'locale');
+				  u.searchParams.set('populate[localizations][fields][2]', 'title');
+				  u.searchParams.set('populate[localizations][fields][3]', 'content');
+				  u.searchParams.set('populate[icon_image][populate]', 'formats');
+				  return u;
+				};
+
+
+			  const tryLocales = [currentLocale, 'en'];
+			  let items = [];
+			  let meta = {};
+			  for (const locale of tryLocales) {
+			    const url = buildUrl(locale);
+			    console.log('[functions] GET', url.toString());
+			    try {
+			      const res = await fetch(url.toString(), { headers: authHeaders() });
+			      if (!res.ok) throw new Error('Failed to load');
+			      const json = await res.json();
+			      items = json?.data || [];
+			      meta = json?.meta?.pagination || {};
+			      if (items.length > 0) {
+			        console.log(`[functions] using locale ${locale}`);
+			        break; // success
+			      }
+			    } catch (e) {
+			      console.warn(`Locale ${locale} failed:`, e);
+			    }
+			  }
+
+			  // ===== Render =====
+			  totalPages = meta?.pageCount || 1;
+			  items.forEach(a => gridEl.appendChild(articleCard(a, currentLocale)));
+
+			  const total = meta?.total ?? (page * pageSize);
+			  countEl.textContent = `${gridEl.children.length} / ${total}`;
+			  page++;
+			  if (page <= totalPages) {
+			    moreBtn.classList.remove('d-none');
+			  }
+
+			  loading = false;
+			}
+
 		
 		  // ====== Init ======
 		  document.addEventListener('DOMContentLoaded', () => {

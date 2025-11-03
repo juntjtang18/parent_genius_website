@@ -22,7 +22,7 @@ public class RestAPIController {
         languages.put("fr", "French");
         languages.put("de", "German");
         languages.put("es", "Spanish");
-        languages.put("zh_CN", "Chinese (Simplified)"); // Use zh_CN instead of zh
+        languages.put("zh", "Chinese (Simplified)"); // Use zh_CN instead of zh
         languages.put("ja", "Japanese");
         languages.put("ko", "Korean");
         languages.put("si", "Sinhala");
