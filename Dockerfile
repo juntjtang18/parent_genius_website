@@ -1,14 +1,8 @@
-FROM openjdk:17-jdk-slim
+FROM gcr.io/distroless/java17-debian12:nonroot
+WORKDIR /app
+# Copy your locally built jar
+COPY target/*.jar /app/app.jar
 
-# Create a volume for temporary files
-VOLUME /tmp
-
-# Build-time argument for the jar file location
-ARG JAR_FILE=target/*.jar
-COPY ${JAR_FILE} app.jar
-
-# Expose port 8080 (for documentation)
 EXPOSE 8080
-
-# Run the jar file
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+USER nonroot
+ENTRYPOINT ["java","-jar","/app/app.jar"]

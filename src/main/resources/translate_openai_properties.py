@@ -29,6 +29,7 @@ TARGETS = {
 
 OPENAI_MODEL = os.environ.get("OPENAI_TRANSLATE_MODEL", "gpt-4o-mini")
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 
 BATCH_SIZE = int(os.environ.get("OPENAI_BATCH_SIZE", "48"))

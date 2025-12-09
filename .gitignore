@@ -5,6 +5,7 @@ users.pwd
 mvnw
 mvnw.cmd
 bin/
+.env
 
 src/main/resources/messages/pyenv/
 
