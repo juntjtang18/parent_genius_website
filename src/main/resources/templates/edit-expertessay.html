@@ -50,18 +50,18 @@
         <div class="editor-panel">
             <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
                 <h2 class="my-0">
-                    <span>Edit Expert Essay</span>
+                    <span th:text="#{edit-expertessay.caption1}">Edit Expert Essay</span>
                 </h2>
                 <div class="d-flex align-items-center gap-2">
                     <button type="submit" id="save-button" class="btn btn-primary" form="edit-expert-essay-form">
                         <i class="fas fa-save me-2"></i>
-                        <span>Save Changes</span>
+                        <span th:text="#{edit-expertessay.caption2}">Save Changes</span>
                     </button>
 
                     <!-- Delete modal trigger -->
                     <button type="button" class="btn btn-danger"
                             data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">
-                        <i class="fas fa-trash-alt me-2"></i>Delete
+                        <i class="fas fa-trash-alt me-2"></i><span th:text="#{edit-expertessay.caption3}">Delete</span>
                     </button>
 
                     <!-- Back link: go back to section if known, otherwise Expert home -->
@@ -69,7 +69,7 @@
                        th:href="${selectedSectionId} != null ?
                                 @{/expert/section/{id}(id=${selectedSectionId})} :
                                 @{/expert}">
-                        <i class="fas fa-times me-2"></i>Back
+                        <i class="fas fa-times me-2"></i><span th:text="#{edit-expertessay.caption4}">Back</span>
                     </a>
                 </div>
             </div>
@@ -80,7 +80,7 @@
                 <!-- Title -->
                 <div class="form-group">
                     <label for="title" class="form-label">
-                        <strong>Title</strong>
+                        <strong th:text="#{edit-expertessay.caption5}">Title</strong>
                     </label>
                     <input type="text" class="form-control form-control-lg" id="title" required>
                     <div class="form-text">
@@ -91,7 +91,7 @@
                 <!-- Description -->
                 <div class="form-group mt-3">
                     <label for="description" class="form-label">
-                        <strong>Description</strong>
+                        <strong th:text="#{edit-expertessay.caption6}">Description</strong>
                     </label>
                     <textarea class="form-control form-control-lg" id="description" rows="4"></textarea>
                     <div class="form-text">
@@ -114,7 +114,7 @@
                 <!-- Expert Section relation (manyToOne) -->
                 <div class="form-group mt-3">
                     <label for="expert-section" class="form-label">
-                        <strong>Expert Section</strong>
+                        <strong th:text="#{edit-expertessay.caption7}">Expert Section</strong>
                     </label>
                     <select class="form-select form-select-lg" id="expert-section">
                         <option value="">-- None / Unassigned --</option>

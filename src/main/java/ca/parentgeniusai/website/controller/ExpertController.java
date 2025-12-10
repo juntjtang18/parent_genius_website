@@ -173,57 +173,51 @@ public class ExpertController {
     }
 
     @GetMapping("/expert/section/{id}")
-    public String expertEssayList(@PathVariable("id") Long sectionId,
-                                  Model model,
-                                  HttpServletRequest request) {
+    public String showExpertSection(
+            @PathVariable("id") Long id,
+            Model model,
+            HttpServletRequest request) {
 
         String jwtToken = getJwtToken(request);
         if (jwtToken == null) {
             return "redirect:/signin?error=unauthenticated";
         }
 
-        // 1. Call Strapi to get this section (for the title)
-        String sectionTitle = "Expert Section"; // fallback
+        model.addAttribute("strapiApiUrl", strapiApiBaseUrl);
+        model.addAttribute("strapiToken", "Bearer " + jwtToken);
+        model.addAttribute("expertSectionId", id);
+
+        String title = "Expert Section";
+        String description = "";
 
         try {
-            // strapiApiBaseUrl should be like: http://localhost:1337/api
-            String url = strapiApiBaseUrl + "/expert-sections/" + sectionId;
+            String url = strapiApiBaseUrl + "/expert-sections/" + id;
 
             HttpHeaders headers = new HttpHeaders();
-            headers.set("Authorization", "Bearer " + jwtToken);
-
+            headers.setBearerAuth(jwtToken);
             HttpEntity<Void> entity = new HttpEntity<>(headers);
             RestTemplate restTemplate = new RestTemplate();
-
             ResponseEntity<String> response = restTemplate.exchange(
-                    url,
-                    HttpMethod.GET,
-                    entity,
-                    String.class
-            );
+                    url, HttpMethod.GET, entity, String.class);
 
             if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
-                JsonNode root = objectMapper.readTree(response.getBody());
-                JsonNode data = root.path("data");
-                if (!data.isMissingNode()) {
-                    sectionTitle = data.path("attributes").path("title").asText(sectionTitle);
-                }
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode root = mapper.readTree(response.getBody());
+                JsonNode attrs = root.path("data").path("attributes");
+                title = attrs.path("title").asText(title);
+                description = attrs.path("description").asText("");
             }
         } catch (Exception e) {
-            logger.error("Failed to fetch expert section " + sectionId + " from Strapi", e);
+            // log if you want, but keep defaults if something fails
+            e.printStackTrace();
         }
 
-        // 2. Model attributes for the Thymeleaf view
-        model.addAttribute("expertSectionId", sectionId);
-        model.addAttribute("expertSectionTitle", sectionTitle);
-
-        model.addAttribute("strapiApiUrl",  strapiApiBaseUrl);     // e.g. http://localhost:1337/api
-        model.addAttribute("strapiToken",   "Bearer " + jwtToken);
-        // strapiRootUrl if you need it in this page:
-        // model.addAttribute("strapiRootUrl", strapiRootUrl);
+        model.addAttribute("expertSectionTitle", title);
+        model.addAttribute("expertSectionDescription", description);
 
         return "expertessay-list";
     }
+
 
 
 }

@@ -42,20 +42,20 @@
 
     <div class="container-fluid main-content">
         <div class="editor-panel">
-            <h2 class="mb-4 pb-2 border-bottom">Create a New Expert Essay</h2>
+            <h2 class="mb-4 pb-2 border-bottom" th:text="#{new-expertessay.caption1}">Create a New Expert Essay</h2>
 
             <div id="alert-container"></div>
 
             <form id="new-expertessay-form" novalidate>
                 <!-- Title -->
                 <div class="mb-3">
-                    <label for="title" class="form-label"><strong>Title</strong></label>
+                    <label for="title" class="form-label"><strong th:text="#{new-expertessay.caption2}">Title</strong></label>
                     <input type="text" class="form-control form-control-lg" id="title" required>
                 </div>
 
                 <!-- Description -->
                 <div class="mb-3">
-                    <label for="description" class="form-label"><strong>Description</strong></label>
+                    <label for="description" class="form-label"><strong th:text="#{new-expertessay.caption3}">Description</strong></label>
                     <textarea id="description" class="form-control form-control-lg" rows="4"></textarea>
                 </div>
 
@@ -67,7 +67,7 @@
 
                 <!-- Expert Section dropdown -->
                 <div class="mb-3">
-                    <label for="expert-section" class="form-label"><strong>Expert Section</strong></label>
+                    <label for="expert-section" class="form-label"><strong th:text="#{new-expertessay.caption4}">Expert Section</strong></label>
                     <select id="expert-section" class="form-select form-select-lg">
                         <option value="">-- Select an Expert Section --</option>
                     </select>
@@ -75,7 +75,7 @@
 
                 <!-- Icon image -->
                 <div class="mb-3">
-                    <label for="icon-image" class="form-label"><strong>Icon Image (Optional)</strong></label>
+                    <label for="icon-image" class="form-label"><strong th:text="#{new-expertessay.caption5}">Icon Image (Optional)</strong></label>
                     <input type="file" id="icon-image" class="form-control form-control-lg" accept="image/*">
                     <img id="icon-preview" class="media-preview" alt="Preview">
                 </div>
@@ -86,7 +86,7 @@
 				        id="save-button"
 				        class="btn btn-primary btn-lg"
 				        th:if="${#authorization.expression('hasAnyRole(''EDITOR'', ''ADMIN'')')}">
-				    <i class="fas fa-save me-2"></i>Create Expert Essay
+				    <i class="fas fa-save me-2"></i><span th:text="#{new-expertessay.caption6}">Create Expert Essay</span>
 				</button>
 
 
@@ -94,7 +94,7 @@
 				   th:href="${selectedSectionId} != null ?
 				            @{/expert/section/{id}(id=${selectedSectionId})} :
 				            @{/expert}">
-				    <i class="fas fa-times me-2"></i>Cancel
+				    <i class="fas fa-times me-2"></i><span th:text="#{new-expertessay.caption7}">Cancel</span>
 				</a>
 
             </form>

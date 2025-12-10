@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <title>Expert Essays</title>
     <meta charset="UTF-8">
@@ -42,11 +44,132 @@
             white-space: pre-line;
         }
     </style>
+        <!-- Hero-specific styles (copied from seg-emotion-top) -->
+    <style>
+      /* === Hero styles copied from seg-emotion-top === */
+
+      :root{
+        --gp-white: #fff;
+        --gp-blue-500: #3b82f6;
+        --gp-blue-700: #2563eb;
+        --gp-violet-500: #6c6ff7;
+        --gp-ink-900: #111827;
+        --gp-ink-600: #374151;
+        --gp-ink-500: #6B7280;
+        --grad-hero: linear-gradient(180deg, var(--gp-blue-500) 0%, var(--gp-blue-700) 55%, var(--gp-violet-500) 100%);
+        --grad-cta: linear-gradient(135deg, var(--gp-blue-500) 0%, var(--gp-violet-500) 60%);
+        --grad-btn: linear-gradient(90deg, #2ED3B7 0%, #1EC7E6 100%);
+        --shadow-1: 0 12px 28px rgba(15,23,42,.08);
+        --shadow-2: 0 16px 34px rgba(59,130,246,.28);
+        --shadow-cta: 0 10px 20px rgba(23,162,184,.25);
+        --shadow-cta-hover: 0 12px 26px rgba(23,162,184,.32);
+        --radius-xl: 9999px;
+        --container-pad: clamp(24px, 5vw, 64px);
+      }
+
+      .about-hero {
+        position: relative;
+        overflow: hidden;
+        color: #fff;
+      }
+      .about-hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: var(--grad-hero);
+        z-index: 0;
+      }
+      .about-hero .container-xxl {
+        position: relative;
+        z-index: 2;
+      }
+      .about-hero-row {
+        min-height: clamp(520px, 72vh, 820px);
+      }
+      .about-hero-title {
+        font-weight: 600;
+        font-size: 60px;
+        line-height: 70px;
+        margin: 0 0 12px;
+      }
+      .about-hero-sub {
+        font-size: 20px;
+        line-height: 32px;
+        font-weight: 400;
+        max-width: 60ch;
+        color: rgba(255,255,255,.95);
+        padding-bottom: 60px;
+      }
+      .about-hero-left {
+        display: flex;
+        align-items: center;
+      }
+      .about-hero-left-inner {
+        padding-block: 64px;
+        padding-inline: clamp(24px, 5vw, 64px);
+      }
+
+      .about-hero-art {
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: min(46vw, 860px);
+        display: flex;
+        align-items: stretch;
+        justify-content: flex-end;
+        z-index: 1;
+        pointer-events: none;
+      }
+      .about-hero-art-img {
+        height: 100%;
+        width: auto;
+        object-fit: contain;
+        object-position: right center;
+        display: block;
+      }
+      @media (max-width: 991.98px) {
+        .about-hero-art {
+          display: none;
+        }
+      }
+    </style>
+
 </head>
 <body>
 
     <!-- Navbar -->
     <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <!-- ===== Inline seg-emotion-top hero, but parameterized ===== -->
+    <section class="about-hero">
+        <div class="about-hero-art" aria-hidden="true">
+            <img th:src="@{/images/segments/emotional-image-01.png}"
+                 alt=""
+                 class="about-hero-art-img">
+        </div>
+        <div class="container-xxl">
+            <div class="row g-0 about-hero-row">
+                <div class="col-12 col-lg-7 about-hero-left">
+                    <div class="about-hero-left-inner">
+                        <!-- Hero title = expert section title -->
+                        <h1 class="about-hero-title"
+                            th:text="${expertSectionTitle}">Expert Section</h1>
+
+                        <!-- Hero subtitle = expert section description -->
+                        <p class="about-hero-sub">
+                            <span th:text="${expertSectionDescription}">
+                                Expert section description goes here.
+                            </span>
+                        </p>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
 
     <!-- Chatbot -->
     <div th:replace="~{fragments/chatbot :: chatbot}"></div>
@@ -62,14 +185,13 @@
                         Expert essays in this section.
                     </p>
                 </div>
-				<div class="d-flex align-items-center gap-2">
-				    <div th:if="${#authorization.expression('hasAnyRole(''EDITOR'', ''ADMIN'')')}">
-				        <a th:href="@{|/new-expertessay?sectionId=${expertSectionId}|}" class="btn btn-primary">
-				            <i class="fas fa-plus me-2"></i>New Expert Essay
-				        </a>
-				    </div>
-				</div>
-
+                <div class="d-flex align-items-center gap-2">
+                    <div sec:authorize="hasAnyRole('editor','admin')">
+                        <a th:href="@{|/new-expertessay?sectionId=${expertSectionId}|}" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>New Expert Essay
+                        </a>
+                    </div>
+                </div>
             </div>
 
             <div id="alert-container"></div>
@@ -105,9 +227,8 @@
         const loadingSpinnerEl  = document.getElementById('loading-spinner');
         const noEssaysMessageEl = document.getElementById('no-essays-message');
         const alertContainerEl  = document.getElementById('alert-container');
-        const userCanEdit = /*[[${#authorization.expression('hasAnyRole(''EDITOR'', ''ADMIN'')')}]]*/ false;
-		//const userCanEdit = true;
-		
+        const userCanEdit = /*[[${#authorization.expression('hasAnyRole("editor","admin")')}]]*/ false;
+
         document.addEventListener('DOMContentLoaded', () => {
             loadExpertEssays();
         });
@@ -214,7 +335,6 @@
                     actionDiv.appendChild(editLink);
                     titleRow.appendChild(actionDiv);
                 }
-
 
                 // Description
                 const descP = document.createElement('p');
