@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Expert Essay - Parent Genius AI</title>
+
+    <!-- Bootstrap & global styles -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link th:href="@{/css/style.css}" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+            font-family: 'Roboto', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+        .main-content { flex: 1; }
+        .editor-panel {
+            width: 90vw;
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        }
+        .media-preview {
+            max-width: 250px;
+            margin-top: 10px;
+            display: block;
+            border-radius: 4px;
+        }
+        .form-group { margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <!-- Chatbot -->
+    <div th:replace="~{fragments/chatbot :: chatbot}"></div>
+
+    <div class="container-fluid main-content">
+        <div class="editor-panel">
+            <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                <h2 class="my-0">
+                    <span>Edit Expert Essay</span>
+                </h2>
+                <div class="d-flex align-items-center gap-2">
+                    <button type="submit" id="save-button" class="btn btn-primary" form="edit-expert-essay-form">
+                        <i class="fas fa-save me-2"></i>
+                        <span>Save Changes</span>
+                    </button>
+
+                    <!-- Delete modal trigger -->
+                    <button type="button" class="btn btn-danger"
+                            data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">
+                        <i class="fas fa-trash-alt me-2"></i>Delete
+                    </button>
+
+                    <!-- Back link: go back to section if known, otherwise Expert home -->
+                    <a class="btn btn-secondary"
+                       th:href="${selectedSectionId} != null ?
+                                @{/expert/section/{id}(id=${selectedSectionId})} :
+                                @{/expert}">
+                        <i class="fas fa-times me-2"></i>Back
+                    </a>
+                </div>
+            </div>
+
+            <div id="alert-container"></div>
+
+            <form id="edit-expert-essay-form" novalidate>
+                <!-- Title -->
+                <div class="form-group">
+                    <label for="title" class="form-label">
+                        <strong>Title</strong>
+                    </label>
+                    <input type="text" class="form-control form-control-lg" id="title" required>
+                    <div class="form-text">
+                        Localized field (<code>title</code> on <code>expert_essays</code>).
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="form-group mt-3">
+                    <label for="description" class="form-label">
+                        <strong>Description</strong>
+                    </label>
+                    <textarea class="form-control form-control-lg" id="description" rows="4"></textarea>
+                    <div class="form-text">
+                        Localized <code>description</code> (text).
+                    </div>
+                </div>
+
+                <!-- URL (non-localized) -->
+                <div class="form-group mt-3">
+                    <label for="url" class="form-label">
+                        <strong>URL</strong>
+                    </label>
+                    <input type="text" class="form-control form-control-lg" id="url"
+                           placeholder="https://example.com/article">
+                    <div class="form-text">
+                        Non-localized <code>url</code> for the expert essay.
+                    </div>
+                </div>
+
+                <!-- Expert Section relation (manyToOne) -->
+                <div class="form-group mt-3">
+                    <label for="expert-section" class="form-label">
+                        <strong>Expert Section</strong>
+                    </label>
+                    <select class="form-select form-select-lg" id="expert-section">
+                        <option value="">-- None / Unassigned --</option>
+                        <!-- Options populated from Strapi via JS -->
+                    </select>
+                    <div class="form-text">
+                        manyToOne relation to <code>api::expert-section.expert-section</code>.
+                    </div>
+                </div>
+
+                <!-- Icon image -->
+                <div class="form-group mt-3">
+                    <label for="icon-image" class="form-label">
+                        <strong>Icon Image (optional)</strong>
+                    </label>
+                    <input type="file" class="form-control form-control-lg" id="icon-image" accept="image/*">
+                    <img src="#" alt="Icon Preview" class="media-preview" id="icon-preview" style="display:none;" />
+                    <div class="form-text">
+                        Single media field <code>icon_image</code> (images/files/videos/audios).
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete confirmation modal -->
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1"
+         aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this expert essay? This action cannot be undone.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                            data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger"
+                            id="confirm-delete-btn">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Strapi integration -->
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const strapiApiUrl      = /*[[${strapiApiUrl}]]*/ '';
+        const strapiToken       = /*[[${strapiToken}]]*/ '';
+        const strapiRootUrl     = /*[[${strapiRootUrl}]]*/ '';
+        const expertEssayId     = /*[[${expertEssayId}]]*/ 0;      // Strapi id of the expert_essay being edited
+        const selectedSectionId = /*[[${selectedSectionId}]]*/ null;
+
+        let existingIconId = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadExpertEssayAndSections();
+
+            document.getElementById('edit-expert-essay-form')
+                .addEventListener('submit', (event) => {
+                    event.preventDefault();
+                    handleSave();
+                });
+
+            document.getElementById('confirm-delete-btn')
+                .addEventListener('click', deleteExpertEssay);
+
+            // Live preview for newly selected icon
+            document.getElementById('icon-image').addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                const preview = document.getElementById('icon-preview');
+                if (file) {
+                    preview.src = URL.createObjectURL(file);
+                    preview.style.display = 'block';
+                } else if (!existingIconId) {
+                    preview.src = '#';
+                    preview.style.display = 'none';
+                }
+            });
+        });
+
+        async function loadExpertEssayAndSections() {
+            try {
+                const essayUrl =
+                    `${strapiApiUrl}/expert-essays/${expertEssayId}` +
+                    `?populate=icon_image,expert_section`;
+
+                const sectionsUrl =
+                    `${strapiApiUrl}/expert-sections?pagination[pageSize]=100`;
+
+                const [essayRes, sectionsRes] = await Promise.all([
+                    fetch(essayUrl, { headers: { 'Authorization': strapiToken } }),
+                    fetch(sectionsUrl, { headers: { 'Authorization': strapiToken } })
+                ]);
+
+                if (!essayRes.ok) throw new Error('Failed to load expert essay.');
+                if (!sectionsRes.ok) throw new Error('Failed to load expert sections.');
+
+                const essayBody = await essayRes.json();
+                const sectionsBody = await sectionsRes.json();
+
+                populateSectionsSelect(sectionsBody.data || []);
+
+                const essay = essayBody.data?.attributes || {};
+
+                // Fill form
+                document.getElementById('title').value       = essay.title || '';
+                document.getElementById('description').value = essay.description || '';
+                document.getElementById('url').value         = essay.url || '';
+
+                // Icon image (existing)
+                if (essay.icon_image && essay.icon_image.data) {
+                    const imgData = essay.icon_image.data;
+                    existingIconId = imgData.id;
+                    const preview = document.getElementById('icon-preview');
+                    const imageUrl = imgData.attributes.url;
+                    // handle absolute/relative Strapi URLs
+                    preview.src = imageUrl.startsWith('http')
+                        ? imageUrl
+                        : new URL(imageUrl, strapiRootUrl).href;
+                    preview.style.display = 'block';
+                }
+
+                // Expert section
+                if (essay.expert_section && essay.expert_section.data) {
+                    const sectionId = essay.expert_section.data.id;
+                    document.getElementById('expert-section').value = String(sectionId);
+                }
+
+            } catch (error) {
+                console.error(error);
+                showAlert('Could not load expert essay data.', 'danger');
+            }
+        }
+
+        function populateSectionsSelect(sections) {
+            const selectEl = document.getElementById('expert-section');
+            sections.forEach(section => {
+                const opt = document.createElement('option');
+                opt.value = section.id;
+                opt.textContent = section.attributes.title || `Section #${section.id}`;
+                selectEl.appendChild(opt);
+            });
+        }
+
+        async function handleSave() {
+            const titleEl = document.getElementById('title');
+            const title   = titleEl.value.trim();
+
+            if (!title) {
+                titleEl.focus();
+                return showAlert('Title cannot be empty.', 'warning');
+            }
+
+            const iconFile = document.getElementById('icon-image').files[0];
+
+            try {
+                if (iconFile) {
+                    const newIconId = await uploadFile(iconFile);
+                    await updateExpertEssay(newIconId);
+                } else {
+                    await updateExpertEssay(existingIconId);
+                }
+            } catch (e) {
+                console.error(e);
+                showAlert('File upload failed. Please try again.', 'danger');
+            }
+        }
+
+        async function uploadFile(file) {
+            const formData = new FormData();
+            formData.append('files', file);
+
+            const uploadUrl = new URL('api/upload', strapiRootUrl).href;
+
+            const res = await fetch(uploadUrl, {
+                method: 'POST',
+                headers: { 'Authorization': strapiToken },
+                body: formData
+            });
+
+            if (!res.ok) {
+                throw new Error('File upload failed');
+            }
+
+            const files = await res.json();
+            return files[0].id;
+        }
+
+        async function updateExpertEssay(iconId) {
+            const saveButton = document.getElementById('save-button');
+            saveButton.disabled = true;
+            saveButton.innerHTML =
+                '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
+
+            const selectedSection = document.getElementById('expert-section').value || null;
+
+            const payload = {
+                data: {
+                    title:       document.getElementById('title').value.trim(),
+                    description: document.getElementById('description').value.trim(),
+                    url:         document.getElementById('url').value.trim(),
+                    icon_image:  iconId || null,
+                    expert_section: selectedSection ? Number(selectedSection) : null
+                }
+            };
+
+            try {
+                const updateUrl = `${strapiApiUrl}/expert-essays/${expertEssayId}`;
+
+                const res = await fetch(updateUrl, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': strapiToken,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!res.ok) {
+                    let errMsg = 'Unknown error';
+                    try {
+                        const errBody = await res.json();
+                        errMsg = errBody.error?.message || JSON.stringify(errBody);
+                    } catch (_) {}
+                    throw new Error(errMsg);
+                }
+
+                showAlert('Expert essay updated successfully!', 'success');
+
+                // Optional: redirect back to section after short delay
+                setTimeout(() => {
+                    if (selectedSectionId) {
+                        window.location.href = `/expert/section/${selectedSectionId}`;
+                    }
+                }, 800);
+
+            } catch (error) {
+                console.error(error);
+                showAlert(`Error updating expert essay: ${error.message}`, 'danger');
+            } finally {
+                saveButton.disabled = false;
+                saveButton.innerHTML =
+                    '<i class="fas fa-save me-2"></i>Save Changes';
+            }
+        }
+
+        async function deleteExpertEssay() {
+            const deleteButton = document.getElementById('confirm-delete-btn');
+            deleteButton.disabled = true;
+            deleteButton.innerHTML =
+                '<i class="fas fa-spinner fa-spin me-2"></i>Deleting...';
+
+            try {
+                const res = await fetch(
+                    `${strapiApiUrl}/expert-essays/${expertEssayId}`, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': strapiToken }
+                    }
+                );
+
+                if (!res.ok) {
+                    throw new Error('Failed to delete expert essay.');
+                }
+
+                const modalElement = document.getElementById('deleteConfirmModal');
+                const modal = bootstrap.Modal.getInstance(modalElement);
+                modal.hide();
+
+                showAlert('Expert essay deleted successfully! Redirecting...',
+                          'success');
+                setTimeout(() => {
+                    if (selectedSectionId) {
+                        window.location.href = `/expert/section/${selectedSectionId}`;
+                    } else {
+                        window.location.href = '/expert';
+                    }
+                }, 800);
+            } catch (error) {
+                console.error(error);
+                showAlert(error.message, 'danger');
+                deleteButton.disabled = false;
+                deleteButton.innerHTML = 'Delete';
+            }
+        }
+
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alert-container');
+            alertContainer.innerHTML = `
+                <div class="alert alert-${type} alert-dismissible fade show"
+                     role="alert">
+                    ${message}
+                    <button type="button" class="btn-close"
+                            data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>`;
+        }
+        /*]]>*/
+    </script>
+</body>
+</html>
