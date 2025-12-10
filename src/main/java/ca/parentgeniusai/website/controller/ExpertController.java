@@ -108,44 +108,18 @@ public class ExpertController {
      */
     @GetMapping("/api/expert-sections/menu")
     @ResponseBody
-    public List<Map<String, Object>> getExpertSectionsMenu(
-            @RequestParam(value = "locale", required = false, defaultValue = "en") String locale,
-            HttpServletRequest request) {
+    public List<Map<String, Object>> getExpertSectionsMenu() {
 
         List<Map<String, Object>> result = new ArrayList<>();
-        logger.info("getExpertSectionsMenu() called.");
-        
+
         try {
-            String jwtToken = getJwtToken(request);
-            if (jwtToken == null || jwtToken.isEmpty()) {
-                logger.warn("No JWT token found in session.");
-                return result;  // return empty list → frontend will show 'failed to load'
-            }
+            String url = String.format("%s/expert-sections?pagination[pageSize]=100", strapiApiBaseUrl);
 
-        	String encodedLocale = URLEncoder.encode(locale, StandardCharsets.UTF_8);
-            String url = String.format(
-                    "%s/expert-sections?pagination[pageSize]=100&locale=%s",
-                    strapiApiBaseUrl,
-                    encodedLocale
-            );
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("Authorization", "Bearer " + jwtToken);
-            HttpEntity<Void> entity = new HttpEntity<>(headers);
-
-            org.springframework.web.client.RestTemplate restTemplate =
-                    new org.springframework.web.client.RestTemplate();
-
-            ResponseEntity<String> response = restTemplate.exchange(
-                    url,
-                    HttpMethod.GET,
-                    entity,
-                    String.class
-            );
+            // Public endpoint → no headers needed
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 
             if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
-                logger.warn("Failed to fetch expert sections from Strapi: status={}",
-                        response.getStatusCode());
                 return result;
             }
 
@@ -154,66 +128,55 @@ public class ExpertController {
 
             if (dataNode.isArray()) {
                 for (JsonNode item : dataNode) {
-                    JsonNode idNode = item.path("id");
-                    JsonNode attrs = item.path("attributes");
-                    JsonNode titleNode = attrs.path("title");
+
+                    long id = item.path("id").asLong();
+                    String title = item.path("attributes").path("title").asText("");
 
                     Map<String, Object> section = new HashMap<>();
-                    section.put("id", idNode.asLong());
-                    section.put("title", titleNode.isMissingNode() ? "" : titleNode.asText(""));
+                    section.put("id", id);
+                    section.put("title", title);
+
                     result.add(section);
                 }
             }
 
         } catch (Exception e) {
-            logger.error("Error fetching expert sections from Strapi", e);
+            logger.error("Error fetching expert sections (public menu)", e);
         }
 
         return result;
     }
 
-    @GetMapping("/expert/section/{id}")
-    public String showExpertSection(
-            @PathVariable("id") Long id,
-            Model model,
-            HttpServletRequest request) {
 
-        String jwtToken = getJwtToken(request);
-        if (jwtToken == null) {
-            return "redirect:/signin?error=unauthenticated";
-        }
+    @GetMapping("/expert/section/{id}")
+    public String expertEssayList(@PathVariable("id") Long sectionId,
+                                  Model model) {
 
         model.addAttribute("strapiApiUrl", strapiApiBaseUrl);
-        model.addAttribute("strapiToken", "Bearer " + jwtToken);
-        model.addAttribute("expertSectionId", id);
+        model.addAttribute("expertSectionId", sectionId);
 
-        String title = "Expert Section";
-        String description = "";
+        String sectionTitle = "Expert Section";
+        String sectionDescription = "";
 
         try {
-            String url = strapiApiBaseUrl + "/expert-sections/" + id;
+            String url = strapiApiBaseUrl + "/expert-sections/" + sectionId;
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.setBearerAuth(jwtToken);
-            HttpEntity<Void> entity = new HttpEntity<>(headers);
             RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<String> response = restTemplate.exchange(
-                    url, HttpMethod.GET, entity, String.class);
+            ResponseEntity<String> response =
+                    restTemplate.getForEntity(url, String.class);
 
             if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
-                ObjectMapper mapper = new ObjectMapper();
-                JsonNode root = mapper.readTree(response.getBody());
+                JsonNode root = objectMapper.readTree(response.getBody());
                 JsonNode attrs = root.path("data").path("attributes");
-                title = attrs.path("title").asText(title);
-                description = attrs.path("description").asText("");
+                sectionTitle = attrs.path("title").asText(sectionTitle);
+                sectionDescription = attrs.path("description").asText("");
             }
         } catch (Exception e) {
-            // log if you want, but keep defaults if something fails
-            e.printStackTrace();
+            logger.error("Failed to fetch expert section " + sectionId + " from Strapi", e);
         }
 
-        model.addAttribute("expertSectionTitle", title);
-        model.addAttribute("expertSectionDescription", description);
+        model.addAttribute("expertSectionTitle", sectionTitle);
+        model.addAttribute("expertSectionDescription", sectionDescription);
 
         return "expertessay-list";
     }
