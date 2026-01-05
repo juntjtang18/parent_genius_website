@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <title>Playmates &amp; Families Nearby</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+
+  <style>
+    body{
+      display:flex; flex-direction:column; min-height:100vh;
+      background-color:#f8f9fa;
+      font-family:'Roboto',system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    }
+    .main-content{flex:1;}
+
+    .panel{
+      width:90vw; max-width:1000px;
+      margin:30px auto; padding:24px 28px;
+      background:#fff; border-radius:12px;
+      box-shadow:0 8px 25px rgba(0,0,0,.08);
+    }
+    .family-item + .family-item{
+      border-top:1px solid #e5e7eb;
+      padding-top:16px; margin-top:16px;
+    }
+    .family-title{font-size:1.1rem; font-weight:600; margin:0;}
+    .muted-preline{white-space:pre-line;}
+    .kv{margin:0;}
+    .kv b{font-weight:600;}
+    .chip{
+      display:inline-flex; align-items:center; gap:6px;
+      padding:6px 10px; border-radius:999px;
+      font-size:.9rem; background:rgba(59,130,246,.08); color:#1f4fbf;
+    }
+
+    /* Empty state (centered big hint) */
+    .empty-state{
+      min-height: 260px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+      font-size: 32px; /* ~half of hero 60px */
+      font-weight: 600;
+      line-height: 1.2;
+      color: #6B7280;
+    }
+  </style>
+
+  <!-- Hero styles (copied from expertessay-list) -->
+  <style>
+    :root{
+      --gp-blue-500:#3b82f6;
+      --gp-blue-700:#2563eb;
+      --gp-violet-500:#6c6ff7;
+      --grad-hero:linear-gradient(180deg,var(--gp-blue-500) 0%,var(--gp-blue-700) 55%,var(--gp-violet-500) 100%);
+    }
+    .about-hero{position:relative; overflow:hidden; color:#fff;}
+    .about-hero::before{content:""; position:absolute; inset:0; background:var(--grad-hero); z-index:0;}
+    .about-hero .container-xxl{position:relative; z-index:2;}
+    .about-hero-row{min-height:clamp(520px,72vh,820px);}
+    .about-hero-title{font-weight:600; font-size:60px; line-height:70px; margin:0 0 12px;}
+    .about-hero-sub{font-size:20px; line-height:32px; font-weight:400; max-width:60ch; color:rgba(255,255,255,.95); padding-bottom:60px;}
+    .about-hero-left{display:flex; align-items:center;}
+    .about-hero-left-inner{padding-block:64px; padding-inline:clamp(24px,5vw,64px);}
+    .about-hero-art{
+      position:absolute; right:0; top:0; bottom:0; width:min(46vw,860px);
+      display:flex; align-items:stretch; justify-content:flex-end; z-index:1; pointer-events:none;
+    }
+    .about-hero-art-img{height:100%; width:auto; object-fit:contain; object-position:right center; display:block;}
+    @media (max-width:991.98px){.about-hero-art{display:none;}}
+  </style>
+</head>
+
+<body>
+  <!-- Navbar -->
+  <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+  <!-- ===== hero section ===== -->
+  <section class="about-hero">
+    <div class="about-hero-art" aria-hidden="true">
+      <img th:src="@{/images/nbnetwork/family-playmates.png}" alt="" class="about-hero-art-img">
+    </div>
+
+    <div class="container-xxl">
+      <div class="row g-0 about-hero-row">
+        <div class="col-12 col-lg-7 about-hero-left">
+          <div class="about-hero-left-inner">
+            <h1 class="about-hero-title">Playmates &amp; Families Nearby</h1>
+            <p class="about-hero-sub">
+              <span id="heroNeighborhoodLine" class="d-none">
+                Neighbourhood: <b id="heroNeighborhoodName"></b><br>
+              </span>
+              Find nearby families for playdates and meetups. (We only show families after they sign up and consent.)
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chatbot -->
+  <div th:replace="~{fragments/chatbot :: chatbot}"></div>
+
+  <div class="container-fluid main-content">
+    <div class="panel">
+      <div class="d-flex justify-content-between align-items-start mb-3 flex-wrap gap-3">
+        <div>
+          <h2 class="h4 mb-1 d-flex align-items-center flex-wrap gap-2">
+            <span>Nearby Families</span>
+            <span id="neighborhoodChip" class="chip d-none">
+              <i class="fa-solid fa-location-dot"></i>
+              <span id="neighborhoodChipText"></span>
+            </span>
+          </h2>
+          <p class="text-muted mb-0">
+            Sample placeholders are OK. Use real families only after they sign up and consent.
+          </p>
+        </div>
+
+        <div class="ms-auto d-flex align-items-end gap-3 flex-wrap justify-content-end">
+
+          <div>
+            <label for="neighborhoodSelect" class="form-label mb-1 small text-muted">Neighbourhood</label>
+            <select id="neighborhoodSelect" class="form-select form-select-sm" style="min-width:220px;">
+              <option value="0">Please select your neighbourhood</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="pageSizeSelect" class="form-label mb-1 small text-muted">Lines per page</label>
+            <select id="pageSizeSelect" class="form-select form-select-sm" style="min-width:140px;">
+              <option value="5">5</option>
+              <option value="10" selected>10</option>
+              <option value="20">20</option>
+            </select>
+          </div>
+
+        </div>
+      </div>
+
+      <div id="alert-container"></div>
+
+      <div id="loading-spinner" class="text-center my-4" style="display:none;">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2 mb-0">Loading families...</p>
+      </div>
+
+      <div id="select-neighborhood-message" class="empty-state d-none">
+        Please select your neighbourhood.
+      </div>
+
+      <div id="family-list" class="mt-3"></div>
+
+      <div id="no-families-message" class="text-muted mt-3 d-none">
+        No families found yet.
+      </div>
+
+      <div id="pagination-controls" class="d-flex justify-content-center align-items-center gap-3 mt-4 d-none">
+        <button id="prevPageBtn" type="button" class="btn btn-outline-primary btn-sm">
+          <i class="fa-solid fa-chevron-left me-1"></i> Prev
+        </button>
+
+        <div class="text-muted fw-semibold">
+          <span id="pageIndicator">1/1</span>
+        </div>
+
+        <button id="nextPageBtn" type="button" class="btn btn-outline-primary btn-sm">
+          Next <i class="fa-solid fa-chevron-right ms-1"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div th:replace="~{fragments/footer :: footer}"></div>
+
+  <script th:inline="javascript">
+    /*<![CDATA[*/
+    // Values injected by NBNetController
+    const strapiApiUrl = /*[[${strapiApiUrl ?: ''}]]*/ '';
+    const strapiToken  = /*[[${strapiToken ?: ''}]]*/ '';
+
+    const selectEl  = document.getElementById('neighborhoodSelect');
+    const pageSizeEl = document.getElementById('pageSizeSelect');
+    const listEl    = document.getElementById('family-list');
+    const spinnerEl = document.getElementById('loading-spinner');
+    const selectMsgEl = document.getElementById('select-neighborhood-message');
+    const noMsgEl   = document.getElementById('no-families-message');
+    const alertEl   = document.getElementById('alert-container');
+
+    const paginationEl = document.getElementById('pagination-controls');
+    const prevBtn = document.getElementById('prevPageBtn');
+    const nextBtn = document.getElementById('nextPageBtn');
+    const pageIndicatorEl = document.getElementById('pageIndicator');
+
+    const chipEl    = document.getElementById('neighborhoodChip');
+    const chipText  = document.getElementById('neighborhoodChipText');
+    const heroLine  = document.getElementById('heroNeighborhoodLine');
+    const heroName  = document.getElementById('heroNeighborhoodName');
+
+    const neighborhoodMap = new Map(); // id -> name
+
+    let currentNeighborhoodId = 0;
+    let currentPage = 1;
+    let pageSize = 10;
+    let totalPages = 1;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!strapiApiUrl) {
+        showAlert('Strapi API URL is missing. NBNetController must set model.addAttribute("strapiApiUrl", ...).', 'danger');
+        return;
+      }
+
+      // init page size
+      pageSize = Number(pageSizeEl.value || 10) || 10;
+
+      const initialId = getInitialNeighborhoodId();
+      currentNeighborhoodId = initialId;
+
+      await loadNeighborhoods(initialId);
+
+      if (initialId && initialId > 0) {
+        currentPage = 1;
+        await loadFamilies(initialId, currentPage, pageSize);
+      } else {
+        showSelectNeighborhoodMessage();
+        hidePagination();
+      }
+
+      selectEl.addEventListener('change', async () => {
+        const id = Number(selectEl.value || 0);
+        currentNeighborhoodId = id;
+        currentPage = 1;
+
+        updateNeighborhoodUI(id);
+        updateUrlParam(id);
+
+        if (id && id > 0) {
+          await loadFamilies(id, currentPage, pageSize);
+        } else {
+          clearFamilies();
+          showSelectNeighborhoodMessage();
+          hidePagination();
+        }
+      });
+
+      pageSizeEl.addEventListener('change', async () => {
+        pageSize = Number(pageSizeEl.value || 10) || 10;
+        currentPage = 1;
+        if (currentNeighborhoodId && currentNeighborhoodId > 0) {
+          await loadFamilies(currentNeighborhoodId, currentPage, pageSize);
+        }
+      });
+
+      prevBtn.addEventListener('click', async () => {
+        if (currentPage <= 1) return;
+        currentPage -= 1;
+        await loadFamilies(currentNeighborhoodId, currentPage, pageSize);
+      });
+
+      nextBtn.addEventListener('click', async () => {
+        if (currentPage >= totalPages) return;
+        currentPage += 1;
+        await loadFamilies(currentNeighborhoodId, currentPage, pageSize);
+      });
+    });
+
+    function headers() {
+      const h = {};
+      if (strapiToken && String(strapiToken).trim() !== '') {
+        h['Authorization'] = String(strapiToken).trim(); // "Bearer <jwt>"
+      }
+      return h;
+    }
+
+    function showAlert(message, type) {
+      alertEl.innerHTML = `
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+          ${message}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      `;
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      return String(text)
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;')
+        .replace(/'/g,'&#039;');
+    }
+
+    function formatTime(t) {
+      if (!t) return '';
+      const s = String(t).split('.')[0]; // drop ms if any
+      const parts = s.split(':');
+      if (parts.length >= 2) return parts[0].padStart(2,'0') + ':' + parts[1].padStart(2,'0');
+      return s;
+    }
+
+    function ageLabel(birthdayStr) {
+      if (!birthdayStr) return '';
+      const b = new Date(birthdayStr);
+      if (Number.isNaN(b.getTime())) return '';
+      const now = new Date();
+      let months = (now.getFullYear() - b.getFullYear()) * 12 + (now.getMonth() - b.getMonth());
+      if (now.getDate() < b.getDate()) months -= 1;
+      if (months < 0) months = 0;
+      if (months < 24) return months + '-month-old';
+      const years = Math.floor(months / 12);
+      return years + '-year-old';
+    }
+
+    function getInitialNeighborhoodId() {
+      const p = new URLSearchParams(window.location.search);
+      const v = Number(p.get('neighborhoodId') || 0);
+      return Number.isFinite(v) ? v : 0;
+    }
+
+    function updateUrlParam(id) {
+      const u = new URL(window.location.href);
+      if (id && id > 0) u.searchParams.set('neighborhoodId', String(id));
+      else u.searchParams.delete('neighborhoodId');
+      window.history.replaceState({}, '', u.toString());
+    }
+
+    async function loadNeighborhoods(selectId) {
+      // Strapi: GET /neighborhoods?sort=name:asc&pagination[pageSize]=100
+      const url = `${strapiApiUrl}/neighborhoods?sort=name:asc&pagination[pageSize]=100`;
+
+      try {
+        const res = await fetch(url, { method:'GET', headers: headers() });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+
+        const body = await res.json();
+        const items = body.data || [];
+
+        // fill map + dropdown
+        items.forEach(item => {
+          const id = item.id;
+          const name = item?.attributes?.name || '';
+          if (id && name) neighborhoodMap.set(Number(id), String(name));
+        });
+
+        // clear options except first
+        while (selectEl.options.length > 1) selectEl.remove(1);
+
+        // add options
+        for (const [id, name] of neighborhoodMap.entries()) {
+          const opt = document.createElement('option');
+          opt.value = String(id);
+          opt.textContent = name;
+          selectEl.appendChild(opt);
+        }
+
+        // if incoming id not valid, fallback to 0
+        const finalId = (selectId && neighborhoodMap.has(Number(selectId))) ? Number(selectId) : 0;
+        selectEl.value = String(finalId);
+        updateNeighborhoodUI(finalId);
+      } catch (err) {
+        console.error('Error fetching neighborhoods:', err);
+        showAlert('Could not load neighborhoods. (Check Strapi permissions for neighborhoods read.)', 'warning');
+        // still allow families to load using current selection
+      }
+    }
+
+    function updateNeighborhoodUI(id) {
+      const name = (id && neighborhoodMap.has(Number(id))) ? neighborhoodMap.get(Number(id)) : null;
+
+      if (name) {
+        chipEl.classList.remove('d-none');
+        chipText.textContent = name;
+
+        heroLine.classList.remove('d-none');
+        heroName.textContent = name;
+      } else {
+        chipEl.classList.add('d-none');
+        chipText.textContent = '';
+
+        heroLine.classList.add('d-none');
+        heroName.textContent = '';
+      }
+    }
+
+    function clearFamilies() {
+      listEl.innerHTML = '';
+      noMsgEl.classList.add('d-none');
+      spinnerEl.style.display = 'none';
+    }
+
+    function showSelectNeighborhoodMessage() {
+      selectMsgEl.classList.remove('d-none');
+      noMsgEl.classList.add('d-none');
+      listEl.innerHTML = '';
+    }
+
+    function hideSelectNeighborhoodMessage() {
+      selectMsgEl.classList.add('d-none');
+    }
+
+    function hidePagination() {
+      paginationEl.classList.add('d-none');
+      pageIndicatorEl.textContent = '1/1';
+      prevBtn.disabled = true;
+      nextBtn.disabled = true;
+    }
+
+    function updatePaginationControls() {
+      // Show pagination only when a neighborhood is selected
+      if (!currentNeighborhoodId || currentNeighborhoodId <= 0) {
+        hidePagination();
+        return;
+      }
+
+      // If there's only 1 page, we can hide it to keep UI clean
+      if (!totalPages || totalPages <= 1) {
+        hidePagination();
+        return;
+      }
+
+      paginationEl.classList.remove('d-none');
+      pageIndicatorEl.textContent = String(currentPage) + '/' + String(totalPages);
+
+      prevBtn.disabled = currentPage <= 1;
+      nextBtn.disabled = currentPage >= totalPages;
+    }
+
+
+
+    async function loadFamilies(neighborhoodId, page, size) {
+      hideSelectNeighborhoodMessage();
+      spinnerEl.style.display = 'block';
+      listEl.innerHTML = '';
+      noMsgEl.classList.add('d-none');
+
+      // Based on family schema:
+      // - list: boolean
+      // - neighborhood: manyToOne
+      // - parent/kids/availability: repeatable components
+      // schema: fileciteturn8file10L14-L51
+      let url =
+        `${strapiApiUrl}/families` +
+        `?populate=parent,kids,availability,neighborhood` +
+        `&filters[list][$eq]=true` +
+        `&sort=id:desc` +
+        `&pagination[page]=${Number(page) || 1}` +
+        `&pagination[pageSize]=${Number(size) || 10}`;
+
+      if (neighborhoodId && Number(neighborhoodId) > 0) {
+        url += `&filters[neighborhood][id][$eq]=${Number(neighborhoodId)}`;
+      }
+
+      try {
+        const res = await fetch(url, { method:'GET', headers: headers() });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+
+        const body = await res.json();
+        const families = body.data || [];
+        const pg = body?.meta?.pagination;
+        if (pg) {
+          currentPage = pg.page || 1;
+          pageSize = pg.pageSize || pageSize;
+          totalPages = pg.pageCount || 1;
+          updatePaginationControls();
+        } else {
+          totalPages = 1;
+          updatePaginationControls();
+        }
+        renderFamilies(families);
+      } catch (err) {
+        console.error('Error fetching families:', err);
+        showAlert('Could not load families. (Check Strapi permissions for families read.)', 'danger');
+      } finally {
+        spinnerEl.style.display = 'none';
+      }
+    }
+
+    function renderFamilies(families) {
+      listEl.innerHTML = '';
+
+      if (!families.length) {
+        noMsgEl.classList.remove('d-none');
+        return;
+      }
+      noMsgEl.classList.add('d-none');
+
+      families.forEach(f => {
+        const attr = f.attributes || {};
+
+        const parents = Array.isArray(attr.parent) ? attr.parent : [];
+        const kids = Array.isArray(attr.kids) ? attr.kids : [];
+        const slots = Array.isArray(attr.availability) ? attr.availability : [];
+
+        const lastName = parents[0]?.lastname || '';
+        const title = lastName ? `Family ${lastName}` : 'Family';
+
+        const verified = !!attr.verified;
+        const activity = attr.activity || '';
+
+        const kidsLines = kids.map(k => {
+          const age = ageLabel(k?.birthday);
+          const fn = (k?.firstname || '').trim();
+          const ln = (k?.lastname || '').trim();
+          const hobby = (k?.hobbytags || '').trim();
+
+          let main = [age, fn, ln].filter(Boolean).join(' ').trim();
+          if (!main) main = 'Kid';
+          if (hobby) main += ` — ${hobby}`;
+          return main;
+        });
+
+        const slotLines = slots.map(s => {
+          const day = s?.dayofweek || '';
+          const st = formatTime(s?.starttime);
+          const et = formatTime(s?.endtime);
+          const note = (s?.notes || '').trim();
+
+          let line = day;
+          if (st || et) line += ` ${st}${(st && et) ? '–' : ''}${et}`;
+          if (note) line += ` (${note})`;
+          return line.trim();
+        });
+
+        const item = document.createElement('div');
+        item.className = 'family-item';
+
+        item.innerHTML = `
+          <div class="d-flex align-items-center justify-content-between mb-2 flex-wrap gap-2">
+            <h3 class="family-title">${escapeHtml(title)}</h3>
+            <div class="${verified ? 'text-success' : 'text-muted'}">
+              ${verified
+                ? '<i class="fa-solid fa-circle-check me-1"></i> Parent Verified'
+                : '<i class="fa-regular fa-circle me-1"></i> Verification not confirmed'}
+            </div>
+          </div>
+
+          ${kidsLines.length ? `
+            <p class="kv mb-1"><b>Kids:</b></p>
+            <ul class="mb-2">
+              ${kidsLines.map(l => `<li>${escapeHtml(l)}</li>`).join('')}
+            </ul>
+          ` : ''}
+
+          ${activity ? `
+            <p class="kv mb-2"><b>Interested in:</b>
+              <span class="muted-preline">${escapeHtml(activity)}</span>
+            </p>
+          ` : ''}
+
+          ${slotLines.length ? `
+            <p class="kv mb-1"><b>Availability:</b></p>
+            <ul class="mb-0">
+              ${slotLines.map(l => `<li>${escapeHtml(l)}</li>`).join('')}
+            </ul>
+          ` : ''}
+        `;
+
+        listEl.appendChild(item);
+      });
+    }
+    /*]]>*/
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
