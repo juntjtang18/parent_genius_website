@@ -9,6 +9,9 @@
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" th:href="@{/css/style.css}">
 
   <style>
@@ -52,7 +55,165 @@
       line-height: 1.2;
       color: #6B7280;
     }
-  </style>
+  
+    /* --- GP theme tweaks for list panel --- */
+    .panel{
+      border: 1px solid rgba(15,23,42,.06);
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(6px);
+    }
+    .controls-wrap{
+      background: linear-gradient(180deg, rgba(59,130,246,.08), rgba(108,111,247,.06));
+      border: 1px solid rgba(59,130,246,.12);
+      border-radius: 14px;
+      padding: 12px 12px;
+    }
+    .controls-wrap .form-label{
+      letter-spacing: .2px;
+    }
+
+    /* family cards */
+    .family-card{
+      border: 1px solid rgba(15,23,42,.08);
+      border-radius: 16px;
+      box-shadow: 0 10px 26px rgba(15,23,42,.08);
+      overflow: hidden;
+      background: #fff;
+      transition: transform .12s ease, box-shadow .12s ease;
+    }
+    .family-card:hover{
+      transform: translateY(-1px);
+      box-shadow: 0 14px 34px rgba(15,23,42,.12);
+    }
+    .family-card-header{
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: linear-gradient(90deg, rgba(59,130,246,.10), rgba(108,111,247,.08));
+      border-bottom: 1px solid rgba(15,23,42,.06);
+    }
+    .family-name{
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin: 0;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .family-name .dot{
+      width: 10px; height: 10px; border-radius: 999px;
+      background: #3b82f6;
+      box-shadow: 0 0 0 6px rgba(59,130,246,.15);
+      flex: 0 0 auto;
+    }
+    .family-card-body{
+      padding: 14px 16px 16px;
+    }
+    .section-title{
+      font-weight: 700;
+      color: #111827;
+      font-size: .92rem;
+      margin: 10px 0 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-title i{ color: #2563eb; }
+    .meta-list{
+      margin: 0;
+      padding-left: 18px;
+      color: #374151;
+    }
+    .tag-row{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .tag-pill{
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: .88rem;
+      border: 1px solid rgba(37,99,235,.18);
+      background: rgba(37,99,235,.06);
+      color: #1f4fbf;
+      max-width: 100%;
+    }
+    .tag-pill i{ font-size: .9em; }
+    .slot-pill{
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: .88rem;
+      border: 1px solid rgba(15,23,42,.10);
+      background: rgba(15,23,42,.04);
+      color: #111827;
+      max-width: 100%;
+    }
+
+    .verify-pill{
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: .88rem;
+      white-space: nowrap;
+    }
+    .verify-ok{
+      background: rgba(34,197,94,.12);
+      color: #15803d;
+      border: 1px solid rgba(34,197,94,.25);
+    }
+    .verify-no{
+      background: rgba(148,163,184,.18);
+      color: #334155;
+      border: 1px solid rgba(148,163,184,.30);
+    }
+
+    /* pagination */
+    #pagination-controls .btn{
+      border-radius: 999px;
+      padding-inline: 14px;
+    }
+
+  
+    /* Normal list text style (match site) */
+    .why-desc {
+      font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-weight: 400;
+      font-size: 18px;
+      line-height: 30px;
+      color: #374151;
+      max-width: 860px;
+      margin: 0;
+    }
+    /* Apply the same typography to family list content */
+    .family-card-body,
+    .family-card-body .meta-list,
+    .family-card-body .tag-row,
+    .family-card-body .tag-pill,
+    .family-card-body .slot-pill {
+      font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-weight: 400;
+      font-size: 18px;
+      line-height: 30px;
+      color: #374151;
+    }
+    /* Keep headings/pills readable */
+    .section-title { font-weight: 700; }
+    .verify-pill { font-weight: 700; }
+
+</style>
 
   <!-- Hero styles (copied from expertessay-list) -->
   <style>
@@ -120,12 +281,10 @@
               <span id="neighborhoodChipText"></span>
             </span>
           </h2>
-          <p class="text-muted mb-0">
-            Sample placeholders are OK. Use real families only after they sign up and consent.
-          </p>
+          <p class="why-desc mb-0">Sample placeholders are OK. Use real families only after they sign up and consent.</p>
         </div>
 
-        <div class="ms-auto d-flex align-items-end gap-3 flex-wrap justify-content-end">
+        <div class="ms-auto d-flex align-items-end gap-3 flex-wrap justify-content-end controls-wrap">
 
           <div>
             <label for="neighborhoodSelect" class="form-label mb-1 small text-muted">Neighbourhood</label>
@@ -155,13 +314,13 @@
         <p class="mt-2 mb-0">Loading families...</p>
       </div>
 
-      <div id="select-neighborhood-message" class="empty-state d-none">
+      <div id="select-neighborhood-message" class="empty-state d-none why-desc">
         Please select your neighbourhood.
       </div>
 
       <div id="family-list" class="mt-3"></div>
 
-      <div id="no-families-message" class="text-muted mt-3 d-none">
+      <div id="no-families-message" class="mt-3 d-none why-desc">
         No families found yet.
       </div>
 
@@ -487,11 +646,13 @@
       }
     }
 
+    
     function renderFamilies(families) {
       listEl.innerHTML = '';
 
       if (!families.length) {
         noMsgEl.classList.remove('d-none');
+        updatePaginationControls();
         return;
       }
       noMsgEl.classList.add('d-none');
@@ -507,7 +668,12 @@
         const title = lastName ? `Family ${lastName}` : 'Family';
 
         const verified = !!attr.verified;
-        const activity = attr.activity || '';
+        const activityRaw = (attr.activity || '').trim();
+
+        // Make activity look like tags (split by comma/newline/semicolon)
+        const activityTags = activityRaw
+          ? activityRaw.split(/[\r\n,;]+/).map(s => s.trim()).filter(Boolean)
+          : [];
 
         const kidsLines = kids.map(k => {
           const age = ageLabel(k?.birthday);
@@ -529,46 +695,60 @@
 
           let line = day;
           if (st || et) line += ` ${st}${(st && et) ? '–' : ''}${et}`;
-          if (note) line += ` (${note})`;
+          if (note) line += ` • ${note}`;
           return line.trim();
         });
 
-        const item = document.createElement('div');
-        item.className = 'family-item';
+        const card = document.createElement('div');
+        card.className = 'family-card mb-3';
 
-        item.innerHTML = `
-          <div class="d-flex align-items-center justify-content-between mb-2 flex-wrap gap-2">
-            <h3 class="family-title">${escapeHtml(title)}</h3>
-            <div class="${verified ? 'text-success' : 'text-muted'}">
-              ${verified
-                ? '<i class="fa-solid fa-circle-check me-1"></i> Parent Verified'
-                : '<i class="fa-regular fa-circle me-1"></i> Verification not confirmed'}
-            </div>
+        const verifyHtml = verified
+          ? `<span class="verify-pill verify-ok"><i class="fa-solid fa-circle-check"></i> Parent Verified</span>`
+          : `<span class="verify-pill verify-no"><i class="fa-regular fa-circle"></i> Not verified</span>`;
+
+        const kidsHtml = kidsLines.length
+          ? `<div class="mt-1">
+               <div class="section-title"><i class="fa-solid fa-children"></i> Kids</div>
+               <ul class="meta-list">
+                 ${kidsLines.map(l => `<li>${escapeHtml(l)}</li>`).join('')}
+               </ul>
+             </div>`
+          : '';
+
+        const tagsHtml = activityTags.length
+          ? `<div class="mt-2">
+               <div class="section-title"><i class="fa-solid fa-heart"></i> Interested in</div>
+               <div class="tag-row">
+                 ${activityTags.slice(0, 12).map(t => `<span class="tag-pill"><i class="fa-solid fa-tag"></i>${escapeHtml(t)}</span>`).join('')}
+               </div>
+             </div>`
+          : '';
+
+        const slotsHtml = slotLines.length
+          ? `<div class="mt-2">
+               <div class="section-title"><i class="fa-regular fa-clock"></i> Availability</div>
+               <div class="tag-row">
+                 ${slotLines.map(s => `<span class="slot-pill"><i class="fa-regular fa-calendar"></i>${escapeHtml(s)}</span>`).join('')}
+               </div>
+             </div>`
+          : '';
+
+        card.innerHTML = `
+          <div class="family-card-header">
+            <h3 class="family-name"><span class="dot" aria-hidden="true"></span>${escapeHtml(title)}</h3>
+            ${verifyHtml}
           </div>
-
-          ${kidsLines.length ? `
-            <p class="kv mb-1"><b>Kids:</b></p>
-            <ul class="mb-2">
-              ${kidsLines.map(l => `<li>${escapeHtml(l)}</li>`).join('')}
-            </ul>
-          ` : ''}
-
-          ${activity ? `
-            <p class="kv mb-2"><b>Interested in:</b>
-              <span class="muted-preline">${escapeHtml(activity)}</span>
-            </p>
-          ` : ''}
-
-          ${slotLines.length ? `
-            <p class="kv mb-1"><b>Availability:</b></p>
-            <ul class="mb-0">
-              ${slotLines.map(l => `<li>${escapeHtml(l)}</li>`).join('')}
-            </ul>
-          ` : ''}
+          <div class="family-card-body">
+            ${kidsHtml}
+            ${tagsHtml}
+            ${slotsHtml}
+          </div>
         `;
 
-        listEl.appendChild(item);
+        listEl.appendChild(card);
       });
+
+      updatePaginationControls();
     }
     /*]]>*/
   </script>
