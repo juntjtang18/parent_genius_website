@@ -143,11 +143,17 @@
 
     <!-- ===== Inline seg-emotion-top hero, but parameterized ===== -->
     <section class="about-hero">
-        <div class="about-hero-art" aria-hidden="true">
-            <img th:src="@{/images/segments/emotional-image-01.png}"
-                 alt=""
-                 class="about-hero-art-img">
-        </div>
+<div class="about-hero-art" aria-hidden="true"
+     th:with="
+        sid=${(expertSectionId != null and expertSectionId > 0) ? expertSectionId : 1},
+        idx=${((sid - 1) % 5) + 1},
+        idx2=${#numbers.formatInteger(idx, 2)}
+     ">
+  <img th:src="@{'/images/expertessay/expert-' + ${idx2} + '.png'}"
+       alt=""
+       class="about-hero-art-img">
+</div>
+
         <div class="container-xxl">
             <div class="row g-0 about-hero-row">
                 <div class="col-12 col-lg-7 about-hero-left">
