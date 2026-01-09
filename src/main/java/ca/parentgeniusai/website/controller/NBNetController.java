@@ -44,7 +44,7 @@ public class NBNetController {
         String jwt = getJwtToken(request);
         if (jwt == null) {
             logger.warn("User not authenticated. Cannot access family playmates page.");
-            return "redirect:/signin?error=unauthenticated";
+            return "redirect:/signin";
         }
 
         model.addAttribute("strapiApiUrl", strapiApiBaseUrl);
