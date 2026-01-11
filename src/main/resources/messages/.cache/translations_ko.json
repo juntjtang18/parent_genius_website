@@ -465,5 +465,17 @@
 "What is Genius Parenting AI?": "천재육아AI란?",
 "Genius Parenting AI is free to download! Some premium tools (like personal coaching or workshops) might have a fee later, but basic features, advice, and community access will always be free.": "천재 육아 AI는 무료로 다운로드할 수 있습니다! 일부 프리미엄 도구(예: 개인 코칭 또는 워크숍)에는 나중에 요금이 부과될 수 있지만 기본 기능, 조언 및 커뮤니티 액세스는 항상 무료입니다.",
 "Genius Parenting AI is a support app made for international parents in Canada who are raising (or planning to raise) kids between two cultures. We help you blend your traditions with Canadian life, offering real advice, a community space, and easy tools for parenting from newborn to 12 years old.": "Genius Parenting AI는 두 문화 사이에서 자녀를 키우고 있는(또는 키울 계획이 있는) 캐나다의 국제 부모를 위해 만들어진 지원 앱입니다. 우리는 신생아부터 12세까지의 양육을 위한 실제 조언, 커뮤니티 공간 및 쉬운 도구를 제공하여 귀하의 전통과 캐나다 생활을 혼합할 수 있도록 돕습니다.",
-"Playmates&Families Nearby": "근처의 놀이 친구 및 가족"
+"Playmates&Families Nearby": "근처의 놀이 친구 및 가족",
+"Prev": "이전",
+"Neighbourhood": "이웃",
+"Neighbourhood:": "이웃:",
+"Next": "다음",
+"No places found yet.": "아직 장소를 찾을 수 없습니다.",
+"Play Places": "플레이 플레이스",
+"Community Play Places": "커뮤니티 플레이 장소",
+"Find community play places (parks, libraries, community centres) by neighbourhood.": "동네별 커뮤니티 놀이 장소(공원, 도서관, 주민센터)를 찾아보세요.",
+"Lines per page": "페이지당 줄",
+"This list is managed in Strapi.": "이 목록은 Strapi에서 관리됩니다.",
+"Please select your neighbourhood": "당신의 동네를 선택해주세요",
+"Please select your neighbourhood.": "귀하의 지역을 선택해 주세요."
 }

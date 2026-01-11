@@ -465,5 +465,17 @@
 "Genius Parenting AI is a support app made for international parents in Canada who are raising (or planning to raise) kids between two cultures. We help you blend your traditions with Canadian life, offering real advice, a community space, and easy tools for parenting from newborn to 12 years old.": "जीनियस पेरेंटिंग एआई कनाडा में अंतरराष्ट्रीय माता-पिता के लिए बनाया गया एक सहायता ऐप है जो दो संस्कृतियों के बीच बच्चों का पालन-पोषण कर रहे हैं (या पालने की योजना बना रहे हैं)। हम आपकी परंपराओं को कनाडाई जीवन के साथ मिश्रित करने में मदद करते हैं, वास्तविक सलाह, एक सामुदायिक स्थान और नवजात शिशु से लेकर 12 वर्ष की आयु तक के पालन-पोषण के लिए आसान उपकरण प्रदान करते हैं।",
 "Genius Parenting AI is free to download! Some premium tools (like personal coaching or workshops) might have a fee later, but basic features, advice, and community access will always be free.": "जीनियस पेरेंटिंग एआई डाउनलोड करने के लिए निःशुल्क है! कुछ प्रीमियम टूल (जैसे व्यक्तिगत कोचिंग या वर्कशॉप) पर बाद में शुल्क लग सकता है, लेकिन बुनियादी सुविधाएं, सलाह और सामुदायिक पहुंच हमेशा निःशुल्क रहेगी।",
 "The circular form mirrors unconditional love and the never-ending journey of parenting — growth, connection, and new beginnings.": "गोलाकार रूप बिना शर्त प्यार और पालन-पोषण की कभी न खत्म होने वाली यात्रा - विकास, संबंध और नई शुरुआत को दर्शाता है।",
-"Playmates&Families Nearby": "आस-पास खेलने वाले साथी और परिवार"
+"Playmates&Families Nearby": "आस-पास खेलने वाले साथी और परिवार",
+"Next": "अगला",
+"Prev": "पिछला",
+"Neighbourhood": "अड़ोस-पड़ोस",
+"Neighbourhood:": "अड़ोस-पड़ोस:",
+"Please select your neighbourhood.": "कृपया अपना पड़ोस चुनें.",
+"Lines per page": "प्रति पृष्ठ पंक्तियाँ",
+"No places found yet.": "अभी तक कोई स्थान नहीं मिला.",
+"This list is managed in Strapi.": "यह सूची स्ट्रैपी में प्रबंधित की जाती है।",
+"Community Play Places": "सामुदायिक खेल स्थल",
+"Play Places": "खेलने के स्थान",
+"Please select your neighbourhood": "कृपया अपना पड़ोस चुनें",
+"Find community play places (parks, libraries, community centres) by neighbourhood.": "आस-पड़ोस के अनुसार सामुदायिक खेल के स्थान (पार्क, पुस्तकालय, सामुदायिक केंद्र) खोजें।"
 }

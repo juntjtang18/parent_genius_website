@@ -465,5 +465,17 @@
 "What is Genius Parenting AI?": "Was ist Genius Parenting AI?",
 "That’s why we created Genius Parenting AI.": "Aus diesem Grund haben wir Genius Parenting AI entwickelt.",
 "Yes! That’s a huge part of Genius Parenting AI. You can join community circles based on your child's age, your background, your city, or topics you care about.": "Ja! Das ist ein großer Teil der Genius Parenting AI. Sie können Community-Kreisen je nach Alter Ihres Kindes, Ihrem Hintergrund, Ihrer Stadt oder den Themen, die Ihnen am Herzen liegen, beitreten.",
-"Playmates&Families Nearby": "Spielkameraden und Familien in der Nähe"
+"Playmates&Families Nearby": "Spielkameraden und Familien in der Nähe",
+"Prev": "Vorher",
+"Neighbourhood:": "Nachbarschaft:",
+"Next": "Nächste",
+"Neighbourhood": "Nachbarschaft",
+"Lines per page": "Zeilen pro Seite",
+"Play Places": "Spielplätze",
+"Community Play Places": "Gemeinschaftsspielplätze",
+"No places found yet.": "Noch keine Orte gefunden.",
+"Find community play places (parks, libraries, community centres) by neighbourhood.": "Finden Sie Gemeinschaftsspielplätze (Parks, Bibliotheken, Gemeindezentren) nach Stadtteilen.",
+"This list is managed in Strapi.": "Diese Liste wird in Strapi verwaltet.",
+"Please select your neighbourhood.": "Bitte wählen Sie Ihren Stadtteil aus.",
+"Please select your neighbourhood": "Bitte wählen Sie Ihre Nachbarschaft aus"
 }

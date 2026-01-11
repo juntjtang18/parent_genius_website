@@ -465,5 +465,17 @@
 "Absolutely. We don't sell your info. Your conversations, stories, and data are private and protected. Genius Parenting AI is built by real parents who care about trust, not by big corporations looking to cash in.": "絶対に。私たちはあなたの情報を販売しません。あなたの会話、ストーリー、データはプライベートであり、保護されています。 Genius Parenting AI は、利益を狙う大企業ではなく、信頼を重視する本当の親によって構築されています。",
 "Genius Parenting AI is free to download! Some premium tools (like personal coaching or workshops) might have a fee later, but basic features, advice, and community access will always be free.": "Genius Parenting AI は無料でダウンロードできます。一部のプレミアム ツール (パーソナル コーチングやワークショップなど) は後で有料になる場合がありますが、基本的な機能、アドバイス、コミュニティへのアクセスは常に無料です。",
 "Genius Parenting AI is a support app made for international parents in Canada who are raising (or planning to raise) kids between two cultures. We help you blend your traditions with Canadian life, offering real advice, a community space, and easy tools for parenting from newborn to 12 years old.": "Genius Parenting AI は、2 つの文化の間で子供を育てている (または育てようとしている) カナダの国際的な親のために作られたサポート アプリです。私たちは、新生児から 12 歳までの子育てのための本当のアドバイス、コミュニティ スペース、簡単なツールを提供して、あなたの伝統とカナダの生活を融合させるお手伝いをします。",
-"Playmates&Families Nearby": "近くの遊び仲間と家族"
+"Playmates&Families Nearby": "近くの遊び仲間と家族",
+"Neighbourhood": "近所",
+"Neighbourhood:": "近所：",
+"Prev": "前へ",
+"Next": "次",
+"Find community play places (parks, libraries, community centres) by neighbourhood.": "地域ごとにコミュニティの遊び場 (公園、図書館、コミュニティ センター) を検索します。",
+"Please select your neighbourhood.": "ご近所を選択してください。",
+"This list is managed in Strapi.": "このリストはStrapiで管理されています。",
+"Please select your neighbourhood": "お住まいの地域を選択してください",
+"No places found yet.": "まだ場所が見つかりません。",
+"Play Places": "プレイプレイス",
+"Lines per page": "ページあたりの行数",
+"Community Play Places": "コミュニティの遊び場"
 }

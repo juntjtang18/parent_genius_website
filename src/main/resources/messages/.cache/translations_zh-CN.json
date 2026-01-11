@@ -454,5 +454,17 @@
 "Start talking to Genius AI — Free": "开始与 Genius AI 交谈 — 免费",
 "“The ‘what to say’ examples are gold. I screenshot them and use them in the moment.”": "“‘说什么’的例子是黄金。我将它们截图并立即使用它们。”",
 "“Lorem ipsum dolor sit amet cons ectetu?”": "“你想知道痛苦本身的真相吗？”",
-"Playmates&Families Nearby": "附近的玩伴和家人"
+"Playmates&Families Nearby": "附近的玩伴和家人",
+"Next": "下一个",
+"Prev": "上一篇",
+"Neighbourhood": "邻里",
+"Neighbourhood:": "邻里：",
+"Please select your neighbourhood.": "请选择您的社区。",
+"Please select your neighbourhood": "请选择您的社区",
+"This list is managed in Strapi.": "该列表在 Strapi 中管理。",
+"Lines per page": "每页行数",
+"Community Play Places": "社区游乐场所",
+"Play Places": "游玩场所",
+"No places found yet.": "还没有找到地方。",
+"Find community play places (parks, libraries, community centres) by neighbourhood.": "按街区查找社区游乐场所（公园、图书馆、社区中心）。"
 }

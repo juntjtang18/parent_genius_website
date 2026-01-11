@@ -465,5 +465,17 @@
 "GeniusParenting AI": "GeniusParenting AI",
 "Genius Parenting AI is a support app made for international parents in Canada who are raising (or planning to raise) kids between two cultures. We help you blend your traditions with Canadian life, offering real advice, a community space, and easy tools for parenting from newborn to 12 years old.": "Genius Parenting AI යනු සංස්කෘතීන් දෙකක් අතර දරුවන් ඇති දැඩි කරන (හෝ ඇති දැඩි කිරීමට සැලසුම් කරන) කැනඩාවේ ජාත්‍යන්තර දෙමාපියන් සඳහා සාදන ලද උපකාරක යෙදුමකි. අපි ඔබට කැනේඩියානු ජීවිතය සමඟ ඔබේ සම්ප්‍රදායන් මුසු කර, සැබෑ උපදෙස්, ප්‍රජා අවකාශයක් සහ අලුත උපන් බිළිඳාගේ සිට අවුරුදු 12 දක්වා දෙමාපියන් සඳහා පහසු මෙවලම් පිරිනමන්නෙමු.",
 "Genius Parenting AI is free to download! Some premium tools (like personal coaching or workshops) might have a fee later, but basic features, advice, and community access will always be free.": "Genius Parenting AI බාගත කිරීම නොමිලේ! සමහර වාරික මෙවලම් (පුද්ගලික පුහුණු කිරීම් හෝ වැඩමුළු වැනි) පසුව ගාස්තුවක් තිබිය හැක, නමුත් මූලික විශේෂාංග, උපදෙස් සහ ප්‍රජා ප්‍රවේශය සැමවිටම නොමිලේ වනු ඇත.",
-"Playmates&Families Nearby": "අවට ක්‍රීඩා සගයන් සහ පවුල්"
+"Playmates&Families Nearby": "අවට ක්‍රීඩා සගයන් සහ පවුල්",
+"Neighbourhood:": "අසල් වැසියෝ:",
+"Next": "ඊළඟ",
+"Neighbourhood": "අසල් වැසියෝ",
+"Prev": "පෙර",
+"Please select your neighbourhood.": "කරුණාකර ඔබේ අසල්වැසි ප්‍රදේශය තෝරන්න.",
+"This list is managed in Strapi.": "මෙම ලැයිස්තුව Strapi හි කළමනාකරණය වේ.",
+"Please select your neighbourhood": "කරුණාකර ඔබේ අසල්වැසි ප්‍රදේශය තෝරන්න",
+"Find community play places (parks, libraries, community centres) by neighbourhood.": "අසල්වැසි ප්‍රදේශ අනුව ප්‍රජා ක්‍රීඩා ස්ථාන (උද්‍යාන, පුස්තකාල, ප්‍රජා මධ්‍යස්ථාන) සොයන්න.",
+"Community Play Places": "ප්‍රජා ක්‍රීඩා ස්ථාන",
+"Play Places": "ක්‍රීඩා කරන ස්ථාන",
+"Lines per page": "පිටුවකට පේළි",
+"No places found yet.": "තවමත් ස්ථාන හමු නොවීය."
 }

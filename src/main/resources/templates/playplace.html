@@ -183,8 +183,33 @@
     .about-hero::before{content:""; position:absolute; inset:0; background:var(--grad-hero); z-index:0;}
     .about-hero .container-xxl{position:relative; z-index:2;}
     .about-hero-row{min-height:clamp(520px,72vh,820px);}
+    
     .about-hero-title{font-weight:600; font-size:60px; line-height:70px; margin:0 0 12px; color:#2563eb;}
-    .about-hero-sub{font-size:20px; line-height:32px; font-weight:400; max-width:60ch; color:rgba(255,255,255,.95); padding-bottom:60px; color:#2563eb;}
+    .about-hero-title{
+  color:#ffffff;
+  text-shadow:
+    -1px -1px 0 rgba(0,0,0,.55),
+     1px -1px 0 rgba(0,0,0,.55),
+    -1px  1px 0 rgba(0,0,0,.55),
+     1px  1px 0 rgba(0,0,0,.55),
+     0   6px 18px rgba(0,0,0,.35); /* extra depth */
+}
+.about-hero-sub{
+  font-size:20px;
+  line-height:32px;
+  font-weight:400;
+  max-width:60ch;
+  padding-bottom:60px;
+  color:#ffffff;
+
+  /* stroke / outline */
+  text-shadow:
+    -1px -1px 0 rgba(0,0,0,.55),
+     1px -1px 0 rgba(0,0,0,.55),
+    -1px  1px 0 rgba(0,0,0,.55),
+     1px  1px 0 rgba(0,0,0,.55);
+}
+    
     .about-hero-left{display:flex; align-items:center;}
     .about-hero-left-inner{padding-block:64px; padding-inline:clamp(24px,5vw,64px);}
     .about-hero-art{
@@ -213,8 +238,9 @@
           <div class="about-hero-left-inner">
             <h1 class="about-hero-title" th:text="#{playplace_caption1}">Play Places</h1>
             <p class="about-hero-sub">
-              <span id="heroNeighborhoodLine" class="d-none" th:text="#{playplace_caption2}">
-                Neighbourhood: <b id="heroNeighborhoodName"></b><br>
+              <span id="heroNeighborhoodLine" class="d-none">
+                  <span th:text="#{playplace_caption2}">Neighbourhood:</span>
+					<b id="heroNeighborhoodName"></b><br>
               </span>
               <span th:text="#{playplace_caption3}">Find community play places (parks, libraries, community centres) by neighbourhood.</span>
             </p>

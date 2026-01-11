@@ -465,5 +465,17 @@
 "Genius Parenting AI is a support app made for international parents in Canada who are raising (or planning to raise) kids between two cultures. We help you blend your traditions with Canadian life, offering real advice, a community space, and easy tools for parenting from newborn to 12 years old.": "Genius Parenting AI es una aplicación de apoyo creada para padres internacionales en Canadá que están criando (o planeando criar) niños entre dos culturas. Lo ayudamos a combinar sus tradiciones con la vida canadiense, ofreciendo consejos reales, un espacio comunitario y herramientas sencillas para la crianza de los hijos desde recién nacidos hasta los 12 años.",
 "Yes! That’s a huge part of Genius Parenting AI. You can join community circles based on your child's age, your background, your city, or topics you care about.": "¡Sí! Esa es una gran parte de Genius Parenting AI. Puede unirse a círculos comunitarios según la edad de su hijo, sus antecedentes, su ciudad o los temas que le interesen.",
 "Absolutely. We don't sell your info. Your conversations, stories, and data are private and protected. Genius Parenting AI is built by real parents who care about trust, not by big corporations looking to cash in.": "Absolutamente. No vendemos tu información. Sus conversaciones, historias y datos son privados y están protegidos. Genius Parenting AI está construida por padres reales que se preocupan por la confianza, no por grandes corporaciones que buscan sacar provecho.",
-"Playmates&Families Nearby": "Compañeros de juego y familias cercanas"
+"Playmates&Families Nearby": "Compañeros de juego y familias cercanas",
+"Prev": "Anterior",
+"Next": "Próximo",
+"Neighbourhood:": "Vecindario:",
+"Neighbourhood": "Vecindario",
+"Play Places": "Lugares de juego",
+"No places found yet.": "Aún no se han encontrado lugares.",
+"Lines per page": "Líneas por página",
+"Community Play Places": "Lugares de juego comunitarios",
+"Find community play places (parks, libraries, community centres) by neighbourhood.": "Encuentre lugares de juego comunitarios (parques, bibliotecas, centros comunitarios) por vecindario.",
+"Please select your neighbourhood.": "Por favor seleccione su vecindario.",
+"Please select your neighbourhood": "Por favor seleccione su vecindario",
+"This list is managed in Strapi.": "Esta lista se gestiona en Strapi."
 }

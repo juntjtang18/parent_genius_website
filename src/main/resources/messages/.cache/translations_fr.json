@@ -465,5 +465,17 @@
 "Yes! That’s a huge part of Genius Parenting AI. You can join community circles based on your child's age, your background, your city, or topics you care about.": "Oui! C’est une grande partie de Genius Parenting AI. Vous pouvez rejoindre des cercles communautaires en fonction de l'âge de votre enfant, de vos antécédents, de votre ville ou de sujets qui vous intéressent.",
 "Genius Parenting AI is free to download! Some premium tools (like personal coaching or workshops) might have a fee later, but basic features, advice, and community access will always be free.": "Genius Parenting AI est téléchargeable gratuitement ! Certains outils premium (comme le coaching personnel ou les ateliers) peuvent être payants ultérieurement, mais les fonctionnalités de base, les conseils et l'accès à la communauté seront toujours gratuits.",
 "Genius Parenting AI is a support app made for international parents in Canada who are raising (or planning to raise) kids between two cultures. We help you blend your traditions with Canadian life, offering real advice, a community space, and easy tools for parenting from newborn to 12 years old.": "Genius Parenting AI est une application de soutien conçue pour les parents internationaux au Canada qui élèvent (ou prévoient d'élever) des enfants entre deux cultures. Nous vous aidons à mélanger vos traditions avec la vie canadienne, en vous offrant de vrais conseils, un espace communautaire et des outils simples pour être parent, du nouveau-né à 12 ans.",
-"Playmates&Families Nearby": "Playmates et familles à proximité"
+"Playmates&Families Nearby": "Playmates et familles à proximité",
+"Next": "Suivant",
+"Neighbourhood:": "Quartier:",
+"Neighbourhood": "Quartier",
+"Prev": "Précédent",
+"Find community play places (parks, libraries, community centres) by neighbourhood.": "Trouvez des lieux de jeux communautaires (parcs, bibliothèques, centres communautaires) par quartier.",
+"Play Places": "Lieux de jeu",
+"Community Play Places": "Lieux de jeu communautaires",
+"No places found yet.": "Aucun lieu trouvé pour l'instant.",
+"Lines per page": "Lignes par page",
+"Please select your neighbourhood.": "Veuillez sélectionner votre quartier.",
+"This list is managed in Strapi.": "Cette liste est gérée dans Strapi.",
+"Please select your neighbourhood": "Veuillez sélectionner votre quartier"
 }
