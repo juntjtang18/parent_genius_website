@@ -53,5 +53,21 @@ public class NBNetController {
 
         return "family-playmates";
     }
+    
+    @GetMapping("/nbnet/playplaces")
+    public String playplacesHome(Model model, HttpServletRequest request, Authentication authentication) {
+        String jwt = getJwtToken(request);
+        // this page can be publicly accessed.
+        // if (jwt == null) {
+        //    logger.warn("User not authenticated. Cannot access family playmates page.");
+        //    return "redirect:/signin";
+        //}
+        model.addAttribute("strapiApiUrl", strapiApiBaseUrl);
+        model.addAttribute("strapiToken", "Bearer " + jwt);
+        model.addAttribute("currentUser", authentication != null ? authentication.getName() : "Anonymous");
 
+        return "playplace";        
+    	
+    }
+    
 }
