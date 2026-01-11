@@ -152,7 +152,9 @@
               <li><a class="dropdown-item" th:href="@{/course-list}"><i class="fas fa-chalkboard-teacher me-2"></i><span th:text="#{navbar.admin.courses}">Courses</span></a></li>
               <li><a class="dropdown-item" th:href="@{/topics}"><i class="fas fa-lightbulb me-2"></i><span>Topics</span></a></li>
               <li><a class="dropdown-item" th:href="@{/tips}"><i class="fas fa-star me-2"></i><span>Tips</span></a></li>
-              <li><a class="dropdown-item" href="#" id="clearCacheLink"><i class="fas fa-sync-alt me-2"></i><span>Clear Segment Article Cache</span></a></li>
+              <li><a class="dropdown-item" href="#" id="clearCacheLink"
+      		              th:if="${auth != null && #authorization.expression('hasAnyRole(''ADMIN'')')}">
+              		<i class="fas fa-sync-alt me-2"></i><span>Clear Segment Article Cache</span></a></li>
             </ul>
           </li>
         </ul>
