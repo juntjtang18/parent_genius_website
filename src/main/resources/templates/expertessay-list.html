@@ -146,7 +146,7 @@
 	<div class="about-hero-art" aria-hidden="true"
 	     th:with="
 	        sid=${(expertSectionId != null and expertSectionId > 0) ? expertSectionId : 1},
-	        idx=${((sid - 1) % 5) + 1},
+	        idx=${((sid - 1) % 6) + 1},
 	        idx2=${#numbers.formatInteger(idx, 2)}
 	     ">
 	  <img th:src="@{'/images/expertessay/expert-' + ${idx2} + '.png'}"
