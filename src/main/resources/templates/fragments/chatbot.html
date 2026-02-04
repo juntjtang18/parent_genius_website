@@ -240,7 +240,7 @@
         bubble.innerText = text; // safe (no HTML injection)
 
         const avatar = document.createElement('img');
-        avatar.src = sender === 'bot' ? 'images/chatbot03.png' : 'images/user-avatar.png';
+        avatar.src = sender === 'bot' ? '/images/chatbot03.png' : '/images/user-avatar.png';
         avatar.alt = sender;
 
         if (sender === 'bot') {

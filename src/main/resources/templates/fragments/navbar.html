@@ -35,27 +35,17 @@
               <li><a class="dropdown-item gp-cta-item" th:href="@{/functions(function=3)}" th:text="#{navbar_seg3}">Growth & Milestones</a></li>
               <li><a class="dropdown-item gp-cta-item" th:href="@{/functions(function=4)}" th:text="#{navbar_seg4}">Parenting Resources</a></li>
               <li><a class="dropdown-item gp-cta-item" th:href="@{/functions(function=5)}" th:text="#{navbar_seg5}">Child Experts</a></li>
+              <li><hr class="dropdown-divider"></li>
+
+              <!-- Expert sections (dynamically loaded into Development menu) -->
+              <li id="expertSectionMenuLoading" class="px-2 text-muted small">
+                Loading...
+              </li>
+              <li id="expertSectionMenuAnchor" style="display:none;"></li>
+
             </ul>
           </li>
-			<!-- Expert (dynamic expert sections) -->
-			<li class="nav-item dropdown" id="expertSectionsDropdown">
-			  <a class="nav-link dropdown-toggle"
-			     href="/expert"
-			     id="expertDropdownToggle"
-			     role="button"
-			     data-bs-toggle="dropdown"
-			     aria-expanded="false"
-			     th:text="#{navbar_exprt}">Expert</a>
-			
-			  <!-- STYLE ONLY: gp-cta-menu / gp-cta-item same as Segments -->
-			  <ul class="dropdown-menu gp-cta-menu"
-			      aria-labelledby="expertDropdownToggle"
-			      id="expertSectionMenu">
-			    <li id="expertSectionMenuLoading" class="px-2 text-muted small">
-			      Loading...
-			    </li>
-			  </ul>
-			</li>
+
 		  
 			<!-- Neighbourhood Network -->
 			<li class="nav-item dropdown" id="neighbourhoodNetworkDropdown">
@@ -299,28 +289,30 @@
           .catch(() => alert('An error occurred while clearing the cache.'));
       });
     }
+    // 🔽 Load expert sections into the Development dropdown (below the separator)
+    const segmentsDDLink = document.getElementById('segmentsDDLink');
+    const segmentsMenu = document.querySelector('#segmentsDropdown .dropdown-menu');
+    const expertSectionMenuLoading = document.getElementById('expertSectionMenuLoading');
+    const expertSectionMenuAnchor = document.getElementById('expertSectionMenuAnchor');
 
-    // 🔽 NEW: dynamically load expert sections for the Expert dropdown
-    const expertDropdownToggle = document.getElementById('expertDropdownToggle');
-    const expertSectionMenu = document.getElementById('expertSectionMenu');
-
-    if (expertDropdownToggle && expertSectionMenu) {
-      expertDropdownToggle.addEventListener('shown.bs.dropdown', function () {
+    if (segmentsDDLink && segmentsMenu && expertSectionMenuLoading && expertSectionMenuAnchor) {
+      segmentsDDLink.addEventListener('shown.bs.dropdown', function () {
         // Do nothing if we've already loaded once
-        if (expertSectionMenu.getAttribute('data-loaded') === 'true') {
+        if (segmentsMenu.getAttribute('data-expert-loaded') === 'true') {
           return;
         }
 
-        // Call your backend endpoint that returns expert sections
         fetch('/api/expert-sections/menu')
           .then(res => res.ok ? res.json() : Promise.reject('Failed to load expert sections'))
           .then(sections => {
-            expertSectionMenu.innerHTML = ''; // clear "Loading..."
+            // Remove "Loading..."
+            expertSectionMenuLoading.remove();
+
             if (!sections || sections.length === 0) {
               const li = document.createElement('li');
               li.className = 'px-2 text-muted small';
               li.textContent = 'No expert sections available yet.';
-              expertSectionMenu.appendChild(li);
+              segmentsMenu.insertBefore(li, expertSectionMenuAnchor);
               return;
             }
 
@@ -329,25 +321,22 @@
               const a = document.createElement('a');
               a.className = 'dropdown-item gp-cta-item';
 
-              // Example: /expert/section/{id}  (adjust URL if you use slug)
+              // Example: /expert/section/{id}
               a.href = `/expert/section/${section.id}`;
-
-              // use localized title from backend
               a.textContent = section.title || `Section #${section.id}`;
 
               li.appendChild(a);
-              expertSectionMenu.appendChild(li);
+              segmentsMenu.insertBefore(li, expertSectionMenuAnchor);
             });
 
-            expertSectionMenu.setAttribute('data-loaded', 'true');
+            segmentsMenu.setAttribute('data-expert-loaded', 'true');
           })
           .catch(err => {
             console.error('Error fetching expert sections:', err);
-            expertSectionMenu.innerHTML = '';
-            const li = document.createElement('li');
-            li.className = 'px-2 text-danger small';
-            li.textContent = 'Failed to load expert sections.';
-            expertSectionMenu.appendChild(li);
+
+            // Replace loading with error message
+            expertSectionMenuLoading.textContent = 'Failed to load expert sections.';
+            expertSectionMenuLoading.className = 'px-2 text-danger small';
           });
       });
     }
