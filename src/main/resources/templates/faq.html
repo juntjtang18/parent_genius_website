@@ -3,345 +3,440 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="#{joinus.title}">Page Title - Parent Genius AI</title>
+    <title th:text="#{faq.title}">FAQ - GeniusParentingAI</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link th:href="@{/css/style.css}" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+.faq-accordion .accordion-button.collapsed{
+  background: rgba(13,110,253,.08);   /* light blue tint */
+  color: rgba(0,0,0,.85);
+  border: 1px solid rgba(13,110,253,.18);
+}
+
+.faq-accordion .accordion-button.collapsed:hover{
+  background: rgba(13,110,253,.12);
+}
+
+.faq-accordion .accordion-button:not(.collapsed){
+  background: rgba(13,110,253,.18);
+  color: rgba(0,0,0,.9);
+  box-shadow: none; /* remove Bootstrap focus shadow if you don't like it */
+}
+</style>
 </head>
+
 <body>
     <div th:replace="~{fragments/navbar :: navbar}"></div>
 
     <div class="container my-5">
         <h1 th:text="#{faq.title}" class="text-center mb-4">Frequently Asked Questions</h1>
-        
-        <div class="accordion" id="faqAccordion">
+
+        <!-- 🌱 About GeniusParentingAI -->
+        <h2 class="h4 mt-4 mb-3" th:text="#{faq.section.about}">About GeniusParentingAI</h2>
+        <div class="accordion faq-accordion mb-4" id="faqAccordionAbout">
             <div class="accordion-item">
-                <h2 class="accordion-header" id="heading1">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="true" aria-controls="collapse1">
-                        <span th:text="#{faq.question1-1}" class="fw-bold">What is Genius Parenting AI?</span>
+                <h3 class="accordion-header" id="aboutHeading1">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#aboutCollapse1" aria-expanded="true" aria-controls="aboutCollapse1">
+                        <span class="fw-bold" th:text="#{faq.q.about.created}">Who created GeniusParentingAI?</span>
                     </button>
-                </h2>
-                <div id="collapse1" class="accordion-collapse collapse show" aria-labelledby="heading1" data-bs-parent="#faqAccordion">
+                </h3>
+                <div id="aboutCollapse1" class="accordion-collapse collapse show" aria-labelledby="aboutHeading1" data-bs-parent="#faqAccordionAbout">
                     <div class="accordion-body">
-                        <span th:text="#{faq.answer1-1}">Genius Parenting AI is a support app made for international parents in Canada who are raising (or planning to raise) kids between two cultures. We help you blend your traditions with Canadian life, offering real advice, a community space, and easy tools for parenting from newborn to 18 years old.</span>
+                        <p th:text="#{faq.a.about.created.p1}">GeniusParentingAI was founded by an educator and a software professional who combine expertise in child development, parenting education, technology, and lived parenting experience.</p>
+                        <p th:text="#{faq.a.about.created.p2}">It was built from a simple belief:</p>
+                        <p><strong th:text="#{faq.a.about.created.belief}">Parenting deserves thoughtful, judgment-free support — especially in multicultural environments like Canada.</strong></p>
+                        <p th:text="#{faq.a.about.created.p3}">This platform was created not from theory alone, but from real parenting challenges and real classroom experience.</p>
                     </div>
                 </div>
             </div>
 
             <div class="accordion-item">
-                <h2 class="accordion-header" id="heading2">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2">
-                        <span th:text="#{faq.question2}" class="fw-bold">Who is this app for?</span>
+                <h3 class="accordion-header" id="aboutHeading2">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#aboutCollapse2" aria-expanded="false" aria-controls="aboutCollapse2">
+                        <span class="fw-bold" th:text="#{faq.q.about.mission}">What is the mission of GeniusParentingAI?</span>
                     </button>
-                </h2>
-                <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="heading2" data-bs-parent="#faqAccordion">
+                </h3>
+                <div id="aboutCollapse2" class="accordion-collapse collapse" aria-labelledby="aboutHeading2" data-bs-parent="#faqAccordionAbout">
                     <div class="accordion-body">
-                        <span th:text="#{faq.answer2}">If you're an immigrant, newcomer, international student, or first-generation parent raising kids in Canada (or even expecting), this app is for you! Whether you're from Asia, Africa, Europe, Latin America, or anywhere else—you’ll find a home here.</span>
+                        <p th:text="#{faq.a.about.mission.p1}">Our mission is to support parents with:</p>
+                        <ul class="mb-3">
+                            <li><span th:text="#{faq.a.about.mission.li1}">Calm, reflective guidance</span></li>
+                            <li><span th:text="#{faq.a.about.mission.li2}">Culturally aware parenting insights</span></li>
+                            <li><span th:text="#{faq.a.about.mission.li3}">Ethical, privacy-first technology</span></li>
+                            <li><span th:text="#{faq.a.about.mission.li4}">A supportive, inclusive community</span></li>
+                        </ul>
+                        <p th:text="#{faq.a.about.mission.p2}">We believe confident parenting grows from understanding — not pressure.</p>
                     </div>
                 </div>
             </div>
-
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="heading3">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3" aria-expanded="false" aria-controls="collapse3">
-                        <span th:text="#{faq.question3}" class="fw-bold">How is this different from other parenting apps?</span>
-                    </button>
-                </h2>
-                <div id="collapse3" class="accordion-collapse collapse" aria-labelledby="heading3" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        <span th:text="#{faq.answer3-1}">Most apps give general tips based on one culture. Genius Parenting AI understands the tug between your roots and your new life in Canada. We offer advice, milestones, routines, and even community discussions with a multicultural lens.</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="heading4">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4" aria-expanded="false" aria-controls="collapse4">
-                        <span th:text="#{faq.question4}" class="fw-bold">Is this app only for people who already have kids?</span>
-                    </button>
-                </h2>
-                <div id="collapse4" class="accordion-collapse collapse" aria-labelledby="heading4" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        <span th:text="#{faq.answer4}">Nope! If you're expecting or planning to have kids soon, you’re 100% welcome. We’ve got resources for you too—from preparing for parenthood in a new country to navigating early childhood.</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="heading5">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse5" aria-expanded="false" aria-controls="collapse5">
-                        <span th:text="#{faq.question5}" class="fw-bold">Is my information safe?</span>
-                    </button>
-                </h2>
-                <div id="collapse5" class="accordion-collapse collapse" aria-labelledby="heading5" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        <span th:text="#{faq.answer5-1}">Absolutely. We don't sell your info. Your conversations, stories, and data are private and protected. Genius Parenting AI is built by real parents who care about trust, not by big corporations looking to cash in.</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="heading6">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse6" aria-expanded="false" aria-controls="collapse6">
-                        <span th:text="#{faq.question6}" class="fw-bold">How much does it cost?</span>
-                    </button>
-                </h2>
-                <div id="collapse6" class="accordion-collapse collapse" aria-labelledby="heading6" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        <span th:text="#{faq.answer6-1}">Genius Parenting AI is free to download! Some premium tools (like personal coaching or workshops) might have a fee later, but basic features, advice, and community access will always be free.</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="heading7">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse7" aria-expanded="false" aria-controls="collapse7">
-                        <span th:text="#{faq.question7}" class="fw-bold">What kind of help can I find on the app?</span>
-                    </button>
-                </h2>
-                <div id="collapse7" class="accordion-collapse collapse" aria-labelledby="heading7" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        <span th:text="#{faq.answer7}">You’ll get: Culturally blended parenting advice, Child growth trackers, Bilingual/bicultural tips, Mental health support for you and your child, Activities and routines for different age groups, A safe community to ask questions and share experiences.</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="heading8">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse8" aria-expanded="false" aria-controls="collapse8">
-                        <span th:text="#{faq.question8}" class="fw-bold">Can I connect with other parents like me?</span>
-                    </button>
-                </h2>
-                <div id="collapse8" class="accordion-collapse collapse" aria-labelledby="heading8" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        <span th:text="#{faq.answer8-1}">Yes! That’s a huge part of Genius Parenting AI. You can join community circles based on your child's age, your background, your city, or topics you care about.</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="heading9">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse9" aria-expanded="false" aria-controls="collapse9">
-                        <span th:text="#{faq.question9}" class="fw-bold">I'm still learning English / French. Will that be a problem?</span>
-                    </button>
-                </h2>
-                <div id="collapse9" class="accordion-collapse collapse" aria-labelledby="heading9" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        <span th:text="#{faq.answer9}">Not at all! We are working toward offering multilingual support, starting with simple English, and expanding based on user needs. In future updates, you’ll be able to choose your preferred language for advice and tips.</span>
-                    </div>
-                </div>
-            </div>
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="heading10">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse10" aria-expanded="false" aria-controls="collapse10">
-                        <span class="fw-bold" th:text="#{faq.question10}">Is GeniusParentingAI really free to use?</span>
-                    </button>
-                </h2>
-                <div id="collapse10" class="accordion-collapse collapse" aria-labelledby="heading10" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        <p th:text="#{faq.answer10-1}">Yes. GeniusParentingAI is free to start and free to explore.</p>
-						<p th:text="#{faq.answer10-2}">Parents can use the platform without payment. We also offer an optional membership for those who find value and wish to support ongoing development and additional features. Membership is always your choice.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="heading11">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse11" aria-expanded="false" aria-controls="collapse11">
-                        <span class="fw-bold" th:text="#{faq.question11}">Why do you offer a paid membership at all?</span>
-                    </button>
-                </h2>
-                <div id="collapse11" class="accordion-collapse collapse" aria-labelledby="heading11" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        <p th:text="#{faq.answer11-1}">Because building a thoughtful, ethical, privacy-first platform takes care and resources.</p>
-						<p th:text="#{faq.answer11-2}">Optional membership helps us:</p>
-						<ul>
-						  <li><span th:text="#{faq.answer11-3}">Maintain high-quality educational content</span></li>
-						  <li><span th:text="#{faq.answer11-4}">Improve the platform responsibly</span></li>
-						  <li><span th:text="#{faq.answer11-5}">Keep the core experience accessible and ad-free</span></li>
-						</ul>
-						<p th:text="#{faq.answer11-6}">We believe parents should decide freely whether and when to support us.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="heading12">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse12" aria-expanded="false" aria-controls="collapse12">
-                        <span class="fw-bold" th:text="#{faq.question12}">How much does membership cost?</span>
-                    </button>
-                </h2>
-                <div id="collapse12" class="accordion-collapse collapse" aria-labelledby="heading12" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        <p th:text="#{faq.answer13-1}">Membership pricing is shown clearly at the time of sign-up and is handled securely through Apple’s in-app purchase system.</p>
-						<p th:text="#{faq.answer13-2}">We do not process or store your payment information ourselves.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="heading13">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse13" aria-expanded="false" aria-controls="collapse13">
-                        <span class="fw-bold" th:text="#{faq.question14}">Do I need to become a member to use GeniusParentingAI?</span>
-                    </button>
-                </h2>
-                <div id="collapse13" class="accordion-collapse collapse" aria-labelledby="heading13" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        <p th:text="#{faq.answer14-1}">No.</p>
-						<p th:text="#{faq.answer14-2}">Membership is never required to access GeniusParentingAI. Whether you choose to join as a member or not, our commitment to calm, ethical parenting support remains the same.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="heading14">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse14" aria-expanded="false" aria-controls="collapse14">
-                        <span class="fw-bold" th:text="#{faq.question15}">Do you collect personal information about me or my child?</span>
-                    </button>
-                </h2>
-                <div id="collapse14" class="accordion-collapse collapse" aria-labelledby="heading14" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        <p th:text="#{faq.answer15-1}">No — and this is a core principle for us.</p>
-						<ul>
-						  <li><span th:text="#{faq.answer15-2}">No real-name requirement</span></li>
-						  <li><span th:text="#{faq.answer15-3}">No verified email required</span></li>
-						  <li><span th:text="#{faq.answer15-4}">No mandatory personal or child-identifiable data</span></li>
-						</ul>
-						<p th:text="#{faq.answer15-5}">GeniusParentingAI is designed to support learning and reflection, not to collect data.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="heading15">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse15" aria-expanded="false" aria-controls="collapse15">
-                        <span class="fw-bold" th:text="#{faq.question16}">Is my information anonymous?</span>
-                    </button>
-                </h2>
-                <div id="collapse15" class="accordion-collapse collapse" aria-labelledby="heading15" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        <p th:text="#{faq.answer16-1}">Yes. GeniusParentingAI is designed to be anonymous by default.</p>
-						<p th:text="#{faq.answer16-2}">You can explore and use the platform without revealing your identity. We intentionally minimize data collection to protect families’ privacy.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="heading16">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse16" aria-expanded="false" aria-controls="collapse16">
-                        <span class="fw-bold" th:text="#{faq.question17}">Do you sell or share user data?</span>
-                    </button>
-                </h2>
-                <div id="collapse16" class="accordion-collapse collapse" aria-labelledby="heading16" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        <p th:text="#{faq.answer17-1}">No. We do not sell user data. </p>
-						<p th:text="#{faq.answer17-2}">We also do not share personal data with advertisers or third parties.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="heading17">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse17" aria-expanded="false" aria-controls="collapse17">
-                        <span class="fw-bold" th:text="#{faq.question18}">How is AI used in GeniusParentingAI? Is it safe?</span>
-                    </button>
-                </h2>
-                <div id="collapse17" class="accordion-collapse collapse" aria-labelledby="heading17" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        <p th:text="#{faq.answer18-1}">AI is used thoughtfully and responsibly to help parents:</p>
-						<ul>
-						  <li><span th:text="#{faq.answer18-2}">Reflect on situations</span></li>
-						  <li><span th:text="#{faq.answer18-3}">Consider different perspectives</span></li>
-						  <li><span th:text="#{faq.answer18-4}">Think through possible approaches</span></li>
-						</ul>
-						<p><span th:text="#{faq.answer18-5}">GeniusParentingAI does not replace professional advice, diagnose children, or make decisions for families. AI is a tool to support thinking — not to judge, instruct, or pressure.</span></p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="heading18">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse18" aria-expanded="false" aria-controls="collapse18">
-                        <span class="fw-bold" th:text="#{faq.question19}">Is GeniusParentingAI a replacement for professional parenting advice or therapy?</span>
-                    </button>
-                </h2>
-                <div id="collapse18" class="accordion-collapse collapse" aria-labelledby="heading18" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        <p><span th:text="#{faq.answer19-1}">No.</span></p>
-						<p><span th:text="#{faq.answer19-2}">GeniusParentingAI is an educational support tool, not a substitute for:</span></p>
-						<ul>
-						  <li><span th:text="#{faq.answer19-3}">Medical advice</span></li>
-						  <li><span th:text="#{faq.answer19-4}">Mental health care</span></li>
-						  <li><span th:text="#{faq.answer19-5}">Professional therapy or diagnosis</span></li>
-						</ul>
-						<p><span th:text="#{faq.answer19-6}">We encourage parents to seek qualified professionals when needed.</span></p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="heading19">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse19" aria-expanded="false" aria-controls="collapse19">
-                        <span class="fw-bold" th:text="#{faq.question20}">Who created GeniusParentingAI?</span>
-                    </button>
-                </h2>
-                <div id="collapse19" class="accordion-collapse collapse" aria-labelledby="heading19" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        <p><span th:text="#{faq.answer20-1}">GeniusParentingAI was created by an educator and a software professional who combine expertise in child development, parenting education, and real-life parenting experience to support families with compassionate, judgment-free guidance.</span></p>
-						<p><span th:text="#{faq.answer20-2}">The platform was built from both professional knowledge and real-life parenting challenges, with the goal of supporting parents without judgment.</span></p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="heading20">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse20" aria-expanded="false" aria-controls="collapse20">
-                        <span class="fw-bold" th:text="#{faq.question21}">Who is this platform for?</span>
-                    </button>
-                </h2>
-                <div id="collapse20" class="accordion-collapse collapse" aria-labelledby="heading20" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        <p><span th:text="#{faq.answer21-1}">GeniusParentingAI is for:</span></p>
-						<ul>
-						  <li><span th:text="#{faq.answer21-2}">Parents and caregivers</span></li>
-						  <li><span th:text="#{faq.answer21-3}">Families seeking thoughtful, calm support</span></li>
-						  <li><span th:text="#{faq.answer21-4}">Educators and practitioners interested in ethical parent education</span></li>
-						</ul>
-						<p><span th:text="#{faq.answer21-5}">You do not need to be a “perfect parent” to belong here.</span></p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="heading21">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse21" aria-expanded="false" aria-controls="collapse21">
-                        <span class="fw-bold" th:text="#{faq.question22}">Can institutions or educators collaborate with GeniusParentingAI?</span>
-                    </button>
-                </h2>
-                <div id="collapse21" class="accordion-collapse collapse" aria-labelledby="heading21" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        <p><span th:text="#{faq.answer22-1}">Yes. We welcome conversations with educators, researchers, and institutions interested in parent education, child development, and family well-being.</span></p>
-						<p><span th:text="#{faq.answer22-2}">Please contact us through the appropriate channel for collaboration inquiries.</span></p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="heading22">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse22" aria-expanded="false" aria-controls="collapse22">
-                        <span class="fw-bold" th:text="#{faq.question23}">What if I’m not sure this is right for me?</span>
-                    </button>
-                </h2>
-                <div id="collapse22" class="accordion-collapse collapse" aria-labelledby="heading22" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        <p><span th:text="#{faq.answer23-1}">That’s okay.</span></p>
-						<p><span th:text="#{faq.answer23-2}">You can explore GeniusParentingAI freely, without commitment. Take your time, see how it feels, and decide what’s right for your family.</span></p>
-						<p><span th:text="#{faq.answer23-3}">Parenting is personal — support should be too.</span></p>
-                    </div>
-                </div>
-            </div>
-
         </div>
+
+        <!-- 👨‍👩‍👧 Who Is It For? -->
+        <h2 class="h4 mt-4 mb-3" th:text="#{faq.section.for}">Who Is It For?</h2>
+        <div class="accordion faq-accordion mb-4" id="faqAccordionFor">
+            <div class="accordion-item">
+                <h3 class="accordion-header" id="forHeading1">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#forCollapse1" aria-expanded="true" aria-controls="forCollapse1">
+                        <span class="fw-bold" th:text="#{faq.q.for.who}">Who is GeniusParentingAI for?</span>
+                    </button>
+                </h3>
+                <div id="forCollapse1" class="accordion-collapse collapse show" aria-labelledby="forHeading1" data-bs-parent="#faqAccordionFor">
+                    <div class="accordion-body">
+                        <p th:text="#{faq.a.for.who.p1}">GeniusParentingAI is designed for:</p>
+                        <ul class="mb-3">
+                            <li><span th:text="#{faq.a.for.who.li1}">Parents and caregivers</span></li>
+                            <li><span th:text="#{faq.a.for.who.li2}">Expecting parents</span></li>
+                            <li><span th:text="#{faq.a.for.who.li3}">Immigrant and multicultural families</span></li>
+                            <li><span th:text="#{faq.a.for.who.li4}">Educators and practitioners</span></li>
+                            <li><span th:text="#{faq.a.for.who.li5}">Institutions focused on family well-being</span></li>
+                        </ul>
+                        <p th:text="#{faq.a.for.who.p2}">You do not need to be a “perfect parent” to belong here.</p>
+                        <p th:text="#{faq.a.for.who.p3}">If you care about raising thoughtful, resilient children — you’re in the right place.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h3 class="accordion-header" id="forHeading2">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#forCollapse2" aria-expanded="false" aria-controls="forCollapse2">
+                        <span class="fw-bold" th:text="#{faq.q.for.onlyParents}">Is this only for people who already have children?</span>
+                    </button>
+                </h3>
+                <div id="forCollapse2" class="accordion-collapse collapse" aria-labelledby="forHeading2" data-bs-parent="#faqAccordionFor">
+                    <div class="accordion-body">
+                        <p th:text="#{faq.a.for.onlyParents.p1}">Not at all.</p>
+                        <p th:text="#{faq.a.for.onlyParents.p2}">If you are expecting or planning to have children, the platform helps you:</p>
+                        <ul class="mb-0">
+                            <li><span th:text="#{faq.a.for.onlyParents.li1}">Prepare for parenting in Canada</span></li>
+                            <li><span th:text="#{faq.a.for.onlyParents.li2}">Understand early childhood development</span></li>
+                            <li><span th:text="#{faq.a.for.onlyParents.li3}">Reflect on your parenting values</span></li>
+                            <li><span th:text="#{faq.a.for.onlyParents.li4}">Build confidence before your baby arrives</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h3 class="accordion-header" id="forHeading3">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#forCollapse3" aria-expanded="false" aria-controls="forCollapse3">
+                        <span class="fw-bold" th:text="#{faq.q.for.diff}">💡 What makes GeniusParentingAI different?</span>
+                    </button>
+                </h3>
+                <div id="forCollapse3" class="accordion-collapse collapse" aria-labelledby="forHeading3" data-bs-parent="#faqAccordionFor">
+                    <div class="accordion-body">
+                        <p th:text="#{faq.a.for.diff.p1}">Many parenting apps offer general advice.</p>
+                        <p th:text="#{faq.a.for.diff.p2}">GeniusParentingAI is different because it:</p>
+                        <ul class="mb-3">
+                            <li><span th:text="#{faq.a.for.diff.li1}">Understands multicultural parenting realities</span></li>
+                            <li><span th:text="#{faq.a.for.diff.li2}">Blends research-based child development with lived experience</span></li>
+                            <li><span th:text="#{faq.a.for.diff.li3}">Supports bilingual and bicultural families</span></li>
+                            <li><span th:text="#{faq.a.for.diff.li4}">Prioritizes reflection instead of rigid instruction</span></li>
+                            <li><span th:text="#{faq.a.for.diff.li5}">Is built privacy-first and ad-free</span></li>
+                        </ul>
+                        <p th:text="#{faq.a.for.diff.p3}">We recognize the tension between cultural roots and life in Canada — and we help parents navigate it thoughtfully.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 🛠 What Can I Do on the App? -->
+        <h2 class="h4 mt-4 mb-3" th:text="#{faq.section.app}">What Can I Do on the App?</h2>
+        <div class="accordion faq-accordion mb-4" id="faqAccordionApp">
+            <div class="accordion-item">
+                <h3 class="accordion-header" id="appHeading1">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#appCollapse1" aria-expanded="true" aria-controls="appCollapse1">
+                        <span class="fw-bold" th:text="#{faq.q.app.do}">What can I do on GeniusParentingAI?</span>
+                    </button>
+                </h3>
+                <div id="appCollapse1" class="accordion-collapse collapse show" aria-labelledby="appHeading1" data-bs-parent="#faqAccordionApp">
+                    <div class="accordion-body">
+                        <p th:text="#{faq.a.app.do.p1}">Inside GeniusParentingAI, you can access:</p>
+                        <ul class="mb-0">
+                            <li><span th:text="#{faq.a.app.do.li1}">Age-specific parenting guidance</span></li>
+                            <li><span th:text="#{faq.a.app.do.li2}">Child growth and development tracking</span></li>
+                            <li><span th:text="#{faq.a.app.do.li3}">Bilingual and bicultural parenting insights</span></li>
+                            <li><span th:text="#{faq.a.app.do.li4}">Mental well-being reflections for parents</span></li>
+                            <li><span th:text="#{faq.a.app.do.li5}">Activities and routines by age group</span></li>
+                            <li><span th:text="#{faq.a.app.do.li6}">Community circles by city, background, or topic</span></li>
+                            <li><span th:text="#{faq.a.app.do.li7}">AI-supported reflection tools for real-life parenting situations</span></li>
+                        </ul>
+                        <p class="mt-3" th:text="#{faq.a.app.do.p2}">It’s not just advice — it’s a space to think, grow, and connect.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 🤝 Can I Connect With Other Parents? -->
+        <h2 class="h4 mt-4 mb-3" th:text="#{faq.section.community}">Can I Connect With Other Parents?</h2>
+        <div class="accordion faq-accordion mb-4" id="faqAccordionCommunity">
+            <div class="accordion-item">
+                <h3 class="accordion-header" id="communityHeading1">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#communityCollapse1" aria-expanded="true" aria-controls="communityCollapse1">
+                        <span class="fw-bold" th:text="#{faq.q.community.connect}">Can I connect with other parents?</span>
+                    </button>
+                </h3>
+                <div id="communityCollapse1" class="accordion-collapse collapse show" aria-labelledby="communityHeading1" data-bs-parent="#faqAccordionCommunity">
+                    <div class="accordion-body">
+                        <p th:text="#{faq.a.community.connect.p1}">Yes — community is central to GeniusParentingAI.</p>
+                        <p th:text="#{faq.a.community.connect.p2}">You can join circles based on:</p>
+                        <ul class="mb-3">
+                            <li><span th:text="#{faq.a.community.connect.li1}">Your child’s age</span></li>
+                            <li><span th:text="#{faq.a.community.connect.li2}">Your cultural background</span></li>
+                            <li><span th:text="#{faq.a.community.connect.li3}">Your city</span></li>
+                            <li><span th:text="#{faq.a.community.connect.li4}">Shared parenting interests</span></li>
+                        </ul>
+                        <p th:text="#{faq.a.community.connect.p3}">Parenting should not feel isolating.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 🌍 Language Support -->
+        <h2 class="h4 mt-4 mb-3" th:text="#{faq.section.lang}">Language Support</h2>
+        <div class="accordion faq-accordion mb-4" id="faqAccordionLang">
+            <div class="accordion-item">
+                <h3 class="accordion-header" id="langHeading1">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#langCollapse1" aria-expanded="true" aria-controls="langCollapse1">
+                        <span class="fw-bold" th:text="#{faq.q.lang.support}">Do you support multiple languages?</span>
+                    </button>
+                </h3>
+                <div id="langCollapse1" class="accordion-collapse collapse show" aria-labelledby="langHeading1" data-bs-parent="#faqAccordionLang">
+                    <div class="accordion-body">
+                        <p th:text="#{faq.a.lang.support.p1}">We are building multilingual support progressively.</p>
+                        <p th:text="#{faq.a.lang.support.p2}">You can choose your preferred language.</p>
+                        <p th:text="#{faq.a.lang.support.p3}">We aim to make parenting support inclusive and accessible.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 🔒 Privacy & Ethics -->
+        <h2 class="h4 mt-4 mb-3" th:text="#{faq.section.privacy}">Privacy & Ethics</h2>
+        <div class="accordion faq-accordion mb-4" id="faqAccordionPrivacy">
+            <div class="accordion-item">
+                <h3 class="accordion-header" id="privacyHeading1">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#privacyCollapse1" aria-expanded="true" aria-controls="privacyCollapse1">
+                        <span class="fw-bold" th:text="#{faq.q.privacy.collect}">Do you collect personal information?</span>
+                    </button>
+                </h3>
+                <div id="privacyCollapse1" class="accordion-collapse collapse show" aria-labelledby="privacyHeading1" data-bs-parent="#faqAccordionPrivacy">
+                    <div class="accordion-body">
+                        <p th:text="#{faq.a.privacy.collect.p1}">No — this is one of our core principles.</p>
+                        <ul class="mb-3">
+                            <li><span th:text="#{faq.a.privacy.collect.li1}">No real-name requirement</span></li>
+                            <li><span th:text="#{faq.a.privacy.collect.li2}">No mandatory verified email</span></li>
+                            <li><span th:text="#{faq.a.privacy.collect.li3}">No child-identifiable data required</span></li>
+                            <li><span th:text="#{faq.a.privacy.collect.li4}">Minimal data collection by design</span></li>
+                        </ul>
+                        <p th:text="#{faq.a.privacy.collect.p2}">GeniusParentingAI is built to support families — not to harvest data.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h3 class="accordion-header" id="privacyHeading2">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#privacyCollapse2" aria-expanded="false" aria-controls="privacyCollapse2">
+                        <span class="fw-bold" th:text="#{faq.q.privacy.anon}">Is my information anonymous?</span>
+                    </button>
+                </h3>
+                <div id="privacyCollapse2" class="accordion-collapse collapse" aria-labelledby="privacyHeading2" data-bs-parent="#faqAccordionPrivacy">
+                    <div class="accordion-body">
+                        <p th:text="#{faq.a.privacy.anon.p1}">Yes.</p>
+                        <p th:text="#{faq.a.privacy.anon.p2}">The platform is anonymous by default. You can explore freely without revealing your identity.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h3 class="accordion-header" id="privacyHeading3">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#privacyCollapse3" aria-expanded="false" aria-controls="privacyCollapse3">
+                        <span class="fw-bold" th:text="#{faq.q.privacy.share}">Do you sell or share user data?</span>
+                    </button>
+                </h3>
+                <div id="privacyCollapse3" class="accordion-collapse collapse" aria-labelledby="privacyHeading3" data-bs-parent="#faqAccordionPrivacy">
+                    <div class="accordion-body">
+                        <p th:text="#{faq.a.privacy.share.p1}">Never.</p>
+                        <p th:text="#{faq.a.privacy.share.p2}">We do not sell user data.</p>
+                        <p th:text="#{faq.a.privacy.share.p3}">We do not share personal data with advertisers.</p>
+                        <p th:text="#{faq.a.privacy.share.p4}">We are committed to remaining ad-free.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 🤖 How Is AI Used? -->
+        <h2 class="h4 mt-4 mb-3" th:text="#{faq.section.ai}">How Is AI Used?</h2>
+        <div class="accordion faq-accordion mb-4" id="faqAccordionAI">
+            <div class="accordion-item">
+                <h3 class="accordion-header" id="aiHeading1">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#aiCollapse1" aria-expanded="true" aria-controls="aiCollapse1">
+                        <span class="fw-bold" th:text="#{faq.q.ai.used}">How is AI used?</span>
+                    </button>
+                </h3>
+                <div id="aiCollapse1" class="accordion-collapse collapse show" aria-labelledby="aiHeading1" data-bs-parent="#faqAccordionAI">
+                    <div class="accordion-body">
+                        <p th:text="#{faq.a.ai.used.p1}">AI in GeniusParentingAI is designed to:</p>
+                        <ul class="mb-3">
+                            <li><span th:text="#{faq.a.ai.used.li1}">Help parents reflect on situations</span></li>
+                            <li><span th:text="#{faq.a.ai.used.li2}">Offer different perspectives</span></li>
+                            <li><span th:text="#{faq.a.ai.used.li3}">Support thoughtful decision-making</span></li>
+                        </ul>
+                        <p th:text="#{faq.a.ai.used.p2}">It does NOT:</p>
+                        <ul class="mb-3">
+                            <li><span th:text="#{faq.a.ai.used.no1}">Diagnose children</span></li>
+                            <li><span th:text="#{faq.a.ai.used.no2}">Replace professional advice</span></li>
+                            <li><span th:text="#{faq.a.ai.used.no3}">Make decisions for families</span></li>
+                        </ul>
+                        <p th:text="#{faq.a.ai.used.p3}">AI is a thinking partner — not a replacement for human care.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h3 class="accordion-header" id="aiHeading2">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#aiCollapse2" aria-expanded="false" aria-controls="aiCollapse2">
+                        <span class="fw-bold" th:text="#{faq.q.ai.therapy}">Is this a replacement for therapy or medical advice?</span>
+                    </button>
+                </h3>
+                <div id="aiCollapse2" class="accordion-collapse collapse" aria-labelledby="aiHeading2" data-bs-parent="#faqAccordionAI">
+                    <div class="accordion-body">
+                        <p th:text="#{faq.a.ai.therapy.p1}">No.</p>
+                        <p th:text="#{faq.a.ai.therapy.p2}">GeniusParentingAI is an educational support platform, not a substitute for:</p>
+                        <ul class="mb-3">
+                            <li><span th:text="#{faq.a.ai.therapy.li1}">Medical care</span></li>
+                            <li><span th:text="#{faq.a.ai.therapy.li2}">Mental health treatment</span></li>
+                            <li><span th:text="#{faq.a.ai.therapy.li3}">Professional therapy</span></li>
+                            <li><span th:text="#{faq.a.ai.therapy.li4}">Formal assessment or diagnosis</span></li>
+                        </ul>
+                        <p th:text="#{faq.a.ai.therapy.p3}">We always encourage families to seek qualified professionals when needed.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 💰 Pricing & Membership -->
+        <h2 class="h4 mt-4 mb-3" th:text="#{faq.section.pricing}">Pricing & Membership</h2>
+        <div class="accordion faq-accordion mb-4" id="faqAccordionPricing">
+            <div class="accordion-item">
+                <h3 class="accordion-header" id="pricingHeading1">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#pricingCollapse1" aria-expanded="true" aria-controls="pricingCollapse1">
+                        <span class="fw-bold" th:text="#{faq.q.pricing.free}">Is GeniusParentingAI free?</span>
+                    </button>
+                </h3>
+                <div id="pricingCollapse1" class="accordion-collapse collapse show" aria-labelledby="pricingHeading1" data-bs-parent="#faqAccordionPricing">
+                    <div class="accordion-body">
+                        <p th:text="#{faq.a.pricing.free.p1}">Yes.</p>
+                        <p th:text="#{faq.a.pricing.free.p2}">The app is free to download and free to explore.</p>
+                        <p th:text="#{faq.a.pricing.free.p3}">Core features — guidance, tools, and community — are accessible without payment.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h3 class="accordion-header" id="pricingHeading2">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#pricingCollapse2" aria-expanded="false" aria-controls="pricingCollapse2">
+                        <span class="fw-bold" th:text="#{faq.q.pricing.needMember}">Do I need a membership?</span>
+                    </button>
+                </h3>
+                <div id="pricingCollapse2" class="accordion-collapse collapse" aria-labelledby="pricingHeading2" data-bs-parent="#faqAccordionPricing">
+                    <div class="accordion-body">
+                        <p th:text="#{faq.a.pricing.needMember.p1}">No.</p>
+                        <p th:text="#{faq.a.pricing.needMember.p2}">Membership is optional and never required.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h3 class="accordion-header" id="pricingHeading3">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#pricingCollapse3" aria-expanded="false" aria-controls="pricingCollapse3">
+                        <span class="fw-bold" th:text="#{faq.q.pricing.whyPaid}">Why offer a paid membership?</span>
+                    </button>
+                </h3>
+                <div id="pricingCollapse3" class="accordion-collapse collapse" aria-labelledby="pricingHeading3" data-bs-parent="#faqAccordionPricing">
+                    <div class="accordion-body">
+                        <p th:text="#{faq.a.pricing.whyPaid.p1}">To sustain:</p>
+                        <ul class="mb-3">
+                            <li><span th:text="#{faq.a.pricing.whyPaid.li1}">Ethical, privacy-first technology</span></li>
+                            <li><span th:text="#{faq.a.pricing.whyPaid.li2}">High-quality educational content</span></li>
+                            <li><span th:text="#{faq.a.pricing.whyPaid.li3}">Platform improvements</span></li>
+                            <li><span th:text="#{faq.a.pricing.whyPaid.li4}">An ad-free experience</span></li>
+                        </ul>
+                        <p th:text="#{faq.a.pricing.whyPaid.p2}">Parents choose freely whether to support us.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h3 class="accordion-header" id="pricingHeading4">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#pricingCollapse4" aria-expanded="false" aria-controls="pricingCollapse4">
+                        <span class="fw-bold" th:text="#{faq.q.pricing.cost}">How much does membership cost?</span>
+                    </button>
+                </h3>
+                <div id="pricingCollapse4" class="accordion-collapse collapse" aria-labelledby="pricingHeading4" data-bs-parent="#faqAccordionPricing">
+                    <div class="accordion-body">
+                        <p th:text="#{faq.a.pricing.cost.p1}">Membership pricing is displayed clearly inside the app and handled securely through Apple’s in-app purchase system.</p>
+                        <p th:text="#{faq.a.pricing.cost.p2}">We do not process or store your payment information.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 🏫 Institutional & Research Collaboration -->
+        <h2 class="h4 mt-4 mb-3" th:text="#{faq.section.institution}">Institutional & Research Collaboration</h2>
+        <div class="accordion faq-accordion mb-4" id="faqAccordionInstitution">
+            <div class="accordion-item">
+                <h3 class="accordion-header" id="instHeading1">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#instCollapse1" aria-expanded="true" aria-controls="instCollapse1">
+                        <span class="fw-bold" th:text="#{faq.q.inst.collab}">Can educators or institutions collaborate with GeniusParentingAI?</span>
+                    </button>
+                </h3>
+                <div id="instCollapse1" class="accordion-collapse collapse show" aria-labelledby="instHeading1" data-bs-parent="#faqAccordionInstitution">
+                    <div class="accordion-body">
+                        <p th:text="#{faq.a.inst.collab.p1}">Yes — and we actively welcome collaboration.</p>
+                        <p th:text="#{faq.a.inst.collab.p2}">We are open to partnerships with:</p>
+                        <ul class="mb-3">
+                            <li><span th:text="#{faq.a.inst.collab.li1}">Schools</span></li>
+                            <li><span th:text="#{faq.a.inst.collab.li2}">Early childhood centers</span></li>
+                            <li><span th:text="#{faq.a.inst.collab.li3}">Community organizations</span></li>
+                            <li><span th:text="#{faq.a.inst.collab.li4}">Universities</span></li>
+                            <li><span th:text="#{faq.a.inst.collab.li5}">Researchers in child development and family well-being</span></li>
+                        </ul>
+                        <p th:text="#{faq.a.inst.collab.p3}">Possible collaborations include:</p>
+                        <ul class="mb-3">
+                            <li><span th:text="#{faq.a.inst.collab.opt1}">Parent education programs</span></li>
+                            <li><span th:text="#{faq.a.inst.collab.opt2}">Research partnerships (ethical, anonymized data only)</span></li>
+                            <li><span th:text="#{faq.a.inst.collab.opt3}">Pilot programs within communities</span></li>
+                            <li><span th:text="#{faq.a.inst.collab.opt4}">Institutional membership models</span></li>
+                            <li><span th:text="#{faq.a.inst.collab.opt5}">Multicultural family engagement initiatives</span></li>
+                        </ul>
+                        <p th:text="#{faq.a.inst.collab.p4}">If your organization values ethical innovation in parenting support, we would love to explore possibilities.</p>
+                        <p th:text="#{faq.a.inst.collab.p5}">Please contact us through our collaboration inquiry channel.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 🌼 Still Not Sure? -->
+        <h2 class="h4 mt-4 mb-3" th:text="#{faq.section.unsure}">Still Not Sure?</h2>
+        <div class="accordion faq-accordion" id="faqAccordionUnsure">
+            <div class="accordion-item">
+                <h3 class="accordion-header" id="unsureHeading1">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#unsureCollapse1" aria-expanded="true" aria-controls="unsureCollapse1">
+                        <span class="fw-bold" th:text="#{faq.q.unsure}">What if I’m still not sure?</span>
+                    </button>
+                </h3>
+                <div id="unsureCollapse1" class="accordion-collapse collapse show" aria-labelledby="unsureHeading1" data-bs-parent="#faqAccordionUnsure">
+                    <div class="accordion-body">
+                        <p th:text="#{faq.a.unsure.p1}">That’s okay.</p>
+                        <p th:text="#{faq.a.unsure.p2}">You can explore GeniusParentingAI freely and decide what feels right for your family.</p>
+                        <p th:text="#{faq.a.unsure.p3}">Parenting is deeply personal.</p>
+                        <p th:text="#{faq.a.unsure.p4}">Support should be too.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <!-- Include Chatbot -->

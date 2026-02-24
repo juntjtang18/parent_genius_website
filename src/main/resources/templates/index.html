@@ -49,6 +49,10 @@
   font-family:'Poppins',sans-serif; font-weight:500;
   font-size:60px; line-height:70px; color:#fff; margin-bottom:1rem; margin-top:2rem
 }
+.gp-index-hero-title2{
+  font-family:'Poppins',sans-serif; font-weight:500;
+  font-size:30px; line-height:40px; color:#fff; margin-bottom:1rem; margin-top:2rem
+}
 .gp-index-hero-subtitle{
   font-family:'Poppins',sans-serif; font-weight:200;
   font-size:20px; line-height:32px; color:#fff; margin-top:1rem;
@@ -281,10 +285,36 @@
 .cta-row > [class*="col-"]{ padding-left:0; padding-right:0; }
 .cta-left{ position:relative; z-index:2; display:flex; align-items:stretch; }
 .cta-left-inner{ display:flex; flex-direction:column; justify-content:center; min-height:100%; padding-inline: clamp(24px, 5vw, 64px); padding-block:64px; }
-.cta-title{ font-family:'Poppins',sans-serif; font-weight:400; font-size:50px; line-height:60px; margin:0 0 24px; }
-.cta-bullets{ list-style:none; margin:0 0 6px; padding:0; }
-.cta-bullets li{ margin:0 0 12px; font-family:'Poppins'; font-weight:400; font-size:18px; line-height:36px; color:rgba(255,255,255,.92); }
-.cta-tagline{ margin:14px 0; font-family:'Poppins'; font-size:18px; line-height:36px; font-weight:600; color:rgba(255,255,255,.96); }
+.cta-title{ font-family:'Poppins',sans-serif; font-weight:400; font-size:40px; line-height:50px; margin:0 0 24px; }
+.cta-bullets{ 
+  list-style:none; 
+  margin:0 0 6px; 
+  padding:0; 
+}
+
+.cta-bullets li{ 
+  position: relative;
+  padding-left: 22px;          /* 给圆点留位置 */
+  margin:0 0 12px; 
+  font-family:'Poppins'; 
+  font-weight:400; 
+  font-size:18px; 
+  line-height:36px; 
+  color:rgba(255,255,255,.92); 
+}
+
+.cta-bullets li::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:50%;
+  transform: translateY(-50%);
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:rgba(255,255,255,.75);
+}
+.cta-tagline{ margin:14px 0; font-family:'Poppins'; font-size:18px; line-height:36px; font-weight:400; color:rgba(255,255,255,.96); }
 .cta-rule{ border:0; height:1px; background:rgba(255,255,255,.25); max-width:520px; margin:18px 0 0; }
 .cta-qr{ width:132px; height:132px; border-radius:12px; display:block; }
 .cta-download-title{ font-family:'Poppins',sans-serif; font-weight:600; font-size:30px; line-height:40px; margin:0; }
@@ -323,22 +353,22 @@
     <div class="container-xxl">
       <div class="row align-items-center">
         <div class="col-lg-5 mb-5 mb-lg-0">
-          <h1 class="gp-index-hero-title" th:text="#{home.hero.title_en1}">
+<!--           <h1 class="gp-index-hero-title" th:text="#{home.hero.title_en1}">
             Genius Parenting AI
-          </h1>
-          <p class="gp-index-hero-subtitle" th:text="#{home.hero.subtitle_en1}">
+          </h1> -->
+          <p class="gp-index-hero-title2" th:text="#{home.hero.subtitle_en1}">
             Calm, thoughtful parenting support—built by educators, designed with care.
           </p>
           <p class="gp-index-hero-subtitle" th:text="#{home.hero.subtitle_en2}">
           	GeniusParentingAI is a free, privacy-first parent education platform that helps parents think through everyday parenting questions using responsible AI. No data selling. Anonymous by default.
           </p>
-          <div class="mt-4">
+<!--           <div class="mt-4">
             <a href="https://apps.apple.com/us/app/geniusparentingai/id6747332178"
                class="btn gp-cta-btn"
                th:text="#{home.hero.cta_en}">
                Download the App
             </a>
-          </div>
+          </div> -->
         </div>
         <div class="col-lg-6 offset-lg-1">
           <img th:src="@{/images/index/index_image1.png}"
@@ -572,22 +602,21 @@
       <div class="row g-0 cta-row">
         <div class="col-12 col-lg-7 cta-left">
           <div class="cta-left-inner">
-            <h2 class="cta-title"><span th:text="#{index-caption-19-1}">Privacy And Trust</span></h2>
+            <h2 class="cta-title"><span th:text="#{index-caption-19-1}">Built on Privacy, Respect, and Educational Integrity</span></h2>
 
-            <p class="cta-tagline" th:text="#{index-caption-21-1}">GeniusParentingAI is intentionally designed as an anonymous, privacy-first educational experience:</p>
-	        <ul class="cta-bullets">
-	        
-            	<li th:text="#{index-caption-22-2}">· No verified email addresses required</li>
-            	<li th:text="#{index-caption-23-2}">· No real-name requirements</li>
-            	<li th:text="#{index-caption-24-2}">· No mandatory personal or child-identifiable data</li>
+            <p class="cta-tagline" th:text="#{index-caption-21-1-1}">GeniusParentingAI is intentionally designed as an anonymous, privacy-first educational experience:</p>
+	        <ul class="cta-bullets">	        
+            	<li th:text="#{index-caption-22-2}">No verified email addresses required</li>
+            	<li th:text="#{index-caption-23-2}">No real-name requirements</li>
+            	<li th:text="#{index-caption-24-2}">No mandatory personal or child-identifiable data</li>
             </ul>
             
             
-            <p class="cta-tagline" th:text="#{index-caption-22-3}">This reflects our commitment to educational ethics, data minimization, and respect for family dignity.</p>
-
-            <p class="cta-tagline" th:text="#{index-caption-241}">
+            <p class="cta-tagline" th:text="#{index-caption-22-3}">This reflects our commitment to educational ethics, data minimization, and respect for family dignity. Parents deserve support without surveillance—and learning without being tracked.</p>
+<!--			<p class="cta-tagline" th:text="#{index-caption-22-4}"></p>
+             <p class="cta-tagline" th:text="#{index-caption-241}">
               Download Genius Parenting AI and make parenting feel… lighter.
-            </p>
+            </p>  -->
 
             <hr class="cta-rule">
 
