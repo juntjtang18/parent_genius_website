@@ -35,14 +35,17 @@
               <li><a class="dropdown-item gp-cta-item" th:href="@{/functions(function=3)}" th:text="#{navbar_seg3}">Growth & Milestones</a></li>
               <li><a class="dropdown-item gp-cta-item" th:href="@{/functions(function=4)}" th:text="#{navbar_seg4}">Parenting Resources</a></li>
               <li><a class="dropdown-item gp-cta-item" th:href="@{/functions(function=5)}" th:text="#{navbar_seg5}">Child Experts</a></li>
+              
+              <!-- 
               <li><hr class="dropdown-divider"></li>
-
+				 -->
               <!-- Expert sections (dynamically loaded into Development menu) -->
+              <!-- 
               <li id="expertSectionMenuLoading" class="px-2 text-muted small">
                 Loading...
               </li>
               <li id="expertSectionMenuAnchor" style="display:none;"></li>
-
+				-->
             </ul>
           </li>
 
@@ -289,7 +292,10 @@
           .catch(() => alert('An error occurred while clearing the cache.'));
       });
     }
+    
+    
     // 🔽 Load expert sections into the Development dropdown (below the separator)
+    /*
     const segmentsDDLink = document.getElementById('segmentsDDLink');
     const segmentsMenu = document.querySelector('#segmentsDropdown .dropdown-menu');
     const expertSectionMenuLoading = document.getElementById('expertSectionMenuLoading');
@@ -339,7 +345,7 @@
             expertSectionMenuLoading.className = 'px-2 text-danger small';
           });
       });
-    }
+    }*/
   });
 </script>
 

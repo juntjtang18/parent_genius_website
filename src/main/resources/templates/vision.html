@@ -341,6 +341,138 @@
     scroll-behavior: smooth;       /* nice animation */
     scroll-padding-top: var(--nav-offset);
   }
+  
+/* =========================
+   OUR TEAM
+========================= */
+.about-team{
+  background:#f7f9fb;
+  padding-block: clamp(64px, 8vw, 110px);
+}
+
+.about-team-title{
+  text-align:center;
+  font-weight:700;
+  font-size:50px;
+  line-height:60px;
+  color:#111827;
+  margin-bottom:60px;
+}
+
+.about-team-card{
+  text-align:center;
+  padding-inline: 10px;
+}
+
+.about-team-photo{
+  width:180px;
+  height:180px;
+  object-fit:cover;
+  border-radius:50%;
+  box-shadow: 0 12px 24px rgba(15,23,42,.08);
+  margin-bottom:24px;
+}
+
+.about-team-name{
+  font-weight:600;
+  font-size:22px;
+  line-height:32px;
+  color:#111827;
+  margin-bottom:6px;
+}
+
+.about-team-role{
+  color:#6B7280;
+  font-size:16px;
+  line-height:24px;
+  margin-bottom:20px;
+}
+
+.about-team-bio{
+  text-align:left;
+  color:#374151;
+  font-size:16px;
+  line-height:28px;
+}
+
+.about-team-bio p{
+  margin-bottom:16px;
+}
+
+/* Responsive tuning */
+@media (max-width: 991.98px){
+  .about-team-title{
+    font-size:36px;
+    line-height:44px;
+  }
+
+  .about-team-card{
+    margin-bottom:40px;
+  }
+}
+/* =========================
+   Academic Guidance
+========================= */
+.about-academic{
+  background:#ffffff;
+  padding-block: clamp(56px, 6vw, 90px);
+}
+
+.about-academic-title{
+  font-weight:600;
+  font-size:36px;
+  line-height:46px;
+  color:#111827;
+  margin-bottom:24px;
+}
+
+.about-academic-text{
+  font-size:17px;
+  line-height:28px;
+  color:#374151;
+  margin-bottom:16px;
+}
+/* =========================
+   Our Belief
+========================= */
+.about-believe{
+  background:#f7f9fb;
+  padding-block: clamp(64px, 8vw, 110px);
+}
+
+.about-believe-title{
+  text-align:center;
+  font-weight:700;
+  font-size:50px;
+  line-height:60px;
+  color:#111827;
+  margin-bottom:32px;
+}
+
+.about-believe-lead{
+  text-align:center;
+  font-size:20px;
+  line-height:34px;
+  font-weight:500;
+  color:#1f2937;
+  margin-bottom:28px;
+}
+
+.about-believe-text{
+  font-size:18px;
+  line-height:30px;
+  color:#374151;
+  margin-bottom:18px;
+}
+
+@media (max-width: 991.98px){
+  .about-believe-title{
+    font-size:36px;
+    line-height:44px;
+  }
+}
+
+  
   </style>
 </head>
 <body>
@@ -360,9 +492,10 @@
               <span th:text="#{about-caption-35}">Every parent’s journey begins with a question:</span>
               <span th:text="#{about-caption-36}">“Am I ready? Am I doing this right?”</span>
             </p>
-            <div class="mt-4">
+<!--             <div class="mt-4">
               <a href="https://apps.apple.com/us/app/geniusparentingai/id6747332178" class="about-cta-btn" th:text="#{about-caption-37}">Download the App</a>
             </div>
+             -->
           </div>
         </div>
       </div>
@@ -541,8 +674,142 @@
     </div>
   </section>
 
+<!--  Section Our Team -->
+<section class="about-team">
+  <div class="container-xxl">
+
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        <h2 class="about-team-title" th:text="#{about-team-title}">Our Team</h2>
+      </div>
+    </div>
+
+    <div class="row g-5">
+
+      <!-- Dr. David Vogt -->
+      <div class="col-lg-4">
+        <div class="about-team-card">
+          <img src="/images/about/team-david-vogt.jpg" alt="Dr. David Vogt" class="about-team-photo">
+          <h4 class="about-team-name" th:text="#{about-team-cap1}">Dr. David Vogt</h4>
+          <div class="about-team-role">
+            <span th:text="#{about-team-cap2}">Advisory Board Member</span><br>
+            <span th:text="#{about-team-cap3}">Professor, University of British Columbia</span>
+          </div>
+          <div class="about-team-bio">
+            <p th:text="#{about-team-cap4}">
+              Dr. David Vogt is a professor at the University of British Columbia and an accomplished innovation leader.
+              He began his career as an astronomer and served as Director of the UBC Observatories before becoming Director
+              of Science World, Vancouver’s public science museum.
+            </p>
+            <p th:text="#{about-team-cap5}">
+              With decades of experience at the intersection of science, leadership, and public education, Dr. Vogt is widely
+              recognized for his thoughtful integration of emerging technologies — including AI — into education and other fields.
+              As a father of four, he brings both professional expertise and personal insight to his advisory role.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Shu Guo -->
+      <div class="col-lg-4">
+        <div class="about-team-card">
+          <img src="/images/about/team-shu.png" alt="Shu Guo" class="about-team-photo">
+          <h4 class="about-team-name" th:text="#{about-team-cap6}">Shu Guo</h4>
+          <div class="about-team-role">
+            <span th:text="#{about-team-cap7}">Founder, GeniusParentingAI</span><br>
+            <span th:text="#{about-team-cap8}">Master of Education, University of British Columbia</span>
+          </div>
+          <div class="about-team-bio">
+            <p th:text="#{about-team-cap9}">
+              Shu Guo is an educator with a Master of Education from the University of British Columbia
+              and extensive experience working with children and families.
+            </p>
+            <p th:text="#{about-team-cap10}">
+              GeniusParentingAI was not born from the idea of perfect parenting — but from real, lived experience.
+              Like many parents, Shu encountered confusion, mistakes, self-doubt, and moments of uncertainty in her own parenting journey.
+            </p>
+            <p th:text="#{about-team-cap11}">
+              Through these challenges, she developed a core belief: failure is not the opposite of good parenting —
+              it is often where meaningful learning begins.
+            </p>
+            <p th:text="#{about-team-cap12}">
+              This philosophy shapes the foundation of GeniusParentingAI: compassionate support,
+              practical guidance, and evidence-informed insight for real families facing real challenges.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- James Tang -->
+      <div class="col-lg-4">
+        <div class="about-team-card">
+          <img src="/images/about/team-jamestang.jpg" alt="James Tang" class="about-team-photo">
+          <h4 class="about-team-name" th:text="#{about-team-cap13}">James Tang</h4>
+          <div class="about-team-role">
+          	<span th:text="#{about-team-cap14}">Full-Stack Architect &amp; AI Product Builder</span><br>
+          	<span th:text="#{about-team-cap15}">Master of CS, Fairleigh Dickinson University</span>
+       	  </div>
+          <div class="about-team-bio">
+            <p th:text="#{about-team-cap16}">
+              James Tang is a full-stack architect and AI-focused product builder with more than 20 years of experience
+              transforming complex ideas into scalable, high-performance software systems.
+            </p>
+            <p th:text="#{about-team-cap17}">
+              He has led engineering teams for global enterprise products and built AI-powered mobile and web applications
+              from concept to launch. His expertise spans distributed systems, cloud-native development (AWS, GCP, Azure),
+              and large-scale data platforms, including contributions to MPP databases and enterprise backup systems used worldwide.
+            </p>
+            <p th:text="#{about-team-cap18}">
+              James believes that exceptional software is built on strong fundamentals, clean architecture,
+              and disciplined execution. He is equally passionate about mentoring teams and fostering technical excellence.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="about-believe">
+  <div class="container-xxl">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+
+        <h2 class="about-believe-title" th:text="#{about-believe-cap1}">
+          Our Belief
+        </h2>
+
+        <p class="about-believe-lead" th:text="#{about-believe-cap2}">
+          At GeniusParentingAI, our belief is simple:
+        </p>
+
+        <p class="about-believe-lead" th:text="#{about-believe-cap3}">
+          When parents are supported — not judged — children thrive.
+        </p>
+
+        <p class="about-believe-lead" th:text="#{about-believe-cap4}">
+          When children thrive, families and society benefit.
+        </p>
+
+        <div style="margin-top:40px;">
+          <p class="about-believe-text" th:text="#{about-believe-cap5}">
+            GeniusParentingAI exists to help parents build strong foundational knowledge, avoid common pitfalls, and make thoughtful, informed decisions that support their children’s long-term well-being.
+          </p>
+
+          <p class="about-believe-text" th:text="#{about-believe-cap6}">
+            By combining educational expertise, technological innovation, and real-life parenting insight, our platform aims to benefit families, educators, practitioners, and institutions — while also supporting research, communication, and collaboration across the broader child and family well-being community.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
 
 <!-- Section Stage -->
+<!-- 
   <section class="about-stages">
     <div class="container-xxl">
       <h3 class="about-stages-title" th:text="#{about-caption-60}">For every parent, at every stage</h3>
@@ -587,7 +854,22 @@
       </div>
     </div>
   </section>
-  
+ -->  
+<section class="about-academic">
+  <div class="container-xxl">
+    <div class="row justify-content-center">
+      <div class="col-lg-8 text-center">
+        <h3 class="about-academic-title" th:text="#{about-academic-cap1}">Academic Guidance & Support</h3>
+        <p class="about-academic-text" th:text="#{about-academic-cap2}">
+          We extend our sincere gratitude to the teachers and graduate students of the Master of Educational Technology program at the University of British Columbia for their continued guidance and valuable contributions.
+        </p>
+        <p class="about-academic-text" th:text="#{about-academic-cap3}">
+          Their expertise and support have played an important role in shaping GeniusParentingAI into a more professional, innovative, and impactful platform.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
   
   <!-- CONTACT US (bottom) -->
   <section class="about-contact-us">
