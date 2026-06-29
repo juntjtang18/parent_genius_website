@@ -19,8 +19,32 @@
 
         <!-- Center menu -->
         <ul class="navbar-nav mx-auto gp-menu">
-          <li class="nav-item">
-            <a class="nav-link" href="/vision" th:text="#{navbar_aboutus}">About Us</a>
+          <!-- About Us -->
+          <li class="nav-item dropdown" id="aboutUsDropdown">
+            <a class="nav-link dropdown-toggle"
+               href="#"
+               id="aboutUsDDLink"
+               role="button"
+               data-bs-toggle="dropdown"
+               aria-expanded="false"
+               th:text="#{navbar_aboutus}">About Us</a>
+            <ul class="dropdown-menu gp-cta-menu" aria-labelledby="aboutUsDDLink">
+              <li>
+                <a class="dropdown-item gp-cta-item"
+                   href="/vision"
+                   th:text="#{navbar_aboutus.about}">About Us</a>
+              </li>
+              <li>
+                <a class="dropdown-item gp-cta-item"
+                   href="/faq"
+                   th:text="#{navbar_aboutus.faq}">FAQ</a>
+              </li>
+              <li>
+                <a class="dropdown-item gp-cta-item"
+                   href="/feedback"
+                   th:text="#{navbar_aboutus.feedback}">Feedback</a>
+              </li>
+            </ul>
           </li>
 
           <!-- Segments (renamed from Functions) -->
@@ -79,14 +103,31 @@
 			  </ul>
 			</li>
 		  
-          <!-- FAQ -->
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="faqDropdown" role="button" data-bs-toggle="dropdown"
-               aria-expanded="false" th:text="#{navbar_faq}">FAQ</a>
-            <!-- STYLE ONLY -->
-            <ul class="dropdown-menu gp-cta-menu" aria-labelledby="faqDropdown">
-              <li><a class="dropdown-item gp-cta-item" href="/faq" th:text="#{navbar_faq.caption1}">Parents</a></li>
-              <li><a class="dropdown-item gp-cta-item" href="/feedback" th:text="#{navbar_faq.caption2}">Feedback</a></li>
+          <!-- Courses -->
+          <li class="nav-item dropdown" id="coursesDropdown">
+            <a class="nav-link dropdown-toggle"
+               href="#"
+               id="coursesDDLink"
+               role="button"
+               data-bs-toggle="dropdown"
+               aria-expanded="false"
+               th:text="#{navbar_courses}">Courses</a>
+            <ul class="dropdown-menu gp-cta-menu" aria-labelledby="coursesDDLink">
+              <li>
+                <a class="dropdown-item gp-cta-item"
+                   href="/courses/foundation"
+                   th:text="#{navbar_courses.foundation}">Foundation Courses</a>
+              </li>
+              <li>
+                <a class="dropdown-item gp-cta-item"
+                   href="/courses/membership-only"
+                   th:text="#{navbar_courses.membership}">Membership Only</a>
+              </li>
+              <li>
+                <a class="dropdown-item gp-cta-item"
+                   href="/courses/parenting-tools"
+                   th:text="#{navbar_courses.parenting_tools}">Parenting Tools</a>
+              </li>
             </ul>
           </li>
 
