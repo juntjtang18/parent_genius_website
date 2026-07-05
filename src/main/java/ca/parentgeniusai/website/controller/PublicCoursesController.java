@@ -23,51 +23,32 @@ public class PublicCoursesController {
     }
 
     @GetMapping("/courses/foundation")
-    public String foundationCourses(Model model, org.springframework.security.core.Authentication authentication) {
-        return renderCategory(model, "foundation", "navbar_courses.foundation", authentication);
+    public String foundationCourses(Model model) {
+        return renderCategory(model, "foundation", "navbar_courses.foundation");
     }
 
     @GetMapping("/courses/membership-only")
-    public String membershipCourses(Model model, org.springframework.security.core.Authentication authentication) {
-        return renderCategory(model, "membership-only", "navbar_courses.membership", authentication);
+    public String membershipCourses(Model model) {
+        return renderCategory(model, "membership-only", "navbar_courses.membership");
     }
 
     @GetMapping("/courses/parenting-tools")
-    public String parentingToolsCourses(Model model, org.springframework.security.core.Authentication authentication) {
-        return renderCategory(model, "parenting-tools", "navbar_courses.parenting_tools", authentication);
+    public String parentingToolsCourses(Model model) {
+        return renderCategory(model, "parenting-tools", "navbar_courses.parenting_tools");
     }
 
     @GetMapping("/courses/{courseId:\\d+}")
-    public String publicCourseDetail(
-            @org.springframework.web.bind.annotation.PathVariable Long courseId,
-            Model model,
-            org.springframework.security.core.Authentication authentication) {
-        boolean isStaff = false;
-        if (authentication != null && authentication.getAuthorities() != null) {
-            isStaff = authentication.getAuthorities().stream().anyMatch(a ->
-                    "ROLE_ADMIN".equals(a.getAuthority()) || "ROLE_EDITOR".equals(a.getAuthority()));
-        }
+    public String publicCourseDetail(@org.springframework.web.bind.annotation.PathVariable Long courseId, Model model) {
         model.addAttribute("courseId", courseId);
-        model.addAttribute("isStaff", isStaff);
         model.addAttribute("strapiApiUrl", strapiApiUrl);
         model.addAttribute("strapiRootUrl", strapiRootUrl);
         model.addAttribute("strapiToken", strapiToken);
         return "courses/detail";
     }
 
-    private String renderCategory(
-            Model model,
-            String categorySlug,
-            String titleMessageKey,
-            org.springframework.security.core.Authentication authentication) {
-        boolean isStaff = false;
-        if (authentication != null && authentication.getAuthorities() != null) {
-            isStaff = authentication.getAuthorities().stream().anyMatch(a ->
-                    "ROLE_ADMIN".equals(a.getAuthority()) || "ROLE_EDITOR".equals(a.getAuthority()));
-        }
+    private String renderCategory(Model model, String categorySlug, String titleMessageKey) {
         model.addAttribute("categorySlug", categorySlug);
         model.addAttribute("titleMessageKey", titleMessageKey);
-        model.addAttribute("isStaff", isStaff);
         model.addAttribute("strapiApiUrl", strapiApiUrl);
         model.addAttribute("strapiRootUrl", strapiRootUrl);
         model.addAttribute("strapiToken", strapiToken);

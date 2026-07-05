@@ -167,8 +167,7 @@
                       data-strapi-token=${strapiToken},
                       data-strapi-root-url=${strapiRootUrl},
                       data-category-slug=${categorySlug},
-                      data-locale=${#locale},
-                      data-is-staff=${isStaff}"></div>
+                      data-locale=${#locale}"></div>
     </div>
 
     <div class="modal fade" id="membershipLockModal" tabindex="-1" aria-labelledby="membershipLockModalLabel" aria-hidden="true">
@@ -199,7 +198,7 @@
         const strapiRootUrl = config.strapiRootUrl || '';
         const categorySlug = config.categorySlug || 'foundation';
         const locale = (config.locale || 'en').toString().replace('_', '-');
-        const isStaff = String(config.isStaff || 'false').toLowerCase() === 'true';
+        let hasPaidPlan = false;
 
         const categoryKeywordMap = {
             foundation: 'foundation',
@@ -263,12 +262,44 @@
                 course?.attributes?.coursecategory?.data?.attributes?.name ||
                 ''
             ).toLowerCase().trim();
+            const title = (course?.attributes?.title || '').toLowerCase();
             return (
                 categoryName === 'membership only' ||
                 categoryName.includes('membership') ||
                 categoryName.includes('member') ||
-                categoryName.includes('会员')
+                categoryName.includes('会员') ||
+                title.includes('membership only') ||
+                title.includes('membership')
             );
+        }
+
+        function getEntitlement(source, key) {
+            const list = Array.isArray(source) ? source : (source && Array.isArray(source.entitlements) ? source.entitlements : []);
+            return list.find((entitlement) => entitlement && entitlement.key === key) || null;
+        }
+
+        function isEntitlementValueEnabled(value) {
+            if (typeof value === 'boolean') return value;
+            if (typeof value === 'number') return value > 0;
+            if (typeof value === 'string') return value.length > 0 && value.toLowerCase() !== 'false';
+            return false;
+        }
+
+        function hasEntitlement(source, key) {
+            const entitlement = getEntitlement(source, key);
+            return isEntitlementValueEnabled(entitlement ? entitlement.value : undefined);
+        }
+
+        async function loadEntitlements() {
+            try {
+                const response = await fetch('/api/subscription/entitlements', {
+                    credentials: 'same-origin'
+                });
+                if (!response.ok) return null;
+                return await response.json();
+            } catch (e) {
+                return null;
+            }
         }
 
         function renderCourses(courses) {
@@ -278,7 +309,7 @@
                 const icon = attr.icon_image?.data?.attributes;
                 const imageUrl = icon?.formats?.medium?.url || icon?.formats?.small?.url || icon?.url || '';
                 const title = translatedTitle(course);
-                const isLocked = !isStaff && isMembershipOnlyCourse(course);
+                const isLocked = isMembershipOnlyCourse(course) && !hasPaidPlan;
 
                 const col = document.createElement('div');
                 col.className = 'col-12 col-md-6';
@@ -346,6 +377,9 @@
 
         async function loadCourses() {
             try {
+                const entitlements = await loadEntitlements();
+                hasPaidPlan = hasEntitlement(entitlements, 'courses.premium');
+
                 const categoryId = await fetchCategoryId();
                 if (!categoryId) {
                     setState('empty');
