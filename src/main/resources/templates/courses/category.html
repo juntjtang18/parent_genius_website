@@ -68,6 +68,7 @@
             justify-content: center;
             overflow: hidden;
             padding: 0;
+            position: relative;
         }
 
         .course-card-image {
@@ -117,6 +118,23 @@
             cursor: default;
             flex-shrink: 0;
         }
+        .course-lock-badge {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            width: 36px;
+            height: 36px;
+            border-radius: 18px;
+            background: rgba(238, 244, 255, 0.92);
+            color: #2563eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+        .course-card-link.is-locked {
+            cursor: pointer;
+        }
 
         .course-state {
             text-align: center;
@@ -149,7 +167,26 @@
                       data-strapi-token=${strapiToken},
                       data-strapi-root-url=${strapiRootUrl},
                       data-category-slug=${categorySlug},
-                      data-locale=${#locale}"></div>
+                      data-locale=${#locale},
+                      data-is-staff=${isStaff}"></div>
+    </div>
+
+    <div class="modal fade" id="membershipLockModal" tabindex="-1" aria-labelledby="membershipLockModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 id="membershipLockModalLabel" class="modal-title">Membership Required</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    This is a membership-only course. Become a member to unlock full access.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <a id="membershipLockModalCta" href="/membership" class="btn btn-primary">Become a Member</a>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div th:replace="~{fragments/footer :: footer}"></div>
@@ -162,6 +199,7 @@
         const strapiRootUrl = config.strapiRootUrl || '';
         const categorySlug = config.categorySlug || 'foundation';
         const locale = (config.locale || 'en').toString().replace('_', '-');
+        const isStaff = String(config.isStaff || 'false').toLowerCase() === 'true';
 
         const categoryKeywordMap = {
             foundation: 'foundation',
@@ -173,6 +211,9 @@
         const errorEl = document.getElementById('course-error');
         const emptyEl = document.getElementById('course-empty');
         const listEl = document.getElementById('course-list');
+        const lockModalEl = document.getElementById('membershipLockModal');
+        const lockModalCtaEl = document.getElementById('membershipLockModalCta');
+        let lockModal = null;
 
         function normalizeApiBase(url) {
             return (url || '').replace(/\/+$/, '');
@@ -217,6 +258,19 @@
             return matched?.attributes?.title || base;
         }
 
+        function isMembershipOnlyCourse(course) {
+            const categoryName = (
+                course?.attributes?.coursecategory?.data?.attributes?.name ||
+                ''
+            ).toLowerCase().trim();
+            return (
+                categoryName === 'membership only' ||
+                categoryName.includes('membership') ||
+                categoryName.includes('member') ||
+                categoryName.includes('会员')
+            );
+        }
+
         function renderCourses(courses) {
             listEl.innerHTML = '';
             courses.forEach((course) => {
@@ -224,13 +278,18 @@
                 const icon = attr.icon_image?.data?.attributes;
                 const imageUrl = icon?.formats?.medium?.url || icon?.formats?.small?.url || icon?.url || '';
                 const title = translatedTitle(course);
+                const isLocked = !isStaff && isMembershipOnlyCourse(course);
 
                 const col = document.createElement('div');
                 col.className = 'col-12 col-md-6';
                 col.innerHTML = `
-                    <a href="/courses/${course.id}" class="course-card-link">
+                    <a href="/courses/${course.id}?fromCategory=${encodeURIComponent(categorySlug)}"
+                       class="course-card-link ${isLocked ? 'is-locked' : ''}"
+                       data-course-id="${course.id}"
+                       data-locked="${isLocked ? 'true' : 'false'}">
                         <article class="course-card-item">
                             <div class="course-card-image-frame">
+                                ${isLocked ? '<span class="course-lock-badge" aria-hidden="true"><i class="fa-solid fa-lock"></i></span>' : ''}
                                 ${imageUrl
                                     ? `<img class="course-card-image" src="${fullAssetUrl(imageUrl)}" alt="${title.replace(/"/g, '&quot;')}" loading="lazy">`
                                     : '<i class="fa-regular fa-image course-card-placeholder"></i>'}
@@ -268,6 +327,7 @@
         async function fetchCoursesForCategory(categoryId) {
             const params = new URLSearchParams();
             params.set('populate[icon_image][populate]', 'formats');
+            params.set('populate[coursecategory][populate]', '*');
             params.set('populate[localizations][fields][0]', 'title');
             params.set('populate[localizations][fields][1]', 'locale');
             params.set('sort[0]', 'order:asc');
@@ -305,6 +365,22 @@
         }
 
         document.addEventListener('DOMContentLoaded', loadCourses);
+        listEl.addEventListener('click', (event) => {
+            const link = event.target.closest('.course-card-link');
+            if (!link) return;
+            if (link.getAttribute('data-locked') !== 'true') return;
+            event.preventDefault();
+            const targetHref = link.getAttribute('href') || '/courses/foundation';
+            lockModalCtaEl.href = '/membership?fromCourse=' + encodeURIComponent(targetHref);
+            if (!lockModal && lockModalEl && window.bootstrap && window.bootstrap.Modal) {
+                lockModal = new window.bootstrap.Modal(lockModalEl);
+            }
+            if (lockModal) {
+                lockModal.show();
+            } else {
+                window.location.href = lockModalCtaEl.href;
+            }
+        });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>

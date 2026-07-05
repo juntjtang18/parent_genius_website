@@ -39,6 +39,30 @@
             max-height: 360px;
             background: #f1f5f9;
         }
+        .membership-lock {
+            border: 1px solid #dbeafe;
+            border-radius: 12px;
+            background: #f8fbff;
+            padding: 1.25rem;
+            text-align: center;
+            color: #1e3a8a;
+            margin-bottom: 1rem;
+        }
+        .membership-lock h2 {
+            font-family: "Poppins", sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .membership-lock p {
+            margin-bottom: 1rem;
+        }
+        .membership-lock .btn {
+            font-weight: 600;
+            border-radius: 999px;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
         .course-content {
             display: flex;
             flex-direction: column;
@@ -112,7 +136,7 @@
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <div class="container course-detail-wrap">
-    <a href="/courses/foundation" class="course-back-link"><i class="fa-solid fa-arrow-left"></i> Back to courses</a>
+    <a id="course-back-link" href="/courses/foundation" class="course-back-link"><i class="fa-solid fa-arrow-left"></i> Back to courses</a>
     <h1 id="course-title" class="course-title">Loading...</h1>
 
     <div id="course-loading" class="course-state">
@@ -122,6 +146,11 @@
         <div>Loading course...</div>
     </div>
     <div id="course-error" class="course-state d-none"></div>
+    <section id="membership-lock" class="membership-lock d-none">
+        <h2>Membership Required</h2>
+        <p>This course is available with Membership.</p>
+        <a id="membership-cta" href="/membership" class="btn btn-primary">View Membership</a>
+    </section>
     <img id="course-top-image" class="course-top-image d-none" alt="Course cover"/>
     <section id="course-content" class="course-content d-none"></section>
 
@@ -131,7 +160,8 @@
                   data-strapi-api-url=${strapiApiUrl},
                   data-strapi-token=${strapiToken},
                   data-strapi-root-url=${strapiRootUrl},
-                  data-locale=${#locale}"></div>
+                  data-locale=${#locale},
+                  data-is-staff=${isStaff}"></div>
 </div>
 
 <div th:replace="~{fragments/footer :: footer}"></div>
@@ -144,12 +174,16 @@
     const strapiToken = cfg.strapiToken || '';
     const strapiRootUrl = (cfg.strapiRootUrl || '').replace(/\/+$/, '');
     const locale = (cfg.locale || 'en').toString().replace('_', '-');
+    const isStaff = String(cfg.isStaff || 'false').toLowerCase() === 'true';
 
     const loadingEl = document.getElementById('course-loading');
     const errorEl = document.getElementById('course-error');
     const contentEl = document.getElementById('course-content');
     const titleEl = document.getElementById('course-title');
     const topImageEl = document.getElementById('course-top-image');
+    const lockEl = document.getElementById('membership-lock');
+    const backLinkEl = document.getElementById('course-back-link');
+    const membershipCtaEl = document.getElementById('membership-cta');
 
     function authHeaders() {
         return strapiToken ? { Authorization: strapiToken } : {};
@@ -164,8 +198,30 @@
     function setError(message) {
         loadingEl.classList.add('d-none');
         contentEl.classList.add('d-none');
+        lockEl.classList.add('d-none');
         errorEl.textContent = message;
         errorEl.classList.remove('d-none');
+    }
+
+    function getFromCategory() {
+        const fromCategory = new URLSearchParams(window.location.search).get('fromCategory') || 'foundation';
+        if (fromCategory === 'membership-only' || fromCategory === 'parenting-tools' || fromCategory === 'foundation') {
+            return fromCategory;
+        }
+        return 'foundation';
+    }
+
+    function isMembershipOnly(course) {
+        const categoryName = (
+            course?.attributes?.coursecategory?.data?.attributes?.name ||
+            ''
+        ).toLowerCase().trim();
+        return (
+            categoryName === 'membership only' ||
+            categoryName.includes('membership') ||
+            categoryName.includes('member') ||
+            categoryName.includes('会员')
+        );
     }
 
     function escapeHtml(raw) {
@@ -341,6 +397,7 @@
             const params = new URLSearchParams();
             params.set('populate[content][populate]', 'image_file,video_file,thumbnail');
             params.set('populate[icon_image][populate]', 'formats');
+            params.set('populate[coursecategory][populate]', '*');
             params.set('populate[localizations][fields][0]', 'title');
             params.set('populate[localizations][fields][1]', 'locale');
             params.set('locale', 'en');
@@ -354,7 +411,19 @@
             if (!body?.data?.attributes) throw new Error('Course not found.');
 
             const course = body.data;
+            const fromCategory = getFromCategory();
+            backLinkEl.href = '/courses/' + fromCategory;
+            membershipCtaEl.href = '/membership?fromCourse=' + encodeURIComponent('/courses/' + courseId + '?fromCategory=' + fromCategory);
             titleEl.textContent = extractLocalizedTitle(course);
+
+            if (isMembershipOnly(course) && !isStaff) {
+                loadingEl.classList.add('d-none');
+                contentEl.classList.add('d-none');
+                topImageEl.classList.add('d-none');
+                lockEl.classList.remove('d-none');
+                return;
+            }
+
             const cover = course.attributes.icon_image?.data?.attributes;
             const coverUrl = cover?.formats?.large?.url || cover?.formats?.medium?.url || cover?.url || '';
             if (coverUrl) {
@@ -364,6 +433,7 @@
 
             renderContent(course.attributes.content || []);
             loadingEl.classList.add('d-none');
+            lockEl.classList.add('d-none');
             contentEl.classList.remove('d-none');
         } catch (e) {
             console.error(e);
@@ -376,4 +446,3 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
