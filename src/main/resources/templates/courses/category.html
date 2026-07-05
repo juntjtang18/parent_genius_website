@@ -4,23 +4,308 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="#{${titleMessageKey}}">Courses - GeniusParentingAI</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <link th:href="@{/css/style.css}" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700;800&display=swap" rel="stylesheet"/>
+    <style>
+        :root {
+            --course-bg: #eef4ff;
+            --course-accent: #2563eb;
+            --course-card-shadow: 0 6px 18px rgba(17, 24, 39, 0.1);
+        }
+
+        .public-courses-wrap {
+            max-width: 980px;
+            margin: 0 auto;
+            padding-top: 6.5rem;
+            padding-bottom: 3rem;
+        }
+
+        .course-hero-title {
+            font-family: "Poppins", sans-serif;
+            font-weight: 800;
+            font-size: clamp(1.7rem, 3vw, 2.3rem);
+            line-height: 1.2;
+            margin-bottom: 0.4rem;
+            color: #0f172a;
+            text-align: center;
+        }
+
+        .course-hero-subtitle {
+            font-family: "Poppins", sans-serif;
+            font-weight: 500;
+            color: #475569;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        #course-list {
+            min-height: 180px;
+        }
+
+        .course-card-item {
+            background: var(--course-bg);
+            border-radius: 14px;
+            box-shadow: var(--course-card-shadow);
+            overflow: hidden;
+            height: 250px;
+            display: flex;
+            flex-direction: column;
+        }
+        .course-card-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .course-card-image-frame {
+            height: 175px;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            padding: 0;
+        }
+
+        .course-card-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .course-card-placeholder {
+            color: #9ca3af;
+            font-size: 1.8rem;
+        }
+
+        .course-card-footer {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            flex: 1;
+        }
+
+        .course-card-title {
+            font-family: "Poppins", sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            line-height: 1.3rem;
+            color: var(--course-accent);
+            margin: 0;
+            flex: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .course-play-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 999px;
+            border: 0;
+            background: var(--course-accent);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: default;
+            flex-shrink: 0;
+        }
+
+        .course-state {
+            text-align: center;
+            padding: 2rem 0;
+            color: #64748b;
+        }
+    </style>
 </head>
 <body>
     <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-    <div class="container my-5" style="padding-top: 5rem;">
-        <h1 class="text-center mb-4" th:text="#{${titleMessageKey}}">Courses</h1>
-        <p class="text-center text-muted mb-4" th:text="#{courses.category.coming_soon}">
+    <div class="container public-courses-wrap">
+        <h1 class="course-hero-title" th:text="#{${titleMessageKey}}">Courses</h1>
+        <p class="course-hero-subtitle" th:text="#{courses.category.coming_soon}">
             Course listings will appear here soon.
         </p>
-        <div id="course-list" class="row g-4" th:attr="data-category-slug=${categorySlug}"></div>
+
+        <div id="course-loading" class="course-state">
+            <div class="spinner-border text-primary mb-2" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <div>Loading courses...</div>
+        </div>
+        <div id="course-error" class="course-state d-none"></div>
+        <div id="course-empty" class="course-state d-none">No courses in this category.</div>
+        <div id="course-list" class="row g-4 d-none" th:attr="data-category-slug=${categorySlug}"></div>
+        <div id="course-config"
+             class="d-none"
+             th:attr="data-strapi-api-url=${strapiApiUrl},
+                      data-strapi-token=${strapiToken},
+                      data-strapi-root-url=${strapiRootUrl},
+                      data-category-slug=${categorySlug},
+                      data-locale=${#locale}"></div>
     </div>
 
     <div th:replace="~{fragments/footer :: footer}"></div>
 
+    <script>
+        const configEl = document.getElementById('course-config');
+        const config = configEl ? configEl.dataset : {};
+        const strapiApiUrl = config.strapiApiUrl || '';
+        const strapiToken = config.strapiToken || '';
+        const strapiRootUrl = config.strapiRootUrl || '';
+        const categorySlug = config.categorySlug || 'foundation';
+        const locale = (config.locale || 'en').toString().replace('_', '-');
+
+        const categoryKeywordMap = {
+            foundation: 'foundation',
+            'membership-only': 'membership',
+            'parenting-tools': 'tool'
+        };
+
+        const loadingEl = document.getElementById('course-loading');
+        const errorEl = document.getElementById('course-error');
+        const emptyEl = document.getElementById('course-empty');
+        const listEl = document.getElementById('course-list');
+
+        function normalizeApiBase(url) {
+            return (url || '').replace(/\/+$/, '');
+        }
+
+        function fullAssetUrl(path) {
+            if (!path) return '';
+            if (path.startsWith('http://') || path.startsWith('https://')) return path;
+            const root = (strapiRootUrl || '').replace(/\/+$/, '');
+            return root ? `${root}${path.startsWith('/') ? path : `/${path}`}` : path;
+        }
+
+        function authHeaders() {
+            return strapiToken ? { Authorization: strapiToken } : {};
+        }
+
+        function setState(state, message) {
+            loadingEl.classList.add('d-none');
+            errorEl.classList.add('d-none');
+            emptyEl.classList.add('d-none');
+            listEl.classList.add('d-none');
+            if (state === 'error') {
+                errorEl.textContent = message || 'Could not load courses.';
+                errorEl.classList.remove('d-none');
+                return;
+            }
+            if (state === 'empty') {
+                emptyEl.classList.remove('d-none');
+                return;
+            }
+            listEl.classList.remove('d-none');
+        }
+
+        function translatedTitle(course) {
+            const base = course?.attributes?.title || 'Untitled';
+            const localizations = course?.attributes?.localizations?.data || [];
+            const targetLocale = locale.toLowerCase();
+            const matched = localizations.find((item) => {
+                const loc = (item?.attributes?.locale || '').toLowerCase();
+                return loc === targetLocale || loc === targetLocale.split('-')[0];
+            });
+            return matched?.attributes?.title || base;
+        }
+
+        function renderCourses(courses) {
+            listEl.innerHTML = '';
+            courses.forEach((course) => {
+                const attr = course.attributes || {};
+                const icon = attr.icon_image?.data?.attributes;
+                const imageUrl = icon?.formats?.medium?.url || icon?.formats?.small?.url || icon?.url || '';
+                const title = translatedTitle(course);
+
+                const col = document.createElement('div');
+                col.className = 'col-12 col-md-6';
+                col.innerHTML = `
+                    <a href="/courses/${course.id}" class="course-card-link">
+                        <article class="course-card-item">
+                            <div class="course-card-image-frame">
+                                ${imageUrl
+                                    ? `<img class="course-card-image" src="${fullAssetUrl(imageUrl)}" alt="${title.replace(/"/g, '&quot;')}" loading="lazy">`
+                                    : '<i class="fa-regular fa-image course-card-placeholder"></i>'}
+                            </div>
+                            <div class="course-card-footer">
+                                <p class="course-card-title">${title}</p>
+                                <span class="course-play-btn" aria-hidden="true">
+                                    <i class="fa-solid fa-play"></i>
+                                </span>
+                            </div>
+                        </article>
+                    </a>
+                `;
+                listEl.appendChild(col);
+            });
+        }
+
+        async function fetchCategoryId() {
+            const keyword = encodeURIComponent(categoryKeywordMap[categorySlug] || categorySlug);
+            const url = `${normalizeApiBase(strapiApiUrl)}/coursecategories?pagination[pageSize]=100&sort=order:asc&sort=name:asc&locale=${encodeURIComponent(locale)}`;
+            const response = await fetch(url, { headers: authHeaders() });
+            if (!response.ok) throw new Error(`Category request failed (${response.status})`);
+            const body = await response.json();
+            const categories = body?.data || [];
+
+            const matched = categories.find((item) => {
+                const n = (item?.attributes?.name || '').toLowerCase();
+                const k = decodeURIComponent(keyword).toLowerCase();
+                return n.includes(k);
+            });
+            if (!matched?.id) return null;
+            return matched.id;
+        }
+
+        async function fetchCoursesForCategory(categoryId) {
+            const params = new URLSearchParams();
+            params.set('populate[icon_image][populate]', 'formats');
+            params.set('populate[localizations][fields][0]', 'title');
+            params.set('populate[localizations][fields][1]', 'locale');
+            params.set('sort[0]', 'order:asc');
+            params.set('sort[1]', 'title:asc');
+            params.set('pagination[pageSize]', '100');
+            params.set('filters[coursecategory][id][$eq]', String(categoryId));
+            params.set('locale', 'en');
+            params.set('populate[localizations][filters][locale][$eq]', locale);
+
+            const url = `${normalizeApiBase(strapiApiUrl)}/courses?${params.toString()}`;
+            const response = await fetch(url, { headers: authHeaders() });
+            if (!response.ok) throw new Error(`Course request failed (${response.status})`);
+            const body = await response.json();
+            return body?.data || [];
+        }
+
+        async function loadCourses() {
+            try {
+                const categoryId = await fetchCategoryId();
+                if (!categoryId) {
+                    setState('empty');
+                    return;
+                }
+                const courses = await fetchCoursesForCategory(categoryId);
+                if (!courses.length) {
+                    setState('empty');
+                    return;
+                }
+                renderCourses(courses);
+                setState('ready');
+            } catch (error) {
+                console.error('Failed to load category courses:', error);
+                setState('error', 'Could not load courses for this category.');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadCourses);
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
