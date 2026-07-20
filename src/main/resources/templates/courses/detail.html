@@ -127,6 +127,37 @@
             line-height: 1.55;
             margin: 0;
         }
+        .content-text-block {
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+        }
+        .content-speech-button {
+            align-self: flex-end;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border: 0;
+            border-radius: 999px;
+            background: #eff6ff;
+            color: #2563eb;
+            font-size: 1.15rem;
+            transition: background-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+        }
+        .content-speech-button:hover {
+            background: #dbeafe;
+            transform: scale(1.05);
+        }
+        .content-speech-button.is-speaking {
+            background: #2563eb;
+            color: #ffffff;
+        }
+        .content-speech-button:focus-visible {
+            outline: 3px solid rgba(37, 99, 235, 0.3);
+            outline-offset: 2px;
+        }
         .content-image {
             width: 100%;
             border-radius: 10px;
@@ -229,6 +260,9 @@
                   data-next-page-label=#{course.detail.next_page},
                   data-page-status-pattern=#{course.detail.page_status},
                   data-no-content-message=#{course.detail.no_content},
+                  data-read-aloud-label=#{course.detail.read_aloud},
+                  data-stop-reading-label=#{course.detail.stop_reading},
+                  data-speech-unsupported-message=#{course.detail.speech_unsupported},
                   data-locale=${#locale}"></div>
 </div>
 
@@ -246,10 +280,16 @@
     const nextPageLabel = cfg.nextPageLabel || 'Next page';
     const pageStatusPattern = cfg.pageStatusPattern || 'Page {0} of {1}';
     const noContentMessage = cfg.noContentMessage || 'No content for this course.';
+    const readAloudLabel = cfg.readAloudLabel || 'Read text aloud';
+    const stopReadingLabel = cfg.stopReadingLabel || 'Stop reading';
+    const speechUnsupportedMessage = cfg.speechUnsupportedMessage || 'Text-to-speech is not supported by this browser.';
+    const speechSupported = 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
     let hasPaidPlan = false;
     let courseContent = [];
     let coursePages = [];
     let currentPageIndex = 0;
+    let activeSpeechButton = null;
+    let activeUtterance = null;
 
     const loadingEl = document.getElementById('course-loading');
     const errorEl = document.getElementById('course-error');
@@ -380,17 +420,97 @@
         return ['left', 'center', 'right', 'justify'].includes(align) ? align : 'left';
     }
 
+    function getSpeechLanguage() {
+        const language = locale.toLowerCase().split('-')[0];
+        const languageMap = {
+            bn: 'bn-BD',
+            de: 'de-DE',
+            en: 'en-US',
+            es: 'es-ES',
+            fr: 'fr-FR',
+            hi: 'hi-IN',
+            ja: 'ja-JP',
+            ko: 'ko-KR',
+            si: 'si-LK',
+            zh: 'zh-CN'
+        };
+        return languageMap[language] || locale || 'en-US';
+    }
+
+    function setSpeechButtonState(button, isSpeaking) {
+        if (!button) return;
+        const label = isSpeaking ? stopReadingLabel : readAloudLabel;
+        button.classList.toggle('is-speaking', isSpeaking);
+        button.setAttribute('aria-label', label);
+        button.setAttribute('title', label);
+        button.innerHTML = isSpeaking
+            ? '<i class="fa-solid fa-circle-stop" aria-hidden="true"></i>'
+            : '<i class="fa-solid fa-volume-high" aria-hidden="true"></i>';
+    }
+
+    function stopSpeech() {
+        const button = activeSpeechButton;
+        activeSpeechButton = null;
+        activeUtterance = null;
+        if (speechSupported) {
+            window.speechSynthesis.cancel();
+        }
+        setSpeechButtonState(button, false);
+    }
+
+    function finishSpeech(utterance) {
+        if (activeUtterance !== utterance) return;
+        const button = activeSpeechButton;
+        activeSpeechButton = null;
+        activeUtterance = null;
+        setSpeechButtonState(button, false);
+    }
+
+    function toggleSpeech(button, text) {
+        if (!speechSupported) {
+            window.alert(speechUnsupportedMessage);
+            return;
+        }
+        if (activeSpeechButton === button) {
+            stopSpeech();
+            return;
+        }
+
+        stopSpeech();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = getSpeechLanguage();
+        utterance.rate = 1;
+        utterance.onend = () => finishSpeech(utterance);
+        utterance.onerror = () => finishSpeech(utterance);
+        activeSpeechButton = button;
+        activeUtterance = utterance;
+        setSpeechButtonState(button, true);
+        window.speechSynthesis.speak(utterance);
+    }
+
     function renderTextComponent(item) {
+        const text = item.data || '';
+        if (!text) return;
+        const block = document.createElement('div');
+        block.className = 'content-text-block';
         const p = document.createElement('p');
         p.className = 'content-text';
         const style = item.style || item.styles || {};
-        p.textContent = item.data || '';
+        p.textContent = text;
         p.style.fontSize = ((style.fontSize || 17) + 'px');
         p.style.color = style.fontColor || '#0f172a';
         p.style.fontWeight = style.isBold ? '700' : '400';
         p.style.fontStyle = style.isItalic ? 'italic' : 'normal';
         p.style.textAlign = textAlignFrom(style);
-        contentEl.appendChild(p);
+        block.appendChild(p);
+
+        const speechButton = document.createElement('button');
+        speechButton.className = 'content-speech-button';
+        speechButton.type = 'button';
+        setSpeechButtonState(speechButton, false);
+        speechButton.addEventListener('click', () => toggleSpeech(speechButton, text));
+        block.appendChild(speechButton);
+        contentEl.appendChild(block);
     }
 
     function renderImageComponent(item) {
@@ -557,6 +677,7 @@
     }
 
     function renderCurrentPage(shouldScroll) {
+        stopSpeech();
         if (!coursePages.length) {
             contentEl.innerHTML = '';
             contentEl.classList.add('d-none');
@@ -650,6 +771,7 @@
 
     previousPageEl.addEventListener('click', () => changePage(-1));
     nextPageEl.addEventListener('click', () => changePage(1));
+    window.addEventListener('beforeunload', stopSpeech);
     document.addEventListener('DOMContentLoaded', loadCourse);
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
