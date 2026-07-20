@@ -23,16 +23,22 @@ if [ ! -f "$VERSION_FILE" ]; then
   echo "Info: '$VERSION_FILE' not found. Creating it with initial version 1.0."
   VERSION="1.0"
 else
-  # Read the current version string.
-  CURRENT_VERSION=$(cat "$VERSION_FILE")
-  
-  # Parse the MAJOR and MINOR parts of the version.
-  MAJOR_VERSION=$(echo "$CURRENT_VERSION" | cut -d'.' -f1)
-  MINOR_VERSION=$(echo "$CURRENT_VERSION" | cut -d'.' -f2)
-  
+  # Read and normalize current version (trim spaces/newlines/CR).
+  CURRENT_VERSION=$(tr -d '\r' < "$VERSION_FILE" | xargs)
+
+  # Accept only MAJOR.MINOR numeric format. Recover safely if malformed.
+  if [[ ! "$CURRENT_VERSION" =~ ^[0-9]+\.[0-9]+$ ]]; then
+    echo "Warning: invalid version '$CURRENT_VERSION' in '$VERSION_FILE'. Resetting to 1.0."
+    CURRENT_VERSION="1.0"
+  fi
+
+  # Parse MAJOR and MINOR parts.
+  MAJOR_VERSION=${CURRENT_VERSION%%.*}
+  MINOR_VERSION=${CURRENT_VERSION##*.}
+
   # Increment the MINOR version.
   NEW_MINOR_VERSION=$((MINOR_VERSION + 1))
-  
+
   # Combine to create the new version string.
   VERSION="${MAJOR_VERSION}.${NEW_MINOR_VERSION}"
 fi
@@ -44,6 +50,7 @@ echo "$VERSION" > "$VERSION_FILE"
 # --- Image Name ---
 # Construct the full image name with the dynamic version tag.
 IMAGE_NAME="gcr.io/${PROJECT_ID}/${SERVICE_NAME}:${VERSION}"
+REVISION_SUFFIX="v${VERSION//./-}-$(date +%m%d%H%M%S)"
 
 # --- Deployment Steps ---
 
@@ -64,7 +71,7 @@ gcloud run deploy "${SERVICE_NAME}" \
   --platform "managed" \
   --region "${REGION}" \
   --allow-unauthenticated \
-  --revision-suffix "v${VERSION//./-}" \
+  --revision-suffix "${REVISION_SUFFIX}" \
   --set-env-vars SPRING_PROFILES_ACTIVE=run
 
 

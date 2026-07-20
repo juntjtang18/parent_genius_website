@@ -55,6 +55,9 @@ public class LoginController {
     @GetMapping("/signin")
     public String signin(Model model, @RequestParam(value = "error", required = false) String error, HttpServletRequest request) {
         logger.info("Endpoint /signin triggered.");
+        if ("unauthenticated".equals(error)) {
+            return "redirect:/signin";
+        }
         model.addAttribute("error", error != null);
         String referer = request.getHeader("Referer");
         model.addAttribute("referer", referer != null && !referer.contains("/signin") ? referer : "/");

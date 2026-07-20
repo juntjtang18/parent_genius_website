@@ -1,6 +1,8 @@
 package ca.parentgeniusai.website.controller;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,18 +25,18 @@ public class PublicCoursesController {
     }
 
     @GetMapping("/courses/foundation")
-    public String foundationCourses(Model model) {
-        return renderCategory(model, "foundation", "navbar_courses.foundation");
+    public String foundationCourses(Model model, HttpServletRequest request) {
+        return renderCategory(model, request, "foundation", "navbar_courses.foundation");
     }
 
     @GetMapping("/courses/membership-only")
-    public String membershipCourses(Model model) {
-        return renderCategory(model, "membership-only", "navbar_courses.membership");
+    public String membershipCourses(Model model, HttpServletRequest request) {
+        return renderCategory(model, request, "membership-only", "navbar_courses.membership");
     }
 
     @GetMapping("/courses/parenting-tools")
-    public String parentingToolsCourses(Model model) {
-        return renderCategory(model, "parenting-tools", "navbar_courses.parenting_tools");
+    public String parentingToolsCourses(Model model, HttpServletRequest request) {
+        return renderCategory(model, request, "parenting-tools", "navbar_courses.parenting_tools");
     }
 
     @GetMapping("/courses/{courseId:\\d+}")
@@ -46,12 +48,15 @@ public class PublicCoursesController {
         return "courses/detail";
     }
 
-    private String renderCategory(Model model, String categorySlug, String titleMessageKey) {
+    private String renderCategory(Model model, HttpServletRequest request, String categorySlug, String titleMessageKey) {
+        HttpSession session = request.getSession(false);
+        String jwt = session != null ? (String) session.getAttribute("STRAPI_JWT") : null;
         model.addAttribute("categorySlug", categorySlug);
         model.addAttribute("titleMessageKey", titleMessageKey);
         model.addAttribute("strapiApiUrl", strapiApiUrl);
         model.addAttribute("strapiRootUrl", strapiRootUrl);
         model.addAttribute("strapiToken", strapiToken);
+        model.addAttribute("userLoggedIn", jwt != null && !jwt.isBlank());
         return "courses/category";
     }
 }

@@ -42,7 +42,7 @@ public class CourseController {
         String jwtToken = getJwtToken(request);
         if (jwtToken == null) {
             logger.error("User not authenticated. Cannot access new-course page.");
-            return "redirect:/signin?error=unauthenticated";
+            return "redirect:/signin";
         }
         model.addAttribute("strapiApiUrl", strapiApiBaseUrl);
         model.addAttribute("strapiToken", "Bearer " + jwtToken);
@@ -56,7 +56,7 @@ public class CourseController {
         String jwtToken = getJwtToken(request);
         if (jwtToken == null) {
             logger.error("User not authenticated. Cannot access edit-course page.");
-            return "redirect:/signin?error=unauthenticated";
+            return "redirect:/signin";
         }
         model.addAttribute("courseId", courseId);
         model.addAttribute("strapiApiUrl", strapiApiBaseUrl);
@@ -72,7 +72,7 @@ public class CourseController {
         String jwtToken = getJwtToken(request);
         if (jwtToken == null) {
             logger.error("User not authenticated. Cannot access course-list page.");
-            return "redirect:/signin?error=unauthenticated";
+            return "redirect:/signin";
         }
         model.addAttribute("strapiApiUrl", strapiApiBaseUrl);
         model.addAttribute("strapiToken", "Bearer " + jwtToken);

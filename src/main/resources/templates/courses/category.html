@@ -167,6 +167,8 @@
                       data-strapi-token=${strapiToken},
                       data-strapi-root-url=${strapiRootUrl},
                       data-category-slug=${categorySlug},
+                      data-user-logged-in=${userLoggedIn},
+                      data-login-required-message=#{courses.login_required},
                       data-locale=${#locale}"></div>
     </div>
 
@@ -197,6 +199,8 @@
         const strapiToken = config.strapiToken || '';
         const strapiRootUrl = config.strapiRootUrl || '';
         const categorySlug = config.categorySlug || 'foundation';
+        const userLoggedIn = config.userLoggedIn === 'true';
+        const loginRequiredMessage = config.loginRequiredMessage || 'Please log in to open the courses.';
         const locale = (config.locale || 'en').toString().replace('_', '-');
         let hasPaidPlan = false;
 
@@ -402,6 +406,12 @@
         listEl.addEventListener('click', (event) => {
             const link = event.target.closest('.course-card-link');
             if (!link) return;
+            if (!userLoggedIn) {
+                event.preventDefault();
+                window.alert(loginRequiredMessage);
+                window.location.href = '/signin';
+                return;
+            }
             if (link.getAttribute('data-locked') !== 'true') return;
             event.preventDefault();
             const targetHref = link.getAttribute('href') || '/courses/foundation';
