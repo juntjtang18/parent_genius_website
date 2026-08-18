@@ -4,12 +4,20 @@
 # This prevents unintended side effects if a command fails.
 set -e
 
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
+
 # --- Configuration ---
 # Centralize your configuration here for easy updates.
 PROJECT_ID="lucid-arch-451211-b0"
 SERVICE_NAME="my-spring-app"
 REGION="us-west1"
 VERSION_FILE="version_number.txt"
+
+# --- Application Build ---
+# Create a fresh, tested JAR before changing the version or deploying anything.
+echo "--- Building latest Spring Boot application ---"
+mvn clean package
 
 # --- Versioning (MAJOR.MINOR) ---
 # This script uses a single file 'version_number.txt' to manage the version.
@@ -56,7 +64,7 @@ REVISION_SUFFIX="v${VERSION//./-}-$(date +%m%d%H%M%S)"
 
 echo "--- Deploying Spring Boot app version: ${VERSION} ---"
 
-# 1. Build and tag the Docker image with the version
+# 1. Build and tag the Docker image with the freshly built JAR
 echo "Building Docker image: ${IMAGE_NAME}"
 docker build -t "${IMAGE_NAME}" .
 
