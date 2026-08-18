@@ -17,8 +17,8 @@
     --gp-ink-900: #111827;
     --gp-ink-600: #374151;
     --gp-ink-500: #6B7280;
-    --grad-hero: linear-gradient(180deg, var(--gp-blue-500) 0%, var(--gp-blue-700) 55%, var(--gp-violet-500) 100%);
-    --grad-cta: linear-gradient(135deg, var(--gp-blue-500) 0%, var(--gp-violet-500) 60%);
+    --grad-hero: linear-gradient(180deg,#3D91FD 0%,#6A84FF 50%,#8977FF 100%);
+    --grad-cta: linear-gradient(180deg,#3D91FD 0%,#6A84FF 50%,#8977FF 100%);
     --grad-btn: linear-gradient(90deg, #2ED3B7 0%, #1EC7E6 100%);
     --shadow-1: 0 12px 28px rgba(15,23,42,.08);
     --shadow-2: 0 16px 34px rgba(59,130,246,.28);
@@ -33,24 +33,29 @@
   .about-cta-btn{ background:var(--grad-btn); color:#fff; border:0; border-radius:9999px; padding:.9rem 2.2rem; font-weight:600; font-size:18pt; box-shadow:var(--shadow-cta); text-decoration:none; }
   .about-cta-btn:hover{ color:#fff; filter:brightness(1.02); }
 
-  .about-hero{ position:relative; overflow:hidden; color:#fff; padding-top:180px}
-  .about-hero::before{ content:""; position:absolute; inset:0; background: var(--grad-hero); z-index:0; }
+  .about-hero{ position:relative; overflow:hidden; color:#fff; padding:160px 0 88px; }
+  .about-hero::before{ content:""; position:absolute; inset:0; background-image: var(--grad-hero); z-index:0; }
   .about-hero .container-xxl{ position:relative; z-index:2; }
-  .about-hero-row{ min-height: clamp(520px, 72vh, 820px); }
+  .about-hero-row{ min-height: clamp(420px, 56vh, 640px); }
   .about-hero-title{ font-weight:600; font-size: 60px; line-height:70px; margin:0 0 12px; }
-  .about-hero-sub{ font-size:30px; line-height: 40px; font-weight:600; max-width: 60ch; color: rgba(255,255,255,.95); padding-bottom: 60px}
-  .about-hero-left{ display:flex; align-items:center; }
-  .about-hero-left-inner{ padding-block:64px; padding-inline: clamp(24px, 5vw, 64px); }
-
-  .about-hero-art {
-    position: absolute;
-    right: 0; top: 0; bottom: 0;
-    width: min(46vw, 860px);
-    display: flex; align-items: stretch; justify-content: flex-end;
-    z-index: 1; pointer-events: none;
+  .about-hero-sub{ font-size:30px; line-height: 40px; font-weight:600; max-width: 60ch; color: rgba(255,255,255,.95); margin:0; }
+  .about-hero-photo-wrap{
+    width: min(420px, 86%);
+    aspect-ratio: 1;
+    margin: 0 auto;
+    border-radius: 50%;
+    padding: 14px;
+    background: radial-gradient(circle, rgba(255,255,255,.55) 0%, rgba(173,216,255,.18) 42%, rgba(255,255,255,0) 72%);
+    box-shadow: 0 0 70px rgba(255,255,255,.28);
   }
-  .about-hero-art-img { height: 100%; width: auto; object-fit: contain; object-position: right center; display:block; }
-  @media (max-width: 991.98px){ .about-hero-art{ display:none; } }
+  .about-hero-photo{
+    width:100%; height:100%; display:block;
+    object-fit: cover; object-position: 82% 28%;
+    border-radius: 50%;
+  }
+  @media (max-width: 991.98px){
+    .about-hero{ padding:120px 0 56px; }
+  }
   
   /*========================
     WHY WE BUILT THIS APP
@@ -142,7 +147,7 @@
     Vision & Mission
   =========================*/
   .about-vm {
-    background: linear-gradient(180deg, var(--gp-blue-500) 0%, var(--gp-violet-500) 100%);
+    background-image: linear-gradient(180deg,#3D91FD 0%,#6A84FF 50%,#8977FF 100%);
     padding-block: clamp(64px, 10vw, 120px);
     color: #fff;
   }
@@ -233,7 +238,7 @@
   .cta-band::before{
     content: "";
     position: absolute; inset: 0;
-    background: linear-gradient(135deg, #3b82f6 0%, #6c6ff7 60%);
+    background-image: linear-gradient(180deg,#3D91FD 0%,#6A84FF 50%,#8977FF 100%);
     z-index: 0;
   }
   .cta-row{ min-height: inherit; }
@@ -346,7 +351,7 @@
    OUR TEAM
 ========================= */
 .about-team{
-  background:#f7f9fb;
+  background:#fff;
   padding-block: clamp(64px, 8vw, 110px);
 }
 
@@ -365,10 +370,10 @@
 }
 
 .about-team-photo{
-  width:180px;
-  height:180px;
+  width:100%;
+  aspect-ratio:1 / 1;
   object-fit:cover;
-  border-radius:50%;
+  border-radius:16px;
   box-shadow: 0 12px 24px rgba(15,23,42,.08);
   margin-bottom:24px;
 }
@@ -382,7 +387,8 @@
 }
 
 .about-team-role{
-  color:#6B7280;
+  color:#111827;
+  font-weight:600;
   font-size:16px;
   line-height:24px;
   margin-bottom:20px;
@@ -472,116 +478,72 @@
   }
 }
 
+.about-care{ background:#fff; padding-block: clamp(64px, 8vw, 110px); }
+.about-care-title{
+  font-weight:700; font-size:50px; line-height:60px; color:#3D91FD; margin-bottom:24px;
+}
+.about-care-text{ font-size:18px; line-height:30px; color:#6B7280; margin-bottom:18px; }
+.about-care-mark{ width:min(240px, 70%); margin:0 auto; display:block; }
+
+.about-trust{ background:#fff; padding-block: clamp(64px, 8vw, 110px); }
+.about-trust-title{
+  text-align:center; font-weight:700; font-size:50px; line-height:60px; color:#111827; margin-bottom:48px;
+}
+.about-trust-heading{ font-weight:600; font-size:24px; line-height:34px; color:#111827; margin-bottom:16px; }
+.about-trust-text{ font-size:18px; line-height:30px; color:#6B7280; margin:0; }
+.about-trust-img{ width:100%; height:auto; border-radius:14px; display:block; }
+
   
   </style>
 </head>
 <body>
   <div th:replace="~{fragments/navbar :: navbar}"></div>
   <section class="about-hero">
-    <h2>This is a test</h2>
-  
-    <div class="about-hero-art" aria-hidden="true">
-      <img th:src="@{/images/about/about-image-01.png}" alt="" class="about-hero-art-img">
-    </div>
     <div class="container-xxl">
-      <div class="row g-0 about-hero-row">
-        <div class="col-12 col-lg-6 about-hero-left">
-          <div class="about-hero-left-inner">
-            <h1 class="about-hero-title" th:text="#{about-caption-34}">The beginning of our story</h1>
-            <p class="about-hero-sub">
-              <span th:text="#{about-caption-35}">Every parent’s journey begins with a question:</span>
-              <span th:text="#{about-caption-36}">“Am I ready? Am I doing this right?”</span>
-            </p>
-<!--             <div class="mt-4">
-              <a href="https://apps.apple.com/us/app/geniusparentingai/id6747332178" class="about-cta-btn" th:text="#{about-caption-37}">Download the App</a>
-            </div>
-             -->
+      <div class="row align-items-center g-5 about-hero-row">
+        <div class="col-12 col-lg-6">
+          <h1 class="about-hero-title" th:text="#{about-hero-title}">Why Families Trust Us.</h1>
+          <p class="about-hero-sub" th:text="#{about-hero-text}">
+            Every parent's journey begins with a question: "Am I ready? Am I doing this right?" Parenting doesn't come with a manual. And that feeling is universal: the need for support, reassurance, and guidance that actually fits your life. You don't have to figure it out alone.
+          </p>
+        </div>
+        <div class="col-12 col-lg-6">
+          <div class="about-hero-photo-wrap">
+            <img th:src="@{/images/about/about-image-01.png}" alt="" class="about-hero-photo">
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- WHY WE BUILT THIS APP -->
-  <section class="about-why">
-  	<div class="container-xxl">
-  		<div class="row justify-content-center">
-  			<div class="col-lg-1">
-  			</div>
-  			<div class="col-lg-10">
-  				<h2 class="about-title" th:text="#{about-caption-38}">Parenting doesn't come with a manual</h2>
-  				<p class="about-lead mt-3" th:text="#{about-caption-39}">
-  				Some are dreamers, full of hope as they imagine holding a child for the first time. Some are expecting hearts, learning to navigate the joy and nerves of pregnancy. Some are new nests, awake at 3AM with a crying baby in their arms. Others are foundation builders, setting boundaries with toddlers who are testing the world, or explorer guides, helping little ones take their first steps into school and independence.
-  				</p>
-  				<p class="about-lead mt-3" th:text="#{about-caption-40}">
-  				Parenting looks different for everyone, but one feeling is universal — the need for support, reassurance, and guidance that actually fits your life.
-  				</p>
-  				<p class="about-lead mt-3" th:text="#{about-caption-41new}">
-  				That’s why we created Genius Parenting AI.
-  				</p>
-  			</div>
-  			<div class="col-lg-1">
-  			</div>
-  		</div>
-	     <div class="text-center mt-4" style="padding-top:22px;">
-	       <a href="#features" class="btn about-cta-btn " th:text="#{about-caption-42}">View Features</a>
-	     </div>
-  	</div>
-     <div style="padding-top:60px; padding-bottom:60px;">
-    	<hr class="seg-ai-testimonials-divider">
-    </div>
-    
+  <!-- OUR CARE BELIEF -->
+  <section class="about-care">
     <div class="container-xxl">
-      <div class="row justify-content-center">
-        <div class="col-lg-10">
-          <h2 id="features" class="about-title" th:text="#{about-caption-43}">Why we built this app</h2>
-          <p class="about-lead mt-3" th:text="#{about-caption-44}">
-            We saw a gap. Too often, parents are given generic advice that doesn’t reflect their culture, personality,or stage of life. Parenting isn’t one-size-fits-all.
-         </p>
-         <p class="about-lead mt-3" th:text="#{about-caption-441}">
-            So we asked: What if parents had a tool that could meet them exactly where they are?
+      <div class="row align-items-center g-5">
+        <div class="col-lg-6">
+          <h2 class="about-care-title" th:text="#{about-care-title}">Our Care Belief</h2>
+          <p class="about-care-text" th:text="#{about-believe-cap5}">
+            GeniusParentingAI exists to help parents build strong foundational knowledge, avoid common pitfalls, and make thoughtful, informed decisions that support their children’s long-term well-being.
+          </p>
+          <p class="about-care-text" th:text="#{about-believe-cap6}">
+            By combining educational expertise, technological innovation, and real-life parenting insight, our platform aims to benefit families, educators, practitioners, and institutions — while also supporting research, communication, and collaboration across the broader child and family well-being community.
           </p>
         </div>
-      </div>
-
-
-	<div class="row align-items-center g-4 g-lg-5">
-	  <div class="col-lg-2"></div>
-	  <!-- Text / bullets: 2/3 width -->
-	  <div class="col-lg-5">
-<ul class="about-bullets">
-  <li class="about-bullet" tabindex="0">
-    <p class="about-text mb-0" th:text="#{about-caption-45}">A quiz that takes just 30 seconds to understand you.</p>
-  </li>
-  <li class="about-bullet" tabindex="0">
-    <p class="about-text mb-0" th:text="#{about-caption-46}">A community where parents connect, share, and grow together.</p>
-  </li>
-  <li class="about-bullet" tabindex="0">
-    <p class="about-text mb-0" th:text="#{about-caption-47}">An AI chat assistant that never sleeps, ready when nobody else can be.</p>
-  </li>
-  <li class="about-bullet" tabindex="0">
-    <p class="about-text mb-0" th:text="#{about-caption-48}">Tips and courses that are matched to your personality, not just your child’s age.</p>
-  </li>
-</ul>
-
-	  </div>
-	
-	  <!-- Image: 1/3 width -->
-	  <div class="col-lg-4 text-center text-lg-start">
-	    <img th:src="@{/images/about/about-image-02.png}" 
-	         alt="Genius Parenting mobile preview" 
-	         class="about-phone">
-	  </div>
-	  <div class="col-lg-1"></div>
-	</div>
-
-
-      <div class="row mt-5 justify-content-center">
-        <div class="col-lg-10">
-          <p class="about-lead" th:text="#{about-caption-49}">
-            We built Genius Parenting AI to be that partner. Not another “how-to” manual, but a guide that listens first,
-            then responds in a way that feels personal, practical, and compassionate.
-          </p>
+        <div class="col-lg-6 text-center">
+          <div class="about-care-mark" aria-hidden="true">
+            <svg viewBox="0 0 220 220" role="img">
+              <path d="M110 30C78 8 24 36 24 90c0 54 86 100 86 100s86-46 86-100c0-54-54-82-86-60z"
+                    fill="none" stroke="#8977FF" stroke-width="4" stroke-dasharray="7 7" stroke-linejoin="round"/>
+              <circle cx="80" cy="98" r="13" fill="#3D91FD"/>
+              <path d="M58 148c0-20 10-32 22-32s22 12 22 32" fill="#3D91FD"/>
+              <circle cx="140" cy="98" r="13" fill="#3D91FD"/>
+              <path d="M118 148c0-20 10-32 22-32s22 12 22 32" fill="#3D91FD"/>
+              <circle cx="100" cy="118" r="9" fill="#6A84FF"/>
+              <path d="M88 152c0-12 6-20 12-20s12 8 12 20" fill="#6A84FF"/>
+              <circle cx="120" cy="118" r="9" fill="#6A84FF"/>
+              <path d="M108 152c0-12 6-20 12-20s12 8 12 20" fill="#6A84FF"/>
+            </svg>
+          </div>
         </div>
       </div>
     </div>
@@ -624,55 +586,6 @@
   </div>
 </section>
 
-  <!-- BRAND IDENTITY -->
-  <section class="about-brand">
-    <div class="container-xxl">
-  		<div class="row justify-content-center">
-  			<div class="col-lg-1"></div>
-  			<div class="col-lg-10">
-  			
-			      <h2 class="about-brand-title" th:text="#{about-caption-54}">Our logo & brand identity</h2>
-			      <p class="about-brand-sub" th:text="#{about-caption-55}">Our logo is more than design — it’s a symbol of what we believe in.</p>
-			
-			      <div class="about-brand-card">
-			        <div class="row g-4 align-items-center" style="padding-top:70px; padding-bottom:70px;">
-			          <div class="col-lg-6">
-			            <img th:src="@{/images/about/about-image-08.svg}" alt="Genius Parenting logo" class="about-brand-logo">
-			          </div>
-			          <div class="col-lg-6 about-brand-divider">
-			            <ul class="about-brand-points">
-			              <li style="padding-top:20px; padding-bottom:20px;">
-				              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-							  	<circle cx="12" cy="12" r="12" fill="#20C4D7" fill-opacity=".15"/>
-							  	<path d="M7 12.5l3.2 3L17 9" stroke="#20C4D7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-							  </svg>
-							  <span class="about-logo-text" th:text="#{about-caption-56}">The colors represent diversity, inclusivity, and the warmth of family love.</span>
-						  </li>
-						  <li style="padding-top:20px; padding-bottom:20px;">
-					  		<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-							  	<circle cx="12" cy="12" r="12" fill="#20C4D7" fill-opacity=".15"/>
-							  	<path d="M7 12.5l3.2 3L17 9" stroke="#20C4D7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-							</svg>
-							<span class="about-logo-text" th:text="#{about-caption-57-1}">The circular form mirrors unconditional love and the never-ending journey of parenting — growth, connection, and new beginnings.</span>
-						  </li>
-						  <li style="padding-top:20px; padding-bottom:20px;">
-						    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-							    <circle cx="12" cy="12" r="12" fill="#20C4D7" fill-opacity=".15"/>
-							    <path d="M7 12.5l3.2 3L17 9" stroke="#20C4D7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-						    </svg>
-						    <span class="about-logo-text" th:text="#{about-caption-58}">The modern, clean style shows our commitment to keeping things simple and approachable.</span>
-					      </li>
-			            </ul>
-			          </div>
-			        </div>
-			      </div>
-
-		      </div>
- 			<div class="col-lg-1"></div>
-		      
-	      </div>
-    </div>
-  </section>
 
 <!--  Section Our Team -->
 <section class="about-team">
@@ -771,138 +684,48 @@
   </div>
 </section>
 
-<section class="about-believe">
+<section class="about-trust">
   <div class="container-xxl">
-    <div class="row justify-content-center">
-      <div class="col-lg-8">
+    <h2 class="about-trust-title" th:text="#{about-trust-title}">Why Families Trust Us</h2>
 
-        <h2 class="about-believe-title" th:text="#{about-believe-cap1}">
-          Our Belief
-        </h2>
-
-        <p class="about-believe-lead" th:text="#{about-believe-cap2}">
-          At GeniusParentingAI, our belief is simple:
+    <div class="row align-items-center g-5 mb-5">
+      <div class="col-lg-6">
+        <h3 class="about-trust-heading" th:text="#{about-trust-1-title}">Academic &amp; Educational Trust</h3>
+        <p class="about-trust-text" th:text="#{about-trust-1-text}">
+          Our frameworks are developed and guided by UBC educational leadership, advisory board oversight, and EdTech collaborators — so guidance stays grounded in real teaching practice.
         </p>
+      </div>
+      <div class="col-lg-6">
+        <img th:src="@{/images/about/about-image-09.png}" alt="Academic campus" class="about-trust-img">
+      </div>
+    </div>
 
-        <p class="about-believe-lead" th:text="#{about-believe-cap3}">
-          When parents are supported — not judged — children thrive.
+    <div class="row align-items-center g-5 mb-5">
+      <div class="col-lg-6 order-lg-2">
+        <h3 class="about-trust-heading" th:text="#{about-trust-2-title}">Technological Trust</h3>
+        <p class="about-trust-text" th:text="#{about-trust-2-text}">
+          The AI is trained on expert-vetted educational frameworks rather than random forums, which means fewer hallucinations and support that stays responsible.
         </p>
+      </div>
+      <div class="col-lg-6 order-lg-1">
+        <img th:src="@{/images/about/about-image-03.png}" alt="Family using technology together" class="about-trust-img">
+      </div>
+    </div>
 
-        <p class="about-believe-lead" th:text="#{about-believe-cap4}">
-          When children thrive, families and society benefit.
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6">
+        <h3 class="about-trust-heading" th:text="#{about-trust-3-title}">Practical Trust</h3>
+        <p class="about-trust-text" th:text="#{about-trust-3-text}">
+          Advice is shaped by real parenting challenges and everyday family life, so it is useful at 3AM — not only in theory.
         </p>
-
-        <div style="margin-top:40px;">
-          <p class="about-believe-text" th:text="#{about-believe-cap5}">
-            GeniusParentingAI exists to help parents build strong foundational knowledge, avoid common pitfalls, and make thoughtful, informed decisions that support their children’s long-term well-being.
-          </p>
-
-          <p class="about-believe-text" th:text="#{about-believe-cap6}">
-            By combining educational expertise, technological innovation, and real-life parenting insight, our platform aims to benefit families, educators, practitioners, and institutions — while also supporting research, communication, and collaboration across the broader child and family well-being community.
-          </p>
-        </div>
-
+      </div>
+      <div class="col-lg-6">
+        <img th:src="@{/images/about/about-image-04.png}" alt="Family learning together" class="about-trust-img">
       </div>
     </div>
   </div>
 </section>
 
-
-<!-- Section Stage -->
-<!-- 
-  <section class="about-stages">
-    <div class="container-xxl">
-      <h3 class="about-stages-title" th:text="#{about-caption-60}">For every parent, at every stage</h3>
-
-      <div class="row g-4">
-        <div class="col-md-4">
-          <a href="#" class="about-stage-card">
-            <img th:src="@{/images/about/about-image-10.png}" alt="" class="about-stage-img">
-            <h5 class="about-stage-name" th:text="#{about-caption-61}">The Dreamer</h5>
-            <p class="about-stage-desc" th:text="#{about-caption-62}">Preparing emotionally and physically for parenthood.</p>
-          </a>
-        </div>
-        <div class="col-md-4">
-          <a href="#" class="about-stage-card">
-            <img th:src="@{/images/about/about-image-11.png}" alt="" class="about-stage-img">
-            <h5 class="about-stage-name" th:text="#{about-caption-63}">The Expecting Heart</h5>
-            <p class="about-stage-desc" th:text="#{about-caption-64}">Looking for reassurance and guidance during pregnancy.</p>
-          </a>
-        </div>
-        <div class="col-md-4">
-          <a href="#" class="about-stage-card">
-            <img th:src="@{/images/about/about-image-12.png}" alt="" class="about-stage-img">
-            <h5 class="about-stage-name" th:text="#{about-caption-65}">The New Nest</h5>
-            <p class="about-stage-desc" th:text="#{about-caption-66}">Adjusting to baby cues, sleepless nights, and bonding.</p>
-          </a>
-        </div>
-
-        <div class="col-md-4">
-          <a href="#" class="about-stage-card">
-            <img th:src="@{/images/about/about-image-13.png}" alt="" class="about-stage-img">
-            <h5 class="about-stage-name" th:text="#{about-caption-67}">The Foundation Builder</h5>
-            <p class="about-stage-desc" th:text="#{about-caption-68}">Navigating tantrums and toddler independence.</p>
-          </a>
-        </div>
-        <div class="col-md-4">
-          <a href="#" class="about-stage-card">
-            <img th:src="@{/images/about/about-image-14.png}" alt="" class="about-stage-img">
-            <h5 class="about-stage-name" th:text="#{about-caption-69}">The Explorer’s Guide</h5>
-            <p class="about-stage-desc" th:text="#{about-caption-70}">Supporting early school years, curiosity, and social skills.</p>
-          </a>
-        </div>
-      </div>
-    </div>
-  </section>
- -->  
-<section class="about-academic">
-  <div class="container-xxl">
-    <div class="row justify-content-center">
-      <div class="col-lg-8 text-center">
-        <h3 class="about-academic-title" th:text="#{about-academic-cap1}">Academic Guidance & Support</h3>
-        <p class="about-academic-text" th:text="#{about-academic-cap2}">
-          We extend our sincere gratitude to the teachers and graduate students of the Master of Educational Technology program at the University of British Columbia for their continued guidance and valuable contributions.
-        </p>
-        <p class="about-academic-text" th:text="#{about-academic-cap3}">
-          Their expertise and support have played an important role in shaping GeniusParentingAI into a more professional, innovative, and impactful platform.
-        </p>
-      </div>
-    </div>
-  </div>
-</section>
-  
-  <!-- CONTACT US (bottom) -->
-  <section class="about-contact-us">
-    <div class="container-xxl">
-      <div class="row justify-content-center">
-        <div class="col-lg-10">
-          <div class="about-contact-card">
-            <div class="row g-4 align-items-center">
-              <!-- Left copy -->
-              <div class="col-lg-7">
-                <h3 class="about-contact-title" th:text="#{about-caption-71}">Contact Us</h3>
-                <hr class="about-contact-rule"/>
-                <div class="about-contact-body">
-                  <p th:text="#{about-caption-72}">Have questions or need support? We’re here for you every step of the way.</p>
-                  <p class="about-contact-email"><b th:text="#{about-caption-73}">Email:</b> <a href="mailto:support@geniusParentingAI.ca" th:text="#{about-caption-74}">support@geniusParentingAI.ca</a></p>
-                  <!-- 
-                  <p><b th:text="#{about-caption-75}">Company:</b> <span th:text="#{about-caption-76}">GNM399 Ventures Corp.</span></p>
-                  <p><b th:text="#{about-caption-77}">Address:</b> <span th:text="#{about-caption-78}">2112 W Broadway, Unit 208, Vancouver, BC V6K 2C8, Canada</span></p>
-                   -->
-                </div>
-              </div>
-              <!-- Right image -->
-              <div class="col-lg-5">
-                <div class="about-contact-photo">
-                  <img th:src="@{/images/about/about-image-15.png}" alt="Support specialist photo">
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
 	<!-- BOTTOM CTA — edge-to-edge, no crop, image flush right -->
 	<section class="cta-band">
@@ -916,25 +739,21 @@
 	      <!-- LEFT: text/content -->
 			<div class="col-12 col-lg-7 cta-left">
 			  <div class="cta-left-inner">
-			    <h2 class="cta-title"><span th:text="#{index-caption-19}">Parenting</span>,<br><span th:text="#{index-caption-20}">just a tap away</span></h2>
-			    <ul class="cta-bullets">
-			      <li>
-			        <span th:text="#{about-caption-33}">
-			          At Genius Parenting AI, we believe when parents feel supported, children flourish. And when children flourish, the future becomes brighter for us all.
-					</span>
-				  </li>
-			    </ul>
+			    <h2 class="cta-title" th:text="#{home.cta.title}">Parenting, just a tap away</h2>
+			    <p class="cta-tagline" th:text="#{about-cta-text}">Join thousands of families learning, growing and navigating parenting together.</p>
 			    <hr class="cta-rule">
 			
 			    <div class="cta-download d-flex align-items-center gap-4 mt-4">
 			      <img th:src="@{/images/gpa-qr-code.png}" alt="QR code" class="cta-qr">
 			      <div>
 			        <h3 class="cta-download-title mb-2" th:text="#{index-caption-24}">Download the App!</h3>
-			        <p class="cta-download-sub mb-3" th:text="#{index-caption-25}">Free to try. No credit card needed.</p>
+			        <p class="cta-download-sub mb-3" th:text="#{about-cta-scan}">SCAN TO DOWNLOAD</p>
 			        <div class="d-flex align-items-center gap-2">
-			          <!-- <a href="#"><img th:src="@{/images/index/index-image11.png}" alt="Google Play" class="cta-store-badge"></a>  -->
 			          <a href="https://apps.apple.com/us/app/geniusparentingai/id6747332178?itscg=30200&itsct=apps_box_link&mttnsubad=6747332178">
 			          	<img th:src="@{/images/index/index-image12.png}" alt="App Store" class="cta-store-badge">
+			          </a>
+			          <a href="#">
+			            <img th:src="@{/images/index/index-image11.png}" alt="Google Play" class="cta-store-badge">
 			          </a>
 			        </div>
 			      </div>

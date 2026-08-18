@@ -63,20 +63,165 @@
   height: auto;
   filter: drop-shadow(0 18px 40px rgba(0,0,0,.25));
 }
-.hero-overhang{ transform: translateY(52px); margin-bottom: -90px; }
-.gp-index-why{ padding-top: 174px; }
+.hero-overhang{ transform: translateY(28px); margin-bottom: -28px; }
+.gp-index-why{ padding-top: 80px; }
 @media (max-width: 991.98px){
   .gp-hero::before{ bottom:-32px; }
   .gp-hero-image{ max-width:420px; }
-  .hero-overhang{ transform: translateY(52px); margin-bottom:-52px; }
-  .gp-index-why{ padding-top:116px; }
+  .hero-overhang{ transform: translateY(24px); margin-bottom:-24px; }
+  .gp-index-why{ padding-top:64px; }
 }
 @media (max-width: 575.98px){
   .gp-hero::before{ bottom:-24px; }
   .gp-hero-image{ max-width:360px; }
-  .hero-overhang{ transform: translateY(38px); margin-bottom:-38px; }
-  .gp-index-why{ padding-top:96px; }
+  .hero-overhang{ transform: translateY(16px); margin-bottom:-16px; }
+  .gp-index-why{ padding-top:48px; }
 }
+
+/* =========================
+   Quiz + Learning Pillars
+========================== */
+.gp-index-quiz{ background:#fff; padding:72px 0 48px; position:relative; z-index:2; }
+.gp-index-quiz-title{
+  font-family:'Poppins',sans-serif; font-weight:400;
+  font-size:50px; line-height:60px; color:#333; margin:0 0 28px;
+}
+.gp-quiz-card{
+  background:#fff; border:1px solid #E5E7EB; border-radius:16px;
+  box-shadow:0 10px 28px rgba(15,23,42,.06); padding:36px 40px 32px;
+}
+.gp-quiz-progress{ font-family:'Poppins',sans-serif; font-size:18px; line-height:30px; color:#9CA3AF; margin:0 0 10px; }
+.gp-quiz-question{
+  font-family:'Poppins',sans-serif; font-weight:600;
+  font-size:24px; line-height:34px; color:#111827; margin:0 0 22px;
+}
+.gp-quiz-options{ list-style:none; margin:0 0 28px; padding:0; }
+.gp-quiz-options li{ margin:0 0 14px; }
+.gp-quiz-options.is-inline{
+  display:flex; flex-wrap:wrap; gap:12px 36px; align-items:center;
+}
+.gp-quiz-options.is-inline li{ margin:0; }
+.gp-quiz-option{
+  display:flex; align-items:center; gap:12px; cursor:pointer;
+  font-family:'Poppins',sans-serif; font-size:18px; line-height:30px; color:#374151;
+}
+.gp-quiz-option input{ position:absolute; opacity:0; pointer-events:none; }
+.gp-quiz-radio{
+  flex:0 0 22px; width:22px; height:22px; margin-top:2px; border-radius:50%;
+  border:2px solid #D1D5DB; background:#fff; position:relative;
+}
+.gp-quiz-option input:checked + .gp-quiz-radio{
+  border-color:#3B82F6; background:#3B82F6;
+}
+.gp-quiz-option input:checked + .gp-quiz-radio::after{
+  content:""; position:absolute; left:6px; top:3px; width:6px; height:10px;
+  border:solid #fff; border-width:0 2px 2px 0; transform:rotate(45deg);
+}
+.gp-quiz-submit{
+  background:#3EC6E8; color:#fff; border:0; border-radius:9999px;
+  padding:.7rem 2.6rem; font-family:'Poppins',sans-serif; font-weight:600; font-size:18px;
+}
+.gp-quiz-submit:hover, .gp-quiz-submit:focus{ color:#fff; filter:brightness(1.04); }
+.gp-quiz-step[hidden], .gp-quiz-card[hidden]{ display:none !important; }
+.gp-quiz-result{
+  display:flex; align-items:stretch; overflow:hidden;
+  background:#fff; border:1px solid #E5E7EB; border-radius:16px;
+  box-shadow:0 10px 28px rgba(15,23,42,.08); min-height:360px;
+}
+.gp-quiz-result[hidden]{ display:none !important; }
+.gp-quiz-result-copy{
+  flex:1; padding:48px 40px; text-align:center; background:#fff;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+}
+.gp-quiz-result-kicker{
+  font-family:'Poppins',sans-serif; font-size:18px; line-height:30px; color:#9CA3AF; margin:0 0 12px;
+}
+.gp-quiz-result-title{
+  font-family:'Poppins',sans-serif; font-weight:600;
+  font-size:30px; line-height:38px; color:#333; margin:0; max-width:18ch;
+}
+.gp-quiz-result-copy hr{
+  width:72%; border:0; border-top:1px solid #E5E7EB; margin:22px 0;
+}
+.gp-quiz-result-tip-label{
+  font-family:'Poppins',sans-serif; font-weight:600; font-size:18px; line-height:30px; color:#111827; margin:0 0 6px;
+}
+.gp-quiz-result-tip{
+  font-family:'Poppins',sans-serif; font-size:18px; line-height:30px; color:#4B5563; margin:0;
+}
+.gp-quiz-result-cta{
+  font-family:'Poppins',sans-serif; font-size:18px; line-height:30px; color:#4B5563;
+  margin:0 0 22px; max-width:34ch;
+}
+.gp-quiz-result-art{
+  flex:1; min-height:320px;
+  background-image:linear-gradient(180deg,#3D91FD 0%,#6A84FF 50%,#8977FF 100%);
+  display:flex; align-items:center; justify-content:center;
+}
+.gp-quiz-result-mark{
+  width:168px; height:168px; border:3px solid #fff; border-radius:50%;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  color:#fff; gap:6px;
+}
+.gp-quiz-result-mark i:first-child{ font-size:28px; }
+.gp-quiz-result-mark i:last-child{ font-size:42px; }
+@media (max-width:767.98px){
+  .gp-quiz-result{ flex-direction:column-reverse; }
+  .gp-quiz-result-art{ min-height:220px; }
+}
+#personalize, #learning-pillars, [id^="pillar-"]{ scroll-margin-top: 120px; }
+
+.gp-index-pillars{ background: transparent; }
+.gp-index-pillars .gp-index-results-box{ padding:72px 0 80px; }
+.gp-index-pillars-title{
+  font-family:'Poppins',sans-serif; font-weight:400;
+  font-size:50px; line-height:60px; color:#fff; margin:0 0 36px;
+}
+.gp-pillar-card{
+  background:#fff; border-radius:16px; padding:28px 24px 24px;
+  box-shadow:0 10px 24px rgba(15,23,42,.06); height:100%;
+  display:flex; flex-direction:column; min-height:220px;
+}
+.gp-pillar-icon{
+  width:56px; height:56px; border-radius:50%;
+  background:#3B82F6; color:#fff; display:flex; align-items:center; justify-content:center;
+  font-size:22px; margin-bottom:16px;
+}
+.gp-pillar-title{
+  font-family:'Poppins',sans-serif; font-weight:600;
+  font-size:24px; line-height:34px; color:#111827; margin:0 0 8px;
+}
+.gp-pillar-text{
+  font-family:'Poppins',sans-serif; font-size:18px; line-height:30px; color:#6B7280;
+  margin:0 0 16px; flex:1;
+}
+.gp-pillar-link{
+  font-family:'Poppins',sans-serif; font-weight:600; font-size:18px; line-height:30px;
+  color:#2563EB; text-decoration:none;
+}
+.gp-pillar-link:hover{ text-decoration:underline; }
+
+.gp-index-credentials{ background:#fff; padding:80px 0; }
+.gp-index-credentials-title{
+  font-family:'Poppins',sans-serif; font-weight:400;
+  font-size:50px; line-height:60px; color:#333; max-width:52ch; margin:0 0 28px;
+}
+.gp-cred-list{ list-style:none; margin:0 0 24px; padding:0; }
+.gp-cred-list li{
+  display:flex; gap:14px; align-items:flex-start;
+  font-family:'Poppins',sans-serif; font-size:18px; line-height:30px; color:#374151;
+  margin:0 0 16px;
+}
+.gp-cred-check{
+  flex:0 0 28px; width:28px; height:28px; border-radius:50%;
+  background:#3B82F6; color:#fff; display:flex; align-items:center; justify-content:center;
+  font-size:14px; margin-top:2px;
+}
+.gp-cred-more{
+  font-family:'Poppins',sans-serif; font-weight:600; font-size:18px; line-height:30px;
+  color:#2563EB; text-decoration:none;
+}
+.gp-cred-more:hover{ text-decoration:underline; }
 
 /* =========================
    Section 2: WHY
@@ -87,6 +232,10 @@
   font-weight: 400; font-style: normal;
   font-size: 50px; line-height: 60px; letter-spacing: 0;
   color: #333333; padding-bottom: 2rem;
+}
+.gp-index-why-intro{
+  font-family:'Poppins',sans-serif; font-weight:400;
+  font-size:18px; line-height:30px; color:#666; max-width:62ch; margin:0 0 2.4rem;
 }
 .gp-index-why-card{ display:block; }
 .gp-index-why-img{ width:100%; height:auto; border-radius:12px; display:block; }
@@ -356,11 +505,11 @@
 <!--           <h1 class="gp-index-hero-title" th:text="#{home.hero.title_en1}">
             Genius Parenting AI
           </h1> -->
-          <p class="gp-index-hero-title2" th:text="#{home.hero.subtitle_en1}">
-            Calm, thoughtful parenting support—built by educators, designed with care.
-          </p>
+          <h1 class="gp-index-hero-title2" th:text="#{home.hero.subtitle_en1}">
+            Parenting is hard. You don't have to figure it out alone.
+          </h1>
           <p class="gp-index-hero-subtitle" th:text="#{home.hero.subtitle_en2}">
-          	GeniusParentingAI is a free, privacy-first parent education platform that helps parents think through everyday parenting questions using responsible AI. No data selling. Anonymous by default.
+          	An anonymous, free AI co-pilot built by educators.
           </p>
 <!--           <div class="mt-4">
             <a href="https://apps.apple.com/us/app/geniusparentingai/id6747332178"
@@ -379,20 +528,137 @@
     </div>
   </section>
 
+  <!-- PERSONALIZE -->
+  <section class="gp-index-quiz" id="personalize">
+    <div class="container-xxl">
+      <h2 class="gp-index-quiz-title" th:text="#{home.quiz.title}">Personalize your experience</h2>
+      <form class="gp-quiz-card" id="gpQuiz" action="#learning-pillars">
+        <div class="gp-quiz-step" data-step="1">
+          <p class="gp-quiz-progress">Question 1 of 2</p>
+          <h3 class="gp-quiz-question" th:text="#{home.quiz.q1}">What's your biggest parenting challenge today?</h3>
+          <ul class="gp-quiz-options">
+            <li><label class="gp-quiz-option"><input type="radio" name="q1" value="foundations"><span class="gp-quiz-radio"></span><span th:text="#{home.quiz.q1.opt1}">Related to the foundation of trust, unconditional love, and healthy modeling for my child.</span></label></li>
+            <li><label class="gp-quiz-option"><input type="radio" name="q1" value="emotions"><span class="gp-quiz-radio"></span><span th:text="#{home.quiz.q1.opt2}">Related to understanding big emotions, learning to self-regulate, and handling challenging behaviors.</span></label></li>
+            <li><label class="gp-quiz-option"><input type="radio" name="q1" value="connection" checked><span class="gp-quiz-radio"></span><span th:text="#{home.quiz.q1.opt3}">Related to communicating deeply, strengthening our bond, and fostering my child's social skills.</span></label></li>
+            <li><label class="gp-quiz-option"><input type="radio" name="q1" value="learning"><span class="gp-quiz-radio"></span><span th:text="#{home.quiz.q1.opt4}">Related to my child's cognitive growth, curiosity, and academic success at home.</span></label></li>
+            <li><label class="gp-quiz-option"><input type="radio" name="q1" value="dailylife"><span class="gp-quiz-radio"></span><span th:text="#{home.quiz.q1.opt5}">Related to navigating daily routines, life transitions, and the pressures of modern family life together.</span></label></li>
+            <li><label class="gp-quiz-option"><input type="radio" name="q1" value="neurodiversity"><span class="gp-quiz-radio"></span><span th:text="#{home.quiz.q1.opt6}">Related to my neurodivergent child.</span></label></li>
+            <li><label class="gp-quiz-option"><input type="radio" name="q1" value="others"><span class="gp-quiz-radio"></span><span th:text="#{home.quiz.q1.opt7}">Others</span></label></li>
+          </ul>
+          <button type="button" class="gp-quiz-submit" data-quiz-next th:text="#{home.quiz.submit}">Submit</button>
+        </div>
+
+        <div class="gp-quiz-step" data-step="2" hidden>
+          <p class="gp-quiz-progress">Question 2 of 2</p>
+          <h3 class="gp-quiz-question" th:text="#{home.quiz.q2}">How old is your child?</h3>
+          <ul class="gp-quiz-options is-inline">
+            <li><label class="gp-quiz-option"><input type="radio" name="q2" value="0-2"><span class="gp-quiz-radio"></span><span th:text="#{home.quiz.q2.opt1}">0-2</span></label></li>
+            <li><label class="gp-quiz-option"><input type="radio" name="q2" value="3-5"><span class="gp-quiz-radio"></span><span th:text="#{home.quiz.q2.opt2}">3-5</span></label></li>
+            <li><label class="gp-quiz-option"><input type="radio" name="q2" value="6-8" checked><span class="gp-quiz-radio"></span><span th:text="#{home.quiz.q2.opt3}">6-8</span></label></li>
+            <li><label class="gp-quiz-option"><input type="radio" name="q2" value="9-12"><span class="gp-quiz-radio"></span><span th:text="#{home.quiz.q2.opt4}">9-12</span></label></li>
+            <li><label class="gp-quiz-option"><input type="radio" name="q2" value="13-18"><span class="gp-quiz-radio"></span><span th:text="#{home.quiz.q2.opt5}">13-18</span></label></li>
+          </ul>
+          <button type="submit" class="gp-quiz-submit" th:text="#{home.quiz.submit}">Submit</button>
+        </div>
+      </form>
+
+      <article class="gp-quiz-result" id="gpQuizResult" hidden>
+        <div class="gp-quiz-result-copy">
+          <p class="gp-quiz-result-kicker">AI Suggests</p>
+          <h3 class="gp-quiz-result-title" id="gpQuizResultTitle">Focusing on Learning &amp; Thinking for a 3-year-old?</h3>
+          <hr>
+          <p class="gp-quiz-result-tip-label">Here is a quick tip:</p>
+          <p class="gp-quiz-result-tip" id="gpQuizResultTip">Try 'strewing' open-ended toys.</p>
+          <hr>
+          <p class="gp-quiz-result-cta" id="gpQuizResultCta">Jump directly into our full, privacy-first course on Cognitive Development!</p>
+          <a class="gp-quiz-submit" id="gpQuizResultLink" th:href="@{/seg-mini-course}">View Course Now</a>
+        </div>
+        <div class="gp-quiz-result-art" aria-hidden="true">
+          <div class="gp-quiz-result-mark">
+            <i class="fas fa-heart"></i>
+            <i class="fas fa-users"></i>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- LEARNING PILLARS -->
+  <section class="gp-index-pillars" id="learning-pillars">
+    <div class="gp-index-results-box">
+    <div class="container-xxl">
+      <h2 class="gp-index-pillars-title" th:text="#{home.pillars.title}">Learning Pillars</h2>
+      <div class="row g-4">
+        <div class="col-12 col-md-6 col-lg-4" id="pillar-foundations">
+          <article class="gp-pillar-card">
+            <div class="gp-pillar-icon" aria-hidden="true"><i class="fas fa-home"></i></div>
+            <h3 class="gp-pillar-title" th:text="#{home.pillars.1.title}">Parenting Foundations</h3>
+            <p class="gp-pillar-text" th:text="#{home.pillars.1.text}">Trust, unconditional love, and healthy modeling.</p>
+            <a class="gp-pillar-link" th:href="@{/functions(function=4)}" th:text="#{home.pillars.learn}">LEARN MORE →</a>
+          </article>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4" id="pillar-emotions">
+          <article class="gp-pillar-card">
+            <div class="gp-pillar-icon" aria-hidden="true"><i class="fas fa-heart"></i></div>
+            <h3 class="gp-pillar-title" th:text="#{home.pillars.2.title}">Emotional Wellbeing</h3>
+            <p class="gp-pillar-text" th:text="#{home.pillars.2.text}">Understanding emotions, regulation, and behavior.</p>
+            <a class="gp-pillar-link" th:href="@{/functions(function=1)}" th:text="#{home.pillars.learn}">LEARN MORE →</a>
+          </article>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4" id="pillar-connection">
+          <article class="gp-pillar-card">
+            <div class="gp-pillar-icon" aria-hidden="true"><i class="fas fa-comments"></i></div>
+            <h3 class="gp-pillar-title" th:text="#{home.pillars.3.title}">Communication Connection</h3>
+            <p class="gp-pillar-text" th:text="#{home.pillars.3.text}">Strengthening your bond and your child's social skills.</p>
+            <a class="gp-pillar-link" th:href="@{/functions(function=2)}" th:text="#{home.pillars.learn}">LEARN MORE →</a>
+          </article>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4" id="pillar-learning">
+          <article class="gp-pillar-card">
+            <div class="gp-pillar-icon" aria-hidden="true"><i class="fas fa-book-open"></i></div>
+            <h3 class="gp-pillar-title" th:text="#{home.pillars.4.title}">Learning & Thinking</h3>
+            <p class="gp-pillar-text" th:text="#{home.pillars.4.text}">Curiosity, cognitive growth, and learning at home.</p>
+            <a class="gp-pillar-link" th:href="@{/functions(function=3)}" th:text="#{home.pillars.learn}">LEARN MORE →</a>
+          </article>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4" id="pillar-dailylife">
+          <article class="gp-pillar-card">
+            <div class="gp-pillar-icon" aria-hidden="true"><i class="fas fa-users"></i></div>
+            <h3 class="gp-pillar-title" th:text="#{home.pillars.5.title}">Daily Life & Modern Challenges</h3>
+            <p class="gp-pillar-text" th:text="#{home.pillars.5.text}">Routines, transitions, and the pressures of family life.</p>
+            <a class="gp-pillar-link" th:href="@{/functions(function=4)}" th:text="#{home.pillars.learn}">LEARN MORE →</a>
+          </article>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4" id="pillar-neurodiversity">
+          <article class="gp-pillar-card">
+            <div class="gp-pillar-icon" aria-hidden="true"><i class="fas fa-snowflake"></i></div>
+            <h3 class="gp-pillar-title" th:text="#{home.pillars.6.title}">Neurodiversity & Inclusions</h3>
+            <p class="gp-pillar-text" th:text="#{home.pillars.6.text}">Support for neurodivergent children and inclusive parenting.</p>
+            <a class="gp-pillar-link" th:href="@{/functions(function=5)}" th:text="#{home.pillars.learn}">LEARN MORE →</a>
+          </article>
+        </div>
+      </div>
+    </div>
+    </div>
+  </section>
+
   <!-- WHY -->
   <section class="gp-index-why">
     <div class="container-xxl">
       <h2 class="gp-index-why-title" th:text="#{home.why.title_en}">Why Genius Parenting AI?</h2>
+      <p class="gp-index-why-intro" th:text="#{home.why.intro}">
+        Our guidance is built on proven educational frameworks — not generic AI guesses. That means fewer hallucinations, and support you can trust.
+      </p>
 
       <div class="row gy-5 gx-4">
         <div class="col-12 col-md-6 col-lg-4">
           <article class="gp-index-why-card">
-            <img th:src="@{/images/index/index-image2.png}" alt="Personalized support" class="gp-index-why-img">
+            <img th:src="@{/images/index/index-image2.png}" alt="Educational expertise" class="gp-index-why-img">
             <h3 class="gp-index-why-card-title" th:text="#{home.why.card1.title_en}">
-              Personalized Parenting Support:
+              Built on Educational Expertise
             </h3>
             <p class="gp-index-why-card-text" th:text="#{home.why.card1.text_en}">
-              Get daily insights tailored to your child’s age, needs & growth pace — backed by experts.
+              Designed with specialists connected to the University of British Columbia, so every recommendation is grounded in real educational practice.
             </p>
             <a class="gp-index-why-link" th:href="@{/index-inner/why-parenting}" th:text="#{home.why.learn_en}">Learn More →</a>
           </article>
@@ -400,12 +666,12 @@
 
         <div class="col-12 col-md-6 col-lg-4">
           <article class="gp-index-why-card">
-            <img th:src="@{/images/index/index-image3.png}" alt="Creativity & Learning Hub" class="gp-index-why-img">
+            <img th:src="@{/images/index/index-image3.png}" alt="Responsible AI" class="gp-index-why-img">
             <h3 class="gp-index-why-card-title" th:text="#{home.why.card2.title_en}">
-              Creativity & Learning, in one hub
+              Responsible AI
             </h3>
             <p class="gp-index-why-card-text" th:text="#{home.why.card2.text_en}">
-              Unlock art, stories, and games that spark emotional & cognitive growth.
+              Trained on expert-vetted frameworks rather than random forums, so answers stay educational — not improvised.
             </p>
             <a class="gp-index-why-link" th:href="@{/index-inner/why-creativity}" th:text="#{home.why.learn_en}">Learn More →</a>
           </article>
@@ -413,12 +679,12 @@
 
         <div class="col-12 col-md-6 col-lg-4">
           <article class="gp-index-why-card">
-            <img th:src="@{/images/index/index-image4.png}" alt="Community and expert access" class="gp-index-why-img">
+            <img th:src="@{/images/index/index-image4.png}" alt="Privacy" class="gp-index-why-img">
             <h3 class="gp-index-why-card-title" th:text="#{home.why.card3.title_en}">
-              Community & Expert Access
+              Privacy
             </h3>
             <p class="gp-index-why-card-text" th:text="#{home.why.card3.text_en}">
-              Learn with real parents and vetted experts, any time you need.
+              Anonymous by default. No tracking families, and no selling of your data.
             </p>
             <a class="gp-index-why-link" th:href="@{/index-inner/why-community}" th:text="#{home.why.learn_en}">Learn More →</a>
           </article>
@@ -427,169 +693,30 @@
     </div>
   </section>
 
-  <!-- RESULTS -->
-  <section class="gp-index-results">
-    <div class="gp-index-results-box">
-      <div class="container-xxl gp-index-results-inner">
-
-        <h3 class="gp-index-results-title" th:text="#{home.results.title_en}">
-          Real parents. Real results.
-        </h3>
-
-        <div class="gp-index-quote-viewport" id="resultsViewport">
-          <div class="gp-index-quote-track" id="resultsTrack">
-            <article class="gp-index-quote-card">
-              <div class="gp-index-quote-inner">
-                <blockquote class="gp-index-quote-text" th:text="#{home.results.quote1_en}">
-                  "Genius Parenting AI transformed my approach — it’s part emotional support, part creative spark, all in one app."
-                </blockquote>
-                <div class="gp-index-quote-author">
-                  <img th:src="@{/images/index/avatar1.png}" alt="Sarah avatar" class="gp-index-avatar">
-                  <span class="gp-index-author-name" th:text="#{home.results.author1_en}">Sarah, Mom of Two</span>
-                </div>
-              </div>
-            </article>
-
-            <article class="gp-index-quote-card">
-              <div class="gp-index-quote-inner">
-                <blockquote class="gp-index-quote-text" th:text="#{home.results.quote2_en}">
-                  "I love the milestone tracker! It keeps me calm and helps me track my daughter's progress effortlessly."
-                </blockquote>
-                <div class="gp-index-quote-author">
-                  <img th:src="@{/images/index/avatar2.png}" alt="David avatar" class="gp-index-avatar">
-                  <span class="gp-index-author-name" th:text="#{home.results.author2_en}">David, Father of a 5-Year-Old</span>
-                </div>
-              </div>
-            </article>
-
-            <article class="gp-index-quote-card">
-              <div class="gp-index-quote-inner">
-                <blockquote class="gp-index-quote-text" th:text="#{home.results.quote3_en}">
-                  "I finally feel confident about my child's social skills thanks to the MindBridge feature. It's like having a coach!"
-                </blockquote>
-                <div class="gp-index-quote-author">
-                  <img th:src="@{/images/index/avatar3.png}" alt="James avatar" class="gp-index-avatar">
-                  <span class="gp-index-author-name" th:text="#{home.results.author3_en}">James, Dad of a 7-Year-Old</span>
-                </div>
-              </div>
-            </article>
-          </div>
-        </div>
-
-        <div class="gp-index-results-controls">
-          <button class="gp-index-nav" type="button" data-dir="left" aria-label="Previous">←</button>
-          <button class="gp-index-nav" type="button" data-dir="right" aria-label="Next">→</button>
-        </div>
-
-        <div class="mt-3">
-          <a href="https://apps.apple.com/us/app/geniusparentingai/id6747332178?itscg=30200&itsct=apps_box_link&mttnsubad=6747332178"
-             class="btn gp-cta-btn"
-             th:text="#{home.hero.cta_en}">
-             Download the App</a>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- EXPLORE (3 + 2 cards) -->
-  <section class="gp-index-explore ex-square">
+  <!-- CREDENTIALS -->
+  <section class="gp-index-credentials">
     <div class="container-xxl">
-      <h3 class="gp-index-ex-title text-center" th:text="#{home.explore.title_en}">
-        Explore what you can do with Genius Parenting AI
-      </h3>
-
-      <div class="row g-4 justify-content-center mb-5">
-        <div class="col-12 col-md-6 col-lg-4">
-          <a th:href="@{/seg-mini-course}" class="gp-index-ex-card-link" aria-label="Mini Courses">
-            <article class="gp-index-ex-card text-center">
-              <img th:src="@{/images/index/index-image5.png}" alt="Mini Courses" class="gp-index-ex-img">
-              <div class="gp-index-ex-divider"></div>
-              <div class="gp-index-ex-text">
-                <h6 class="gp-index-ex-h" th:text="#{home.explore.tile1.title_en}">Mini Courses that grow with you</h6>
-                <p class="gp-index-ex-p" th:text="#{home.explore.tile1.text_en}">Short, science-based growth guides.</p>
-              </div>
-            </article>
-          </a>
-        </div>
-
-        <!-- INSIGHTS card -->
-        <div class="col-12 col-md-6 col-lg-4">
-          <a th:href="@{/seg-ai-chat}" class="gp-index-ex-card-link" aria-label="Personalized AI Insights">
-            <article class="gp-index-ex-card text-center is-insights">
-              <!-- normal face -->
-              <div class="gp-index-ex-face">
-                <img th:src="@{/images/index/index-image6.png}" alt="Personalized AI Insights" class="gp-index-ex-img">
-                <div class="gp-index-ex-divider"></div>
-                <div class="gp-index-ex-text">
-                  <h6 class="gp-index-ex-h" th:text="#{home.explore.tile2.title_en}">Get Personalized AI Insights</h6>
-                  <p class="gp-index-ex-p" th:text="#{home.explore.tile2.text_en}">Guidance matched to your child.</p>
-                </div>
-              </div>
-
-              <!-- hover overlay -->
-              <div class="gp-index-ex-overlay" aria-hidden="true">
-				<h6 class="gp-ol-title" style="padding-top:30px; padding-bottom:30px;">
-				  <span th:text="#{home.explore.tile2.hover_title_l1_en}">Get Personalized</span><br/>
-				  <span class="gp-ol-title-line2" th:text="#{home.explore.tile2.hover_title_l2_en}">AI Insights</span>
-				</h6>
-
-                <div class="gp-index-ex-divider"></div>
-                <div style="padding-top:20px;">
-                <p class="gp-ol-text" th:text="#{home.explore.tile2.hover_text_en}">
-                  Daily Boost based on child’s mood, progress & upcoming needs
-                </p>
-                </div>
-                <div style="padding-top:30px; padding-bottom:20px;">
-                <a href="#" class="gp-ol-link" th:text="#{home.explore.learn_more_en}">Learn More →</a>
-                </div>
-              </div>
-            </article>
-          </a>
-        </div>
-
-        <div class="col-12 col-md-6 col-lg-4">
-          <a th:href="@{/seg-topics-and-tips}" class="gp-index-ex-card-link" aria-label="Hot Topics and Tips">
-            <article class="gp-index-ex-card text-center">
-              <img th:src="@{/images/index/index-image7.png}" alt="Hot Topics and Tips" class="gp-index-ex-img">
-              <div class="gp-index-ex-divider"></div>
-              <div class="gp-index-ex-text">
-                <h6 class="gp-index-ex-h" th:text="#{home.explore.tile3.title_en}">Hot Topics and Tips</h6>
-                <p class="gp-index-ex-p" th:text="#{home.explore.tile3.text_en}">Bite-size reads that matter today.</p>
-              </div>
-            </article>
-          </a>
-        </div>
-      </div>
-
-      <!-- Row 2 -->
-      <div class="row g-4 justify-content-center">
-        <div class="col-12 col-md-6 col-lg-4">
-          <a th:href="@{/seg-emotion}" class="gp-index-ex-card-link" aria-label="Build Emotional Awareness">
-            <article class="gp-index-ex-card text-center">
-              <img th:src="@{/images/index/index-image8.png}" alt="Build Emotional Awareness" class="gp-index-ex-img">
-              <div class="gp-index-ex-divider"></div>
-              <div class="gp-index-ex-text">
-                <h6 class="gp-index-ex-h" th:text="#{home.explore.tile4.title_en}">Build Emotional Awareness</h6>
-                <p class="gp-index-ex-p" th:text="#{home.explore.tile4.text_en}">Grow social-emotional skills together.</p>
-              </div>
-            </article>
-          </a>
-        </div>
-
-        <div class="col-12 col-md-6 col-lg-4">
-          <a th:href="@{/seg-join-community}" class="gp-index-ex-card-link" aria-label="Inclusive Parenting Community">
-            <article class="gp-index-ex-card text-center">
-              <img th:src="@{/images/index/index-image9.png}" alt="Inclusive Parenting Community" class="gp-index-ex-img">
-              <div class="gp-index-ex-divider"></div>
-              <div class="gp-index-ex-text">
-                <h6 class="gp-index-ex-h" th:text="#{home.explore.tile5.title_en}">Join a Multicultural, Inclusive Parenting Community</h6>
-                <p class="gp-index-ex-p" th:text="#{home.explore.tile5.text_en}">Learn with real families & experts.</p>
-              </div>
-            </article>
-          </a>
-        </div>
-      </div>
+      <h2 class="gp-index-credentials-title" th:text="#{home.credentials.title}">
+        Unlike generic AI tools, GeniusParentingAI is built by real educators. Our platform and frameworks are developed and guided by:
+      </h2>
+      <ul class="gp-cred-list">
+        <li>
+          <span class="gp-cred-check" aria-hidden="true"><i class="fas fa-check"></i></span>
+          <span><strong th:text="#{home.credentials.1.title}">UBC Educational Leadership</strong>
+            — <span th:text="#{home.credentials.1.text}">Founding team holds Master's degrees in Adult Education from UBC.</span></span>
+        </li>
+        <li>
+          <span class="gp-cred-check" aria-hidden="true"><i class="fas fa-check"></i></span>
+          <span><strong th:text="#{home.credentials.2.title}">Distinguished Board Oversight</strong>
+            — <span th:text="#{home.credentials.2.text}">Includes a UBC Education Professor on the Advisory Board.</span></span>
+        </li>
+        <li>
+          <span class="gp-cred-check" aria-hidden="true"><i class="fas fa-check"></i></span>
+          <span><strong th:text="#{home.credentials.3.title}">EdTech Experts</strong>
+            — <span th:text="#{home.credentials.3.text}">Collaboration with Master's of Educational Technology students.</span></span>
+        </li>
+      </ul>
+      <a class="gp-cred-more" th:href="@{/vision}" th:text="#{home.credentials.more}">learn more about our team and methodology →</a>
     </div>
   </section>
 
@@ -602,21 +729,8 @@
       <div class="row g-0 cta-row">
         <div class="col-12 col-lg-7 cta-left">
           <div class="cta-left-inner">
-            <h2 class="cta-title"><span th:text="#{index-caption-19-1}">Built on Privacy, Respect, and Educational Integrity</span></h2>
-
-            <p class="cta-tagline" th:text="#{index-caption-21-1-1}">GeniusParentingAI is intentionally designed as an anonymous, privacy-first educational experience:</p>
-	        <ul class="cta-bullets">	        
-            	<li th:text="#{index-caption-22-2}">No verified email addresses required</li>
-            	<li th:text="#{index-caption-23-2}">No real-name requirements</li>
-            	<li th:text="#{index-caption-24-2}">No mandatory personal or child-identifiable data</li>
-            </ul>
-            
-            
-            <p class="cta-tagline" th:text="#{index-caption-22-3}">This reflects our commitment to educational ethics, data minimization, and respect for family dignity. Parents deserve support without surveillance—and learning without being tracked.</p>
-<!--			<p class="cta-tagline" th:text="#{index-caption-22-4}"></p>
-             <p class="cta-tagline" th:text="#{index-caption-241}">
-              Download Genius Parenting AI and make parenting feel… lighter.
-            </p>  -->
+            <h2 class="cta-title" th:text="#{home.cta.title}">Parenting, just a tap away</h2>
+            <p class="cta-tagline" th:text="#{home.cta.text}">Instant, educator-guided advice for everyday moments — and calmer milestones along the way.</p>
 
             <hr class="cta-rule">
 
@@ -628,6 +742,9 @@
                 <div class="d-flex align-items-center gap-2">
                   <a href="https://apps.apple.com/us/app/geniusparentingai/id6747332178?itscg=30200&itsct=apps_box_link&mttnsubad=6747332178">
                     <img th:src="@{/images/index/index-image12.png}" alt="App Store" class="cta-store-badge">
+                  </a>
+                  <a href="#">
+                    <img th:src="@{/images/index/index-image11.png}" alt="Google Play" class="cta-store-badge">
                   </a>
                 </div>
               </div>
@@ -642,14 +759,54 @@
 
   <script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', function () {
-      const viewport = document.getElementById('resultsViewport');
-      if (!viewport) return;
-      const step = () => viewport.clientWidth;
-      document.querySelectorAll('.gp-index-nav').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const dir = btn.dataset.dir === 'left' ? -1 : 1;
-          viewport.scrollBy({ left: dir * step(), behavior: 'smooth' });
+      const form = document.getElementById('gpQuiz');
+      const result = document.getElementById('gpQuizResult');
+      if (!form || !result) return;
+      const steps = Array.from(form.querySelectorAll('.gp-quiz-step'));
+      const suggestions = {
+        foundations: { name: 'Parenting Foundations', course: 'Parenting Foundations', tip: 'Start the day with one small ritual of connection.', href: '/functions?function=4' },
+        emotions: { name: 'Emotional Wellbeing', course: 'Emotional Wellbeing', tip: 'Name the feeling before you try to fix the behavior.', href: '/functions?function=1' },
+        connection: { name: 'Communication Connection', course: 'Communication Connection', tip: 'Spend five minutes of undivided play together.', href: '/functions?function=2' },
+        learning: { name: 'Learning & Thinking', course: 'Cognitive Development', tip: "Try 'strewing' open-ended toys.", href: '/functions?function=3' },
+        dailylife: { name: 'Daily Life & Modern Challenges', course: 'Daily Life', tip: 'Preview the next transition two minutes early.', href: '/functions?function=4' },
+        neurodiversity: { name: 'Neurodiversity & Inclusions', course: 'Neurodiversity & Inclusion', tip: 'Follow their interest for ten minutes before you redirect.', href: '/functions?function=5' },
+        others: { name: 'Parenting Foundations', course: 'Parenting Foundations', tip: 'Start with one small, repeatable routine this week.', href: '/seg-mini-course' }
+      };
+      const ageLabel = {
+        '0-2': 'a 2-year-old',
+        '3-5': 'a 3-year-old',
+        '6-8': 'a 6-year-old',
+        '9-12': 'a 9-year-old',
+        '13-18': 'a teen'
+      };
+
+      function showStep(index) {
+        steps.forEach((step, i) => { step.hidden = i !== index; });
+      }
+
+      form.querySelectorAll('[data-quiz-next]').forEach(btn => {
+        btn.addEventListener('click', function () {
+          const current = btn.closest('.gp-quiz-step');
+          const selected = current.querySelector('input[type="radio"]:checked');
+          if (!selected) return;
+          const nextIndex = steps.indexOf(current) + 1;
+          if (nextIndex < steps.length) showStep(nextIndex);
         });
+      });
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const challenge = (form.querySelector('input[name="q1"]:checked') || {}).value || 'others';
+        const age = (form.querySelector('input[name="q2"]:checked') || {}).value || '3-5';
+        const suggestion = suggestions[challenge] || suggestions.others;
+        document.getElementById('gpQuizResultTitle').textContent =
+          'Focusing on ' + suggestion.name + ' for ' + (ageLabel[age] || 'your child') + '?';
+        document.getElementById('gpQuizResultTip').textContent = suggestion.tip;
+        document.getElementById('gpQuizResultCta').textContent =
+          'Jump directly into our full, privacy-first course on ' + suggestion.course + '!';
+        document.getElementById('gpQuizResultLink').setAttribute('href', suggestion.href);
+        form.hidden = true;
+        result.hidden = false;
       });
     });
   </script>

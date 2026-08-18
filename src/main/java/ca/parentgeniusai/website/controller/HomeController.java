@@ -51,6 +51,19 @@ public class HomeController {
     	return "membership";
     }
     
+    @GetMapping("/pillars")
+    public String pillars(HttpServletRequest request, HttpServletResponse response,
+                          @RequestParam(name = "lang", required = false) String lang,
+                          Model model) {
+        if (lang != null) {
+            LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(request);
+            if (localeResolver != null) {
+                localeResolver.setLocale(request, response, new Locale(lang));
+            }
+        }
+        return "pillars";
+    }
+
     @GetMapping("/vision")
     public String vision(HttpServletRequest request, HttpServletResponse response, 
                          @RequestParam(name = "lang", required = false) String lang, 
