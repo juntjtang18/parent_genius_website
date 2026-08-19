@@ -76,11 +76,12 @@
           </li>
 
           <!-- Community -->
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="communityDropdown" role="button"
+          <li class="nav-item dropdown" id="communityNavDropdown">
+            <a class="nav-link dropdown-toggle" href="/community" id="communityDropdown" role="button"
                data-bs-toggle="dropdown" aria-expanded="false" th:text="#{navbar.caption3}">Community</a>
             <!-- STYLE ONLY -->
             <ul class="dropdown-menu gp-cta-menu" aria-labelledby="communityDropdown">
+              <li><a class="dropdown-item gp-cta-item" href="/community" th:text="#{navbar.caption3}">Community</a></li>
               <li><a class="dropdown-item gp-cta-item" href="/posts" th:text="#{navbar.caption5}">Connect</a></li>
               <li><a class="dropdown-item gp-cta-item" href="/join-us" th:text="#{navbar.caption61}">Become a member</a></li>
               <li><a class="dropdown-item gp-cta-item" href="/nbnet/familynplaymates" th:text="#{navbar_nn_playmates}">Playmates&amp;Families Nearby</a></li>
@@ -229,7 +230,8 @@
 
 .navbar .dropdown-menu { border-radius: .75rem; }
 @media (min-width: 992px) {
-  #segmentsDropdown:hover > .dropdown-menu {
+  #segmentsDropdown:hover > .dropdown-menu,
+  #communityNavDropdown:hover > .dropdown-menu {
     display: block;
     margin-top: 0;
   }
@@ -318,6 +320,17 @@
           e.preventDefault();
           e.stopImmediatePropagation();
           window.location.assign(this.getAttribute('href') || '/pillars');
+        }
+      }, true);
+    }
+
+    const communityLink = document.getElementById('communityDropdown');
+    if (communityLink) {
+      communityLink.addEventListener('click', function (e) {
+        if (window.matchMedia('(min-width: 992px)').matches) {
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          window.location.assign(this.getAttribute('href') || '/community');
         }
       }, true);
     }

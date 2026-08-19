@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title th:text="#{seg-community.meta.title}">Community – GeniusParentingAI</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --gp-ink: #1f2937;
+  --gp-muted: #6B7280;
+  --grad-hero: linear-gradient(125deg, #5B7CFF 0%, #4F6EF7 38%, #7B6CF6 72%, #8E54E9 100%);
+  --grad-cta: linear-gradient(125deg, #4F6EF7 0%, #6C6FF7 55%, #8E54E9 100%);
+}
+
+body{
+  padding-top: 3rem;
+  font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--gp-ink);
+  background: #fff;
+}
+@media (min-width:1200px){ body{ padding-top: 80px; } }
+
+/* ===== HERO ===== */
+.comm-hero{
+  position: relative;
+  overflow: hidden;
+  background-image: var(--grad-hero);
+  padding: 72px 0 80px;
+}
+.comm-hero-title{
+  font-weight: 700;
+  font-size: clamp(34px, 4.4vw, 56px);
+  line-height: 1.15;
+  color: #fff;
+  margin: 0 0 22px;
+}
+.comm-hero-body{
+  font-weight: 400;
+  font-size: clamp(16px, 1.5vw, 20px);
+  line-height: 1.7;
+  color: rgba(255,255,255,.92);
+  max-width: 34ch;
+  margin: 0;
+}
+.comm-hero-phones{
+  display: block;
+  width: min(100%, 520px);
+  margin-inline: auto;
+  filter: drop-shadow(0 22px 40px rgba(15,23,42,.28));
+}
+@media (min-width:992px){
+  .comm-hero{ padding: 88px 0 96px; }
+  .comm-hero-phones{ margin-inline: 0 0; margin-left: auto; }
+}
+
+/* ===== AI + PHOTO ===== */
+.comm-ai{ background:#fff; padding: 88px 0 32px; }
+.comm-ai-title{
+  font-weight: 600;
+  font-size: clamp(26px, 3.1vw, 40px);
+  line-height: 1.35;
+  color: var(--gp-ink);
+  max-width: 18.5em;
+  margin: 0 auto 20px;
+  text-align: center;
+}
+.comm-ai-body{
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1.7;
+  color: var(--gp-muted);
+  max-width: 42em;
+  margin: 0 auto 36px;
+  text-align: center;
+}
+.comm-ai-also{
+  font-weight: 500;
+  font-size: 18px;
+  color: var(--gp-ink);
+  text-align: center;
+  margin: 0 0 28px;
+}
+
+.comm-photo-wrap{
+  max-width: 820px;
+  margin: 0 auto;
+}
+.comm-photo-card{
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 18px 40px rgba(15,23,42,.10);
+}
+.comm-photo-collage{
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  padding: 10px 10px 0;
+  filter: blur(2px);
+  opacity: .55;
+}
+.comm-photo-collage img{
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 8px;
+}
+.comm-photo-main{
+  position: relative;
+  margin: -42px 28px 0;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 16px 32px rgba(15,23,42,.16);
+}
+.comm-photo-main img{
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  aspect-ratio: 16 / 9;
+}
+.comm-photo-caption{
+  text-align: center;
+  font-size: 18px;
+  line-height: 1.65;
+  color: var(--gp-ink);
+  max-width: 34em;
+  margin: 28px auto 0;
+  padding: 0 16px 36px;
+}
+
+/* ===== VALUES ===== */
+.comm-values{ background:#fff; padding: 72px 0 96px; text-align: center; }
+.comm-values-lead{
+  font-weight: 500;
+  font-size: clamp(22px, 2.6vw, 32px);
+  line-height: 1.45;
+  max-width: 18em;
+  margin: 0 auto 36px;
+}
+.comm-heart{
+  width: 118px;
+  height: auto;
+  display: block;
+  margin: 0 auto 28px;
+}
+.comm-values-title{
+  font-weight: 700;
+  font-size: clamp(28px, 3vw, 36px);
+  margin: 0 0 12px;
+}
+.comm-values-body{
+  font-size: 18px;
+  line-height: 1.65;
+  color: var(--gp-muted);
+  max-width: 32em;
+  margin: 0 auto;
+}
+
+/* ===== CTA ===== */
+.comm-cta{
+  position: relative;
+  overflow: hidden;
+  min-height: clamp(520px, 64vh, 680px);
+  color: #fff;
+}
+.comm-cta-bg{
+  position: absolute;
+  inset: 0;
+  background-image: var(--grad-cta);
+  z-index: 0;
+}
+.comm-cta-row{
+  position: relative;
+  z-index: 1;
+  min-height: inherit;
+}
+.comm-cta-copy{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 64px clamp(24px, 5vw, 72px);
+}
+.comm-cta-title{
+  font-weight: 600;
+  font-size: clamp(28px, 3.2vw, 44px);
+  line-height: 1.25;
+  margin: 0 0 16px;
+  max-width: 16em;
+}
+.comm-cta-sub{
+  font-size: 18px;
+  line-height: 1.6;
+  color: rgba(255,255,255,.92);
+  margin: 0 0 36px;
+}
+.comm-cta-download{
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+.comm-cta-qr{
+  width: 124px;
+  height: 124px;
+  border-radius: 12px;
+  background: #fff;
+  padding: 8px;
+}
+.comm-cta-dl-title{
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 1.2;
+  margin: 0 0 12px;
+}
+.comm-cta-store{
+  height: 40px;
+  width: auto;
+  display: block;
+}
+.comm-cta-art{
+  min-height: inherit;
+  position: relative;
+}
+.comm-cta-art img{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+@media (max-width:991.98px){
+  .comm-hero{ padding: 48px 0 56px; }
+  .comm-hero-body{ max-width: none; }
+  .comm-ai{ padding-top: 56px; }
+  .comm-photo-main{ margin-inline: 16px; }
+  .comm-cta-art{ min-height: 320px; }
+  .comm-cta-art img{ position: relative; height: 320px; }
+}
+</style>
+</head>
+<body>
+  <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+  <section class="comm-hero">
+    <div class="container-xxl">
+      <div class="row align-items-center g-5">
+        <div class="col-lg-5">
+          <h1 class="comm-hero-title" th:text="#{seg-community.hero.title}">Welcome to Our Community</h1>
+          <p class="comm-hero-body" th:text="#{seg-community.hero.body}">We've created the Community for a safe and supportive place where parents can ask questions, share experiences, and learn from one another.</p>
+        </div>
+        <div class="col-lg-7">
+          <img th:src="@{/images/seg-community/community-image-01.png}" alt="GeniusParentingAI community app" class="comm-hero-phones">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="comm-ai">
+    <div class="container-xxl">
+      <h2 class="comm-ai-title" th:text="#{seg-community.ai.title}">To help you find the right support quickly, every discussion is automatically organized into our 6 Learning Pillars using AI.</h2>
+      <p class="comm-ai-body" th:text="#{seg-community.ai.body}">This means it's easier to navigate, search for topics that matter, and find the parenting advice you need — without endless scrolling.</p>
+      <p class="comm-ai-also" th:text="#{seg-community.ai.also}">You can also:</p>
+
+      <div class="comm-photo-wrap">
+        <div class="comm-photo-card">
+          <div class="comm-photo-collage" aria-hidden="true">
+            <img th:src="@{/images/index/avatar1.png}" alt="">
+            <img th:src="@{/images/index/avatar2.png}" alt="">
+            <img th:src="@{/images/index/avatar3.png}" alt="">
+            <img th:src="@{/images/why-community/community-image-02.png}" alt="">
+            <img th:src="@{/images/about/team-shu.png}" alt="">
+          </div>
+          <div class="comm-photo-main">
+            <img th:src="@{/images/why-community/community-image-03.png}" alt="Parents in the GeniusParentingAI community">
+          </div>
+          <p class="comm-photo-caption" th:text="#{seg-community.ai.card}">Join conversations, ask questions, and support other parents in a respectful, judgment-free environment.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="comm-values">
+    <div class="container-xxl">
+      <p class="comm-values-lead" th:text="#{seg-community.values.lead}">Together, we're building a community where parents learn, connect, and grow—one conversation at a time.</p>
+      <svg class="comm-heart" viewBox="0 0 56 50" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="commHeartGrad" x1="8" y1="4" x2="28" y2="46" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#30D0DB"/>
+            <stop offset="1" stop-color="#3AB7EB"/>
+          </linearGradient>
+        </defs>
+        <path fill="url(#commHeartGrad)" d="M30.13 17.43c-.24 1.4-1.24 2.23-1.68 3.42-.18.48-.06 1.4-.19 1.56-.08.1-.8.12-1.12.3-.9.48-1.56 1.26-2.48 1.66-.97.03-2.12-1.75-3.34-2.08C17.25 21.19 15.19 26.75 14.95 29.95c-.24 3.18.26 6.06 1.53 8.61 1.32 2.25 3.11 4.25 4.11 4.25-3.57-2.58-6.51-5.08-8.92-7.48C9.25 32.79 6.92 29.98 5.07 27.18c-.5-.81-.93-1.6-1.31-2.36C2.35 23.97 2 23.18 1.7 22.41-3.07 10.17 3.38 4.33 7.89 1.86 9.64.9 11.1.45 11.51.34 19.33-1.47 26.69 4.98 26.89 5.16c-3.78-1.9-6.94-2.65-9.58-2.65-8.91 0-11.8 8.6-12.1 10.56-.4 2.53-.21 8.04 3.3 13 .99 1.53 2.22 2.91 3.44 4.05-.35-3.08-.13-5.94.64-8.94 1.19-4.66 4.66-10.51 9.87-11.16 4.18-.52 8.44 2.99 7.68 7.4z"/>
+        <path fill="#1e3a5f" d="M31.35 5.25c6.2-5.67 17.33-4.86 21.9 2.45 3.7 5.52 3.02 10.57.55 16.27-7.09 5.39-16.34 9.81-19.21 11.13.18.23.78.62 1.34.62.56 0 1.01-.45 1.01-1.01 0-.56-.45-1.01-1.01-1.01-.32 0-.6.15-.78.38 2.78-1.28 11.5-5.45 18.52-10.61-1.03 1.88-2.53 3.88-3.94 5.69-6.53 4.44-13.86 7.94-16.36 9.09.18.23.79.38 1.21.38.56 0 1.01.45 1.01 1.01s-.45 1.01-1.01 1.01c-.52 0-.95-.4-1.01-.91 2.34-1.08 8.93-4.23 15.16-8.3-.24.31-.47.6-.69.89-4.52 4.73-9.34 9.23-14.77 12.83-1.05.69-2.21 1.45-2.68 1.53-.72.14.29-1.35.42-1.92 2.18-7.22-8.17-6.13-9.49-12.7-.62-2.51-.48-5.59 1.12-7.7.72-.72.46 1.4.53 1.76.03 1.39.5 2.4 1.27 3.09 2.14 1.77 5.24 1.39 7.98.75 2.04-.5 3.84-1.37 5.68-2.35 4.03-2.17 8.24-5.09 10.44-9.35 3.35-5.84.74-12.26-5.64-14.26-2.97-.99-6.77-.78-9.82.45-.99.37-1.91.94-2.26.93.18-.16.8-.68 1.82-1.6z"/>
+      </svg>
+      <h2 class="comm-values-title" th:text="#{seg-community.values.title}">Connect. Learn. Support.</h2>
+      <p class="comm-values-body" th:text="#{seg-community.values.body}">A space for like-minded parents to collaborate with knowledgeable, easy-to-find guidance you need.</p>
+    </div>
+  </section>
+
+  <section id="download" class="comm-cta">
+    <div class="comm-cta-bg" aria-hidden="true"></div>
+    <div class="container-fluid px-0">
+      <div class="row g-0 comm-cta-row">
+        <div class="col-12 col-lg-6 comm-cta-copy">
+          <h2 class="comm-cta-title" th:text="#{seg-community.cta.title}">Because raising a child takes a village — and we're building one for you.</h2>
+          <p class="comm-cta-sub" th:text="#{seg-community.cta.sub}">Join the community and share your thoughts and problems.</p>
+          <div class="comm-cta-download">
+            <img th:src="@{/images/gpa-qr-code.png}" alt="QR code to download the app" class="comm-cta-qr">
+            <div>
+              <h3 class="comm-cta-dl-title" th:text="#{seg-community.cta.download}">Download the App!</h3>
+              <div class="d-flex align-items-center gap-2 flex-wrap">
+                <a href="#" aria-label="Get it on Google Play">
+                  <img th:src="@{/images/index/index-image11.png}" alt="Get it on Google Play" class="comm-cta-store">
+                </a>
+                <a href="https://apps.apple.com/us/app/geniusparentingai/id6747332178" aria-label="Download on the App Store">
+                  <img th:src="@{/images/index/index-image12.png}" alt="Download on the App Store" class="comm-cta-store">
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-6 comm-cta-art">
+          <img th:src="@{/images/seg-community/community-image-08.png}" alt="Parent and child">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div th:replace="~{fragments/chatbot :: chatbot}"></div>
+  <div th:replace="~{fragments/footer :: footer}"></div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

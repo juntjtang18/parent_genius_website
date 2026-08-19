@@ -25,9 +25,4 @@ public class SegmentController {
     public String emotionSegment() {
         return "segments/seg-emotion";
     }
-
-    @GetMapping("/seg-join-community")
-    public String communitySegment() {
-        return "segments/seg-community"; // fixed typo
-    }
 }
