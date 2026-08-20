@@ -117,11 +117,18 @@
   content:""; position:absolute; left:6px; top:3px; width:6px; height:10px;
   border:solid #fff; border-width:0 2px 2px 0; transform:rotate(45deg);
 }
+.gp-quiz-actions{ display:flex; flex-wrap:wrap; align-items:center; gap:12px 18px; }
 .gp-quiz-submit{
   background:#3EC6E8; color:#fff; border:0; border-radius:9999px;
   padding:.7rem 2.6rem; font-family:'Poppins',sans-serif; font-weight:600; font-size:18px;
 }
 .gp-quiz-submit:hover, .gp-quiz-submit:focus{ color:#fff; filter:brightness(1.04); }
+.gp-quiz-skip{
+  background:transparent; color:#6B7280; border:0; border-radius:9999px;
+  padding:.7rem 1.4rem; font-family:'Poppins',sans-serif; font-weight:600; font-size:18px;
+  text-decoration:underline; text-underline-offset:3px;
+}
+.gp-quiz-skip:hover, .gp-quiz-skip:focus{ color:#111827; }
 .gp-quiz-step[hidden], .gp-quiz-card[hidden]{ display:none !important; }
 .gp-quiz-result{
   display:flex; align-items:stretch; overflow:hidden;
@@ -545,7 +552,10 @@
             <li><label class="gp-quiz-option"><input type="radio" name="q1" value="neurodiversity"><span class="gp-quiz-radio"></span><span th:text="#{home.quiz.q1.opt6}">Related to my neurodivergent child.</span></label></li>
             <li><label class="gp-quiz-option"><input type="radio" name="q1" value="others"><span class="gp-quiz-radio"></span><span th:text="#{home.quiz.q1.opt7}">Others</span></label></li>
           </ul>
-          <button type="button" class="gp-quiz-submit" data-quiz-next th:text="#{home.quiz.submit}">Submit</button>
+          <div class="gp-quiz-actions">
+            <button type="button" class="gp-quiz-submit" data-quiz-next th:text="#{home.quiz.submit}">Submit</button>
+            <button type="button" class="gp-quiz-skip" data-quiz-skip th:text="#{home.quiz.skip}">Skip</button>
+          </div>
         </div>
 
         <div class="gp-quiz-step" data-step="2" hidden>
@@ -558,7 +568,10 @@
             <li><label class="gp-quiz-option"><input type="radio" name="q2" value="9-12"><span class="gp-quiz-radio"></span><span th:text="#{home.quiz.q2.opt4}">9-12</span></label></li>
             <li><label class="gp-quiz-option"><input type="radio" name="q2" value="13-18"><span class="gp-quiz-radio"></span><span th:text="#{home.quiz.q2.opt5}">13-18</span></label></li>
           </ul>
-          <button type="submit" class="gp-quiz-submit" th:text="#{home.quiz.submit}">Submit</button>
+          <div class="gp-quiz-actions">
+            <button type="submit" class="gp-quiz-submit" th:text="#{home.quiz.submit}">Submit</button>
+            <button type="button" class="gp-quiz-skip" data-quiz-skip th:text="#{home.quiz.skip}">Skip</button>
+          </div>
         </div>
       </form>
 
@@ -571,7 +584,7 @@
           <p class="gp-quiz-result-tip" id="gpQuizResultTip">Try 'strewing' open-ended toys.</p>
           <hr>
           <p class="gp-quiz-result-cta" id="gpQuizResultCta">Jump directly into our full, privacy-first course on Cognitive Development!</p>
-          <a class="gp-quiz-submit" id="gpQuizResultLink" th:href="@{/seg-mini-course}">View Course Now</a>
+          <a class="gp-quiz-submit" id="gpQuizResultLink" th:href="@{/courses/pillar/4}">View Course Now</a>
         </div>
         <div class="gp-quiz-result-art" aria-hidden="true">
           <div class="gp-quiz-result-mark">
@@ -594,7 +607,7 @@
             <div class="gp-pillar-icon" aria-hidden="true"><i class="fas fa-home"></i></div>
             <h3 class="gp-pillar-title" th:text="#{home.pillars.1.title}">Parenting Foundations</h3>
             <p class="gp-pillar-text" th:text="#{home.pillars.1.text}">Trust, unconditional love, and healthy modeling.</p>
-            <a class="gp-pillar-link" th:href="@{/functions(function=4)}" th:text="#{home.pillars.learn}">LEARN MORE →</a>
+            <a class="gp-pillar-link" th:href="@{/courses/pillar/1}" th:text="#{home.pillars.learn}">LEARN MORE →</a>
           </article>
         </div>
         <div class="col-12 col-md-6 col-lg-4" id="pillar-emotions">
@@ -602,7 +615,7 @@
             <div class="gp-pillar-icon" aria-hidden="true"><i class="fas fa-heart"></i></div>
             <h3 class="gp-pillar-title" th:text="#{home.pillars.2.title}">Emotional Wellbeing</h3>
             <p class="gp-pillar-text" th:text="#{home.pillars.2.text}">Understanding emotions, regulation, and behavior.</p>
-            <a class="gp-pillar-link" th:href="@{/functions(function=1)}" th:text="#{home.pillars.learn}">LEARN MORE →</a>
+            <a class="gp-pillar-link" th:href="@{/courses/pillar/2}" th:text="#{home.pillars.learn}">LEARN MORE →</a>
           </article>
         </div>
         <div class="col-12 col-md-6 col-lg-4" id="pillar-connection">
@@ -610,7 +623,7 @@
             <div class="gp-pillar-icon" aria-hidden="true"><i class="fas fa-comments"></i></div>
             <h3 class="gp-pillar-title" th:text="#{home.pillars.3.title}">Communication Connection</h3>
             <p class="gp-pillar-text" th:text="#{home.pillars.3.text}">Strengthening your bond and your child's social skills.</p>
-            <a class="gp-pillar-link" th:href="@{/functions(function=2)}" th:text="#{home.pillars.learn}">LEARN MORE →</a>
+            <a class="gp-pillar-link" th:href="@{/courses/pillar/3}" th:text="#{home.pillars.learn}">LEARN MORE →</a>
           </article>
         </div>
         <div class="col-12 col-md-6 col-lg-4" id="pillar-learning">
@@ -618,7 +631,7 @@
             <div class="gp-pillar-icon" aria-hidden="true"><i class="fas fa-book-open"></i></div>
             <h3 class="gp-pillar-title" th:text="#{home.pillars.4.title}">Learning & Thinking</h3>
             <p class="gp-pillar-text" th:text="#{home.pillars.4.text}">Curiosity, cognitive growth, and learning at home.</p>
-            <a class="gp-pillar-link" th:href="@{/functions(function=3)}" th:text="#{home.pillars.learn}">LEARN MORE →</a>
+            <a class="gp-pillar-link" th:href="@{/courses/pillar/4}" th:text="#{home.pillars.learn}">LEARN MORE →</a>
           </article>
         </div>
         <div class="col-12 col-md-6 col-lg-4" id="pillar-dailylife">
@@ -626,7 +639,7 @@
             <div class="gp-pillar-icon" aria-hidden="true"><i class="fas fa-users"></i></div>
             <h3 class="gp-pillar-title" th:text="#{home.pillars.5.title}">Daily Life & Modern Challenges</h3>
             <p class="gp-pillar-text" th:text="#{home.pillars.5.text}">Routines, transitions, and the pressures of family life.</p>
-            <a class="gp-pillar-link" th:href="@{/functions(function=4)}" th:text="#{home.pillars.learn}">LEARN MORE →</a>
+            <a class="gp-pillar-link" th:href="@{/courses/pillar/5}" th:text="#{home.pillars.learn}">LEARN MORE →</a>
           </article>
         </div>
         <div class="col-12 col-md-6 col-lg-4" id="pillar-neurodiversity">
@@ -634,7 +647,7 @@
             <div class="gp-pillar-icon" aria-hidden="true"><i class="fas fa-snowflake"></i></div>
             <h3 class="gp-pillar-title" th:text="#{home.pillars.6.title}">Neurodiversity & Inclusions</h3>
             <p class="gp-pillar-text" th:text="#{home.pillars.6.text}">Support for neurodivergent children and inclusive parenting.</p>
-            <a class="gp-pillar-link" th:href="@{/functions(function=5)}" th:text="#{home.pillars.learn}">LEARN MORE →</a>
+            <a class="gp-pillar-link" th:href="@{/courses/pillar/6}" th:text="#{home.pillars.learn}">LEARN MORE →</a>
           </article>
         </div>
       </div>
@@ -764,13 +777,13 @@
       if (!form || !result) return;
       const steps = Array.from(form.querySelectorAll('.gp-quiz-step'));
       const suggestions = {
-        foundations: { name: 'Parenting Foundations', course: 'Parenting Foundations', tip: 'Start the day with one small ritual of connection.', href: '/functions?function=4' },
-        emotions: { name: 'Emotional Wellbeing', course: 'Emotional Wellbeing', tip: 'Name the feeling before you try to fix the behavior.', href: '/functions?function=1' },
-        connection: { name: 'Communication Connection', course: 'Communication Connection', tip: 'Spend five minutes of undivided play together.', href: '/functions?function=2' },
-        learning: { name: 'Learning & Thinking', course: 'Cognitive Development', tip: "Try 'strewing' open-ended toys.", href: '/functions?function=3' },
-        dailylife: { name: 'Daily Life & Modern Challenges', course: 'Daily Life', tip: 'Preview the next transition two minutes early.', href: '/functions?function=4' },
-        neurodiversity: { name: 'Neurodiversity & Inclusions', course: 'Neurodiversity & Inclusion', tip: 'Follow their interest for ten minutes before you redirect.', href: '/functions?function=5' },
-        others: { name: 'Parenting Foundations', course: 'Parenting Foundations', tip: 'Start with one small, repeatable routine this week.', href: '/seg-mini-course' }
+        foundations: { name: 'Parenting Foundations', course: 'Parenting Foundations', tip: 'Start the day with one small ritual of connection.', href: '/courses/pillar/1' },
+        emotions: { name: 'Emotional Wellbeing', course: 'Emotional Wellbeing', tip: 'Name the feeling before you try to fix the behavior.', href: '/courses/pillar/2' },
+        connection: { name: 'Communication Connection', course: 'Communication Connection', tip: 'Spend five minutes of undivided play together.', href: '/courses/pillar/3' },
+        learning: { name: 'Learning & Thinking', course: 'Cognitive Development', tip: "Try 'strewing' open-ended toys.", href: '/courses/pillar/4' },
+        dailylife: { name: 'Daily Life & Modern Challenges', course: 'Daily Life', tip: 'Preview the next transition two minutes early.', href: '/courses/pillar/5' },
+        neurodiversity: { name: 'Neurodiversity & Inclusions', course: 'Neurodiversity & Inclusion', tip: 'Follow their interest for ten minutes before you redirect.', href: '/courses/pillar/6' },
+        others: { name: 'Parenting Foundations', course: 'Parenting Foundations', tip: 'Start with one small, repeatable routine this week.', href: '/courses/pillar/1' }
       };
       const ageLabel = {
         '0-2': 'a 2-year-old',
@@ -784,13 +797,36 @@
         steps.forEach((step, i) => { step.hidden = i !== index; });
       }
 
+      function goNext(step, skip) {
+        if (skip) {
+          step.querySelectorAll('input[type="radio"]').forEach(function (radio) {
+            radio.checked = false;
+          });
+        }
+        const nextIndex = steps.indexOf(step) + 1;
+        if (nextIndex < steps.length) {
+          showStep(nextIndex);
+          return;
+        }
+        if (typeof form.requestSubmit === 'function') {
+          form.requestSubmit();
+        } else {
+          form.dispatchEvent(new Event('submit', { cancelable: true }));
+        }
+      }
+
       form.querySelectorAll('[data-quiz-next]').forEach(btn => {
         btn.addEventListener('click', function () {
           const current = btn.closest('.gp-quiz-step');
           const selected = current.querySelector('input[type="radio"]:checked');
           if (!selected) return;
-          const nextIndex = steps.indexOf(current) + 1;
-          if (nextIndex < steps.length) showStep(nextIndex);
+          goNext(current, false);
+        });
+      });
+
+      form.querySelectorAll('[data-quiz-skip]').forEach(btn => {
+        btn.addEventListener('click', function () {
+          goNext(btn.closest('.gp-quiz-step'), true);
         });
       });
 

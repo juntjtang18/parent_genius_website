@@ -1,5 +1,9 @@
 package ca.parentgeniusai.website.model;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 public class Course {
     private Long id;
     private String title;
@@ -7,17 +11,29 @@ public class Course {
     private String iconImageUrl;
     private Long courseCategoryId;
     private String courseCategoryName;
+    private Long pillarId;
+    private String pillarName;
+    private Boolean published;
+    private List<Map<String, Object>> content = new ArrayList<>();
 
     public Course() {}
 
     public Course(Long id, String title, Integer order, String iconImageUrl,
                   Long courseCategoryId, String courseCategoryName) {
+        this(id, title, order, iconImageUrl, courseCategoryId, courseCategoryName, null, null);
+    }
+
+    public Course(Long id, String title, Integer order, String iconImageUrl,
+                  Long courseCategoryId, String courseCategoryName,
+                  Long pillarId, String pillarName) {
         this.id = id;
         this.title = title;
         this.order = order;
         this.iconImageUrl = iconImageUrl;
         this.courseCategoryId = courseCategoryId;
         this.courseCategoryName = courseCategoryName;
+        this.pillarId = pillarId;
+        this.pillarName = pillarName;
     }
 
     public Long getId() { return id; }
@@ -32,4 +48,14 @@ public class Course {
     public void setCourseCategoryId(Long courseCategoryId) { this.courseCategoryId = courseCategoryId; }
     public String getCourseCategoryName() { return courseCategoryName; }
     public void setCourseCategoryName(String courseCategoryName) { this.courseCategoryName = courseCategoryName; }
+    public Long getPillarId() { return pillarId; }
+    public void setPillarId(Long pillarId) { this.pillarId = pillarId; }
+    public String getPillarName() { return pillarName; }
+    public void setPillarName(String pillarName) { this.pillarName = pillarName; }
+    public Boolean getPublished() { return published; }
+    public void setPublished(Boolean published) { this.published = published; }
+    public List<Map<String, Object>> getContent() { return content; }
+    public void setContent(List<Map<String, Object>> content) {
+        this.content = content != null ? content : new ArrayList<>();
+    }
 }

@@ -66,7 +66,15 @@ echo "--- Deploying Spring Boot app version: ${VERSION} ---"
 
 # 1. Build and tag the Docker image with the freshly built JAR
 echo "Building Docker image: ${IMAGE_NAME}"
-docker build -t "${IMAGE_NAME}" .
+HOST_ARCH="$(uname -m)"
+DOCKER_BUILD_ARGS=(--provenance=false)
+if [[ "$HOST_ARCH" == "arm64" || "$HOST_ARCH" == "aarch64" ]]; then
+  echo "Host is ${HOST_ARCH}; cross-building linux/amd64 for Cloud Run"
+  DOCKER_BUILD_ARGS+=(--platform linux/amd64)
+else
+  echo "Host is ${HOST_ARCH}; building native linux/amd64 for Cloud Run"
+fi
+docker build "${DOCKER_BUILD_ARGS[@]}" -t "${IMAGE_NAME}" .
 
 # 2. Push the versioned Docker image to Google Container Registry
 echo "Pushing Docker image..."

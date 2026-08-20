@@ -20,59 +20,13 @@
         <!-- Center menu -->
         <ul class="navbar-nav mx-auto gp-menu">
           <!-- About Us -->
-          <li class="nav-item dropdown" id="aboutUsDropdown">
-            <a class="nav-link dropdown-toggle"
-               href="#"
-               id="aboutUsDDLink"
-               role="button"
-               data-bs-toggle="dropdown"
-               aria-expanded="false"
-               th:text="#{navbar_aboutus}">About Us</a>
-            <ul class="dropdown-menu gp-cta-menu" aria-labelledby="aboutUsDDLink">
-              <li>
-                <a class="dropdown-item gp-cta-item"
-                   href="/vision"
-                   th:text="#{navbar_aboutus.about}">About Us</a>
-              </li>
-              <li>
-                <a class="dropdown-item gp-cta-item"
-                   href="/faq"
-                   th:text="#{navbar_aboutus.faq}">FAQ</a>
-              </li>
-              <li>
-                <a class="dropdown-item gp-cta-item"
-                   href="/feedback"
-                   th:text="#{navbar_aboutus.feedback}">Feedback</a>
-              </li>
-            </ul>
+          <li class="nav-item">
+            <a class="nav-link" href="/about-us" th:href="@{/about-us}" th:text="#{navbar_aboutus}">About Us</a>
           </li>
 
           <!-- Learning Pillars -->
-          <li class="nav-item dropdown" id="segmentsDropdown">
-            <a class="nav-link dropdown-toggle" href="/pillars" id="segmentsDDLink" role="button"
-               data-bs-toggle="dropdown" aria-expanded="false"
-               th:text="#{navbar_segments}">Learning Pillars</a>
-            <!-- STYLE ONLY: add gp-cta-menu; add gp-cta-item to each link -->
-            <ul class="dropdown-menu gp-cta-menu" aria-labelledby="segmentsDDLink">
-              <li><a class="dropdown-item gp-cta-item" href="/pillars" th:text="#{navbar_segments}">Learning Pillars</a></li>
-              <li><a class="dropdown-item gp-cta-item" href="/pillars#pillar-foundations" th:text="#{home.pillars.1.title}">Parenting Foundations</a></li>
-              <li><a class="dropdown-item gp-cta-item" href="/pillars#pillar-emotions" th:text="#{home.pillars.2.title}">Emotional Wellbeing</a></li>
-              <li><a class="dropdown-item gp-cta-item" href="/pillars#pillar-connection" th:text="#{home.pillars.3.title}">Communication Connection</a></li>
-              <li><a class="dropdown-item gp-cta-item" href="/pillars#pillar-learning" th:text="#{home.pillars.4.title}">Learning & Thinking</a></li>
-              <li><a class="dropdown-item gp-cta-item" href="/pillars#pillar-dailylife" th:text="#{home.pillars.5.title}">Daily Life & Modern Challenges</a></li>
-              <li><a class="dropdown-item gp-cta-item" href="/pillars#pillar-neurodiversity" th:text="#{home.pillars.6.title}">Neurodiversity & Inclusions</a></li>
-              
-              <!-- 
-              <li><hr class="dropdown-divider"></li>
-				 -->
-              <!-- Expert sections (dynamically loaded into Development menu) -->
-              <!-- 
-              <li id="expertSectionMenuLoading" class="px-2 text-muted small">
-                Loading...
-              </li>
-              <li id="expertSectionMenuAnchor" style="display:none;"></li>
-				-->
-            </ul>
+          <li class="nav-item">
+            <a class="nav-link" href="/pillars" th:text="#{navbar_segments}">Learning Pillars</a>
           </li>
 
           <!-- Community -->
@@ -230,7 +184,6 @@
 
 .navbar .dropdown-menu { border-radius: .75rem; }
 @media (min-width: 992px) {
-  #segmentsDropdown:hover > .dropdown-menu,
   #communityNavDropdown:hover > .dropdown-menu {
     display: block;
     margin-top: 0;
@@ -311,17 +264,6 @@
             .catch(err => console.error('Error fetching languages:', err));
         }
       });
-    }
-
-    const pillarsLink = document.getElementById('segmentsDDLink');
-    if (pillarsLink) {
-      pillarsLink.addEventListener('click', function (e) {
-        if (window.matchMedia('(min-width: 992px)').matches) {
-          e.preventDefault();
-          e.stopImmediatePropagation();
-          window.location.assign(this.getAttribute('href') || '/pillars');
-        }
-      }, true);
     }
 
     const communityLink = document.getElementById('communityDropdown');

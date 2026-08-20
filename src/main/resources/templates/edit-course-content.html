@@ -49,8 +49,22 @@
                     <input type="number" id="course-order-input" class="form-control" />
                 </div>
                 <div class="form-group">
+                    <label for="course-pillar-select"><strong th:text="#{edit-course.pillar}">Learning Pillar</strong></label>
+                    <select id="course-pillar-select" class="form-select">
+                        <option value="" th:text="#{edit-course.pillar-placeholder}">-- Select a Pillar --</option>
+                        <option th:each="pillar : ${pillars}" th:value="${pillar.id}" th:text="${pillar.name}">Pillar</option>
+                    </select>
+                </div>
+                <div class="form-group">
                     <label for="course-category-select"><strong>Course Category</strong></label>
                     <select id="course-category-select" class="form-select"></select>
+                </div>
+                <div class="form-group">
+                    <label for="course-published-select"><strong th:text="#{edit-course.published}">Published</strong></label>
+                    <select id="course-published-select" class="form-select">
+                        <option value="false" th:text="#{edit-course.published-no}">No</option>
+                        <option value="true" th:text="#{edit-course.published-yes}">Yes</option>
+                    </select>
                 </div>
                 <div class="form-group course-icon-uploader">
                     <strong th:text="#{edit-course.cap5}">Icon Image</strong>
@@ -159,7 +173,7 @@
         try {
             // Assuming the endpoint for categories is 'coursecategories'
             // and the display field is 'name'
-            const response = await fetch(`${STRAPI_API_URL}/coursecategories`, {
+            const response = await fetch(`${STRAPI_API_URL}/coursecategories?sort[0]=order:asc`, {
                 headers: { 'Authorization': AUTH_TOKEN }
             });
             if (!response.ok) throw new Error('Failed to load course categories');
@@ -348,7 +362,7 @@
 
     async function loadCourseContent() {
         try {
-            const populateQuery = 'populate[content][populate]=image_file,video_file,thumbnail&populate[icon_image]=*&populate[coursecategory]=*';
+            const populateQuery = 'populate[content][populate]=image_file,video_file,thumbnail&populate[icon_image]=*&populate[coursecategory]=*&populate[pillar]=*';
             const fetchUrl = `${STRAPI_API_URL}/courses/${COURSE_ID}?${populateQuery}`;
             const response = await fetch(fetchUrl, { headers: { 'Authorization': AUTH_TOKEN } });
             if (!response.ok) throw new Error(`Failed to load course (Status: ${response.status})`);
@@ -361,11 +375,13 @@
             const course = strapiResponse.data.attributes;
             $('#course-title-main').val(course.title || '');
             $('#course-order-input').val(course.order || 0);
+            if (course.pillar && course.pillar.data) {
+                $('#course-pillar-select').val(course.pillar.data.id);
+            }
             if (course.coursecategory && course.coursecategory.data) {
-                // DEBUG: Log the specific ID being used to set the dropdown
-                console.log("Attempting to set coursecategory dropdown to ID:", course.coursecategory.data.id);
                 $('#course-category-select').val(course.coursecategory.data.id);
             }
+            $('#course-published-select').val(course.published === true ? 'true' : 'false');
             $('#course-page-title').text('Edit Course: ' + (course.title || 'Untitled'));
             $('#course-translations-json').val(JSON.stringify(course.translations || {}, null, 2));
             if (course.icon_image && course.icon_image.data) {
@@ -436,12 +452,15 @@
             return;
         }
         try {
+            const pillarId = $('#course-pillar-select').val();
             const categoryId = $('#course-category-select').val();
             const finalPayload = {
                 data: {
                     title: $('#course-title-main').val().trim(),
                     order: parseInt($('#course-order-input').val(), 10) || 0,
+                    pillar: pillarId ? parseInt(pillarId, 10) : null,
                     coursecategory: categoryId ? parseInt(categoryId, 10) : null,
+                    published: $('#course-published-select').val() === 'true',
                     content: componentsData,
                     translations: JSON.parse($('#course-translations-json').val() || '{}'),
                     icon_image: $('.course-icon-uploader').attr('data-icon-media-id') ? parseInt($('.course-icon-uploader').attr('data-icon-media-id'), 10) : null

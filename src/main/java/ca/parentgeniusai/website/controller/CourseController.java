@@ -1,5 +1,11 @@
 package ca.parentgeniusai.website.controller;
 
+import java.util.List;
+
+import ca.parentgeniusai.website.model.Course;
+import ca.parentgeniusai.website.model.Pillar;
+import ca.parentgeniusai.website.service.CourseService;
+import ca.parentgeniusai.website.service.PillarService;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -15,6 +21,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class CourseController {
 
     private static final Logger logger = LoggerFactory.getLogger(CourseController.class);
+
+    private final CourseService courseService;
+    private final PillarService pillarService;
+
+    public CourseController(CourseService courseService, PillarService pillarService) {
+        this.courseService = courseService;
+        this.pillarService = pillarService;
+    }
 
     @Value("${strapi.root.url:http://localhost:8080/}")
     private String strapiRootUrl;
@@ -62,7 +76,8 @@ public class CourseController {
         model.addAttribute("strapiApiUrl", strapiApiBaseUrl);
         model.addAttribute("strapiToken", "Bearer " + jwtToken);
         model.addAttribute("returnUrl", "/course-list");
-        model.addAttribute("strapiRootUrl", strapiRootUrl); 
+        model.addAttribute("strapiRootUrl", strapiRootUrl);
+        model.addAttribute("pillars", pillarService.getPillars());
         logger.info("Serving edit page for course ID: {}", courseId);
         return "edit-course-content";
     }
@@ -77,8 +92,41 @@ public class CourseController {
         model.addAttribute("strapiApiUrl", strapiApiBaseUrl);
         model.addAttribute("strapiToken", "Bearer " + jwtToken);
         model.addAttribute("strapiRootUrl", strapiRootUrl);
+        model.addAttribute("pillars", pillarService.getPillars());
+        model.addAttribute("courseCategories", courseService.getCourseCategories());
         logger.info("Serving course-list page");
         return "course-list";
+    }
+
+    @GetMapping("/courses/pillar/{pillarId}")
+    public String pillarCourses(@PathVariable Long pillarId, Model model) {
+        Pillar pillar = pillarService.getPillarById(pillarId);
+        if (pillar == null) {
+            logger.warn("Pillar {} not found; redirecting to /pillars", pillarId);
+            return "redirect:/pillars";
+        }
+        List<Course> courses = courseService.getCoursesByPillarId(pillarId);
+        int heroIndex = heroIndexFor(pillar);
+        model.addAttribute("pillar", pillar);
+        model.addAttribute("courses", courses);
+        model.addAttribute("heroIndex", heroIndex);
+        logger.info("Serving pillar courses page for pillar {} (hero {}) with {} courses",
+            pillarId, heroIndex, courses.size());
+        return "courses/pillar-courses";
+    }
+
+    private int heroIndexFor(Pillar pillar) {
+        String n = pillar.getName() == null ? "" : pillar.getName().toLowerCase();
+        if (n.contains("foundation")) return 1;
+        if (n.contains("emotion") || n.contains("wellbeing") || n.contains("mental")) return 2;
+        if (n.contains("communicat") || n.contains("connection") || n.contains("relationship")) return 3;
+        if (n.contains("learning") || n.contains("thinking")) return 4;
+        if (n.contains("daily") || n.contains("modern")) return 5;
+        if (n.contains("neuro") || n.contains("inclusion")) return 6;
+        if (pillar.getOrder() != null && pillar.getOrder() >= 1 && pillar.getOrder() <= 6) {
+            return pillar.getOrder();
+        }
+        return 1;
     }
 
     // REMOVED: All remaining proxy endpoints for /api/strapi/courses/{courseId}

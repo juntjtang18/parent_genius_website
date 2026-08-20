@@ -13,12 +13,12 @@
     --gp-grad: linear-gradient(180deg,#3D91FD 0%,#6A84FF 50%,#8977FF 100%);
     --gp-ink: #111827;
     --gp-muted: #6B7280;
+    --gp-cyan: #3EC8E8;
     --nav-offset: 120px;
   }
   @media (max-width: 991.98px){ :root{ --nav-offset: 70px; } }
   html{ scroll-behavior:smooth; scroll-padding-top: var(--nav-offset); }
   body{ font-family:"Poppins", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
-  [id^="pillar-"]{ scroll-margin-top: var(--nav-offset); }
 
   .pillars-hero{
     position:relative; overflow:visible; color:#fff; text-align:center;
@@ -30,102 +30,131 @@
   }
   .pillars-hero .container-xxl{ position:relative; z-index:1; }
   .pillars-hero-title{
-    font-family:'Poppins',sans-serif; font-weight:600; font-size:60px; line-height:70px;
+    font-weight:600; font-size:60px; line-height:70px;
     max-width:18ch; margin:0 auto 16px;
   }
   .pillars-hero-sub{
-    font-family:'Poppins',sans-serif; font-weight:600; font-size:30px; line-height:40px;
+    font-weight:600; font-size:30px; line-height:40px;
     max-width:40ch; margin:0 auto 36px; color:rgba(255,255,255,.95);
   }
   .pillars-hero-photo{
     display:block; max-width:min(760px, 92%); width:100%;
-    margin:0 auto -72px; padding:10px; background:#fff; border-radius:16px;
-    box-shadow: 0 18px 40px rgba(15,23,42,.16);
+    margin:0 auto -72px;
   }
   .pillars-hero-photo img{
-    width:100%; height:auto; display:block; border-radius:10px;
+    width:100%; height:auto; display:block;
   }
 
-  .pillars-intro{ background:#fff; padding:120px 0 80px; }
+  .pillars-intro{ background:#fff; padding:120px 0 80px; text-align:center; }
   .pillars-intro-title{
-    font-family:'Poppins',sans-serif; font-weight:700; font-size:50px; line-height:60px;
-    color:var(--gp-ink); margin:0 0 20px;
+    font-weight:700; font-size:50px; line-height:60px;
+    color:var(--gp-ink); margin:0 0 28px;
   }
-  .pillars-intro-text{ font-family:'Poppins',sans-serif; font-size:18px; line-height:30px; color:var(--gp-muted); margin:0 0 16px; }
+  .pillars-intro-text{
+    font-size:18px; line-height:30px; color:var(--gp-muted);
+    max-width:46em; margin:0 auto 18px;
+  }
+  .pillars-mission-label{
+    font-weight:700; font-size:50px; line-height:60px;
+    color:var(--gp-ink); margin:56px 0 16px;
+  }
   .pillars-mission{
-    font-family:'Poppins',sans-serif; font-size:20px; line-height:34px; color:var(--gp-ink); margin:28px 0 36px;
+    font-weight:600; font-size:22px; line-height:34px; color:var(--gp-ink); margin:0 0 24px;
   }
-  .pillars-mission strong{ font-weight:600; }
-  .pillars-checks{ list-style:none; margin:0 0 36px; padding:0; display:flex; flex-wrap:wrap; gap:20px; }
+  .pillars-together{
+    font-weight:700; font-size:28px; line-height:40px;
+    color:var(--gp-ink); margin:48px 0 36px;
+  }
+  .pillars-checks{
+    list-style:none; margin:0 0 48px; padding:0;
+    display:grid; grid-template-columns:repeat(4, 1fr); gap:0;
+  }
   .pillars-check{
-    flex:1 1 220px; display:flex; flex-direction:column; gap:12px; align-items:flex-start;
-    font-family:'Poppins',sans-serif; font-size:18px; line-height:30px; color:#374151; margin:0;
+    display:flex; flex-direction:column; align-items:center; text-align:center;
+    gap:16px; padding:0 22px;
+    font-size:18px; line-height:30px; color:#374151;
+    border-right:1px solid #E5E7EB;
   }
-  .pillars-check i{
-    flex:0 0 28px; width:28px; height:28px; border-radius:50%;
-    background:#3D91FD; color:#fff; display:flex; align-items:center; justify-content:center;
-    font-size:13px;
+  .pillars-check:last-child{ border-right:0; }
+  .pillars-check-icon{
+    width:36px; height:36px; display:block;
+  }
+  .pillars-close-title{
+    font-weight:700; font-size:28px; line-height:40px;
+    color:var(--gp-ink); margin:0 0 16px;
   }
 
   .pillars-grid{
     background-image: var(--gp-grad);
-    padding:80px 0;
+    padding:88px 0;
     color:#fff;
   }
   .pillars-grid-title{
-    font-family:'Poppins',sans-serif; font-weight:700; font-size:50px; line-height:60px;
-    margin:0 0 12px; text-align:center;
+    font-weight:700; font-size:50px; line-height:60px;
+    margin:0 0 16px; text-align:center;
   }
   .pillars-grid-sub{
-    font-family:'Poppins',sans-serif; font-weight:400; font-size:18px; line-height:30px; text-align:center;
-    max-width:48ch; margin:0 auto 40px; color:rgba(255,255,255,.95);
+    font-weight:400; font-size:18px; line-height:30px; text-align:center;
+    max-width:48ch; margin:0 auto 48px; color:rgba(255,255,255,.95);
   }
   .pillars-card{
-    background:#fff; border-radius:16px; padding:28px 24px 24px;
+    background:#fff; border-radius:16px; padding:36px 28px 28px;
     box-shadow:0 12px 28px rgba(15,23,42,.08); height:100%;
-    display:flex; flex-direction:column; color:var(--gp-ink);
+    display:flex; flex-direction:column; align-items:center; text-align:center;
+    color:var(--gp-ink);
   }
   .pillars-card-icon{
-    width:56px; height:56px; border-radius:50%;
-    background:#3D91FD; color:#fff; display:flex; align-items:center; justify-content:center;
-    font-size:22px; margin-bottom:16px;
+    width:72px; height:72px; object-fit:contain; display:block;
+    margin-bottom:18px;
   }
-  .pillars-card-title{ font-family:'Poppins',sans-serif; font-weight:600; font-size:24px; line-height:34px; margin:0 0 10px; }
-  .pillars-card-text{ font-family:'Poppins',sans-serif; font-size:18px; line-height:30px; color:var(--gp-muted); margin:0 0 20px; flex:1; }
+  .pillars-card-title{
+    font-weight:600; font-size:24px; line-height:34px; margin:0 0 14px; color:#1f2937;
+  }
+  .pillars-card-rule{
+    width:48px; height:1px; background:#E5E7EB; border:0; margin:0 0 16px;
+  }
+  .pillars-card-text{
+    font-size:16px; line-height:28px; color:var(--gp-muted); margin:0 0 24px; flex:1;
+  }
   .pillars-card-btn{
-    align-self:flex-start; background:#E8F2FF; color:#2563EB;
-    border-radius:9999px; padding:.55rem 1.2rem; font-family:'Poppins',sans-serif; font-weight:600; font-size:18px;
-    text-decoration:none;
+    display:inline-flex; align-items:center; justify-content:center;
+    background:var(--gp-cyan); color:#fff;
+    border-radius:9999px; padding:.65rem 1.5rem;
+    font-weight:600; font-size:16px; text-decoration:none;
   }
-  .pillars-card-btn:hover{ background:#d7e8ff; color:#1d4ed8; }
+  .pillars-card-btn:hover{ color:#fff; filter:brightness(1.05); }
 
-  .pillars-promise{ background:#fff; padding:88px 0; }
+  .pillars-promise{ background:#fff; padding:88px 0; text-align:center; }
   .pillars-promise-title{
-    text-align:center; font-family:'Poppins',sans-serif; font-weight:700; font-size:50px; line-height:60px;
-    color:var(--gp-ink); margin:0 0 40px;
+    font-weight:700; font-size:50px; line-height:60px;
+    color:var(--gp-ink); margin:0 0 12px;
+  }
+  .pillars-promise-sub{
+    font-size:18px; line-height:30px; color:var(--gp-muted);
+    max-width:36em; margin:0 auto 40px;
   }
   .pillars-promise-img{
-    width:100%; aspect-ratio:1; object-fit:cover; border-radius:14px; display:block;
+    width:100%; aspect-ratio:278/161; object-fit:cover; border-radius:14px; display:block;
     margin-bottom:14px;
   }
   .pillars-promise-cap{
-    font-family:'Poppins',sans-serif; font-size:18px; line-height:30px; color:#374151; font-weight:600;
+    font-size:18px; line-height:30px; color:#374151; font-weight:600;
   }
   .pillars-promise-text{
-    max-width:70ch; margin:40px auto 0; text-align:center;
-    font-family:'Poppins',sans-serif; font-size:18px; line-height:30px; color:var(--gp-muted);
+    max-width:70ch; margin:40px auto 0;
+    font-size:18px; line-height:30px; color:var(--gp-muted);
   }
 
-  .pillars-philosophy{ background:#fff; padding:0 0 88px; text-align:center; }
+  .pillars-philosophy{ background:#fff; padding:72px 0 88px; text-align:center; border-top:1px solid #E5E7EB; }
   .pillars-philosophy-mark{ width:160px; margin:0 auto 20px; display:block; }
   .pillars-philosophy-title{
-    font-family:'Poppins',sans-serif; font-weight:700; font-size:50px; line-height:60px; color:var(--gp-ink); margin:0 0 16px;
+    font-weight:700; font-size:50px; line-height:60px; color:var(--gp-ink); margin:0 0 16px;
   }
   .pillars-philosophy-mission{
-    font-family:'Poppins',sans-serif; font-weight:600; font-size:20px; line-height:34px; color:var(--gp-ink); margin:0 0 12px;
+    font-weight:600; font-size:20px; line-height:34px; color:var(--gp-ink); margin:0 0 8px;
   }
-  .pillars-philosophy-text{
-    max-width:48ch; margin:0 auto; font-family:'Poppins',sans-serif; font-size:18px; line-height:30px; color:var(--gp-muted);
+  .pillars-philosophy-sub{
+    font-weight:500; font-size:18px; line-height:30px; color:var(--gp-ink); margin:0;
   }
 
   .cta-band{ position:relative; overflow:hidden; padding:0; min-height: clamp(520px, 68vh, 760px); color:#fff; }
@@ -140,8 +169,8 @@
     display:flex; flex-direction:column; justify-content:center; min-height:100%;
     padding-inline: clamp(24px, 5vw, 64px); padding-block:64px;
   }
-  .cta-title{ font-family:'Poppins',sans-serif; font-weight:400; font-size:50px; line-height:60px; margin:0 0 16px; }
-  .cta-tagline{ margin:14px 0 24px; font-family:'Poppins',sans-serif; font-weight:600; font-size:18px; line-height:30px; color:rgba(255,255,255,.96); }
+  .cta-title{ font-weight:400; font-size:50px; line-height:60px; margin:0 0 16px; }
+  .cta-tagline{ margin:14px 0 24px; font-weight:600; font-size:18px; line-height:30px; color:rgba(255,255,255,.96); }
   .cta-view{
     display:inline-flex; align-items:center; justify-content:center;
     background: linear-gradient(90deg, #2ED3B7 0%, #1EC7E6 100%);
@@ -151,8 +180,8 @@
   .cta-view:hover{ color:#fff; filter:brightness(1.02); }
   .cta-rule{ border:0; height:1px; background:rgba(255,255,255,.25); max-width:520px; margin:0 0 18px; }
   .cta-qr{ width:132px; height:132px; border-radius:12px; display:block; }
-  .cta-download-title{ font-family:'Poppins',sans-serif; font-weight:600; font-size:30px; line-height:40px; margin:0; }
-  .cta-download-sub{ font-family:'Poppins',sans-serif; font-weight:400; font-size:18px; line-height:30px; color:rgba(255,255,255,.85); margin:0 0 12px; }
+  .cta-download-title{ font-weight:600; font-size:30px; line-height:40px; margin:0; }
+  .cta-download-sub{ font-weight:400; font-size:18px; line-height:30px; color:rgba(255,255,255,.85); margin:0 0 12px; }
   .cta-store-badge{ height:38px; width:auto; display:block; filter:drop-shadow(0 6px 14px rgba(0,0,0,.18)); }
   .cta-art{
     position:absolute; right:0; top:0; bottom:0; width:min(46vw, 860px);
@@ -164,11 +193,16 @@
     .pillars-hero{ padding-top:120px; }
     .pillars-hero::before{ bottom:80px; }
     .pillars-intro{ padding-top:96px; }
-    .pillars-intro-title, .pillars-grid-title, .pillars-promise-title, .pillars-philosophy-title{
+    .pillars-intro-title, .pillars-grid-title, .pillars-promise-title, .pillars-philosophy-title, .pillars-mission-label{
       font-size:36px; line-height:44px;
     }
+    .pillars-checks{ grid-template-columns:1fr 1fr; gap:28px 0; }
+    .pillars-check{ border-right:0; }
     .cta-art{ display:none; }
     .cta-left-inner{ padding-inline:24px; padding-block:32px; }
+  }
+  @media (max-width: 575.98px){
+    .pillars-checks{ grid-template-columns:1fr; }
   }
   </style>
 </head>
@@ -178,9 +212,9 @@
   <section class="pillars-hero">
     <div class="container-xxl">
       <h1 class="pillars-hero-title" th:text="#{pillars.hero.title}">The GeniusParentingAI Whole Child Framework™</h1>
-      <p class="pillars-hero-sub" th:text="#{pillars.hero.sub}">Understanding children through dynamic principles, strengthening all lives.</p>
+      <p class="pillars-hero-sub" th:text="#{pillars.hero.sub}">Understanding Children. Empowering Parents. Strengthening Families.</p>
       <div class="pillars-hero-photo">
-        <img th:src="@{/images/about/about-image-07.png}" alt="A family sitting together">
+        <img th:src="@{/images/pillars/Learning-Pillars-image-01.png}" alt="A family sitting together">
       </div>
     </div>
   </section>
@@ -188,26 +222,55 @@
   <section class="pillars-intro">
     <div class="container-xxl">
       <div class="row justify-content-center">
-        <div class="col-lg-9">
+        <div class="col-lg-10">
           <h2 class="pillars-intro-title" th:text="#{pillars.intro.title}">Every parent wants the very best for their child.</h2>
           <p class="pillars-intro-text" th:text="#{pillars.intro.p1}">
-            Parenting today is more complex than ever. Information is everywhere, but it is often conflicting, incomplete, or disconnected from real family life.
+            Yet parenting can feel overwhelming when you're faced with challenging behaviours, emotional ups and downs, school concerns, social difficulties, or the rapid changes brought by today's technology. It's natural to look for quick answers—but children are rarely that simple.
           </p>
           <p class="pillars-intro-text" th:text="#{pillars.intro.p2}">
-            GeniusParentingAI brings reliable, educator-guided insight into one Whole Child Framework — so you can understand what is happening, why it is happening, and what to do next.
+            Most parenting resources focus on solving one problem at a time: tantrums, anxiety, homework, screen time, ADHD, friendships, or emotional regulation.
           </p>
-          <p class="pillars-mission">
-            <strong th:text="#{pillars.intro.mission_label}">Our mission is simple:</strong>
-            <span th:text="#{pillars.intro.mission}">Understanding Children. Empowering Parents. Strengthening Families.</span>
+          <p class="pillars-intro-text" th:text="#{pillars.intro.p3}">
+            But children don't grow in isolated categories. A child's emotions affect learning. Sensory processing influences behaviour. Executive functioning impacts friendships. Communication shapes confidence. Family routines affect emotional wellbeing. Every part of development is connected.
           </p>
+          <p class="pillars-intro-text" th:text="#{pillars.intro.p4}">
+            When we focus on only one challenge, we may overlook the underlying factors driving it. That's why GeniusParentingAI is built differently.
+          </p>
+
+          <h2 class="pillars-mission-label" th:text="#{pillars.intro.mission_label}">Our mission is simple:</h2>
+          <p class="pillars-mission" th:text="#{pillars.intro.mission}">Understanding Children. Empowering Parents. Strengthening Families.</p>
+          <p class="pillars-intro-text" th:text="#{pillars.intro.mission_p1}">
+            We believe that when parents truly understand how their child's development fits together, they can make more confident decisions, respond with greater empathy, and build stronger, more connected families.
+          </p>
+          <p class="pillars-intro-text" th:text="#{pillars.intro.mission_p2}">
+            Instead of treating parenting as a collection of separate topics, we organize learning around six connected Learning Pillars that help parents understand the whole child. Each pillar offers a different perspective, and together they create a complete picture of your child's growth, strengths, and challenges.
+          </p>
+          <p class="pillars-intro-text" th:text="#{pillars.intro.puzzle}">
+            Think of your child's development as a puzzle. One piece may explain part of what you see, but no single piece tells the whole story. As more pieces come together, patterns become clearer, solutions become more effective, and parenting becomes more confident.
+          </p>
+
+          <h3 class="pillars-together" th:text="#{pillars.intro.together}">Our Learning Pillars are designed to work together so you can:</h3>
           <ul class="pillars-checks">
-            <li class="pillars-check"><i class="fas fa-check"></i><span th:text="#{pillars.check.1}">Understand why a behavior or challenge may be happening.</span></li>
-            <li class="pillars-check"><i class="fas fa-check"></i><span th:text="#{pillars.check.2}">Recognize how different areas of development impact one another.</span></li>
-            <li class="pillars-check"><i class="fas fa-check"></i><span th:text="#{pillars.check.3}">Learn specific strategies to help your whole family.</span></li>
-            <li class="pillars-check"><i class="fas fa-check"></i><span th:text="#{pillars.check.4}">Discover reliable resources that may provide additional insight and support.</span></li>
+            <li class="pillars-check">
+              <img class="pillars-check-icon" th:src="@{/images/pillars/Learning-Pillars-image-02.svg}" alt="">
+              <span th:text="#{pillars.check.1}">Understand why a behaviour or challenge may be happening.</span>
+            </li>
+            <li class="pillars-check">
+              <img class="pillars-check-icon" th:src="@{/images/pillars/Learning-Pillars-image-02.svg}" alt="">
+              <span th:text="#{pillars.check.2}">Recognize how different areas of development influence one another.</span>
+            </li>
+            <li class="pillars-check">
+              <img class="pillars-check-icon" th:src="@{/images/pillars/Learning-Pillars-image-02.svg}" alt="">
+              <span th:text="#{pillars.check.3}">Learn practical, evidence-informed strategies that fit your child and family.</span>
+            </li>
+            <li class="pillars-check">
+              <img class="pillars-check-icon" th:src="@{/images/pillars/Learning-Pillars-image-02.svg}" alt="">
+              <span th:text="#{pillars.check.4}">Discover related topics that may provide additional insight and support.</span>
+            </li>
           </ul>
+          <h3 class="pillars-close-title" th:text="#{pillars.intro.close_title}">You don't need to become an expert in child development.</h3>
           <p class="pillars-intro-text mb-0" th:text="#{pillars.intro.close}">
-            You don't need to become an expert in child development. We translate the science into clear guidance you can use in everyday moments.
+            We'll guide you through the connections, recommend the next learning steps, and help you build confidence one step at a time. The goal isn't simply to solve today's problem—it's to help your child thrive emotionally, socially, academically, and in everyday life.
           </p>
         </div>
       </div>
@@ -217,54 +280,17 @@
   <section class="pillars-grid" id="learning-pillars">
     <div class="container-xxl">
       <h2 class="pillars-grid-title" th:text="#{pillars.grid.title}">Our Six Learning Pillars</h2>
-      <p class="pillars-grid-sub" th:text="#{pillars.grid.sub}">A comprehensive framework that looks at the whole child — and the whole family around them.</p>
-      <div class="row g-4">
-        <div class="col-12 col-md-6 col-lg-4" id="pillar-foundations">
+      <p class="pillars-grid-sub" th:text="#{pillars.grid.sub}">Together, our six Learning Pillars create a connected parenting ecosystem that supports the whole child rather than isolated challenges.</p>
+      <p th:if="${#lists.isEmpty(pillarCards)}" class="text-center mb-0">No pillars available yet.</p>
+      <div class="row g-4" th:if="${not #lists.isEmpty(pillarCards)}">
+        <div class="col-12 col-md-6 col-lg-4" th:each="card, stat : ${pillarCards}" th:id="'pillar-' + ${card.id}">
           <article class="pillars-card">
-            <div class="pillars-card-icon" aria-hidden="true"><i class="fas fa-home"></i></div>
-            <h3 class="pillars-card-title" th:text="#{home.pillars.1.title}">Parenting Foundations</h3>
-            <p class="pillars-card-text" th:text="#{pillars.1.text}">Foundational principles, a growth mindset, and the everyday habits that help children feel safe, loved, and ready to grow.</p>
-            <a class="pillars-card-btn" th:href="@{/functions(function=4)}" th:text="#{pillars.grid.cta}">View Details</a>
-          </article>
-        </div>
-        <div class="col-12 col-md-6 col-lg-4" id="pillar-emotions">
-          <article class="pillars-card">
-            <div class="pillars-card-icon" aria-hidden="true"><i class="fas fa-heart"></i></div>
-            <h3 class="pillars-card-title" th:text="#{home.pillars.2.title}">Emotional Wellbeing</h3>
-            <p class="pillars-card-text" th:text="#{pillars.2.text}">Emotional resilience, regulation, and coping strategies that help children name feelings and recover from hard moments.</p>
-            <a class="pillars-card-btn" th:href="@{/functions(function=1)}" th:text="#{pillars.grid.cta}">View Details</a>
-          </article>
-        </div>
-        <div class="col-12 col-md-6 col-lg-4" id="pillar-connection">
-          <article class="pillars-card">
-            <div class="pillars-card-icon" aria-hidden="true"><i class="fas fa-comments"></i></div>
-            <h3 class="pillars-card-title" th:text="#{home.pillars.3.title}">Communication Connection</h3>
-            <p class="pillars-card-text" th:text="#{pillars.3.text}">Communication styles and family bonds that strengthen connection, listening, and a child's social confidence.</p>
-            <a class="pillars-card-btn" th:href="@{/functions(function=2)}" th:text="#{pillars.grid.cta}">View Details</a>
-          </article>
-        </div>
-        <div class="col-12 col-md-6 col-lg-4" id="pillar-learning">
-          <article class="pillars-card">
-            <div class="pillars-card-icon" aria-hidden="true"><i class="fas fa-book-open"></i></div>
-            <h3 class="pillars-card-title" th:text="#{home.pillars.4.title}">Learning &amp; Thinking</h3>
-            <p class="pillars-card-text" th:text="#{pillars.4.text}">Cognitive development, curiosity, and the mindsets that help children learn, think, and problem-solve at home.</p>
-            <a class="pillars-card-btn" th:href="@{/functions(function=3)}" th:text="#{pillars.grid.cta}">View Details</a>
-          </article>
-        </div>
-        <div class="col-12 col-md-6 col-lg-4" id="pillar-dailylife">
-          <article class="pillars-card">
-            <div class="pillars-card-icon" aria-hidden="true"><i class="fas fa-clock"></i></div>
-            <h3 class="pillars-card-title" th:text="#{home.pillars.5.title}">Daily Life &amp; Modern Challenges</h3>
-            <p class="pillars-card-text" th:text="#{pillars.5.text}">Routines, sleep, screens, and the modern pressures of family life — with practical ways to keep days calmer.</p>
-            <a class="pillars-card-btn" th:href="@{/functions(function=4)}" th:text="#{pillars.grid.cta}">View Details</a>
-          </article>
-        </div>
-        <div class="col-12 col-md-6 col-lg-4" id="pillar-neurodiversity">
-          <article class="pillars-card">
-            <div class="pillars-card-icon" aria-hidden="true"><i class="fas fa-puzzle-piece"></i></div>
-            <h3 class="pillars-card-title" th:text="#{home.pillars.6.title}">Neurodiversity &amp; Inclusions</h3>
-            <p class="pillars-card-text" th:text="#{pillars.6.text}">Learning differences, evaluations, and inclusive support so every child can be understood and helped to thrive.</p>
-            <a class="pillars-card-btn" th:href="@{/functions(function=5)}" th:text="#{pillars.grid.cta}">View Details</a>
+            <img class="pillars-card-icon" alt=""
+                 th:src="@{|/images/pillars/Learning-Pillars-image-0${stat.count + 2}.svg|}">
+            <h3 class="pillars-card-title" th:text="${card.name}">Pillar name</h3>
+            <hr class="pillars-card-rule">
+            <p class="pillars-card-text" th:text="${card.description}">Pillar description</p>
+            <a class="pillars-card-btn" th:href="@{/courses/pillar/{id}(id=${card.id})}" th:text="#{pillars.grid.cta}">View Courses</a>
           </article>
         </div>
       </div>
@@ -274,69 +300,60 @@
   <section class="pillars-promise">
     <div class="container-xxl">
       <h2 class="pillars-promise-title" th:text="#{pillars.promise.title}">Our Promise</h2>
+      <p class="pillars-promise-sub" th:text="#{pillars.promise.sub}">We won't simply tell you what your child may be experiencing. We'll help you understand</p>
       <div class="row g-4">
         <div class="col-6 col-lg-3">
-          <img th:src="@{/images/about/about-image-03.png}" alt="" class="pillars-promise-img">
-          <p class="pillars-promise-cap" th:text="#{pillars.promise.1}">Why it may be happening</p>
+          <img th:src="@{/images/pillars/Learning-Pillars-image-09.png}" alt="" class="pillars-promise-img">
+          <p class="pillars-promise-cap" th:text="#{pillars.promise.1}">Why it may be happening.</p>
         </div>
         <div class="col-6 col-lg-3">
-          <img th:src="@{/images/about/about-image-04.png}" alt="" class="pillars-promise-img">
-          <p class="pillars-promise-cap" th:text="#{pillars.promise.2}">How different development areas are connected</p>
+          <img th:src="@{/images/pillars/Learning-Pillars-image-10.png}" alt="" class="pillars-promise-img">
+          <p class="pillars-promise-cap" th:text="#{pillars.promise.2}">How different developmental areas are connected.</p>
         </div>
         <div class="col-6 col-lg-3">
-          <img th:src="@{/images/about/about-image-06.png}" alt="" class="pillars-promise-img">
-          <p class="pillars-promise-cap" th:text="#{pillars.promise.3}">What practical strategies you can use now</p>
+          <img th:src="@{/images/pillars/Learning-Pillars-image-11.png}" alt="" class="pillars-promise-img">
+          <p class="pillars-promise-cap" th:text="#{pillars.promise.3}">What practical strategies you can use today.</p>
         </div>
         <div class="col-6 col-lg-3">
-          <img th:src="@{/images/index/index-image2.png}" alt="" class="pillars-promise-img">
-          <p class="pillars-promise-cap" th:text="#{pillars.promise.4}">Where to go next to deepen learning and find support</p>
+          <img th:src="@{/images/pillars/Learning-Pillars-image-12.png}" alt="" class="pillars-promise-img">
+          <p class="pillars-promise-cap" th:text="#{pillars.promise.4}">Where to go next for deeper learning and ongoing support.</p>
         </div>
       </div>
       <p class="pillars-promise-text" th:text="#{pillars.promise.text}">
-        Each pillar is designed as a learning path: first understand the moment, then see how development areas connect, then try a practical strategy, and finally know where to go for deeper support.
+        Every lesson, every AI recommendation, every downloadable resource, and every Learning Pillar is designed with one purpose: to help you better understand your child and support their unique journey with confidence.
+      </p>
+      <p class="pillars-promise-text" style="margin-top:18px" th:text="#{pillars.promise.text2}">
+        Because when parents understand the whole child—not just the challenge—they make better decisions, build stronger relationships, and create lasting positive change for their families.
       </p>
     </div>
   </section>
 
   <section class="pillars-philosophy">
     <div class="container-xxl">
-      <div class="pillars-philosophy-mark" aria-hidden="true">
-        <svg viewBox="0 0 220 220" role="img">
-          <path d="M110 30C78 8 24 36 24 90c0 54 86 100 86 100s86-46 86-100c0-54-54-82-86-60z"
-                fill="none" stroke="#8977FF" stroke-width="4" stroke-dasharray="7 7" stroke-linejoin="round"/>
-          <circle cx="80" cy="98" r="13" fill="#3D91FD"/>
-          <path d="M58 148c0-20 10-32 22-32s22 12 22 32" fill="#3D91FD"/>
-          <circle cx="140" cy="98" r="13" fill="#3D91FD"/>
-          <path d="M118 148c0-20 10-32 22-32s22 12 22 32" fill="#3D91FD"/>
-          <circle cx="100" cy="118" r="9" fill="#6A84FF"/>
-          <path d="M88 152c0-12 6-20 12-20s12 8 12 20" fill="#6A84FF"/>
-          <circle cx="120" cy="118" r="9" fill="#6A84FF"/>
-          <path d="M108 152c0-12 6-20 12-20s12 8 12 20" fill="#6A84FF"/>
-        </svg>
-      </div>
+      <img class="pillars-philosophy-mark" th:src="@{/images/pillars/Learning-Pillars-image-13.svg}" alt="">
       <h2 class="pillars-philosophy-title" th:text="#{pillars.philosophy.title}">Our Philosophy</h2>
       <p class="pillars-philosophy-mission" th:text="#{pillars.philosophy.mission}">Understanding Children. Empowering Parents. Strengthening Families.</p>
-      <p class="pillars-philosophy-text" th:text="#{pillars.philosophy.text}">We bridge human connection and educational science so parents feel supported — not judged — at every stage.</p>
+      <p class="pillars-philosophy-sub" th:text="#{pillars.philosophy.sub}">Every Child is Unique. Every Challenge is Connected. Every Family Can Learn.</p>
     </div>
   </section>
 
   <section class="cta-band">
     <div class="cta-art" aria-hidden="true">
-      <img th:src="@{/images/index/index-image13.png}" alt="" class="cta-art-img">
+      <img th:src="@{/images/pillars/Learning-Pillars-image-14.png}" alt="" class="cta-art-img">
     </div>
     <div class="container-xxl">
       <div class="row g-0 cta-row">
         <div class="col-12 col-lg-7 cta-left">
           <div class="cta-left-inner">
             <h2 class="cta-title" th:text="#{pillars.cta.title}">Start your first free mini course</h2>
-            <p class="cta-tagline" th:text="#{pillars.cta.text}">Short, educator-guided lessons that help you put the Whole Child Framework into practice this week.</p>
-            <a class="cta-view" th:href="@{/seg-mini-course}" th:text="#{pillars.cta.button}">View Details</a>
+            <p class="cta-tagline" th:text="#{pillars.cta.text}">Learn something meaningful in under 10 minutes — and see real change by bedtime.</p>
+            <a class="cta-view" th:href="@{/seg-mini-course}" th:text="#{pillars.cta.button}">Preview the Course</a>
             <hr class="cta-rule">
             <div class="cta-download d-flex align-items-center gap-4 mt-2">
               <img th:src="@{/images/gpa-qr-code.png}" alt="QR code" class="cta-qr">
               <div>
                 <h3 class="cta-download-title mb-2" th:text="#{index-caption-24}">Download the App!</h3>
-                <p class="cta-download-sub mb-3" th:text="#{about-cta-scan}">SCAN TO DOWNLOAD</p>
+                <p class="cta-download-sub mb-3" th:text="#{index-caption-25}">Free to try. No credit card needed.</p>
                 <div class="d-flex align-items-center gap-2">
                   <a href="https://apps.apple.com/us/app/geniusparentingai/id6747332178?itscg=30200&itsct=apps_box_link&mttnsubad=6747332178">
                     <img th:src="@{/images/index/index-image12.png}" alt="App Store" class="cta-store-badge">

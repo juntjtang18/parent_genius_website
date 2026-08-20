@@ -7,6 +7,26 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .course-card .card { position: relative; }
+        .course-unpublished-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 2;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(33, 37, 41, 0.86);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22);
+            pointer-events: none;
+        }
+        .course-unpublished-badge i { font-size: 1rem; }
+    </style>
 </head>
 <body>
 
@@ -15,9 +35,14 @@
     <div class="container mt-5">
         <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
             <h1 class="my-0" th:text="#{course-list.cap1}">Our Courses</h1>
-            <div class="d-flex align-items-center">
+            <div class="d-flex align-items-center flex-wrap gap-2">
+                <select id="pillar-filter" class="form-select" style="width: auto;" aria-label="Filter by pillar">
+                    <option value="" selected th:text="#{course-list.all-pillars}">All Pillars</option>
+                    <option th:each="pillar : ${pillars}" th:value="${pillar.id}" th:text="${pillar.name}">Pillar</option>
+                </select>
                 <select id="category-filter" class="form-select me-3" style="width: auto;" aria-label="Filter by category">
-                    <option value="" selected>All Categories</option>
+                    <option value="" selected th:text="#{course-list.all-categories}">All Categories</option>
+                    <option th:each="category : ${courseCategories}" th:value="${category.id}" th:text="${category.name}">Category</option>
                 </select>
                 <a th:href="@{/new-course}" class="btn btn-primary text-nowrap">
                     <i class="fas fa-plus me-2"></i><span th:text="#{course-list.cap2}">New Course</span>
@@ -53,6 +78,7 @@
         const strapiApiUrl = /*[[${strapiApiUrl}]]*/ '';
         const strapiToken = /*[[${strapiToken}]]*/ '';
         const strapiRootUrl = /*[[${strapiRootUrl}]]*/ '';
+        const unpublishedLabel = /*[[#{course-list.unpublished}]]*/ 'Unpublished';
 
         // --- Pagination and Infinite Scroll State ---
         let currentPage = 1;
@@ -65,6 +91,7 @@
         const moreSpinner = document.getElementById('loading-more-spinner');
         const noCoursesMessage = document.getElementById('no-courses-message');
         const categoryFilter = document.getElementById('category-filter');
+        const pillarFilter = document.getElementById('pillar-filter');
 
         /**
          * Renders a list of course objects into the DOM.
@@ -102,8 +129,15 @@
                     ? `<img src="${imageUrl}" class="card-img-top" alt="Course Icon" loading="lazy">`
                     : `<div class="card-img-top card-img-top-placeholder"><i class="fas fa-graduation-cap fa-3x"></i></div>`;
 
+                const isPublished = attributes.published === true;
+                const unpublishedBadge = isPublished ? '' : `
+                    <span class="course-unpublished-badge" title="${unpublishedLabel}" aria-label="${unpublishedLabel}">
+                        <i class="fas fa-eye-slash" aria-hidden="true"></i>
+                    </span>`;
+
                 courseCard.innerHTML = `
                     <div class="card h-100">
+                        ${unpublishedBadge}
                         <a href="/courses/${courseId}/edit">
                             ${imageHtml}
                         </a>
@@ -116,30 +150,6 @@
                 `;
                 courseContainer.appendChild(courseCard);
             });
-        }
-
-        /**
-         * Fetches and populates the course category filter dropdown.
-         */
-        async function loadCategories() {
-            try {
-                const response = await fetch(`${strapiApiUrl}/coursecategories?sort=name:asc`, {
-                    headers: { 'Authorization': strapiToken }
-                });
-                if (!response.ok) throw new Error('Failed to load categories');
-                const categoriesResponse = await response.json();
-                if (categoriesResponse.data) {
-                    categoriesResponse.data.forEach(category => {
-                        const option = document.createElement('option');
-                        option.value = category.id;
-                        option.textContent = category.attributes.name;
-                        categoryFilter.appendChild(option);
-                    });
-                }
-            } catch (error) {
-                console.error('Error fetching categories:', error);
-                // Non-critical, so we don't show a big error message, just log it.
-            }
         }
 
         /**
@@ -159,10 +169,14 @@
             }
             
             const selectedCategoryId = categoryFilter.value;
+            const selectedPillarId = pillarFilter.value;
             let fetchUrl = `${strapiApiUrl}/courses?populate=icon_image&pagination[page]=${currentPage}&pagination[pageSize]=${PAGE_SIZE}&sort=order:asc,title:asc`;
 
             if (selectedCategoryId) {
                 fetchUrl += `&filters[coursecategory][id][$eq]=${selectedCategoryId}`;
+            }
+            if (selectedPillarId) {
+                fetchUrl += `&filters[pillar][id][$eq]=${selectedPillarId}`;
             }
 
             try {
@@ -210,25 +224,20 @@
             }
         }
 
-        // Initial setup
-        document.addEventListener('DOMContentLoaded', async () => {
-            // Load categories into the dropdown first
-            await loadCategories();
-            
-            // Then load the initial set of courses
-            loadCourses(); 
-            
-            // Add listener for the category filter
-            categoryFilter.addEventListener('change', () => {
-                courseContainer.innerHTML = '';
-                currentPage = 1;
-                totalPages = 1;
-                isLoading = false;
-                noCoursesMessage.classList.add('d-none');
-                loadCourses();
-            });
-            
-            window.addEventListener('scroll', handleScroll); // Listen for scroll events
+        function resetAndReloadCourses() {
+            courseContainer.innerHTML = '';
+            currentPage = 1;
+            totalPages = 1;
+            isLoading = false;
+            noCoursesMessage.classList.add('d-none');
+            loadCourses();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCourses();
+            categoryFilter.addEventListener('change', resetAndReloadCourses);
+            pillarFilter.addEventListener('change', resetAndReloadCourses);
+            window.addEventListener('scroll', handleScroll);
         });
         /*]]>*/
     </script>
