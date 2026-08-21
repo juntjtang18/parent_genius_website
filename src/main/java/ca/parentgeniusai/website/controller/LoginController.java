@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import ca.parentgeniusai.website.config.SecurityConfig;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.HashMap;
@@ -53,14 +54,26 @@ public class LoginController {
     }
 
     @GetMapping("/signin")
-    public String signin(Model model, @RequestParam(value = "error", required = false) String error, HttpServletRequest request) {
+    public String signin(Model model,
+            @RequestParam(value = "error", required = false) String error,
+            @RequestParam(value = "redirect", required = false) String redirect,
+            HttpServletRequest request) {
         logger.info("Endpoint /signin triggered.");
         if ("unauthenticated".equals(error)) {
             return "redirect:/signin";
         }
         model.addAttribute("error", error != null);
-        String referer = request.getHeader("Referer");
-        model.addAttribute("referer", referer != null && !referer.contains("/signin") ? referer : "/");
+        String target = redirect;
+        if (target == null || target.isBlank()) {
+            var session = request.getSession(false);
+            if (session != null && session.getAttribute("LOGIN_REDIRECT") instanceof String saved) {
+                target = saved;
+            }
+        }
+        if (target == null || target.isBlank()) {
+            target = request.getHeader("Referer");
+        }
+        model.addAttribute("referer", SecurityConfig.toInternalPath(target));
         // No need for model.addAttribute("auth", ...) - handled by GlobalControllerAdvice
         return "signin";
     }

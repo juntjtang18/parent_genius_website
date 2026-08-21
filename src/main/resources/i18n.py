@@ -7,13 +7,11 @@ def process_html_file(file_path, properties_file, is_first_file):
     with codecs.open(file_path, 'r', 'utf-8') as infile:
         html_content = infile.read()
 
-    # --- MODIFIED: Added a third option to your original regex for placeholders ---
+    # th:text="#{key}">default</...>  and  th:placeholder="#{key}"
     pattern = re.compile(
-        # Your original pattern for th:text
         r'th:text="#\{([^}]+)\}"[^>]*>(.*?)</.*?>|'
         r'th:text="#\{([^}]+)\}"[^>]*>([^<]+)<|'
-        # The new pattern for th:placeholder with data-i18n-default
-        r'th:placeholder="#\{([^}]+)\}".*?data-i18n-default="([^"]+)"'
+        r'th:placeholder="#\{([^}]+)\}"(?:[^>]*(?:placeholder="([^"]*)"|data-i18n-default="([^"]*)"))?'
     )
     matches = pattern.findall(html_content)
 
@@ -22,13 +20,11 @@ def process_html_file(file_path, properties_file, is_first_file):
         mode = 'w' if is_first_file else 'a'
         with codecs.open(properties_file, mode, 'utf-8') as prop_file:
             for match in matches:
-                # This now checks the extra capture groups from the new pattern
                 key = match[0] or match[2] or match[4]
-                message = match[1] or match[3] or match[5]
-                
-                # The rest of your logic is unchanged
+                message = match[1] or match[3] or match[5] or match[6] or ''
+
                 message = ' '.join(message.strip().splitlines())
-                
+
                 prop_file.write(f"{key}={message}\n")
                 written_pairs += 1
 

@@ -30,50 +30,13 @@
           </li>
 
           <!-- Community -->
-          <li class="nav-item dropdown" id="communityNavDropdown">
-            <a class="nav-link dropdown-toggle" href="/community" id="communityDropdown" role="button"
-               data-bs-toggle="dropdown" aria-expanded="false" th:text="#{navbar.caption3}">Community</a>
-            <!-- STYLE ONLY -->
-            <ul class="dropdown-menu gp-cta-menu" aria-labelledby="communityDropdown">
-              <li><a class="dropdown-item gp-cta-item" href="/community" th:text="#{navbar.caption3}">Community</a></li>
-              <li><a class="dropdown-item gp-cta-item" href="/posts" th:text="#{navbar.caption5}">Connect</a></li>
-              <li><a class="dropdown-item gp-cta-item" href="/join-us" th:text="#{navbar.caption61}">Become a member</a></li>
-              <li><a class="dropdown-item gp-cta-item" href="/nbnet/familynplaymates" th:text="#{navbar_nn_playmates}">Playmates&amp;Families Nearby</a></li>
-              <li><a class="dropdown-item gp-cta-item" href="/nbnet/playplaces" th:text="#{navbar_nn_playplaces}">Play Places</a></li>
-            </ul>
+          <li class="nav-item">
+            <a class="nav-link" href="/community" th:href="@{/community}" th:text="#{navbar.caption3}">Community</a>
           </li>
 
-          <!-- Membership (was Courses) -->
-          <li class="nav-item dropdown" id="coursesDropdown">
-            <a class="nav-link dropdown-toggle"
-               href="/membership"
-               id="coursesDDLink"
-               role="button"
-               data-bs-toggle="dropdown"
-               aria-expanded="false"
-               th:text="#{navbar_membership}">Membership</a>
-            <ul class="dropdown-menu gp-cta-menu" aria-labelledby="coursesDDLink">
-              <li>
-                <a class="dropdown-item gp-cta-item"
-                   href="/membership"
-                   th:text="#{navbar_membership}">Membership</a>
-              </li>
-              <li>
-                <a class="dropdown-item gp-cta-item"
-                   href="/courses/foundation"
-                   th:text="#{navbar_courses.foundation}">Foundation Courses</a>
-              </li>
-              <li>
-                <a class="dropdown-item gp-cta-item"
-                   href="/courses/membership-only"
-                   th:text="#{navbar_courses.membership}">Membership Only</a>
-              </li>
-              <li>
-                <a class="dropdown-item gp-cta-item"
-                   href="/courses/parenting-tools"
-                   th:text="#{navbar_courses.parenting_tools}">Parenting Tools</a>
-              </li>
-            </ul>
+          <!-- Membership -->
+          <li class="nav-item">
+            <a class="nav-link" href="/membership" th:href="@{/membership}" th:text="#{navbar_membership}">Membership</a>
           </li>
 
           <!-- Divider shown on desktop like the mock -->
@@ -183,12 +146,6 @@
 .gp-toggler .navbar-toggler-icon { filter: invert(1) brightness(2); }
 
 .navbar .dropdown-menu { border-radius: .75rem; }
-@media (min-width: 992px) {
-  #communityNavDropdown:hover > .dropdown-menu {
-    display: block;
-    margin-top: 0;
-  }
-}
 @media (max-width: 991.98px) {
   .gp-divider { display: none !important; }
   .gp-menu { padding-top: .5rem; }
@@ -264,17 +221,6 @@
             .catch(err => console.error('Error fetching languages:', err));
         }
       });
-    }
-
-    const communityLink = document.getElementById('communityDropdown');
-    if (communityLink) {
-      communityLink.addEventListener('click', function (e) {
-        if (window.matchMedia('(min-width: 992px)').matches) {
-          e.preventDefault();
-          e.stopImmediatePropagation();
-          window.location.assign(this.getAttribute('href') || '/community');
-        }
-      }, true);
     }
 
     const clearCacheLink = document.getElementById('clearCacheLink');

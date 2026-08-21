@@ -16,11 +16,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class CourseController {
 
     private static final Logger logger = LoggerFactory.getLogger(CourseController.class);
+    static final String SESSION_ASK_QUESTION = "PILLAR_ASK_QUESTION";
+    static final String SESSION_LOGIN_REDIRECT = "LOGIN_REDIRECT";
 
     private final CourseService courseService;
     private final PillarService pillarService;
@@ -99,7 +103,10 @@ public class CourseController {
     }
 
     @GetMapping("/courses/pillar/{pillarId}")
-    public String pillarCourses(@PathVariable Long pillarId, Model model) {
+    public String pillarCourses(@PathVariable Long pillarId,
+            @RequestParam(name = "askError", required = false) String askError,
+            Model model,
+            HttpServletRequest request) {
         Pillar pillar = pillarService.getPillarById(pillarId);
         if (pillar == null) {
             logger.warn("Pillar {} not found; redirecting to /pillars", pillarId);
@@ -110,9 +117,46 @@ public class CourseController {
         model.addAttribute("pillar", pillar);
         model.addAttribute("courses", courses);
         model.addAttribute("heroIndex", heroIndex);
+        model.addAttribute("askError", askError != null);
+        HttpSession session = request.getSession(false);
+        if (session != null && session.getAttribute(SESSION_ASK_QUESTION) instanceof String pending
+                && !pending.isBlank()) {
+            model.addAttribute("askQuestion", pending);
+        }
         logger.info("Serving pillar courses page for pillar {} (hero {}) with {} courses",
             pillarId, heroIndex, courses.size());
         return "courses/pillar-courses";
+    }
+
+    @PostMapping("/courses/pillar/ask")
+    public String askAi(
+            @RequestParam(name = "question", required = false) String question,
+            @RequestParam(name = "fromPillarId", required = false) Long fromPillarId,
+            HttpServletRequest request) {
+        String q = question == null ? "" : question.trim();
+        Long fallback = fromPillarId != null ? fromPillarId : 1L;
+        if (q.isEmpty()) {
+            return "redirect:/courses/pillar/" + fallback;
+        }
+
+        HttpSession session = request.getSession(true);
+        session.setAttribute(SESSION_ASK_QUESTION, q);
+
+        String jwtToken = getJwtToken(request);
+        if (jwtToken == null) {
+            session.setAttribute(SESSION_LOGIN_REDIRECT, "/courses/pillar/" + fallback);
+            logger.info("Ask AI requires login; saving question and redirecting to signin");
+            return "redirect:/signin";
+        }
+
+        Long matched = pillarService.classifyPillar(q, jwtToken);
+        if (matched == null) {
+            logger.warn("[AskAI] controller: no pillar for question='{}'; staying on {}", q, fallback);
+            return "redirect:/courses/pillar/" + fallback + "?askError=1";
+        }
+        logger.info("[AskAI] controller: question='{}' -> pillar {}", q, matched);
+        session.removeAttribute(SESSION_ASK_QUESTION);
+        return "redirect:/courses/pillar/" + matched;
     }
 
     private int heroIndexFor(Pillar pillar) {

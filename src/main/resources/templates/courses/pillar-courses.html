@@ -107,6 +107,13 @@
       font-weight: 600;
       padding: .55rem 1.3rem;
     }
+    .pc-ask-error{
+      color: #FCA5A5;
+      text-align: center;
+      margin: 0 auto 12px;
+      max-width: 920px;
+      font-size: 15px;
+    }
 
     .pc-courses{
       padding: 56px 0 80px;
@@ -219,8 +226,13 @@
   <div th:if="${heroIndex == 6}" th:insert="~{fragments/pillar-course-hero-segment6 :: pillar-course-hero-segment6}"></div>
 
   <section class="pc-ask">
-    <form class="pc-ask-bar" id="pcAskForm" action="#" onsubmit="return false;">
-      <input id="pcAskInput" type="text" th:placeholder="#{pillar.ask.placeholder}" placeholder="Ask AI: 'What course should I take to learn...?'">
+    <p class="pc-ask-error" th:if="${askError}" th:text="#{pillar.ask.error}">Sorry, we could not match a learning pillar. Please try again.</p>
+    <form class="pc-ask-bar" id="pcAskForm" th:action="@{/courses/pillar/ask}" method="post">
+      <input type="hidden" name="fromPillarId" th:value="${pillar.id}">
+      <input id="pcAskInput" type="text" name="question"
+             th:value="${askQuestion}"
+             th:placeholder="#{pillar.ask.placeholder}"
+             placeholder="Ask AI: 'What course should I take to learn...?'">
       <button class="pc-ask-btn" id="pcAskBtn" type="submit" th:text="#{pillar.ask.button}">Ask AI</button>
     </form>
   </section>
@@ -254,14 +266,5 @@
   <div th:replace="~{fragments/chatbot :: chatbot}"></div>
   <div th:replace="~{fragments/footer :: footer}"></div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    document.getElementById('pcAskForm')?.addEventListener('submit', function () {
-      const question = document.getElementById('pcAskInput')?.value || '';
-      const icon = document.getElementById('chatbot-icon');
-      const input = document.getElementById('chat-input');
-      if (icon) icon.click();
-      if (input && question) input.value = question;
-    });
-  </script>
 </body>
 </html>

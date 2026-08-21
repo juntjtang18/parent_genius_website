@@ -362,10 +362,27 @@
 
     async function loadCourseContent() {
         try {
-            const populateQuery = 'populate[content][populate]=image_file,video_file,thumbnail&populate[icon_image]=*&populate[coursecategory]=*&populate[pillar]=*';
+            // Per-component populate: listing media fields on the whole dynamic zone
+            // 500s in Strapi 4 when a course has text/quiz blocks without those fields.
+            const populateQuery = [
+                'populate[content][on][coursecontent.text]=true',
+                'populate[content][on][coursecontent.quiz]=true',
+                'populate[content][on][coursecontent.pagebreaker]=true',
+                'populate[content][on][coursecontent.external-video]=true',
+                'populate[content][on][coursecontent.image][populate]=image_file',
+                'populate[content][on][coursecontent.video][populate][0]=video_file',
+                'populate[content][on][coursecontent.video][populate][1]=thumbnail',
+                'populate[icon_image]=*',
+                'populate[coursecategory]=*',
+                'populate[pillar]=*'
+            ].join('&');
             const fetchUrl = `${STRAPI_API_URL}/courses/${COURSE_ID}?${populateQuery}`;
             const response = await fetch(fetchUrl, { headers: { 'Authorization': AUTH_TOKEN } });
-            if (!response.ok) throw new Error(`Failed to load course (Status: ${response.status})`);
+            if (!response.ok) {
+                const detail = await response.text().catch(() => '');
+                console.error('Load course failed', response.status, detail);
+                throw new Error(`Failed to load course (Status: ${response.status})`);
+            }
             const strapiResponse = await response.json();
             
             // DEBUG: Log the entire API response for the course

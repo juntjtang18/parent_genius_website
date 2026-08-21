@@ -719,7 +719,13 @@
             hasPaidPlan = hasEntitlement(entitlements, 'courses.premium');
 
             const params = new URLSearchParams();
-            params.set('populate[content][populate]', 'image_file,video_file,thumbnail');
+            params.set('populate[content][on][coursecontent.text]', 'true');
+            params.set('populate[content][on][coursecontent.quiz]', 'true');
+            params.set('populate[content][on][coursecontent.pagebreaker]', 'true');
+            params.set('populate[content][on][coursecontent.external-video]', 'true');
+            params.set('populate[content][on][coursecontent.image][populate]', 'image_file');
+            params.set('populate[content][on][coursecontent.video][populate][0]', 'video_file');
+            params.set('populate[content][on][coursecontent.video][populate][1]', 'thumbnail');
             params.set('populate[icon_image][populate]', 'formats');
             params.set('populate[coursecategory][populate]', '*');
             params.set('populate[localizations][fields][0]', 'title');

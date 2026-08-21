@@ -26,6 +26,10 @@
             pointer-events: none;
         }
         .course-unpublished-badge i { font-size: 1rem; }
+        .course-card-restored .card {
+            outline: 2px solid #2563eb;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.18);
+        }
     </style>
 </head>
 <body>
@@ -85,6 +89,7 @@
         let totalPages = 1;
         let isLoading = false;
         const PAGE_SIZE = 12; // Fetch 12 courses per page
+        const LIST_STATE_KEY = 'courseListRestore';
 
         const courseContainer = document.getElementById('course-container');
         const initialSpinner = document.getElementById('loading-spinner');
@@ -224,7 +229,51 @@
             }
         }
 
+        function readListState() {
+            try {
+                return JSON.parse(sessionStorage.getItem(LIST_STATE_KEY) || 'null');
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function writeListState(extra) {
+            const state = Object.assign({
+                scrollY: window.scrollY,
+                pagesLoaded: Math.max(1, currentPage - 1),
+                categoryId: categoryFilter.value,
+                pillarId: pillarFilter.value
+            }, extra || {});
+            sessionStorage.setItem(LIST_STATE_KEY, JSON.stringify(state));
+        }
+
+        function applySavedFilters(saved) {
+            if (!saved) return;
+            if (saved.categoryId != null) categoryFilter.value = saved.categoryId;
+            if (saved.pillarId != null) pillarFilter.value = saved.pillarId;
+        }
+
+        async function restoreListPosition(saved) {
+            const pagesToLoad = saved && saved.pagesLoaded > 0 ? saved.pagesLoaded : 1;
+            for (let i = 0; i < pagesToLoad; i++) {
+                await loadCourses();
+            }
+            requestAnimationFrame(() => {
+                const card = saved && saved.focusCourseId
+                    ? document.querySelector('.course-card[data-course-id="' + saved.focusCourseId + '"]')
+                    : null;
+                if (card) {
+                    card.classList.add('course-card-restored');
+                    card.scrollIntoView({ block: 'center', behavior: 'auto' });
+                    setTimeout(() => card.classList.remove('course-card-restored'), 1600);
+                } else if (saved && typeof saved.scrollY === 'number') {
+                    window.scrollTo(0, saved.scrollY);
+                }
+            });
+        }
+
         function resetAndReloadCourses() {
+            sessionStorage.removeItem(LIST_STATE_KEY);
             courseContainer.innerHTML = '';
             currentPage = 1;
             totalPages = 1;
@@ -234,10 +283,20 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            loadCourses();
+            const saved = readListState();
+            applySavedFilters(saved);
+            restoreListPosition(saved);
             categoryFilter.addEventListener('change', resetAndReloadCourses);
             pillarFilter.addEventListener('change', resetAndReloadCourses);
             window.addEventListener('scroll', handleScroll);
+            courseContainer.addEventListener('click', (event) => {
+                const link = event.target.closest('a[href*="/courses/"][href$="/edit"]');
+                if (!link) return;
+                const card = link.closest('.course-card');
+                writeListState({
+                    focusCourseId: card ? card.getAttribute('data-course-id') : null
+                });
+            });
         });
         /*]]>*/
     </script>

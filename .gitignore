@@ -2,6 +2,7 @@ HELP.md
 target/
 users.pwd
 *.log
+logs/
 mvnw
 mvnw.cmd
 bin/

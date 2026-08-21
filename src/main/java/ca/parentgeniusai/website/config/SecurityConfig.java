@@ -7,18 +7,17 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.client.RestTemplate;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+
+import java.net.URI;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +55,8 @@ public class SecurityConfig {
             .formLogin(form -> form
                 .loginPage("/signin")
                 .loginProcessingUrl("/do-login")
-                .successHandler(new SimpleUrlAuthenticationSuccessHandler("/"))
+                .successHandler((request, response, authentication) ->
+                    response.sendRedirect(resolveLoginRedirect(request)))
                 .failureUrl("/signin?error=true")
             )
             .logout(logout -> logout
@@ -104,10 +104,49 @@ public class SecurityConfig {
         filter.setAuthenticationManager(strapiAuthenticationManager);
         filter.setFilterProcessesUrl("/do-login");
         filter.setSecurityContextRepository(securityContextRepository);
-        filter.setAuthenticationSuccessHandler((request, response, authentication) -> response.sendRedirect("/"));
+        filter.setAuthenticationSuccessHandler((request, response, authentication) ->
+            response.sendRedirect(resolveLoginRedirect(request)));
         //filter.setAuthenticationFailureHandler((request, response, exception) -> response.sendRedirect("/login?error=true"));
         filter.setAuthenticationFailureHandler((request, response, exception) -> response.sendRedirect("/signin?error=true"));
 
         return filter;
+    }
+
+    static String resolveLoginRedirect(HttpServletRequest request) {
+        String redirect = request.getParameter("redirect");
+        if (redirect == null || redirect.isBlank()) {
+            HttpSession session = request.getSession(false);
+            if (session != null && session.getAttribute("LOGIN_REDIRECT") instanceof String saved) {
+                redirect = saved;
+                session.removeAttribute("LOGIN_REDIRECT");
+            }
+        }
+        return toInternalPath(redirect);
+    }
+
+    public static String toInternalPath(String value) {
+        if (value == null || value.isBlank()) {
+            return "/";
+        }
+        String path = value.trim();
+        if (path.startsWith("/") && !path.startsWith("//") && !path.contains("://")) {
+            return path.contains("/signin") ? "/" : path;
+        }
+        try {
+            URI uri = URI.create(path);
+            String resolved = uri.getPath();
+            if (resolved == null || resolved.isBlank()) {
+                return "/";
+            }
+            if (uri.getQuery() != null && !uri.getQuery().isBlank()) {
+                resolved = resolved + "?" + uri.getQuery();
+            }
+            if (!resolved.startsWith("/") || resolved.startsWith("//") || resolved.contains("/signin")) {
+                return "/";
+            }
+            return resolved;
+        } catch (Exception e) {
+            return "/";
+        }
     }
 }

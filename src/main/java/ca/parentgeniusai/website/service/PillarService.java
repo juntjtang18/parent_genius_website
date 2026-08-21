@@ -13,8 +13,13 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -169,6 +174,234 @@ public class PillarService {
             logger.error("Error fetching pillars: {}", e.getMessage(), e);
             return Collections.emptyList();
         }
+    }
+
+    /**
+     * Ask Strapi POST /api/ai/chat (same path as the site chatbot) to pick one pillar.
+     * {@code userJwt} must be the logged-in user's users-permissions JWT, not the CMS token.
+     */
+    public Long classifyPillar(String question, String userJwt) {
+        if (question == null || question.isBlank() || userJwt == null || userJwt.isBlank()) {
+            logger.warn("[AskAI] skip classify: blank question or jwt questionBlank={} jwtBlank={}",
+                question == null || question.isBlank(), userJwt == null || userJwt.isBlank());
+            return null;
+        }
+        List<Pillar> pillars = getPillars();
+        logger.info("[AskAI] question='{}' jwtLen={} pillarCount={} pillars={}",
+            question.trim(), userJwt.length(), pillars.size(), summarizePillars(pillars));
+        if (pillars.isEmpty()) {
+            logger.warn("[AskAI] cannot classify; pillar list is empty");
+            return null;
+        }
+
+        String url = STRAPI_ROOTURL + "api/ai/classify-pillar";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(userJwt);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+
+        List<Map<String, Object>> pillarPayload = pillars.stream()
+            .map(pillar -> {
+                Map<String, Object> item = new LinkedHashMap<>();
+                item.put("id", pillar.getId());
+                item.put("name", pillar.getName());
+                return item;
+            })
+            .collect(Collectors.toList());
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("question", question.trim());
+        body.put("pillars", pillarPayload);
+
+        try {
+            logger.info("[AskAI] POST {} question='{}' pillars={}", url, question.trim(), summarizePillars(pillars));
+            ResponseEntity<Map> response = restTemplate.exchange(
+                url, HttpMethod.POST, new HttpEntity<>(body, headers), Map.class
+            );
+            logger.info("[AskAI] HTTP {} rawBody={}", response.getStatusCode(), response.getBody());
+            String reply = extractClassifyReply(response.getBody());
+            Long bodyPillarId = extractClassifyPillarId(response.getBody());
+            logger.info("[AskAI] extracted pillarId={} reply='{}'", bodyPillarId, reply);
+            Long pillarId = bodyPillarId != null ? bodyPillarId : parsePillarId(reply, question, pillars);
+            logger.info("[AskAI] matched pillarId={}", pillarId);
+            return pillarId;
+        } catch (HttpClientErrorException e) {
+            logger.error("[AskAI] Strapi rejected classify: status={} body={}",
+                e.getStatusCode(), e.getResponseBodyAsString());
+            return parsePillarId(null, question, pillars);
+        } catch (Exception e) {
+            logger.error("[AskAI] classify failed: {}", e.getMessage(), e);
+            return parsePillarId(null, question, pillars);
+        }
+    }
+
+    private String summarizePillars(List<Pillar> pillars) {
+        return pillars.stream()
+            .map(p -> p.getId() + ":" + p.getName())
+            .collect(Collectors.joining(", "));
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<?, ?> classifyData(Map<?, ?> body) {
+        if (body == null) {
+            return null;
+        }
+        Object data = body.get("data");
+        return data instanceof Map<?, ?> dataMap ? dataMap : null;
+    }
+
+    private Long extractClassifyPillarId(Map<?, ?> body) {
+        Map<?, ?> data = classifyData(body);
+        if (data == null || data.get("pillarId") == null) {
+            return null;
+        }
+        try {
+            return Long.valueOf(data.get("pillarId").toString());
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    private String extractClassifyReply(Map<?, ?> body) {
+        Map<?, ?> data = classifyData(body);
+        if (data == null) {
+            logger.warn("[AskAI] extract reply: data is missing from {}", body);
+            return null;
+        }
+        Object text = data.get("text");
+        return text != null ? text.toString() : null;
+    }
+
+    private Long parsePillarId(String reply, String question, List<Pillar> pillars) {
+        Set<Long> ids = pillars.stream()
+            .map(Pillar::getId)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toSet());
+
+        Long fromTagged = extractTaggedId(reply, ids);
+        if (fromTagged != null) {
+            logger.info("[AskAI] parse: PILLAR_ID tag -> {}", fromTagged);
+            return fromTagged;
+        }
+
+        Long fromNumber = extractFirstKnownId(reply, ids);
+        if (fromNumber != null) {
+            logger.info("[AskAI] parse: number in short reply -> {}", fromNumber);
+            return fromNumber;
+        }
+
+        Long fromName = matchPillarName(reply, pillars);
+        if (fromName != null) {
+            logger.info("[AskAI] parse: pillar name in reply -> {}", fromName);
+            return fromName;
+        }
+
+        Long fromReplyKeywords = matchKeywords(reply, pillars);
+        if (fromReplyKeywords != null) {
+            logger.info("[AskAI] parse: keywords in reply -> {}", fromReplyKeywords);
+            return fromReplyKeywords;
+        }
+
+        Long fromQuestionKeywords = matchKeywords(question, pillars);
+        if (fromQuestionKeywords != null) {
+            logger.info("[AskAI] parse: keywords in question -> {}", fromQuestionKeywords);
+            return fromQuestionKeywords;
+        }
+
+        logger.warn("[AskAI] parse: no match from reply='{}' question='{}'", reply, question);
+        return null;
+    }
+
+    private Long extractTaggedId(String reply, Set<Long> ids) {
+        if (reply == null) {
+            return null;
+        }
+        Matcher matcher = Pattern.compile("PILLAR_ID\\s*=\\s*(\\d+)", Pattern.CASE_INSENSITIVE).matcher(reply);
+        if (matcher.find()) {
+            Long id = Long.valueOf(matcher.group(1));
+            return ids.contains(id) ? id : null;
+        }
+        return null;
+    }
+
+    private Long extractFirstKnownId(String reply, Set<Long> ids) {
+        if (reply == null || reply.isBlank()) {
+            return null;
+        }
+        String trimmed = reply.trim();
+        // Long chatbot essays often contain ages or step counts that are not pillar ids.
+        if (trimmed.length() > 40) {
+            return null;
+        }
+        try {
+            Long exact = Long.valueOf(trimmed);
+            if (ids.contains(exact)) {
+                return exact;
+            }
+        } catch (NumberFormatException ignored) {
+            // scan embedded numbers next
+        }
+        Matcher matcher = Pattern.compile("\\b(\\d+)\\b").matcher(trimmed);
+        while (matcher.find()) {
+            Long id = Long.valueOf(matcher.group(1));
+            if (ids.contains(id)) {
+                return id;
+            }
+        }
+        return null;
+    }
+
+    private Long matchPillarName(String text, List<Pillar> pillars) {
+        if (text == null || text.isBlank()) {
+            return null;
+        }
+        String lower = text.toLowerCase();
+        for (Pillar pillar : pillars) {
+            if (pillar.getName() != null && lower.contains(pillar.getName().toLowerCase())) {
+                return pillar.getId();
+            }
+        }
+        return null;
+    }
+
+    private Long matchKeywords(String text, List<Pillar> pillars) {
+        if (text == null || text.isBlank() || pillars.isEmpty()) {
+            return null;
+        }
+        String lower = text.toLowerCase();
+        int order;
+        if (containsAny(lower, "depress", "sad", "anxi", "emotion", "tantrum", "meltdown", "mental", "wellbeing", "self-esteem")) {
+            order = 2;
+        } else if (containsAny(lower, "sleep", "bedtime", "screen", "phone", "gaming", "cyber", "routine", "co-parent", "coparent")) {
+            order = 5;
+        } else if (containsAny(lower, "adhd", "autism", "neurodivers", "sensory", "inclusion")) {
+            order = 6;
+        } else if (containsAny(lower, "listen", "communicat", "talk", "social", "friend", "bond")) {
+            order = 3;
+        } else if (containsAny(lower, "homework", "school", "focus", "executive", "thinking", "learning")) {
+            order = 4;
+        } else if (containsAny(lower, "trust", "boundar", "discipline", "responsible", "toddler")) {
+            order = 1;
+        } else {
+            return null;
+        }
+        for (Pillar pillar : pillars) {
+            if (pillar.getOrder() != null && pillar.getOrder() == order) {
+                return pillar.getId();
+            }
+        }
+        if (order >= 1 && order <= pillars.size()) {
+            return pillars.get(order - 1).getId();
+        }
+        return null;
+    }
+
+    private boolean containsAny(String text, String... needles) {
+        for (String needle : needles) {
+            if (text.contains(needle)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public Pillar getPillarById(Long pillarId) {

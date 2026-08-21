@@ -22,7 +22,13 @@ public class CourseService {
     private static final Logger logger = LoggerFactory.getLogger(CourseService.class);
     private static final String LIST_POPULATE = "populate=icon_image,coursecategory,pillar";
     private static final String DETAIL_POPULATE =
-        "populate[content][populate]=image_file,video_file,thumbnail"
+        "populate[content][on][coursecontent.text]=true"
+            + "&populate[content][on][coursecontent.quiz]=true"
+            + "&populate[content][on][coursecontent.pagebreaker]=true"
+            + "&populate[content][on][coursecontent.external-video]=true"
+            + "&populate[content][on][coursecontent.image][populate]=image_file"
+            + "&populate[content][on][coursecontent.video][populate][0]=video_file"
+            + "&populate[content][on][coursecontent.video][populate][1]=thumbnail"
             + "&populate=icon_image,coursecategory,pillar";
 
     private final RestTemplate restTemplate = new RestTemplate();
