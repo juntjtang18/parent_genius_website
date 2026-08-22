@@ -200,7 +200,7 @@
         const strapiRootUrl = config.strapiRootUrl || '';
         const categorySlug = config.categorySlug || 'foundation';
         const userLoggedIn = config.userLoggedIn === 'true';
-        const loginRequiredMessage = config.loginRequiredMessage || 'Please log in to open the courses.';
+        const loginRequiredMessage = config.loginRequiredMessage || /*[[#{courses.login_required}]]*/ 'Please log in to open the courses.';
         const locale = (config.locale || 'en').toString().replace('_', '-');
         let hasPaidPlan = false;
 
