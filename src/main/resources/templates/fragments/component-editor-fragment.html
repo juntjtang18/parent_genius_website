@@ -21,6 +21,7 @@
                         <button class="component-picker-button" data-type="external-video"><i class="fas fa-link"></i><span>External Video</span></button>
                         <button class="component-picker-button" data-type="quiz"><i class="fas fa-question-circle"></i><span>Quiz</span></button>
                         <button class="component-picker-button" data-type="pagebreaker"><i class="fas fa-arrows-alt-h"></i><span>Page Break</span></button>
+                        <button class="component-picker-button course-only-picker" data-type="attachments"><i class="fas fa-paperclip"></i><span>Attachments</span></button>
                     </div>
                 </div>
             </div>
@@ -66,6 +67,16 @@
                 <div class="form-group"><label>Question</label><input type="text" class="form-control quiz-component__question-input" /></div>
                 <div class="form-group"><label>Options (JSON)</label><textarea class="form-control quiz-component__options-input" rows="4"></textarea></div>
                 <div class="form-group"><label>Correct Answer</label><input type="text" class="form-control quiz-component__correct-answer-input" /></div>
+            </div>
+            <div class="component attachments-component template" data-component-strapi-name="coursecontent.attachments">
+                <div class="component-header"><div><i class="fas fa-grip-vertical drag-handle"></i><strong>Attachments</strong></div></div>
+                <div class="form-group"><label>Title</label><input type="text" class="form-control attachments-component__title-input" placeholder="Optional heading" /></div>
+                <ul class="attachments-component__file-list list-group mb-3"></ul>
+                <div class="progress mt-2" style="display: none;"><div class="progress-bar" role="progressbar" style="width: 0%;">0%</div></div>
+                <div class="form-group">
+                    <label>Upload files (PDF, Word, etc.)</label>
+                    <input type="file" class="form-control attachments-component__file-input" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.rtf,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+                </div>
             </div>
             <div class="component pagebreaker-component template" data-component-strapi-name="coursecontent.pagebreaker">
                 <div class="component-header"><div><i class="fas fa-grip-vertical drag-handle"></i><strong>Page Break</strong></div></div>

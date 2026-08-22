@@ -7,6 +7,7 @@
     <link rel="icon" type="image/jpeg" th:href="@{/images/gpa-logo.jpg}" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/style.css}" />
     <style>
         body { display: flex; flex-direction: column; min-height: 100vh; font-family: 'Inter', sans-serif; background-color: #f8f9fa; }
@@ -25,6 +26,8 @@
         .btn-insert:hover, .btn-move:hover { color: #0d6efd; }
         .action-btn:hover { color: #dc3545; }
         .btn-insert:disabled, .btn-move:disabled { color: #adb5bd; cursor: not-allowed; }
+        .attachments-component__file-list .list-group-item { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+        .attachments-component__file-name { word-break: break-all; }
     </style>
 </head>
 <body>
@@ -281,6 +284,12 @@
         $('#course-content-area').on('change', '.image-component__file-input', function() { handleFileUpload(this, 'image'); });
         $('#course-content-area').on('change', '.video-component__video-input', function() { handleFileUpload(this, 'video'); });
         $('#course-content-area').on('change', '.video-component__thumbnail-input', function() { handleFileUpload(this, 'thumbnail'); });
+        $('#course-content-area').on('change', '.attachments-component__file-input', function() { handleAttachmentsUpload(this); });
+        $('#course-content-area').on('click', '.attachments-component__remove-file', function() {
+            const $component = $(this).closest('.attachments-component');
+            const fileId = parseInt($(this).attr('data-file-id'), 10);
+            setAttachmentFiles($component, getAttachmentFiles($component).filter((file) => file.id !== fileId));
+        });
         $('.course-icon__file-input').on('change', function() { handleFileUpload(this, 'icon-image'); });
         $('#course-content-area').on('input change', '.external-video-component__url-input', function() {
             updateVideoPreview($(this).closest('.component').find('.external-video-component__video-preview'), $(this).val().trim());
@@ -302,6 +311,94 @@
     function getFullStrapiUrl(path) {
         if (!path || path.startsWith('http')) return path;
         try { return new URL(path, STRAPI_ROOT_URL).href; } catch(e) { console.error("Could not create full URL from path:", path); return path; }
+    }
+
+    function attachmentFilesFromStrapi(files) {
+        const raw = files?.data ?? files;
+        const list = Array.isArray(raw) ? raw : (raw ? [raw] : []);
+        return list.map((file) => ({
+            id: file.id,
+            name: file.attributes?.name || file.name || `File ${file.id}`,
+            url: file.attributes?.url || file.url || ''
+        })).filter((file) => file.id);
+    }
+
+    function getAttachmentFiles($component) {
+        try {
+            const files = JSON.parse($component.attr('data-file-list') || '[]');
+            return Array.isArray(files) ? files : [];
+        } catch (e) {
+            return [];
+        }
+    }
+
+    function setAttachmentFiles($component, files) {
+        $component.attr('data-file-list', JSON.stringify(files || []));
+        renderAttachmentFileList($component);
+    }
+
+    function renderAttachmentFileList($component) {
+        const $list = $component.find('.attachments-component__file-list');
+        $list.empty();
+        getAttachmentFiles($component).forEach((file) => {
+            const name = file.name || `File ${file.id}`;
+            const href = file.url ? getFullStrapiUrl(file.url) : '#';
+            const $item = $(`
+                <li class="list-group-item">
+                    <a class="attachments-component__file-name" href="#" target="_blank" rel="noopener noreferrer"></a>
+                    <button type="button" class="btn btn-sm btn-outline-danger attachments-component__remove-file" data-file-id="${file.id}">Remove</button>
+                </li>
+            `);
+            $item.find('a').text(name).attr('href', href || '#');
+            $list.append($item);
+        });
+    }
+
+    async function handleAttachmentsUpload(input) {
+        const files = Array.from(input.files || []);
+        if (!files.length) return;
+
+        const $container = $(input).closest('.attachments-component');
+        const $progress = $container.find('.progress');
+        const $progressBar = $progress.find('.progress-bar');
+        const $saveButtons = $('#save-course-btn, #save-course-btn-bottom');
+        const uploadedFiles = getAttachmentFiles($container);
+
+        $(input).prop('disabled', true);
+        $saveButtons.prop('disabled', true);
+        $progress.show();
+
+        try {
+            for (let index = 0; index < files.length; index++) {
+                const file = files[index];
+                const onProgress = (percent) => {
+                    const overall = Math.round(((index + percent / 100) / files.length) * 100);
+                    $progressBar.css('width', overall + '%');
+                    if (overall < 100) {
+                        $progressBar.removeClass('bg-info').addClass('progress-bar-animated progress-bar-striped');
+                        $progressBar.text(`Uploading ${index + 1}/${files.length}: ${percent}%`);
+                    } else {
+                        $progressBar.addClass('bg-info').removeClass('progress-bar-animated progress-bar-striped');
+                        $progressBar.text('Processing... Please Wait');
+                    }
+                };
+                const uploadedFile = await uploadFileToStrapi(file, onProgress);
+                uploadedFiles.push({
+                    id: uploadedFile.id,
+                    name: uploadedFile.name || file.name,
+                    url: uploadedFile.url
+                });
+            }
+            setAttachmentFiles($container, uploadedFiles);
+            showStatusMessage('Upload successful!', 'success');
+        } catch (error) {
+            showStatusMessage(`Upload failed. See browser console for details.`, 'danger');
+            console.error('Attachment upload error:', error);
+        } finally {
+            $(input).prop('disabled', false).val('');
+            $saveButtons.prop('disabled', false);
+            $progress.hide();
+        }
     }
 
     function updateVideoPreview($previewContainer, url) {
@@ -352,6 +449,10 @@
                 $template.find('.quiz-component__options-input').val(JSON.stringify(data.options || [], null, 2));
                 $template.find('.quiz-component__correct-answer-input').val(data.correctAnswer || '');
                 break;
+            case 'attachments':
+                $template.find('.attachments-component__title-input').val(data.title || '');
+                setAttachmentFiles($template, attachmentFilesFromStrapi(data.files));
+                break;
             case 'pagebreaker':
                 $template.find('.pagebreaker-component__backbutton-input').prop('checked', data.backbutton !== false);
                 $template.find('.pagebreaker-component__nextbutton-input').prop('checked', data.nextbutton !== false);
@@ -372,6 +473,7 @@
                 'populate[content][on][coursecontent.image][populate]=image_file',
                 'populate[content][on][coursecontent.video][populate][0]=video_file',
                 'populate[content][on][coursecontent.video][populate][1]=thumbnail',
+                'populate[content][on][coursecontent.attachments][populate]=files',
                 'populate[icon_image]=*',
                 'populate[coursecategory]=*',
                 'populate[pillar]=*'
@@ -445,6 +547,9 @@
                     payload.question = $c.find('.quiz-component__question-input').val();
                     payload.options = JSON.parse($c.find('.quiz-component__options-input').val() || '[]');
                     payload.correctAnswer = $c.find('.quiz-component__correct-answer-input').val();
+                } else if ($c.hasClass('attachments-component')) {
+                    payload.title = $c.find('.attachments-component__title-input').val().trim();
+                    payload.files = getAttachmentFiles($c).map((file) => file.id).filter(Boolean);
                 } else if ($c.hasClass('pagebreaker-component')) {
                     payload.backbutton = $c.find('.pagebreaker-component__backbutton-input').is(':checked');
                     payload.nextbutton = $c.find('.pagebreaker-component__nextbutton-input').is(':checked');

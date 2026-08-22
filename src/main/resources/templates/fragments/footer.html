@@ -50,11 +50,18 @@
   </footer>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
-    .gp-footer {
+    footer.gp-footer {
       background: #fff;
+      color: #6b7280;
+      text-align: left;
       padding: 56px 0 48px;
+    }
+    footer.gp-footer a:not(.gp-social) {
+      color: #2563eb;
+      text-decoration: none;
     }
     .gp-footer-logo { height: 36px; width: auto; }
     .gp-footer-blurb {
@@ -78,13 +85,13 @@
       line-height: 30px;
     }
     .gp-socials { display: inline-flex; gap: 8px; }
-    .gp-social {
+    footer.gp-footer a.gp-social {
       display: inline-flex; align-items: center; justify-content: center;
       width: 32px; height: 32px; border-radius: 50%;
       background: #3D91FD; color: #fff; text-decoration: none;
       transition: transform .12s ease, opacity .12s ease;
     }
-    .gp-social:hover { transform: translateY(-1px); opacity: .9; color: #fff; }
+    footer.gp-footer a.gp-social:hover { transform: translateY(-1px); opacity: .9; color: #fff; }
     .gp-footer-links { font-size: .9rem; color: #6b7280; }
     .gp-footer-link { color: #2563eb; text-decoration: none; margin: 0 4px; }
     .gp-footer-link:hover { text-decoration: underline; }

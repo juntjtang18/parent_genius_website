@@ -1,6 +1,7 @@
 package ca.parentgeniusai.website.service;
 
 import ca.parentgeniusai.website.model.Course;
+import ca.parentgeniusai.website.model.CourseAttachmentFile;
 import ca.parentgeniusai.website.model.CourseCategory;
 
 import org.slf4j.Logger;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 @Service
 public class CourseService {
     private static final Logger logger = LoggerFactory.getLogger(CourseService.class);
+    private static final String ATTACHMENTS_COMPONENT = "coursecontent.attachments";
     private static final String LIST_POPULATE = "populate=icon_image,coursecategory,pillar";
     private static final String DETAIL_POPULATE =
         "populate[content][on][coursecontent.text]=true"
@@ -29,6 +32,7 @@ public class CourseService {
             + "&populate[content][on][coursecontent.image][populate]=image_file"
             + "&populate[content][on][coursecontent.video][populate][0]=video_file"
             + "&populate[content][on][coursecontent.video][populate][1]=thumbnail"
+            + "&populate[content][on][coursecontent.attachments][populate]=files"
             + "&populate=icon_image,coursecategory,pillar";
 
     private final RestTemplate restTemplate = new RestTemplate();
@@ -273,7 +277,7 @@ public class CourseService {
         );
         course.setPublished(attrs.getPublished());
         if (includeContent) {
-            course.setContent(resolveContentMediaUrls(attrs.getContent()));
+            course.setContent(normalizeCourseContent(attrs.getContent()));
         }
         return course;
     }
@@ -289,12 +293,62 @@ public class CourseService {
         return data.getAttributes().getName();
     }
 
-    private List<Map<String, Object>> resolveContentMediaUrls(List<Map<String, Object>> content) {
+    List<Map<String, Object>> normalizeCourseContent(List<Map<String, Object>> content) {
         if (content == null) {
             return Collections.emptyList();
         }
-        content.forEach(this::absolutizeMediaUrls);
+        content.forEach(this::normalizeContentBlock);
         return content;
+    }
+
+    public List<CourseAttachmentFile> extractAttachmentFiles(Object filesField) {
+        List<CourseAttachmentFile> files = new ArrayList<>();
+        for (Object entry : asObjectList(unwrapStrapiData(filesField))) {
+            CourseAttachmentFile file = toAttachmentFile(entry);
+            if (file != null && file.getUrl() != null && !file.getUrl().isBlank()) {
+                files.add(file);
+            }
+        }
+        return files;
+    }
+
+    private void normalizeContentBlock(Map<String, Object> item) {
+        if (item == null) {
+            return;
+        }
+        absolutizeMediaUrls(item);
+        if (!ATTACHMENTS_COMPONENT.equals(item.get("__component"))) {
+            return;
+        }
+        Object title = item.get("title");
+        item.put("title", title == null ? "" : title.toString());
+        item.put("files", extractAttachmentFiles(item.get("files")).stream()
+            .map(CourseAttachmentFile::toMap)
+            .collect(Collectors.toList()));
+    }
+
+    @SuppressWarnings("unchecked")
+    private CourseAttachmentFile toAttachmentFile(Object entry) {
+        if (!(entry instanceof Map<?, ?> raw)) {
+            return null;
+        }
+        Map<String, Object> file = (Map<String, Object>) raw;
+        Map<String, Object> attributes = asStringObjectMap(file.get("attributes"));
+        Long id = toLong(file.get("id"));
+        String name = firstNonBlank(
+            stringValue(file.get("name")),
+            attributes != null ? stringValue(attributes.get("name")) : null,
+            id != null ? "File " + id : "Download"
+        );
+        String url = firstNonBlank(
+            stringValue(file.get("url")),
+            attributes != null ? stringValue(attributes.get("url")) : null
+        );
+        String mime = firstNonBlank(
+            stringValue(file.get("mime")),
+            attributes != null ? stringValue(attributes.get("mime")) : null
+        );
+        return new CourseAttachmentFile(id, name, toAbsoluteUrl(url), mime);
     }
 
     @SuppressWarnings("unchecked")
@@ -309,6 +363,12 @@ public class CourseService {
         for (Object value : node.values()) {
             if (value instanceof Map<?, ?> nested) {
                 absolutizeMediaUrls((Map<String, Object>) nested);
+            } else if (value instanceof List<?> list) {
+                for (Object entry : list) {
+                    if (entry instanceof Map<?, ?> nested) {
+                        absolutizeMediaUrls((Map<String, Object>) nested);
+                    }
+                }
             }
         }
     }
@@ -351,5 +411,60 @@ public class CourseService {
         return STRAPI_ROOTURL.endsWith("/")
             ? STRAPI_ROOTURL.substring(0, STRAPI_ROOTURL.length() - 1) + relativeUrl
             : STRAPI_ROOTURL + relativeUrl;
+    }
+
+    private Object unwrapStrapiData(Object value) {
+        if (value instanceof Map<?, ?> map && map.containsKey("data")) {
+            return map.get("data");
+        }
+        return value;
+    }
+
+    private List<Object> asObjectList(Object value) {
+        if (value instanceof List<?> list) {
+            return new ArrayList<>(list);
+        }
+        if (value instanceof Map<?, ?>) {
+            return List.of(value);
+        }
+        return Collections.emptyList();
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, Object> asStringObjectMap(Object value) {
+        if (value instanceof Map<?, ?>) {
+            return (Map<String, Object>) value;
+        }
+        return null;
+    }
+
+    private Long toLong(Object value) {
+        if (value instanceof Number number) {
+            return number.longValue();
+        }
+        if (value instanceof String text && !text.isBlank()) {
+            try {
+                return Long.parseLong(text);
+            } catch (NumberFormatException ignored) {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    private String stringValue(Object value) {
+        return value == null ? null : value.toString();
+    }
+
+    private String firstNonBlank(String... values) {
+        if (values == null) {
+            return null;
+        }
+        for (String value : values) {
+            if (value != null && !value.isBlank()) {
+                return value;
+            }
+        }
+        return null;
     }
 }
