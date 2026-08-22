@@ -149,14 +149,14 @@ public class CourseController {
             return "redirect:/signin";
         }
 
-        Long matched = pillarService.classifyPillar(q, jwtToken);
+        Long matched = courseService.classifyCourse(q, jwtToken);
         if (matched == null) {
-            logger.warn("[AskAI] controller: no pillar for question='{}'; staying on {}", q, fallback);
+            logger.warn("[AskAI] controller: no course for question='{}'; staying on pillar {}", q, fallback);
             return "redirect:/courses/pillar/" + fallback + "?askError=1";
         }
-        logger.info("[AskAI] controller: question='{}' -> pillar {}", q, matched);
+        logger.info("[AskAI] controller: question='{}' -> course {}", q, matched);
         session.removeAttribute(SESSION_ASK_QUESTION);
-        return "redirect:/courses/pillar/" + matched;
+        return "redirect:/courses/" + matched + "?fromPillar=" + fallback;
     }
 
     private int heroIndexFor(Pillar pillar) {

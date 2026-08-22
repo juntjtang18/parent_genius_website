@@ -78,62 +78,61 @@
             min-height: 240px;
             padding: 1.25rem;
         }
+        .course-pager,
+        .course-pager-pages {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.45rem;
+        }
         .course-pager {
-            display: grid;
-            grid-template-columns: auto 1fr auto;
-            align-items: center;
-            gap: 0.75rem;
             border-top: 1px solid #dbeafe;
-            padding: 0.8rem 1rem;
-            background: #f8fbff;
+            padding: 0.85rem 1rem;
+            background: #ffffff;
         }
-        .course-pager-actions {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.15rem;
-        }
-        .course-pager-button {
-            width: 44px;
-            height: 44px;
+        .course-pager-arrow,
+        .course-pager-number {
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            min-width: 28px;
+            height: 28px;
+            padding: 0 4px;
             border: 0;
-            border-radius: 999px;
             background: transparent;
-            color: #2563eb;
-            font-size: 2rem;
+            color: #4B5563;
+            font-family: "Poppins", sans-serif;
+            font-size: 0.92rem;
+            font-weight: 400;
             line-height: 1;
-            transition: opacity 0.15s ease, transform 0.15s ease;
         }
-        .course-pager-button:hover {
-            transform: scale(1.05);
+        .course-pager-arrow {
+            color: #6B7280;
+            font-size: 0.85rem;
         }
-        .course-pager-button:focus-visible {
-            outline: 3px solid rgba(37, 99, 235, 0.3);
-            outline-offset: 2px;
-        }
-        .course-pager-button.is-hidden {
-            visibility: hidden;
+        .course-pager-arrow:disabled {
+            color: #D1D5DB;
             pointer-events: none;
         }
-        .course-pager-stack {
-            font-size: 1rem;
-            width: 2em;
-            height: 2em;
-            line-height: 2em;
+        .course-pager-number.is-active {
+            min-width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            background: #3D91FD;
+            color: #ffffff;
+            font-weight: 400;
         }
-        .course-pager-stack .fa-angles-left,
-        .course-pager-stack .fa-angles-right {
-            font-size: 0.85em;
-        }
-        .course-page-status {
-            margin: 0;
-            text-align: center;
-            color: #475569;
+        .course-pager-ellipsis {
+            color: #4B5563;
             font-family: "Poppins", sans-serif;
-            font-size: 0.88rem;
-            font-weight: 700;
+            font-size: 0.92rem;
+            font-weight: 400;
+            padding: 0 2px;
+        }
+        .course-pager-arrow:focus-visible,
+        .course-pager-number:focus-visible {
+            outline: 3px solid rgba(61, 145, 253, 0.3);
+            outline-offset: 2px;
         }
         .content-text {
             white-space: pre-wrap;
@@ -313,29 +312,13 @@
         <section id="course-content" class="course-content"></section>
         <div id="course-empty" class="course-state d-none"></div>
         <nav id="course-pager" class="course-pager" aria-label="Course pages">
-            <div class="course-pager-actions">
-                <button id="course-first-page" class="course-pager-button" type="button">
-                    <span class="fa-stack course-pager-stack" aria-hidden="true">
-                        <i class="fa-solid fa-circle fa-stack-2x"></i>
-                        <i class="fa-solid fa-angles-left fa-stack-1x fa-inverse"></i>
-                    </span>
-                </button>
-                <button id="course-previous-page" class="course-pager-button" type="button">
-                    <i class="fa-solid fa-circle-arrow-left" aria-hidden="true"></i>
-                </button>
-            </div>
-            <p id="course-page-status" class="course-page-status" aria-live="polite"></p>
-            <div class="course-pager-actions">
-                <button id="course-next-page" class="course-pager-button" type="button">
-                    <i class="fa-solid fa-circle-arrow-right" aria-hidden="true"></i>
-                </button>
-                <button id="course-last-page" class="course-pager-button" type="button">
-                    <span class="fa-stack course-pager-stack" aria-hidden="true">
-                        <i class="fa-solid fa-circle fa-stack-2x"></i>
-                        <i class="fa-solid fa-angles-right fa-stack-1x fa-inverse"></i>
-                    </span>
-                </button>
-            </div>
+            <button id="course-previous-page" class="course-pager-arrow" type="button">
+                <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+            </button>
+            <div id="course-pager-pages" class="course-pager-pages"></div>
+            <button id="course-next-page" class="course-pager-arrow" type="button">
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+            </button>
         </nav>
     </div>
 
@@ -384,21 +367,17 @@
     const contentEl = document.getElementById('course-content');
     const emptyEl = document.getElementById('course-empty');
     const pagerEl = document.getElementById('course-pager');
-    const firstPageEl = document.getElementById('course-first-page');
     const previousPageEl = document.getElementById('course-previous-page');
     const nextPageEl = document.getElementById('course-next-page');
-    const lastPageEl = document.getElementById('course-last-page');
-    const pageStatusEl = document.getElementById('course-page-status');
+    const pagerPagesEl = document.getElementById('course-pager-pages');
     const titleEl = document.getElementById('course-title');
     const topImageEl = document.getElementById('course-top-image');
     const lockEl = document.getElementById('membership-lock');
     const backLinkEl = document.getElementById('course-back-link');
     const membershipCtaEl = document.getElementById('membership-cta');
 
-    firstPageEl.setAttribute('aria-label', 'First page');
     previousPageEl.setAttribute('aria-label', previousPageLabel);
     nextPageEl.setAttribute('aria-label', nextPageLabel);
-    lastPageEl.setAttribute('aria-label', 'Last page');
 
     function authHeaders() {
         return strapiToken ? { Authorization: strapiToken } : {};
@@ -424,6 +403,23 @@
             return fromCategory;
         }
         return 'foundation';
+    }
+
+    function getBackHref(course) {
+        const params = new URLSearchParams(window.location.search);
+        const fromPillar = params.get('fromPillar');
+        if (fromPillar && /^\d+$/.test(fromPillar)) {
+            return '/courses/pillar/' + fromPillar;
+        }
+        const fromCategory = params.get('fromCategory');
+        if (fromCategory === 'membership-only' || fromCategory === 'parenting-tools' || fromCategory === 'foundation') {
+            return '/courses/' + fromCategory;
+        }
+        const pillarId = course?.attributes?.pillar?.data?.id;
+        if (pillarId) {
+            return '/courses/pillar/' + pillarId;
+        }
+        return '/courses/' + getFromCategory();
     }
 
     function isMembershipOnly(course) {
@@ -834,17 +830,62 @@
         renderContent(coursePages[currentPageIndex] || []);
 
         const settings = getPageSettings();
-        const onFirstPage = currentPageIndex <= 0;
-        const onLastPage = currentPageIndex >= coursePages.length - 1;
-        firstPageEl.classList.toggle('is-hidden', onFirstPage);
-        previousPageEl.classList.toggle('is-hidden', !settings.showPrevious);
-        nextPageEl.classList.toggle('is-hidden', !settings.showNext);
-        lastPageEl.classList.toggle('is-hidden', onLastPage);
-        pageStatusEl.textContent = (currentPageIndex + 1) + ' / ' + coursePages.length;
+        previousPageEl.disabled = !settings.showPrevious;
+        nextPageEl.disabled = !settings.showNext;
+        renderPagerNumbers();
 
         if (shouldScroll) {
             pageFrameEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
+    }
+
+    function visiblePageNumbers(current, total) {
+        if (total <= 0) return [];
+        if (total <= 7) {
+            return Array.from({ length: total }, function (_, index) { return index + 1; });
+        }
+        const pages = new Set([1, total]);
+        if (current <= 3) {
+            [1, 2, 3, 4, 5].forEach(function (page) {
+                if (page <= total) pages.add(page);
+            });
+        } else if (current >= total - 2) {
+            [total - 4, total - 3, total - 2, total - 1, total].forEach(function (page) {
+                if (page >= 1) pages.add(page);
+            });
+        } else {
+            [current - 1, current, current + 1].forEach(function (page) { pages.add(page); });
+        }
+        const sorted = Array.from(pages).sort(function (left, right) { return left - right; });
+        const result = [];
+        sorted.forEach(function (page, index) {
+            if (index > 0 && page - sorted[index - 1] > 1) result.push('ellipsis');
+            result.push(page);
+        });
+        return result;
+    }
+
+    function renderPagerNumbers() {
+        const total = coursePages.length;
+        const current = currentPageIndex + 1;
+        pagerPagesEl.replaceChildren();
+        visiblePageNumbers(current, total).forEach(function (item) {
+            if (item === 'ellipsis') {
+                const dots = document.createElement('span');
+                dots.className = 'course-pager-ellipsis';
+                dots.textContent = '...';
+                pagerPagesEl.appendChild(dots);
+                return;
+            }
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'course-pager-number' + (item === current ? ' is-active' : '');
+            button.textContent = String(item);
+            button.setAttribute('aria-label', 'Page ' + item + ' of ' + total);
+            if (item === current) button.setAttribute('aria-current', 'page');
+            button.addEventListener('click', function () { goToPage(item - 1); });
+            pagerPagesEl.appendChild(button);
+        });
     }
 
     function goToPage(index) {
@@ -878,6 +919,7 @@
             params.set('populate[content][on][coursecontent.attachments][populate]', 'files');
             params.set('populate[icon_image][populate]', 'formats');
             params.set('populate[coursecategory][populate]', '*');
+            params.set('populate[pillar]', 'true');
             params.set('populate[localizations][fields][0]', 'title');
             params.set('populate[localizations][fields][1]', 'locale');
             params.set('locale', 'en');
@@ -892,9 +934,9 @@
             const body = await res.json();
             const course = Array.isArray(body?.data) ? body.data[0] : null;
             if (!course?.attributes) throw new Error('Course not found.');
-            const fromCategory = getFromCategory();
-            backLinkEl.href = '/courses/' + fromCategory;
-            membershipCtaEl.href = '/membership?fromCourse=' + encodeURIComponent('/courses/' + courseId + '?fromCategory=' + fromCategory);
+            const backHref = getBackHref(course);
+            backLinkEl.href = backHref;
+            membershipCtaEl.href = '/membership?fromCourse=' + encodeURIComponent('/courses/' + courseId + window.location.search);
             titleEl.textContent = extractLocalizedTitle(course);
 
             if (isMembershipOnly(course) && !hasPaidPlan) {
@@ -925,10 +967,8 @@
         }
     }
 
-    firstPageEl.addEventListener('click', () => goToPage(0));
     previousPageEl.addEventListener('click', () => changePage(-1));
     nextPageEl.addEventListener('click', () => changePage(1));
-    lastPageEl.addEventListener('click', () => goToPage(coursePages.length - 1));
     window.addEventListener('beforeunload', stopSpeech);
     document.addEventListener('DOMContentLoaded', loadCourse);
 </script>

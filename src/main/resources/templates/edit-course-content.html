@@ -69,6 +69,12 @@
                         <option value="true" th:text="#{edit-course.published-yes}">Yes</option>
                     </select>
                 </div>
+                <div class="form-group">
+                    <label for="course-keywords-input"><strong th:text="#{edit-course.keywords}">Keywords</strong></label>
+                    <input type="text" id="course-keywords-input" class="form-control"
+                           th:placeholder="#{edit-course.keywords-placeholder}" />
+                    <div class="form-text" th:text="#{edit-course.keywords-hint}">Separate keywords with a comma, with or without a space.</div>
+                </div>
                 <div class="form-group course-icon-uploader">
                     <strong th:text="#{edit-course.cap5}">Icon Image</strong>
                     <input type="file" class="form-control form-control-lg course-icon__file-input" id="course-icon-input" name="icon_image" accept="image/*">
@@ -501,6 +507,7 @@
                 $('#course-category-select').val(course.coursecategory.data.id);
             }
             $('#course-published-select').val(course.published === true ? 'true' : 'false');
+            $('#course-keywords-input').val(course.keywords || '');
             $('#course-page-title').text('Edit Course: ' + (course.title || 'Untitled'));
             $('#course-translations-json').val(JSON.stringify(course.translations || {}, null, 2));
             if (course.icon_image && course.icon_image.data) {
@@ -583,6 +590,7 @@
                     pillar: pillarId ? parseInt(pillarId, 10) : null,
                     coursecategory: categoryId ? parseInt(categoryId, 10) : null,
                     published: $('#course-published-select').val() === 'true',
+                    keywords: $('#course-keywords-input').val().trim(),
                     content: componentsData,
                     translations: JSON.parse($('#course-translations-json').val() || '{}'),
                     icon_image: $('.course-icon-uploader').attr('data-icon-media-id') ? parseInt($('.course-icon-uploader').attr('data-icon-media-id'), 10) : null

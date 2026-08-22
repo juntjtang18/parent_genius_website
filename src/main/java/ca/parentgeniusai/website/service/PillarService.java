@@ -97,6 +97,7 @@ public class PillarService {
         private Integer order;
         private MediaWrapper icon_image;
         private RelationWrapper coursecategory;
+        private String keywords;
 
         public String getTitle() { return title; }
         public void setTitle(String title) { this.title = title; }
@@ -106,6 +107,8 @@ public class PillarService {
         public void setIcon_image(MediaWrapper icon_image) { this.icon_image = icon_image; }
         public RelationWrapper getCoursecategory() { return coursecategory; }
         public void setCoursecategory(RelationWrapper coursecategory) { this.coursecategory = coursecategory; }
+        public String getKeywords() { return keywords; }
+        public void setKeywords(String keywords) { this.keywords = keywords; }
     }
 
     private static class MediaWrapper {
@@ -464,7 +467,7 @@ public class PillarService {
         RelationData category = attrs.getCoursecategory() != null
             ? attrs.getCoursecategory().getData() : null;
 
-        return new Course(
+        Course course = new Course(
             resp.getId(),
             attrs.getTitle(),
             attrs.getOrder(),
@@ -475,6 +478,8 @@ public class PillarService {
             pillar.getId(),
             pillar.getName()
         );
+        course.setKeywords(attrs.getKeywords());
+        return course;
     }
 
     private String resolveIconImageUrl(MediaWrapper iconImage) {

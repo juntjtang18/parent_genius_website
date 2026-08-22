@@ -187,17 +187,7 @@
       border: 0;
     }
     .pc-card-btn:hover{ color:#fff; filter: brightness(1.05); }
-    .pc-card.is-unpublished .pc-card-image,
-    .pc-card.is-unpublished .pc-card-placeholder{
-      filter: grayscale(1);
-      opacity: .45;
-    }
-    .pc-card.is-unpublished .pc-card-title{
-      color: #9CA3AF;
-    }
     .pc-card-btn.is-disabled{
-      background: #D1D5DB;
-      color: #6B7280;
       pointer-events: none;
       cursor: not-allowed;
       filter: none;
@@ -226,7 +216,7 @@
   <div th:if="${heroIndex == 6}" th:insert="~{fragments/pillar-course-hero-segment6 :: pillar-course-hero-segment6}"></div>
 
   <section class="pc-ask">
-    <p class="pc-ask-error" th:if="${askError}" th:text="#{pillar.ask.error}">Sorry, we could not match a learning pillar. Please try again.</p>
+    <p class="pc-ask-error" th:if="${askError}" th:text="#{pillar.ask.error}">Sorry, we could not match a course. Please try again.</p>
     <form class="pc-ask-bar" id="pcAskForm" th:action="@{/courses/pillar/ask}" method="post">
       <input type="hidden" name="fromPillarId" th:value="${pillar.id}">
       <input id="pcAskInput" type="text" name="question"
@@ -254,7 +244,7 @@
             </div>
             <h2 class="pc-card-title" th:text="${course.title}">Course title</h2>
             <a th:if="${course.published}" class="pc-card-btn"
-               th:href="@{/courses/{id}(id=${course.id})}" th:text="#{pillar.courses.cta}">View the Course</a>
+               th:href="@{/courses/{id}(id=${course.id}, fromPillar=${pillar.id})}" th:text="#{pillar.courses.cta}">View the Course</a>
             <span th:unless="${course.published}" class="pc-card-btn is-disabled"
                   aria-disabled="true" th:text="#{pillar.courses.cta}">View the Course</span>
           </article>

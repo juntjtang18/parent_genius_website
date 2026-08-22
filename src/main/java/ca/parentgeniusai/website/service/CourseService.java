@@ -15,8 +15,13 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -74,6 +79,7 @@ public class CourseService {
         private RelationWrapper coursecategory;
         private RelationWrapper pillar;
         private Boolean published;
+        private String keywords;
         private List<Map<String, Object>> content;
 
         public String getTitle() { return title; }
@@ -88,6 +94,8 @@ public class CourseService {
         public void setPillar(RelationWrapper pillar) { this.pillar = pillar; }
         public Boolean getPublished() { return published; }
         public void setPublished(Boolean published) { this.published = published; }
+        public String getKeywords() { return keywords; }
+        public void setKeywords(String keywords) { this.keywords = keywords; }
         public List<Map<String, Object>> getContent() { return content; }
         public void setContent(List<Map<String, Object>> content) { this.content = content; }
     }
@@ -179,7 +187,9 @@ public class CourseService {
         }
         List<Course> courses = fetchCourses(
             "filters[pillar][id][$eq]=" + pillarId,
-            "pillar " + pillarId
+            "pillar " + pillarId,
+            1,
+            100
         );
         courses.sort(Comparator
             .comparing((Course course) -> Boolean.TRUE.equals(course.getPublished()), Comparator.reverseOrder())
@@ -188,13 +198,191 @@ public class CourseService {
         return courses;
     }
 
+    public List<Course> getPublishedCourses() {
+        List<Course> courses = new ArrayList<>();
+        int page = 1;
+        int pageSize = 100;
+        while (page <= 50) {
+            List<Course> batch = fetchCourses(
+                "filters[published][$eq]=true",
+                "published page " + page,
+                page,
+                pageSize
+            );
+            courses.addAll(batch);
+            if (batch.size() < pageSize) {
+                break;
+            }
+            page++;
+        }
+        return courses;
+    }
+
+    /**
+     * Ask Strapi POST /api/ai/classify-course to pick one published course.
+     * {@code userJwt} must be the logged-in user's users-permissions JWT, not the CMS token.
+     */
+    public Long classifyCourse(String question, String userJwt) {
+        if (question == null || question.isBlank() || userJwt == null || userJwt.isBlank()) {
+            logger.warn("[AskAI] skip classify course: blank question or jwt questionBlank={} jwtBlank={}",
+                question == null || question.isBlank(), userJwt == null || userJwt.isBlank());
+            return null;
+        }
+
+        List<Course> courses = getPublishedCourses();
+        logger.info("[AskAI] question='{}' jwtLen={} publishedCourseCount={}",
+            question.trim(), userJwt.length(), courses.size());
+        if (courses.isEmpty()) {
+            logger.warn("[AskAI] cannot classify course; no published courses");
+            return null;
+        }
+
+        String url = STRAPI_ROOTURL + "api/ai/classify-course";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(userJwt);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+
+        List<Map<String, Object>> coursePayload = courses.stream()
+            .map(course -> {
+                Map<String, Object> item = new LinkedHashMap<>();
+                item.put("id", course.getId());
+                item.put("title", course.getTitle());
+                item.put("keywords", course.getKeywords() == null ? "" : course.getKeywords());
+                return item;
+            })
+            .collect(Collectors.toList());
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("question", question.trim());
+        body.put("courses", coursePayload);
+
+        try {
+            logger.info("[AskAI] POST {} question='{}' courseCount={}", url, question.trim(), courses.size());
+            ResponseEntity<Map> response = restTemplate.exchange(
+                url, HttpMethod.POST, new HttpEntity<>(body, headers), Map.class
+            );
+            logger.info("[AskAI] HTTP {} rawBody={}", response.getStatusCode(), response.getBody());
+            Set<Long> knownIds = courseIds(courses);
+            Long bodyCourseId = extractClassifyCourseId(response.getBody());
+            if (bodyCourseId != null && knownIds.contains(bodyCourseId)) {
+                logger.info("[AskAI] matched courseId={}", bodyCourseId);
+                return bodyCourseId;
+            }
+            Long fromReply = extractTaggedCourseId(extractClassifyReply(response.getBody()), knownIds);
+            if (fromReply != null) {
+                logger.info("[AskAI] matched courseId from reply={}", fromReply);
+                return fromReply;
+            }
+            Long fallback = pickBestCourse(question, courses);
+            logger.info("[AskAI] fallback courseId={}", fallback);
+            return fallback;
+        } catch (HttpClientErrorException e) {
+            logger.error("[AskAI] Strapi rejected classify course: status={} body={}",
+                e.getStatusCode(), e.getResponseBodyAsString());
+            return pickBestCourse(question, courses);
+        } catch (Exception e) {
+            logger.error("[AskAI] classify course failed: {}", e.getMessage(), e);
+            return pickBestCourse(question, courses);
+        }
+    }
+
+    private Map<?, ?> classifyData(Map<?, ?> body) {
+        if (body == null) {
+            return null;
+        }
+        Object data = body.get("data");
+        return data instanceof Map<?, ?> dataMap ? dataMap : null;
+    }
+
+    private Long extractClassifyCourseId(Map<?, ?> body) {
+        Map<?, ?> data = classifyData(body);
+        if (data == null || data.get("courseId") == null) {
+            return null;
+        }
+        try {
+            return Long.valueOf(data.get("courseId").toString());
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    private String extractClassifyReply(Map<?, ?> body) {
+        Map<?, ?> data = classifyData(body);
+        if (data == null || data.get("text") == null) {
+            return null;
+        }
+        return data.get("text").toString();
+    }
+
+    private Set<Long> courseIds(List<Course> courses) {
+        return courses.stream()
+            .map(Course::getId)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toSet());
+    }
+
+    private Long extractTaggedCourseId(String reply, Set<Long> ids) {
+        if (reply == null || reply.isBlank()) {
+            return null;
+        }
+        Matcher matcher = Pattern.compile("COURSE_ID\\s*=\\s*(\\d+)", Pattern.CASE_INSENSITIVE).matcher(reply);
+        if (matcher.find()) {
+            Long id = Long.valueOf(matcher.group(1));
+            return ids.contains(id) ? id : null;
+        }
+        String trimmed = reply.trim();
+        if (trimmed.length() <= 12) {
+            try {
+                Long exact = Long.valueOf(trimmed);
+                return ids.contains(exact) ? exact : null;
+            } catch (NumberFormatException ignored) {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    private Long pickBestCourse(String question, List<Course> courses) {
+        if (courses == null || courses.isEmpty()) {
+            return null;
+        }
+        if (question != null && !question.isBlank()) {
+            String lower = question.toLowerCase();
+            Long bestId = null;
+            int bestScore = 0;
+            for (Course course : courses) {
+                int score = 0;
+                for (String keyword : course.getKeywordList()) {
+                    String needle = keyword.toLowerCase();
+                    if (needle.length() >= 2 && lower.contains(needle)) {
+                        score++;
+                    }
+                }
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestId = course.getId();
+                }
+            }
+            if (bestScore > 0) {
+                return bestId;
+            }
+        }
+        return courses.stream()
+            .map(Course::getId)
+            .filter(Objects::nonNull)
+            .findFirst()
+            .orElse(null);
+    }
+
     public List<Course> getCoursesByCategoryId(Long courseCategoryId) {
         if (courseCategoryId == null) {
             return Collections.emptyList();
         }
         return fetchCourses(
             "filters[coursecategory][id][$eq]=" + courseCategoryId,
-            "coursecategory " + courseCategoryId
+            "coursecategory " + courseCategoryId,
+            1,
+            100
         );
     }
 
@@ -223,14 +411,15 @@ public class CourseService {
         }
     }
 
-    private List<Course> fetchCourses(String filterQuery, String logLabel) {
+    private List<Course> fetchCourses(String filterQuery, String logLabel, int page, int pageSize) {
         String url = STRAPI_ROOTURL
             + "api/courses"
             + "?" + filterQuery
             + "&" + LIST_POPULATE
             + "&sort[0]=order:asc"
             + "&sort[1]=title:asc"
-            + "&pagination[pageSize]=100";
+            + "&pagination[page]=" + page
+            + "&pagination[pageSize]=" + pageSize;
 
         try {
             logger.info("Fetching courses for {}: {}", logLabel, url);
@@ -276,6 +465,7 @@ public class CourseService {
             relationName(pillar)
         );
         course.setPublished(attrs.getPublished());
+        course.setKeywords(attrs.getKeywords());
         if (includeContent) {
             course.setContent(normalizeCourseContent(attrs.getContent()));
         }
