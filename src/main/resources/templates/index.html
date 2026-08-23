@@ -161,17 +161,11 @@
   margin:0 0 22px; max-width:34ch;
 }
 .gp-quiz-result-art{
-  flex:1; min-height:320px;
-  background-image:linear-gradient(180deg,#3D91FD 0%,#6A84FF 50%,#8977FF 100%);
-  display:flex; align-items:center; justify-content:center;
+  flex:1; min-height:320px; overflow:hidden;
 }
-.gp-quiz-result-mark{
-  width:168px; height:168px; border:3px solid #fff; border-radius:50%;
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  color:#fff; gap:6px;
+.gp-quiz-result-art img{
+  width:100%; height:100%; object-fit:cover; display:block;
 }
-.gp-quiz-result-mark i:first-child{ font-size:28px; }
-.gp-quiz-result-mark i:last-child{ font-size:42px; }
 @media (max-width:767.98px){
   .gp-quiz-result{ flex-direction:column-reverse; }
   .gp-quiz-result-art{ min-height:220px; }
@@ -183,30 +177,26 @@
 .gp-index-pillars-title{
   font-family:'Poppins',sans-serif; font-weight:400;
   font-size:50px; line-height:60px; color:#fff; margin:0 0 36px;
+  text-align:center;
 }
-.gp-pillar-card{
-  background:#fff; border-radius:16px; padding:28px 24px 24px;
-  box-shadow:0 10px 24px rgba(15,23,42,.06); height:100%;
-  display:flex; flex-direction:column; min-height:220px;
+.gp-index-pillars .row{ --bs-gutter-y:1rem; --bs-gutter-x:calc(var(--bs-gutter-y) * 1.5); }
+@media (max-width:575.98px){ .gp-index-pillars .row{ --bs-gutter-y:.75rem; } }
+.gp-index-pillars .gp-index-ex-card:hover,
+.gp-index-pillars .gp-index-ex-card:focus-within{
+  background:#fff;
+  background-image:none;
+  color:inherit;
+  transform:translateY(-2px);
+  box-shadow:0 16px 34px rgba(15,23,42,.12);
 }
-.gp-pillar-icon{
-  width:56px; height:56px; border-radius:50%;
-  background:#3B82F6; color:#fff; display:flex; align-items:center; justify-content:center;
-  font-size:22px; margin-bottom:16px;
-}
-.gp-pillar-title{
-  font-family:'Poppins',sans-serif; font-weight:600;
-  font-size:24px; line-height:34px; color:#111827; margin:0 0 8px;
-}
-.gp-pillar-text{
-  font-family:'Poppins',sans-serif; font-size:18px; line-height:30px; color:#6B7280;
-  margin:0 0 16px; flex:1;
-}
-.gp-pillar-link{
-  font-family:'Poppins',sans-serif; font-weight:600; font-size:18px; line-height:30px;
-  color:#2563EB; text-decoration:none;
-}
-.gp-pillar-link:hover{ text-decoration:underline; }
+.gp-index-pillars .gp-index-ex-card:hover .gp-index-ex-h,
+.gp-index-pillars .gp-index-ex-card:focus-within .gp-index-ex-h{ color:#111827; }
+.gp-index-pillars .gp-index-ex-card:hover .gp-index-ex-divider,
+.gp-index-pillars .gp-index-ex-card:focus-within .gp-index-ex-divider{ background:#E5E7EB; }
+.gp-index-pillars .gp-index-ex-img{ margin:0 auto; }
+.gp-index-pillars .gp-index-ex-divider{ margin:54px auto; }
+.gp-index-pillars .gp-index-ex-text{ align-self:start; }
+.gp-index-pillars .gp-index-ex-h{ margin:0; }
 
 .gp-index-credentials{ background:#fff; padding:80px 0; }
 .gp-index-credentials-title{
@@ -527,7 +517,7 @@
           </div> -->
         </div>
         <div class="col-lg-6 offset-lg-1">
-          <img th:src="@{/images/index/index_image1.png}"
+          <img th:src="@{/images/home/Home-image-01.png}"
                alt="Genius Parenting app preview"
                class="gp-hero-image hero-overhang mx-auto d-block">
         </div>
@@ -587,10 +577,7 @@
           <a class="gp-quiz-submit" id="gpQuizResultLink" th:href="@{/courses/pillar/4}">View Course Now</a>
         </div>
         <div class="gp-quiz-result-art" aria-hidden="true">
-          <div class="gp-quiz-result-mark">
-            <i class="fas fa-heart"></i>
-            <i class="fas fa-users"></i>
-          </div>
+          <img th:src="@{/images/home/Home-image-02.png}" alt="">
         </div>
       </article>
     </div>
@@ -601,54 +588,72 @@
     <div class="gp-index-results-box">
     <div class="container-xxl">
       <h2 class="gp-index-pillars-title" th:text="#{home.pillars.title}">Learning Pillars</h2>
-      <div class="row g-4">
+      <div class="row g-4 ex-square">
         <div class="col-12 col-md-6 col-lg-4" id="pillar-foundations">
-          <article class="gp-pillar-card">
-            <div class="gp-pillar-icon" aria-hidden="true"><i class="fas fa-home"></i></div>
-            <h3 class="gp-pillar-title" th:text="#{home.pillars.1.title}">Parenting Foundations</h3>
-            <p class="gp-pillar-text" th:text="#{home.pillars.1.text}">Trust, unconditional love, and healthy modeling.</p>
-            <a class="gp-pillar-link" th:href="@{/courses/pillar/1}" th:text="#{home.pillars.learn}">LEARN MORE →</a>
-          </article>
+          <a th:href="@{/courses/pillar/1}" class="gp-index-ex-card-link" aria-label="Parenting Foundations">
+            <article class="gp-index-ex-card text-center">
+              <img th:src="@{/images/home/Home-icon-parenting-foundation-icon.svg}" alt="" class="gp-index-ex-img">
+              <div class="gp-index-ex-divider"></div>
+              <div class="gp-index-ex-text">
+                <h6 class="gp-index-ex-h" th:text="#{home.pillars.1.title}">Parenting Foundations</h6>
+              </div>
+            </article>
+          </a>
         </div>
         <div class="col-12 col-md-6 col-lg-4" id="pillar-emotions">
-          <article class="gp-pillar-card">
-            <div class="gp-pillar-icon" aria-hidden="true"><i class="fas fa-heart"></i></div>
-            <h3 class="gp-pillar-title" th:text="#{home.pillars.2.title}">Emotional Wellbeing</h3>
-            <p class="gp-pillar-text" th:text="#{home.pillars.2.text}">Understanding emotions, regulation, and behavior.</p>
-            <a class="gp-pillar-link" th:href="@{/courses/pillar/2}" th:text="#{home.pillars.learn}">LEARN MORE →</a>
-          </article>
+          <a th:href="@{/courses/pillar/2}" class="gp-index-ex-card-link" aria-label="Emotional Wellbeing">
+            <article class="gp-index-ex-card text-center">
+              <img th:src="@{/images/home/Home-Emotional-Wellbeing-icon.svg}" alt="" class="gp-index-ex-img">
+              <div class="gp-index-ex-divider"></div>
+              <div class="gp-index-ex-text">
+                <h6 class="gp-index-ex-h" th:text="#{home.pillars.2.title}">Emotional Wellbeing</h6>
+              </div>
+            </article>
+          </a>
         </div>
         <div class="col-12 col-md-6 col-lg-4" id="pillar-connection">
-          <article class="gp-pillar-card">
-            <div class="gp-pillar-icon" aria-hidden="true"><i class="fas fa-comments"></i></div>
-            <h3 class="gp-pillar-title" th:text="#{home.pillars.3.title}">Communication Connection</h3>
-            <p class="gp-pillar-text" th:text="#{home.pillars.3.text}">Strengthening your bond and your child's social skills.</p>
-            <a class="gp-pillar-link" th:href="@{/courses/pillar/3}" th:text="#{home.pillars.learn}">LEARN MORE →</a>
-          </article>
+          <a th:href="@{/courses/pillar/3}" class="gp-index-ex-card-link" aria-label="Communication Connection">
+            <article class="gp-index-ex-card text-center">
+              <img th:src="@{/images/home/Home-Communication-Connection-icon.svg}" alt="" class="gp-index-ex-img">
+              <div class="gp-index-ex-divider"></div>
+              <div class="gp-index-ex-text">
+                <h6 class="gp-index-ex-h" th:text="#{home.pillars.3.title}">Communication Connection</h6>
+              </div>
+            </article>
+          </a>
         </div>
         <div class="col-12 col-md-6 col-lg-4" id="pillar-learning">
-          <article class="gp-pillar-card">
-            <div class="gp-pillar-icon" aria-hidden="true"><i class="fas fa-book-open"></i></div>
-            <h3 class="gp-pillar-title" th:text="#{home.pillars.4.title}">Learning & Thinking</h3>
-            <p class="gp-pillar-text" th:text="#{home.pillars.4.text}">Curiosity, cognitive growth, and learning at home.</p>
-            <a class="gp-pillar-link" th:href="@{/courses/pillar/4}" th:text="#{home.pillars.learn}">LEARN MORE →</a>
-          </article>
+          <a th:href="@{/courses/pillar/4}" class="gp-index-ex-card-link" aria-label="Learning and Thinking">
+            <article class="gp-index-ex-card text-center">
+              <img th:src="@{/images/home/Home-Learning-Thinking-icon.svg}" alt="" class="gp-index-ex-img">
+              <div class="gp-index-ex-divider"></div>
+              <div class="gp-index-ex-text">
+                <h6 class="gp-index-ex-h" th:text="#{home.pillars.4.title}">Learning & Thinking</h6>
+              </div>
+            </article>
+          </a>
         </div>
         <div class="col-12 col-md-6 col-lg-4" id="pillar-dailylife">
-          <article class="gp-pillar-card">
-            <div class="gp-pillar-icon" aria-hidden="true"><i class="fas fa-users"></i></div>
-            <h3 class="gp-pillar-title" th:text="#{home.pillars.5.title}">Daily Life & Modern Challenges</h3>
-            <p class="gp-pillar-text" th:text="#{home.pillars.5.text}">Routines, transitions, and the pressures of family life.</p>
-            <a class="gp-pillar-link" th:href="@{/courses/pillar/5}" th:text="#{home.pillars.learn}">LEARN MORE →</a>
-          </article>
+          <a th:href="@{/courses/pillar/5}" class="gp-index-ex-card-link" aria-label="Daily Life and Modern Challenges">
+            <article class="gp-index-ex-card text-center">
+              <img th:src="@{/images/home/Home-Daily-Life-icon.svg}" alt="" class="gp-index-ex-img">
+              <div class="gp-index-ex-divider"></div>
+              <div class="gp-index-ex-text">
+                <h6 class="gp-index-ex-h" th:text="#{home.pillars.5.title}">Daily Life & Modern Challenges</h6>
+              </div>
+            </article>
+          </a>
         </div>
         <div class="col-12 col-md-6 col-lg-4" id="pillar-neurodiversity">
-          <article class="gp-pillar-card">
-            <div class="gp-pillar-icon" aria-hidden="true"><i class="fas fa-snowflake"></i></div>
-            <h3 class="gp-pillar-title" th:text="#{home.pillars.6.title}">Neurodiversity & Inclusions</h3>
-            <p class="gp-pillar-text" th:text="#{home.pillars.6.text}">Support for neurodivergent children and inclusive parenting.</p>
-            <a class="gp-pillar-link" th:href="@{/courses/pillar/6}" th:text="#{home.pillars.learn}">LEARN MORE →</a>
-          </article>
+          <a th:href="@{/courses/pillar/6}" class="gp-index-ex-card-link" aria-label="Neurodiversity and Inclusions">
+            <article class="gp-index-ex-card text-center">
+              <img th:src="@{/images/home/Home-Neurodiversity-icon.svg}" alt="" class="gp-index-ex-img">
+              <div class="gp-index-ex-divider"></div>
+              <div class="gp-index-ex-text">
+                <h6 class="gp-index-ex-h" th:text="#{home.pillars.6.title}">Neurodiversity & Inclusions</h6>
+              </div>
+            </article>
+          </a>
         </div>
       </div>
     </div>
@@ -666,7 +671,7 @@
       <div class="row gy-5 gx-4">
         <div class="col-12 col-md-6 col-lg-4">
           <article class="gp-index-why-card">
-            <img th:src="@{/images/index/index-image2.png}" alt="Educational expertise" class="gp-index-why-img">
+            <img th:src="@{/images/home/Home-Why-GenParenting-01.png}" alt="Educational expertise" class="gp-index-why-img">
             <h3 class="gp-index-why-card-title" th:text="#{home.why.card1.title_en}">
               Built on Educational Expertise
             </h3>
@@ -679,7 +684,7 @@
 
         <div class="col-12 col-md-6 col-lg-4">
           <article class="gp-index-why-card">
-            <img th:src="@{/images/index/index-image3.png}" alt="Responsible AI" class="gp-index-why-img">
+            <img th:src="@{/images/home/Home-Why-GenParenting-02.png}" alt="Responsible AI" class="gp-index-why-img">
             <h3 class="gp-index-why-card-title" th:text="#{home.why.card2.title_en}">
               Responsible AI
             </h3>
@@ -692,7 +697,7 @@
 
         <div class="col-12 col-md-6 col-lg-4">
           <article class="gp-index-why-card">
-            <img th:src="@{/images/index/index-image4.png}" alt="Privacy" class="gp-index-why-img">
+            <img th:src="@{/images/home/Home-Why-Genparenting-03.png}" alt="Privacy" class="gp-index-why-img">
             <h3 class="gp-index-why-card-title" th:text="#{home.why.card3.title_en}">
               Privacy
             </h3>
