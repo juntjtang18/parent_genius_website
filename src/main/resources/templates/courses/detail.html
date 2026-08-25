@@ -358,6 +358,7 @@
     let courseContent = [];
     let coursePages = [];
     let currentPageIndex = 0;
+    let hasCoverImage = false;
     let activeSpeechButton = null;
     let activeUtterance = null;
 
@@ -813,8 +814,17 @@
         return { showPrevious, showNext };
     }
 
+    function updateCoverVisibility() {
+        if (hasCoverImage && currentPageIndex === 0) {
+            topImageEl.classList.remove('d-none');
+        } else {
+            topImageEl.classList.add('d-none');
+        }
+    }
+
     function renderCurrentPage(shouldScroll) {
         stopSpeech();
+        updateCoverVisibility();
         if (!coursePages.length) {
             contentEl.innerHTML = '';
             contentEl.classList.add('d-none');
@@ -949,9 +959,9 @@
 
             const cover = course.attributes.icon_image?.data?.attributes;
             const coverUrl = cover?.formats?.large?.url || cover?.formats?.medium?.url || cover?.url || '';
-            if (coverUrl) {
+            hasCoverImage = Boolean(coverUrl);
+            if (hasCoverImage) {
                 topImageEl.src = fullAssetUrl(coverUrl);
-                topImageEl.classList.remove('d-none');
             }
 
             courseContent = Array.isArray(course.attributes.content) ? course.attributes.content : [];
