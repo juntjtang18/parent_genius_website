@@ -97,10 +97,9 @@ public class LoginController {
     }
 
     @GetMapping("/signup")
-    public String signupPage(Model model) {
-        logger.info("Showing signup form");
-        // No need for model.addAttribute("auth", ...) - handled by GlobalControllerAdvice
-        return "signup";
+    public String signupPage() {
+        logger.info("Redirecting signup to membership registration");
+        return "redirect:/membership/register";
     }
 
     @PostMapping("/signup")

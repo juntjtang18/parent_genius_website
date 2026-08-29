@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title th:text="#{membership.register.meta.title}">Parent Plus Membership</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --gp-ink: #1f2937;
+      --gp-muted: #6B7280;
+      --gp-grad: linear-gradient(135deg,#3D91FD 0%,#6A84FF 48%,#8977FF 100%);
+      --gp-btn: linear-gradient(90deg,#2ED3B7 0%,#1EC7E6 100%);
+    }
+    body{
+      font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      color: var(--gp-ink);
+      background: #fff;
+      padding-top: 70px;
+    }
+    @media (min-width: 1200px){ body{ padding-top: 96px; } }
+
+    .ms-hero{
+      background-image: var(--gp-grad);
+      text-align: center;
+      padding: 56px 0 64px;
+    }
+    .ms-hero-title{
+      margin: 0 0 14px;
+      color: #fff;
+      font-weight: 700;
+      font-size: clamp(34px, 4.4vw, 56px);
+      line-height: 1.15;
+    }
+    .ms-hero-sub{
+      margin: 0 auto;
+      max-width: 36em;
+      color: rgba(255,255,255,.95);
+      font-size: clamp(16px, 1.4vw, 18px);
+      line-height: 1.6;
+    }
+
+    .ms-stepper{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      margin: 48px auto 28px;
+      max-width: 280px;
+    }
+    .ms-step{
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid #D1D5DB;
+      background: #fff;
+      color: #6B7280;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .ms-step.is-active{
+      background: #3D91FD;
+      border-color: #3D91FD;
+      color: #fff;
+    }
+    .ms-step-line{
+      flex: 1;
+      height: 1px;
+      background: #D1D5DB;
+      min-width: 48px;
+    }
+
+    .ms-step-title{
+      text-align: center;
+      font-weight: 700;
+      font-size: clamp(22px, 2.6vw, 28px);
+      margin: 0 0 28px;
+    }
+    .ms-welcome-copy{
+      text-align: center;
+      max-width: 40em;
+      margin: 0 auto 32px;
+      font-size: 16px;
+      line-height: 1.7;
+      color: #374151;
+    }
+
+    .ms-form{ max-width: 720px; margin: 0 auto 48px; }
+    .ms-field{
+      width: 100%;
+      border: 1px solid #D1D5DB;
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-size: 16px;
+      color: var(--gp-ink);
+      background: #fff;
+      appearance: none;
+    }
+    .ms-field:focus{
+      outline: 2px solid #3D91FD;
+      outline-offset: 1px;
+    }
+    select.ms-field{
+      background-image: linear-gradient(45deg, transparent 50%, #3D91FD 50%),
+                        linear-gradient(135deg, #3D91FD 50%, transparent 50%);
+      background-position: calc(100% - 18px) calc(50% - 3px), calc(100% - 12px) calc(50% - 3px);
+      background-size: 6px 6px, 6px 6px;
+      background-repeat: no-repeat;
+      padding-right: 36px;
+    }
+    .ms-actions{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      margin-top: 28px;
+    }
+    .ms-btn{
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 220px;
+      background-image: var(--gp-btn);
+      color: #fff;
+      border: 0;
+      border-radius: 9999px;
+      padding: .9rem 2.6rem;
+      font-weight: 600;
+      font-size: 18px;
+      line-height: 26px;
+      text-decoration: none;
+      box-shadow: 0 10px 20px rgba(23,162,184,.25);
+    }
+    .ms-btn:hover, .ms-btn:focus{ color: #fff; filter: brightness(1.02); }
+    .ms-btn-skip{
+      min-width: 220px;
+      background: #fff;
+      color: #6B7280;
+      border: 1px solid #D1D5DB;
+      border-radius: 9999px;
+      padding: .85rem 2.4rem;
+      font-weight: 500;
+      font-size: 16px;
+    }
+    .ms-error{
+      color: #B91C1C;
+      text-align: center;
+      margin: 0 0 16px;
+    }
+
+    .ms-promise{
+      border-top: 1px solid #E5E7EB;
+      border-bottom: 1px solid #E5E7EB;
+      padding: 28px 0;
+      margin: 8px 0 64px;
+    }
+    .ms-promise p{
+      margin: 0 auto;
+      max-width: 52em;
+      text-align: center;
+      font-size: 14px;
+      line-height: 1.7;
+      color: #4B5563;
+    }
+
+    @media (max-width: 767.98px){
+      .ms-hero{ padding: 40px 0 44px; }
+      .ms-form .col-md-6 + .col-md-6{ margin-top: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+  <section class="ms-hero">
+    <div class="container-xxl">
+      <h1 class="ms-hero-title" th:text="#{membership.register.hero.title}">Parent Plus Membership</h1>
+      <p class="ms-hero-sub" th:text="#{membership.register.hero.sub}">We only ask for the information we need to support your learning. Everything else is optional.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="container-xxl">
+      <div class="ms-stepper" aria-hidden="true">
+        <span class="ms-step" th:classappend="${step == 1} ? ' is-active'">1</span>
+        <span class="ms-step-line"></span>
+        <span class="ms-step" th:classappend="${step == 2} ? ' is-active'">2</span>
+        <span class="ms-step-line"></span>
+        <span class="ms-step" th:classappend="${step == 3} ? ' is-active'">3</span>
+      </div>
+
+      <th:block th:if="${step == 1}">
+        <h2 class="ms-step-title" th:text="#{membership.register.step1.title}">Step 1 — Create Your Account</h2>
+        <form class="ms-form" th:action="@{/membership/register}" method="post">
+          <p class="ms-error" th:if="${signupError}" th:text="${signupError}"></p>
+          <div class="row">
+            <div class="col-md-6">
+              <label class="visually-hidden" for="email" th:text="#{membership.register.email}">Email Address</label>
+              <input class="ms-field" id="email" type="email" name="email" required
+                     th:value="${email}" th:placeholder="#{membership.register.email.placeholder}" placeholder="Email Address*">
+            </div>
+            <div class="col-md-6">
+              <label class="visually-hidden" for="password" th:text="#{membership.register.password}">Password</label>
+              <input class="ms-field" id="password" type="password" name="password" required minlength="6"
+                     th:placeholder="#{membership.register.password.placeholder}" placeholder="Password*">
+            </div>
+          </div>
+          <div class="ms-actions">
+            <button class="ms-btn" type="submit" th:text="#{membership.register.continue}">Continue</button>
+          </div>
+        </form>
+      </th:block>
+
+      <th:block th:if="${step == 2}">
+        <h2 class="ms-step-title" th:text="#{membership.register.step2.title}">Step 2 — Help Us Personalize Your Learning (Optional)</h2>
+        <form class="ms-form" th:action="@{/membership/register/personalize}" method="post">
+          <div class="row">
+            <div class="col-md-6">
+              <label class="visually-hidden" for="childAge" th:text="#{membership.register.age}">How old is your child?</label>
+              <select class="ms-field" id="childAge" name="childAge">
+                <option value="" th:text="#{membership.register.age.placeholder}">How old is your child?</option>
+                <option th:each="age : ${childAges}" th:value="${age.id()}" th:text="${age.label()}"></option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="visually-hidden" for="hobby" th:text="#{membership.register.hobby}">Select your child's hobby</label>
+              <select class="ms-field" id="hobby" name="hobby">
+                <option value="" th:text="#{membership.register.hobby.placeholder}">Select your child's hobby</option>
+                <option th:each="hobby : ${hobbies}" th:value="${hobby.id()}" th:text="${hobby.label()}"></option>
+              </select>
+            </div>
+          </div>
+          <div class="ms-actions">
+            <button class="ms-btn" type="submit" th:text="#{membership.register.continue}">Continue</button>
+            <button class="ms-btn-skip" type="submit" name="skip" value="1" th:text="#{membership.register.skip}">Skip</button>
+          </div>
+        </form>
+      </th:block>
+
+      <th:block th:if="${step == 3}">
+        <h2 class="ms-step-title" th:text="#{membership.register.step3.title}">Step 3 — Welcome!</h2>
+        <p class="ms-welcome-copy" th:text="#{membership.register.step3.body}">As a Parenting Plus member, you'll have access to helpful resources, expert guidance, and GeniusParentingAI, your personalized parenting companion available whenever you need it.</p>
+        <div class="ms-actions">
+          <a class="ms-btn" th:href="${nextUrl}" th:text="#{membership.register.begin}">Begin Your Journey</a>
+        </div>
+      </th:block>
+
+      <div class="ms-promise">
+        <p>
+          <strong th:text="#{membership.register.promise.label}">Our Data Promise:</strong>
+          <span th:text="#{membership.register.promise.body}"> We believe parents should have access to trusted educational support without giving up unnecessary personal information. That's why we collect only the minimum information needed to manage your membership, personalize your learning (if you choose), and keep your account secure. You control what you share, and you can update or remove optional information at any time.</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <div th:replace="~{fragments/chatbot :: chatbot}"></div>
+  <div th:replace="~{fragments/footer :: footer}"></div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

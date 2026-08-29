@@ -74,11 +74,6 @@ public class HomeController {
     	return "index-inner/why-community";
     }
     
-    @GetMapping("/membership")
-    public String membership() {
-    	return "membership";
-    }
-    
     @GetMapping("/pillars")
     public String pillars(HttpServletRequest request, HttpServletResponse response,
                           @RequestParam(name = "lang", required = false) String lang,
@@ -228,8 +223,7 @@ public class HomeController {
     
     @GetMapping("/join-us")
     public String joinUs(Model model) {
-        // No need for auth parameter or model attribute
-        return "membership";    
+        return "join-us";
     }
     
 }

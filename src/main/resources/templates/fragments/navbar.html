@@ -31,12 +31,16 @@
 
           <!-- Community -->
           <li class="nav-item">
-            <a class="nav-link" href="/community" th:href="@{/community}" th:text="#{navbar.caption3}">Community</a>
+            <a class="nav-link" href="/community" th:href="@{/community}"
+               data-nav="community"
+               th:text="#{navbar.caption3}">Community</a>
           </li>
 
           <!-- Membership -->
           <li class="nav-item">
-            <a class="nav-link" href="/membership" th:href="@{/membership}" th:text="#{navbar_membership}">Membership</a>
+            <a class="nav-link" href="/membership" th:href="@{/membership}"
+               data-nav="membership"
+               th:text="#{navbar_membership}">Membership</a>
           </li>
 
           <!-- Divider shown on desktop like the mock -->
@@ -132,7 +136,8 @@
   padding: .5rem .9rem;
 }
 .gp-menu .nav-link:hover, 
-.gp-right .nav-link:hover { 
+.gp-right .nav-link:hover,
+.gp-menu .nav-link.is-active {
   color: #ffffff !important; 
   text-decoration: underline; 
 }
@@ -198,6 +203,20 @@
   <!-- JS keeps your dynamic language list and cache clearing -->
 <script th:inline="javascript">
   document.addEventListener('DOMContentLoaded', function () {
+    const path = window.location.pathname || '';
+    if (path === '/community' || path.indexOf('/community/') === 0) {
+      const communityLink = document.querySelector('.gp-menu a[data-nav="community"]');
+      if (communityLink) {
+        communityLink.classList.add('is-active');
+      }
+    }
+    if (path === '/membership' || path.indexOf('/membership/') === 0) {
+      const membershipLink = document.querySelector('.gp-menu a[data-nav="membership"]');
+      if (membershipLink) {
+        membershipLink.classList.add('is-active');
+      }
+    }
+
     const languageList = document.getElementById('languageList');
     const dropdown = document.getElementById('languageDropdown');
     if (dropdown && languageList) {

@@ -1,15 +1,18 @@
 package ca.parentgeniusai.website.controller;
+import java.net.URI;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -89,5 +92,84 @@ public class RestAPIController {
         } catch (Exception e) {
             return ResponseEntity.ok(Map.of("entitlements", List.of()));
         }
+    }
+
+    @GetMapping("/api/course-files/download")
+    public ResponseEntity<byte[]> downloadCourseFile(
+            @RequestParam String url,
+            @RequestParam(required = false) String name) {
+        URI requested;
+        try {
+            requested = URI.create(url).normalize();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+        if (requested.getScheme() == null || requested.getHost() == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        String root = strapiRootUrl.endsWith("/") ? strapiRootUrl : strapiRootUrl + "/";
+        URI allowed = URI.create(root);
+        if (!isAllowedDownloadUrl(allowed, requested)) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        try {
+            ResponseEntity<byte[]> remote = restTemplate.exchange(
+                    requested,
+                    HttpMethod.GET,
+                    HttpEntity.EMPTY,
+                    byte[].class
+            );
+            if (!remote.getStatusCode().is2xxSuccessful() || remote.getBody() == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            String path = requested.getPath();
+            String filename = (name == null || name.isBlank())
+                    ? path.substring(path.lastIndexOf('/') + 1)
+                    : name.replaceAll("[\\\\/]", "");
+
+            HttpHeaders headers = new HttpHeaders();
+            MediaType type = remote.getHeaders().getContentType();
+            headers.setContentType(type != null ? type : MediaType.APPLICATION_OCTET_STREAM);
+            headers.setContentDisposition(ContentDisposition.attachment().filename(filename).build());
+            return ResponseEntity.ok().headers(headers).body(remote.getBody());
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    private static boolean sameHost(URI allowed, URI requested) {
+        if (!allowed.getScheme().equalsIgnoreCase(requested.getScheme())) {
+            return false;
+        }
+        if (!allowed.getHost().equalsIgnoreCase(requested.getHost())) {
+            return false;
+        }
+        return normalizePort(allowed) == normalizePort(requested);
+    }
+
+    private static int normalizePort(URI uri) {
+        if (uri.getPort() != -1) {
+            return uri.getPort();
+        }
+        return "https".equalsIgnoreCase(uri.getScheme()) ? 443 : 80;
+    }
+
+    private static boolean isAllowedDownloadUrl(URI allowedRoot, URI requested) {
+        if (!"http".equalsIgnoreCase(requested.getScheme())
+                && !"https".equalsIgnoreCase(requested.getScheme())) {
+            return false;
+        }
+        if (sameHost(allowedRoot, requested)) {
+            return true;
+        }
+        String host = requested.getHost();
+        if (host == null) {
+            return false;
+        }
+        return host.equalsIgnoreCase("storage.googleapis.com")
+                || host.equalsIgnoreCase("storage.cloud.google.com");
     }
 }

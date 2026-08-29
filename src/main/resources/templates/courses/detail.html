@@ -7,45 +7,136 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
     <style>
-        .course-detail-wrap {
-            max-width: 900px;
-            margin: 0 auto;
-            padding-top: 6.5rem;
-            padding-bottom: 3rem;
+        :root {
+            --gp-grad: linear-gradient(135deg, #3D91FD 0%, #6A84FF 48%, #8977FF 100%);
+            --cd-card-max: 1040px;
+            --cd-cover-height: min(48vw, 390px);
+            --cd-hero-height: min(48vw, 350px);
+            --cd-overlap: 260px;
         }
-        .course-back-link {
-            font-family: "Poppins", sans-serif;
-            font-weight: 600;
-            color: #2563eb;
+        body {
+            font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            background: #f4f6f8;
+            color: #111827;
+            padding-top: 70px;
+        }
+        @media (min-width: 1200px) {
+            body { padding-top: 96px; }
+        }
+        .cd-hero {
+            position: relative;
+            z-index: 0;
+            background-image: var(--gp-grad);
+            min-height: var(--cd-hero-height);
+            padding: 18px 0 var(--cd-overlap);
+        }
+        .cd-breadcrumb {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.4rem 0.55rem;
+            color: rgba(255, 255, 255, 0.92);
+            font-size: 14px;
+            font-weight: 500;
+            padding: 4px 0 18px;
+        }
+        .cd-breadcrumb a {
+            color: #fff;
             text-decoration: none;
         }
-        .course-title {
-            margin-top: 1rem;
-            margin-bottom: 1.5rem;
-            font-family: "Poppins", sans-serif;
-            font-size: clamp(1.6rem, 2.8vw, 2.2rem);
-            line-height: 1.2;
-            font-weight: 800;
-            color: #0f172a;
-        }
-        .course-top-image {
+        .cd-breadcrumb a:hover { text-decoration: underline; }
+        .cd-breadcrumb-sep { opacity: 0.7; }
+        .cd-breadcrumb-current { color: #fff; }
+        .cd-cover {
+            display: block;
             width: 100%;
-            border-radius: 14px;
-            margin-bottom: 1.2rem;
+            height: var(--cd-cover-height);
             object-fit: cover;
-            max-height: 360px;
-            background: #f1f5f9;
+            background: #dbeafe;
+        }
+        .cd-main {
+            position: relative;
+            z-index: 1;
+            background: transparent;
+            padding: 0 0 80px;
+            margin-top: calc(var(--cd-overlap) * -1);
+        }
+        .cd-card {
+            max-width: var(--cd-card-max);
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 24px;
+            box-shadow: 0 18px 48px rgba(15, 23, 42, 0.12);
+            overflow: hidden;
+        }
+        .cd-rule-after { display: none; }
+        .cd-card.is-inner .cd-rule-after {
+            display: block;
+            margin: 16px 0 22px;
+        }
+        .cd-card-inner {
+            padding: 40px 48px 20px;
+        }
+        @media (max-width: 767.98px) {
+            .cd-card-inner { padding: 28px 20px 16px; }
+            :root { --cd-cover-height: 180px; --cd-hero-height: 180px; --cd-overlap: 96px; }
+            .content-attachments { padding: 28px 18px 24px; }
+        }
+        .cd-card.is-inner .content-image {
+            border-radius: 16px;
+        }
+        .course-title {
+            margin: 0 0 18px;
+            font-family: "Poppins", sans-serif;
+            font-size: clamp(1.7rem, 3vw, 2.35rem);
+            line-height: 1.2;
+            font-weight: 700;
+            color: #1f2937;
+        }
+        .cd-rule {
+            border: 0;
+            border-top: 1px solid #E5E7EB;
+            margin: 0 0 16px;
+        }
+        .cd-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 1.25rem 2rem;
+            margin-bottom: 22px;
+        }
+        .cd-tool {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 0;
+            background: transparent;
+            color: #2563EB;
+            font-family: "Poppins", sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 0;
+        }
+        .cd-tool i { font-size: 1.05rem; }
+        .cd-tool:hover { color: #1D4ED8; }
+        .cd-tool.is-speaking { color: #1D4ED8; }
+        .cd-tool:focus-visible {
+            outline: 3px solid rgba(37, 99, 235, 0.28);
+            outline-offset: 3px;
+            border-radius: 6px;
         }
         .membership-lock {
             border: 1px solid #dbeafe;
-            border-radius: 12px;
-            background: #f8fbff;
-            padding: 1.25rem;
+            border-radius: 24px;
+            background: #fff;
+            padding: 2rem 1.5rem;
             text-align: center;
             color: #1e3a8a;
-            margin-bottom: 1rem;
+            max-width: var(--cd-card-max);
+            margin: 0 auto;
+            box-shadow: 0 18px 48px rgba(15, 23, 42, 0.12);
         }
         .membership-lock h2 {
             font-family: "Poppins", sans-serif;
@@ -65,18 +156,8 @@
         .course-content {
             display: flex;
             flex-direction: column;
-            gap: 1rem;
-        }
-        .course-page-frame {
-            border: 1px solid #dbeafe;
-            border-radius: 16px;
-            background: #ffffff;
-            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
-            overflow: hidden;
-        }
-        .course-page-frame .course-content {
-            min-height: 240px;
-            padding: 1.25rem;
+            gap: 1.15rem;
+            min-height: 160px;
         }
         .course-pager,
         .course-pager-pages {
@@ -86,8 +167,8 @@
             gap: 0.45rem;
         }
         .course-pager {
-            border-top: 1px solid #dbeafe;
-            padding: 0.85rem 1rem;
+            border-top: 1px solid #E5E7EB;
+            padding: 1rem 1rem 1.15rem;
             background: #ffffff;
         }
         .course-pager-arrow,
@@ -108,7 +189,9 @@
         }
         .course-pager-arrow {
             color: #6B7280;
-            font-size: 0.85rem;
+            font-size: 0.92rem;
+            min-width: auto;
+            padding: 0 8px;
         }
         .course-pager-arrow:disabled {
             color: #D1D5DB;
@@ -145,32 +228,6 @@
             flex-direction: column;
             gap: 0.65rem;
         }
-        .content-speech-button {
-            align-self: flex-end;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            border: 0;
-            border-radius: 999px;
-            background: #eff6ff;
-            color: #2563eb;
-            font-size: 1.15rem;
-            transition: background-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
-        }
-        .content-speech-button:hover {
-            background: #dbeafe;
-            transform: scale(1.05);
-        }
-        .content-speech-button.is-speaking {
-            background: #2563eb;
-            color: #ffffff;
-        }
-        .content-speech-button:focus-visible {
-            outline: 3px solid rgba(37, 99, 235, 0.3);
-            outline-offset: 2px;
-        }
         .content-image {
             width: 100%;
             border-radius: 10px;
@@ -187,59 +244,90 @@
             font-size: 0.92rem;
         }
         .content-attachments {
-            margin: 0.75rem 0;
+            margin: 1.75rem 0 0.35rem;
+            padding: 36px 40px 32px;
+            border: 1px solid #D1D5DB;
+            border-radius: 16px;
+            background: #fff;
             display: flex;
             flex-direction: column;
-            gap: 0.65rem;
+            align-items: center;
+            gap: 0.85rem;
+            text-align: center;
+        }
+        .content-attachments-heading {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.15rem;
+        }
+        .content-attachments-heading p {
+            margin: 0;
+            max-width: 40rem;
+            font-family: "Poppins", sans-serif;
+            font-size: clamp(1.15rem, 2vw, 1.35rem);
+            font-weight: 700;
+            line-height: 1.35;
+            color: #1f2937;
         }
         .content-attachments-title {
             margin: 0;
-            font-size: 1.05rem;
-            font-weight: 800;
-            color: #0f172a;
+            max-width: 44rem;
+            font-family: "Poppins", sans-serif;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.55;
+            color: #6B7280;
         }
         .content-attachments-list {
             list-style: none;
-            margin: 0;
+            margin: 0.35rem 0 0;
             padding: 0;
+            width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
+            align-items: center;
+            gap: 0.85rem;
         }
         .content-attachment-row {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: space-between;
-            gap: 0.75rem;
-            padding: 0.7rem 0.85rem;
-            border: 1px solid #dbeafe;
-            border-radius: 12px;
-            background: #f8fbff;
-        }
-        .content-attachment-name {
-            color: #0f172a;
-            font-weight: 600;
-            word-break: break-word;
+            justify-content: center;
+            gap: 0.65rem;
+            padding: 0;
+            border: 0;
+            background: transparent;
         }
         .content-download-button {
             flex-shrink: 0;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 40px;
-            height: 40px;
+            gap: 0.45rem;
+            width: auto;
+            height: auto;
+            padding: 0.8rem 1.7rem;
             border: 0;
             border-radius: 999px;
-            background: #eff6ff;
-            color: #2563eb;
-            font-size: 1.05rem;
+            background: linear-gradient(90deg, #2ED3B7 0%, #1EC7E6 100%);
+            color: #fff;
+            font-family: "Poppins", sans-serif;
+            font-size: 16px;
+            font-weight: 600;
             text-decoration: none;
-            transition: background-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+            box-shadow: 0 10px 20px rgba(23, 162, 184, 0.25);
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            transition: transform 0.15s ease, filter 0.15s ease;
         }
         .content-download-button:hover {
-            background: #2563eb;
-            color: #ffffff;
-            transform: scale(1.05);
+            background: linear-gradient(90deg, #2ED3B7 0%, #1EC7E6 100%);
+            color: #fff;
+            filter: brightness(1.02);
+            transform: translateY(-1px);
         }
         .content-download-button:focus-visible {
             outline: 3px solid rgba(37, 99, 235, 0.3);
@@ -291,52 +379,80 @@
 <body>
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-<div class="container course-detail-wrap">
-    <a id="course-back-link" href="/courses/foundation" class="course-back-link"><i class="fa-solid fa-arrow-left"></i> Back to courses</a>
-    <h1 id="course-title" class="course-title">Loading...</h1>
-
-    <div id="course-loading" class="course-state">
-        <div class="spinner-border text-primary mb-2" role="status">
-            <span class="visually-hidden">Loading...</span>
-        </div>
-        <div>Loading course...</div>
-    </div>
-    <div id="course-error" class="course-state d-none"></div>
-    <section id="membership-lock" class="membership-lock d-none">
-        <h2>Membership Required</h2>
-        <p>This course is available with Membership.</p>
-        <a id="membership-cta" href="/membership" class="btn btn-primary">View Membership</a>
-    </section>
-    <img id="course-top-image" class="course-top-image d-none" alt="Course cover"/>
-    <div id="course-page-frame" class="course-page-frame d-none">
-        <section id="course-content" class="course-content"></section>
-        <div id="course-empty" class="course-state d-none"></div>
-        <nav id="course-pager" class="course-pager" aria-label="Course pages">
-            <button id="course-previous-page" class="course-pager-arrow" type="button">
-                <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
-            </button>
-            <div id="course-pager-pages" class="course-pager-pages"></div>
-            <button id="course-next-page" class="course-pager-arrow" type="button">
-                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
-            </button>
+<section class="cd-hero" id="course-hero">
+    <div class="container-xxl cd-hero-crumbs" id="course-hero-crumbs">
+        <nav class="cd-breadcrumb" id="course-breadcrumb" aria-label="Breadcrumb">
+            <a th:href="@{/pillars}" th:text="#{course.detail.breadcrumb_pillars}">Learning Pillars</a>
+            <span class="cd-breadcrumb-sep" aria-hidden="true">/</span>
+            <a id="course-back-link" class="d-none" href="/pillars"></a>
+            <span id="course-crumb-pillar-sep" class="cd-breadcrumb-sep d-none" aria-hidden="true">/</span>
+            <span id="course-crumb-title" class="cd-breadcrumb-current">Loading...</span>
         </nav>
     </div>
+</section>
 
-    <div id="course-config"
-         class="d-none"
-         th:attr="data-course-id=${courseId},
-                  data-strapi-api-url=${strapiApiUrl},
-                  data-strapi-token=${strapiToken},
-                  data-strapi-root-url=${strapiRootUrl},
-                  data-previous-page-label=#{course.detail.previous_page},
-                  data-next-page-label=#{course.detail.next_page},
-                  data-no-content-message=#{course.detail.no_content},
-                  data-read-aloud-label=#{course.detail.read_aloud},
-                  data-stop-reading-label=#{course.detail.stop_reading},
-                  data-speech-unsupported-message=#{course.detail.speech_unsupported},
-                  data-locale=${#locale}"></div>
-</div>
+<section class="cd-main">
+    <div class="container-xxl">
+        <div id="course-loading" class="course-state">
+            <div class="spinner-border text-primary mb-2" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <div>Loading course...</div>
+        </div>
+        <div id="course-error" class="course-state d-none"></div>
+        <section id="membership-lock" class="membership-lock d-none">
+            <h2>Membership Required</h2>
+            <p>This course is available with Membership.</p>
+            <a id="membership-cta" href="/membership" class="btn btn-primary">View Membership</a>
+        </section>
+        <article id="course-page-frame" class="cd-card d-none">
+            <img id="course-top-image" class="cd-cover d-none" alt="Course cover"/>
+            <div class="cd-card-inner">
+                <h1 id="course-title" class="course-title">Loading...</h1>
+                <hr class="cd-rule">
+                <div class="cd-toolbar">
+                    <button id="course-listen" class="cd-tool" type="button">
+                        <i class="fa-solid fa-volume-high" aria-hidden="true"></i>
+                        <span id="course-listen-label" th:text="#{course.detail.listen}">Listen</span>
+                    </button>
+                    <button id="course-questions" class="cd-tool" type="button">
+                        <i id="course-questions-icon" class="fa-regular fa-circle-question" aria-hidden="true"></i>
+                        <span th:text="#{course.detail.questions}">Do you have any questions?</span>
+                    </button>
+                </div>
+                <hr class="cd-rule cd-rule-after">
+                <section id="course-content" class="course-content"></section>
+                <div id="course-empty" class="course-state d-none"></div>
+            </div>
+            <nav id="course-pager" class="course-pager" aria-label="Course pages">
+                <button id="course-previous-page" class="course-pager-arrow" type="button">‹ <span th:text="#{course.detail.back}">Back</span></button>
+                <div id="course-pager-pages" class="course-pager-pages"></div>
+                <button id="course-next-page" class="course-pager-arrow" type="button"><span th:text="#{course.detail.next}">Next</span> ›</button>
+            </nav>
+        </article>
+    </div>
+</section>
 
+<div id="course-config"
+     class="d-none"
+     th:attr="data-course-id=${courseId},
+              data-strapi-api-url=${strapiApiUrl},
+              data-strapi-token=${strapiToken},
+              data-strapi-root-url=${strapiRootUrl},
+              data-previous-page-label=#{course.detail.previous_page},
+              data-next-page-label=#{course.detail.next_page},
+              data-no-content-message=#{course.detail.no_content},
+              data-read-aloud-label=#{course.detail.read_aloud},
+              data-stop-reading-label=#{course.detail.stop_reading},
+              data-speech-unsupported-message=#{course.detail.speech_unsupported},
+              data-listen-label=#{course.detail.listen},
+              data-stop-label=#{course.detail.stop_reading},
+              data-attachment-heading=#{course.detail.attachment_heading},
+              data-attachment-members=#{course.detail.attachment_members},
+              data-download-pdf-label=#{course.detail.download_pdf},
+              data-locale=${#locale}"></div>
+
+<div th:replace="~{fragments/chatbot :: chatbot}"></div>
 <div th:replace="~{fragments/footer :: footer}"></div>
 
 <script>
@@ -350,11 +466,15 @@
     const previousPageLabel = cfg.previousPageLabel || /*[[#{course.detail.previous_page}]]*/ 'Previous page';
     const nextPageLabel = cfg.nextPageLabel || /*[[#{course.detail.next_page}]]*/ 'Next page';
     const noContentMessage = cfg.noContentMessage || /*[[#{course.detail.no_content}]]*/ 'No content for this course.';
-    const readAloudLabel = cfg.readAloudLabel || /*[[#{course.detail.read_aloud}]]*/ 'Read text aloud';
-    const stopReadingLabel = cfg.stopReadingLabel || /*[[#{course.detail.stop_reading}]]*/ 'Stop reading';
+    const readAloudLabel = cfg.listenLabel || cfg.readAloudLabel || /*[[#{course.detail.listen}]]*/ 'Listen';
+    const stopReadingLabel = cfg.stopLabel || cfg.stopReadingLabel || /*[[#{course.detail.stop_reading}]]*/ 'Stop reading';
     const speechUnsupportedMessage = cfg.speechUnsupportedMessage || /*[[#{course.detail.speech_unsupported}]]*/ 'Text-to-speech is not supported by this browser.';
+    const attachmentHeading = cfg.attachmentHeading || /*[[#{course.detail.attachment_heading}]]*/ "Here's your downloadable PDF";
+    const attachmentMembers = cfg.attachmentMembers || /*[[#{course.detail.attachment_members}]]*/ '(for members only)';
+    const downloadPdfLabel = cfg.downloadPdfLabel || /*[[#{course.detail.download_pdf}]]*/ 'Download the PDF';
     const speechSupported = 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
     let hasPaidPlan = false;
+    let coursePillarId = null;
     let courseContent = [];
     let coursePages = [];
     let currentPageIndex = 0;
@@ -375,6 +495,12 @@
     const topImageEl = document.getElementById('course-top-image');
     const lockEl = document.getElementById('membership-lock');
     const backLinkEl = document.getElementById('course-back-link');
+    const crumbPillarSepEl = document.getElementById('course-crumb-pillar-sep');
+    const crumbTitleEl = document.getElementById('course-crumb-title');
+    const listenEl = document.getElementById('course-listen');
+    const listenLabelEl = document.getElementById('course-listen-label');
+    const questionsEl = document.getElementById('course-questions');
+    const questionsIconEl = document.getElementById('course-questions-icon');
     const membershipCtaEl = document.getElementById('membership-cta');
 
     previousPageEl.setAttribute('aria-label', previousPageLabel);
@@ -394,6 +520,8 @@
         loadingEl.classList.add('d-none');
         pageFrameEl.classList.add('d-none');
         lockEl.classList.add('d-none');
+        topImageEl.classList.add('d-none');
+        pageFrameEl.classList.remove('is-inner');
         errorEl.textContent = message;
         errorEl.classList.remove('d-none');
     }
@@ -416,11 +544,23 @@
         if (fromCategory === 'membership-only' || fromCategory === 'parenting-tools' || fromCategory === 'foundation') {
             return '/courses/' + fromCategory;
         }
-        const pillarId = course?.attributes?.pillar?.data?.id;
+        const pillarId = resolveCoursePillarId(course);
         if (pillarId) {
             return '/courses/pillar/' + pillarId;
         }
         return '/courses/' + getFromCategory();
+    }
+
+    function resolveCoursePillarId(course) {
+        const fromCourse = Number(course?.attributes?.pillar?.data?.id);
+        if (Number.isFinite(fromCourse) && fromCourse > 0) {
+            return fromCourse;
+        }
+        const fromPillar = new URLSearchParams(window.location.search).get('fromPillar');
+        if (fromPillar && /^\d+$/.test(fromPillar)) {
+            return Number(fromPillar);
+        }
+        return null;
     }
 
     function isMembershipOnly(course) {
@@ -531,9 +671,13 @@
         button.classList.toggle('is-speaking', isSpeaking);
         button.setAttribute('aria-label', label);
         button.setAttribute('title', label);
-        button.innerHTML = isSpeaking
-            ? '<i class="fa-solid fa-circle-stop" aria-hidden="true"></i>'
-            : '<i class="fa-solid fa-volume-high" aria-hidden="true"></i>';
+        const icon = button.querySelector('i');
+        if (icon) {
+            icon.className = isSpeaking ? 'fa-solid fa-circle-stop' : 'fa-solid fa-volume-high';
+        }
+        if (listenLabelEl && button === listenEl) {
+            listenLabelEl.textContent = label;
+        }
     }
 
     function stopSpeech() {
@@ -591,13 +735,6 @@
         p.style.fontStyle = style.isItalic ? 'italic' : 'normal';
         p.style.textAlign = textAlignFrom(style);
         block.appendChild(p);
-
-        const speechButton = document.createElement('button');
-        speechButton.className = 'content-speech-button';
-        speechButton.type = 'button';
-        setSpeechButtonState(speechButton, false);
-        speechButton.addEventListener('click', () => toggleSpeech(speechButton, text));
-        block.appendChild(speechButton);
         contentEl.appendChild(block);
     }
 
@@ -693,17 +830,42 @@
         })).filter((file) => file.url);
     }
 
+    function isPdfFile(file) {
+        return /\.pdf($|\?)/i.test(file?.name || '') || /\.pdf($|\?)/i.test(file?.url || '');
+    }
+
+    function attachmentDownloadHref(file) {
+        return '/api/course-files/download?' + new URLSearchParams({
+            url: fullAssetUrl(file.url),
+            name: file.name || 'download.pdf'
+        }).toString();
+    }
+
     function renderAttachmentsComponent(item) {
+        if (item.__component !== 'coursecontent.attachments') return;
+
         const files = attachmentFilesFromItem(item);
-        if (!item.title && !files.length) return;
+        const title = (item.title || '').trim();
+        if (!title && !files.length) return;
 
         const block = document.createElement('div');
         block.className = 'content-attachments';
-        if (item.title) {
-            const heading = document.createElement('p');
-            heading.className = 'content-attachments-title';
-            heading.textContent = item.title;
-            block.appendChild(heading);
+
+        const headingWrap = document.createElement('div');
+        headingWrap.className = 'content-attachments-heading';
+        const heading = document.createElement('p');
+        heading.textContent = attachmentHeading;
+        const members = document.createElement('p');
+        members.textContent = attachmentMembers;
+        headingWrap.appendChild(heading);
+        headingWrap.appendChild(members);
+        block.appendChild(headingWrap);
+
+        if (title) {
+            const attachmentTitleEl = document.createElement('p');
+            attachmentTitleEl.className = 'content-attachments-title';
+            attachmentTitleEl.textContent = title;
+            block.appendChild(attachmentTitleEl);
         }
 
         const list = document.createElement('ul');
@@ -712,20 +874,18 @@
             const li = document.createElement('li');
             li.className = 'content-attachment-row';
 
-            const name = document.createElement('span');
-            name.className = 'content-attachment-name';
-            name.textContent = file.name;
-
             const download = document.createElement('a');
             download.className = 'content-download-button';
-            download.href = fullAssetUrl(file.url);
-            download.setAttribute('download', file.name);
-            download.target = '_blank';
-            download.rel = 'noopener noreferrer';
-            download.setAttribute('aria-label', 'Download ' + file.name);
-            download.innerHTML = '<i class="fa-solid fa-download" aria-hidden="true"></i>';
+            download.href = attachmentDownloadHref(file);
+            download.setAttribute('download', file.name || 'download.pdf');
+            download.rel = 'noopener';
+            const isPdf = isPdfFile(file);
+            const label = isPdf ? downloadPdfLabel : ('Download ' + file.name);
+            download.setAttribute('aria-label', label);
+            download.innerHTML = isPdf
+                ? '<i class="fa-solid fa-file-pdf" aria-hidden="true"></i><span>' + escapeHtml(downloadPdfLabel) + '</span>'
+                : '<i class="fa-solid fa-download" aria-hidden="true"></i><span>Download</span>';
 
-            li.appendChild(name);
             li.appendChild(download);
             list.appendChild(li);
         });
@@ -815,11 +975,36 @@
     }
 
     function updateCoverVisibility() {
-        if (hasCoverImage && currentPageIndex === 0) {
-            topImageEl.classList.remove('d-none');
-        } else {
-            topImageEl.classList.add('d-none');
+        const showCover = hasCoverImage && currentPageIndex === 0;
+        const isInner = currentPageIndex > 0;
+        topImageEl.classList.toggle('d-none', !showCover);
+        pageFrameEl.classList.toggle('is-inner', isInner);
+        if (questionsIconEl) {
+            questionsIconEl.className = isInner
+                ? 'fa-regular fa-comment-dots'
+                : 'fa-regular fa-circle-question';
         }
+    }
+
+    function currentPageText() {
+        return Array.from(contentEl.querySelectorAll('.content-text'))
+            .map((node) => node.textContent.trim())
+            .filter(Boolean)
+            .join('\n\n');
+    }
+
+    function listenToCurrentPage() {
+        const text = currentPageText();
+        if (!text) return;
+        toggleSpeech(listenEl, text);
+    }
+
+    function openQuestions() {
+        if (coursePillarId) {
+            window.location.href = '/community/pillar/' + coursePillarId;
+            return;
+        }
+        window.location.href = '/community';
     }
 
     function renderCurrentPage(shouldScroll) {
@@ -945,14 +1130,25 @@
             const course = Array.isArray(body?.data) ? body.data[0] : null;
             if (!course?.attributes) throw new Error('Course not found.');
             const backHref = getBackHref(course);
+            const title = extractLocalizedTitle(course);
+            const pillarName = course?.attributes?.pillar?.data?.attributes?.name || '';
+            coursePillarId = resolveCoursePillarId(course);
             backLinkEl.href = backHref;
+            titleEl.textContent = title;
+            crumbTitleEl.textContent = title;
+            document.title = title;
+            if (pillarName) {
+                backLinkEl.textContent = pillarName;
+                backLinkEl.classList.remove('d-none');
+                crumbPillarSepEl.classList.remove('d-none');
+            }
             membershipCtaEl.href = '/membership?fromCourse=' + encodeURIComponent('/courses/' + courseId + window.location.search);
-            titleEl.textContent = extractLocalizedTitle(course);
 
             if (isMembershipOnly(course) && !hasPaidPlan) {
                 loadingEl.classList.add('d-none');
                 pageFrameEl.classList.add('d-none');
                 topImageEl.classList.add('d-none');
+                pageFrameEl.classList.remove('is-inner');
                 lockEl.classList.remove('d-none');
                 return;
             }
@@ -979,6 +1175,8 @@
 
     previousPageEl.addEventListener('click', () => changePage(-1));
     nextPageEl.addEventListener('click', () => changePage(1));
+    listenEl.addEventListener('click', listenToCurrentPage);
+    questionsEl.addEventListener('click', openQuestions);
     window.addEventListener('beforeunload', stopSpeech);
     document.addEventListener('DOMContentLoaded', loadCourse);
 </script>

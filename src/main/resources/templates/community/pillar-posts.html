@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title th:text="${pillar.name} + ' – Community'">Community</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --gp-ink: #1f2937;
+      --gp-muted: #6B7280;
+      --gp-grad: linear-gradient(135deg,#3D91FD 0%,#6A84FF 48%,#8977FF 100%);
+    }
+    body{
+      font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      color: var(--gp-ink);
+      background: #fff;
+      padding-top: 70px;
+    }
+    @media (min-width: 1200px){
+      body{ padding-top: 96px; }
+    }
+
+    .cp-hero{
+      background-image: var(--gp-grad);
+      text-align: center;
+      padding: 72px 0 80px;
+    }
+    .cp-hero-title{
+      margin: 0;
+      color: #fff;
+      font-weight: 700;
+      font-size: clamp(34px, 4.4vw, 56px);
+      line-height: 1.15;
+    }
+
+    .cp-list{
+      background: #fff;
+      padding: 36px 0 72px;
+    }
+    .cp-feed{
+      max-width: 920px;
+    }
+    .cp-add{
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #2563EB;
+      font-size: 16px;
+      font-weight: 500;
+      text-decoration: none;
+      margin: 0 0 28px;
+    }
+    .cp-add:hover{ color: #1D4ED8; text-decoration: underline; }
+    .cp-cards{
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .cp-card{
+      background: #fff;
+      border: 1px solid #E5E7EB;
+      border-radius: 16px;
+      padding: 22px 24px;
+    }
+    .cp-author{
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #6B7280;
+      font-size: 15px;
+      font-weight: 500;
+      margin: 0 0 10px;
+    }
+    .cp-author i{ color: #3D91FD; }
+    .cp-body{
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.65;
+      color: #374151;
+    }
+    .cp-lead{
+      font-weight: 700;
+      color: #111827;
+    }
+    .cp-empty{
+      color: var(--gp-muted);
+      font-size: 16px;
+      margin: 8px 0 0;
+    }
+
+    .comm-cta{
+      position: relative;
+      overflow: hidden;
+      color: #fff;
+      padding: 0;
+      min-height: clamp(520px, 68vh, 760px);
+    }
+    .comm-cta::before{
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: var(--gp-grad);
+      z-index: 0;
+    }
+    .comm-cta .container-xxl{ position: relative; z-index: 2; }
+    .comm-cta-art{
+      position: absolute;
+      right: 0; top: 0; bottom: 0;
+      width: min(46vw, 860px);
+      display: flex;
+      align-items: stretch;
+      justify-content: flex-end;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .comm-cta-art-img{
+      height: 100%;
+      width: auto;
+      object-fit: contain;
+      object-position: right center;
+      display: block;
+    }
+    .comm-cta-title{
+      font-weight: 600;
+      font-size: clamp(28px, 3.2vw, 44px);
+      line-height: 1.25;
+      margin: 0 0 16px;
+      max-width: 16em;
+    }
+    .comm-cta-sub{
+      font-size: 18px;
+      line-height: 1.6;
+      color: rgba(255,255,255,.92);
+      margin: 0 0 36px;
+    }
+    .comm-cta-download{
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      flex-wrap: wrap;
+    }
+    .comm-cta-qr{
+      width: 124px;
+      height: 124px;
+      border-radius: 12px;
+      background: #fff;
+      padding: 8px;
+    }
+    .comm-cta-dl-title{
+      font-weight: 600;
+      font-size: 28px;
+      line-height: 1.2;
+      margin: 0 0 8px;
+    }
+    .comm-cta-dl-sub{
+      font-weight: 400;
+      font-size: 18px;
+      line-height: 1.5;
+      color: rgba(255,255,255,.85);
+      margin: 0 0 12px;
+    }
+    .comm-cta-store{
+      height: 40px;
+      width: auto;
+      display: block;
+    }
+    @media (max-width: 991.98px){
+      .cp-hero{ padding: 40px 0 44px; }
+      .comm-cta-art{ display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+  <section class="cp-hero">
+    <div class="container-xxl">
+      <h1 class="cp-hero-title" th:text="${pillar.name}">Communication &amp; Connection</h1>
+    </div>
+  </section>
+
+  <section class="cp-list">
+    <div class="container-xxl">
+      <div class="cp-feed">
+        <a class="cp-add" th:href="@{/posts}">
+          <i class="fa-solid fa-pen" aria-hidden="true"></i>
+          <span th:text="#{community.posts.add}">Add a New Post</span>
+        </a>
+
+        <p class="cp-empty" th:if="${#lists.isEmpty(posts)}" th:text="#{community.posts.empty}">No community posts yet.</p>
+
+        <div class="cp-cards" th:unless="${#lists.isEmpty(posts)}">
+          <article class="cp-card" th:each="post : ${posts}">
+            <p class="cp-author">
+              <i class="fa-solid fa-user" aria-hidden="true"></i>
+              <span th:text="${post.authorName}">Jessica</span>
+            </p>
+            <p class="cp-body">
+              <span class="cp-lead" th:if="${post.lead != null}" th:text="${post.lead} + ': '">Pause first: </span>
+              <span th:text="${post.body}">I use one simple rule.</span>
+            </p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="download" class="comm-cta">
+    <div class="comm-cta-art" aria-hidden="true">
+      <img th:src="@{/images/Community/Community-image-06.png}" alt="" class="comm-cta-art-img">
+    </div>
+    <div class="container-xxl" style="padding-top:80px; padding-bottom:80px;">
+      <div class="row">
+        <div class="col-lg-7">
+          <h2 class="comm-cta-title" th:text="#{seg-community.cta.title}">Because raising a child takes a village — and we're building one for you.</h2>
+          <p class="comm-cta-sub" th:text="#{seg-community.cta.sub}">Join the community and share your thoughts and problems.</p>
+          <div class="comm-cta-download">
+            <img th:src="@{/images/gpa-qr-code.png}" alt="QR code to download the app" class="comm-cta-qr">
+            <div>
+              <h3 class="comm-cta-dl-title" th:text="#{seg-community.cta.download}">Download the App!</h3>
+              <p class="comm-cta-dl-sub" th:text="#{index-caption-25}">Free to try. No credit card needed.</p>
+              <div class="d-flex align-items-center gap-2 flex-wrap">
+                <a href="#" aria-label="Get it on Google Play">
+                  <img th:src="@{/images/index/index-image11.png}" alt="Get it on Google Play" class="comm-cta-store">
+                </a>
+                <a href="https://apps.apple.com/us/app/geniusparentingai/id6747332178" aria-label="Download on the App Store">
+                  <img th:src="@{/images/index/index-image12.png}" alt="Download on the App Store" class="comm-cta-store">
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div th:replace="~{fragments/chatbot :: chatbot}"></div>
+  <div th:replace="~{fragments/footer :: footer}"></div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
