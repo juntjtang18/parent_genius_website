@@ -210,11 +210,6 @@ public class HomeController {
         return "term-of-service";
     }
 
-    @GetMapping("/community")
-    public String community() {
-        return "community";
-    }
-
     @GetMapping("/community-guidelines")
     public String communityGuideLines(Model model) {
     	return "community-guidelines";

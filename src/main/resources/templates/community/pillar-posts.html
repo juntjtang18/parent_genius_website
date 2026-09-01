@@ -42,6 +42,8 @@
     }
     .cp-feed{
       max-width: 920px;
+      width: 100%;
+      margin: 0 auto;
     }
     .cp-add{
       display: inline-flex;
@@ -54,10 +56,26 @@
       margin: 0 0 28px;
     }
     .cp-add:hover{ color: #1D4ED8; text-decoration: underline; }
+    .cp-window{
+      height: calc(100dvh - 160px);
+      min-height: 780px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
     .cp-cards{
       display: flex;
       flex-direction: column;
       gap: 18px;
+    }
+    .cp-page{
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .cp-loading{
+      color: var(--gp-muted);
+      font-size: 15px;
+      margin: 0 0 12px;
     }
     .cp-card{
       background: #fff;
@@ -167,6 +185,7 @@
       width: auto;
       display: block;
     }
+
     @media (max-width: 991.98px){
       .cp-hero{ padding: 40px 0 44px; }
       .comm-cta-art{ display: none; }
@@ -185,24 +204,15 @@
   <section class="cp-list">
     <div class="container-xxl">
       <div class="cp-feed">
-        <a class="cp-add" th:href="@{/posts}">
+        <a class="cp-add" th:href="@{/community/pillar/{id}/new(id=${pillar.id})}">
           <i class="fa-solid fa-pen" aria-hidden="true"></i>
           <span th:text="#{community.posts.add}">Add a New Post</span>
         </a>
 
-        <p class="cp-empty" th:if="${#lists.isEmpty(posts)}" th:text="#{community.posts.empty}">No community posts yet.</p>
-
-        <div class="cp-cards" th:unless="${#lists.isEmpty(posts)}">
-          <article class="cp-card" th:each="post : ${posts}">
-            <p class="cp-author">
-              <i class="fa-solid fa-user" aria-hidden="true"></i>
-              <span th:text="${post.authorName}">Jessica</span>
-            </p>
-            <p class="cp-body">
-              <span class="cp-lead" th:if="${post.lead != null}" th:text="${post.lead} + ': '">Pause first: </span>
-              <span th:text="${post.body}">I use one simple rule.</span>
-            </p>
-          </article>
+        <p class="cp-loading" id="cpLoading" hidden>Loading...</p>
+        <p class="cp-empty" id="cpEmpty" hidden th:text="#{community.posts.empty}">No community posts yet.</p>
+        <div class="cp-window" id="cpWindow">
+          <div class="cp-cards" id="cpCards"></div>
         </div>
       </div>
     </div>
@@ -240,5 +250,178 @@
   <div th:replace="~{fragments/chatbot :: chatbot}"></div>
   <div th:replace="~{fragments/footer :: footer}"></div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script th:inline="javascript">
+    (function () {
+      const PILLAR_ID = /*[[${pillar.id}]]*/ 0;
+      const WINDOW_PAGES = 3;
+      const EDGE = 80;
+
+      const emptyEl = document.getElementById('cpEmpty');
+      const loadingEl = document.getElementById('cpLoading');
+      const windowEl = document.getElementById('cpWindow');
+      const cardsEl = document.getElementById('cpCards');
+
+      let firstPage = 1;
+      let lastPage = 0;
+      let totalPages = 1;
+      let totalPosts = 0;
+      let loading = false;
+      const cache = new Map();
+
+      function renderCard(post) {
+        const article = document.createElement('article');
+        article.className = 'cp-card';
+        if (post.id != null) article.dataset.postId = String(post.id);
+
+        const author = document.createElement('p');
+        author.className = 'cp-author';
+        const icon = document.createElement('i');
+        icon.className = 'fa-solid fa-user';
+        icon.setAttribute('aria-hidden', 'true');
+        const name = document.createElement('span');
+        name.textContent = post.authorName || 'Anonymous';
+        author.appendChild(icon);
+        author.appendChild(name);
+
+        const body = document.createElement('p');
+        body.className = 'cp-body';
+        if (post.lead) {
+          const lead = document.createElement('span');
+          lead.className = 'cp-lead';
+          lead.textContent = post.lead + ': ';
+          body.appendChild(lead);
+        }
+        const text = document.createElement('span');
+        text.textContent = post.body || '';
+        body.appendChild(text);
+
+        article.appendChild(author);
+        article.appendChild(body);
+        return article;
+      }
+
+      function renderPage(page, posts) {
+        const wrap = document.createElement('div');
+        wrap.className = 'cp-page';
+        wrap.dataset.page = String(page);
+        posts.forEach((post) => wrap.appendChild(renderCard(post)));
+        return wrap;
+      }
+
+      function pageGap() {
+        const gap = parseFloat(getComputedStyle(cardsEl).gap);
+        return Number.isFinite(gap) ? gap : 18;
+      }
+
+      function pagesInDom() {
+        return lastPage > 0 ? lastPage - firstPage + 1 : 0;
+      }
+
+      async function fetchPage(page) {
+        if (cache.has(page)) return cache.get(page);
+        const res = await fetch('/community/pillar/' + PILLAR_ID + '/posts?page=' + page);
+        if (!res.ok) throw new Error('Failed to load posts');
+        const data = await res.json();
+        totalPages = Math.max(1, data.pageCount || 1);
+        totalPosts = data.total || 0;
+        const posts = data.posts || [];
+        cache.set(page, posts);
+        return posts;
+      }
+
+      function trimTop() {
+        while (pagesInDom() > WINDOW_PAGES) {
+          const el = cardsEl.querySelector('.cp-page[data-page="' + firstPage + '"]');
+          const removed = el ? el.offsetHeight + pageGap() : 0;
+          if (el) el.remove();
+          windowEl.scrollTop = Math.max(0, windowEl.scrollTop - removed);
+          firstPage += 1;
+        }
+      }
+
+      function trimBottom() {
+        while (pagesInDom() > WINDOW_PAGES) {
+          const el = cardsEl.querySelector('.cp-page[data-page="' + lastPage + '"]');
+          if (el) el.remove();
+          lastPage -= 1;
+        }
+      }
+
+      async function appendPage(page) {
+        const posts = await fetchPage(page);
+        if (page === 1 && posts.length === 0) return false;
+        if (cardsEl.querySelector('.cp-page[data-page="' + page + '"]')) {
+          lastPage = Math.max(lastPage, page);
+          return true;
+        }
+        cardsEl.appendChild(renderPage(page, posts));
+        if (lastPage === 0) firstPage = page;
+        lastPage = page;
+        return true;
+      }
+
+      async function prependPage(page) {
+        const posts = await fetchPage(page);
+        if (posts.length === 0) return false;
+        if (cardsEl.querySelector('.cp-page[data-page="' + page + '"]')) {
+          firstPage = Math.min(firstPage, page);
+          return true;
+        }
+        const prevHeight = windowEl.scrollHeight;
+        cardsEl.insertBefore(renderPage(page, posts), cardsEl.firstChild);
+        firstPage = page;
+        windowEl.scrollTop += windowEl.scrollHeight - prevHeight;
+        return true;
+      }
+
+      async function load(direction) {
+        if (loading) return;
+        loading = true;
+        loadingEl.hidden = false;
+        try {
+          if (direction === 'initial') {
+            for (let page = 1; page <= WINDOW_PAGES; page++) {
+              await appendPage(page);
+              if (totalPosts === 0 || page >= totalPages) break;
+            }
+            if (totalPosts === 0) {
+              emptyEl.hidden = false;
+              windowEl.hidden = true;
+            }
+          } else if (direction === 'down' && lastPage < totalPages) {
+            await appendPage(lastPage + 1);
+            trimTop();
+          } else if (direction === 'up' && firstPage > 1) {
+            await prependPage(firstPage - 1);
+            trimBottom();
+          }
+        } catch (err) {
+          console.error('Community posts load failed', err);
+          if (direction === 'initial') {
+            emptyEl.hidden = false;
+            windowEl.hidden = true;
+          }
+        } finally {
+          loading = false;
+          loadingEl.hidden = true;
+        }
+      }
+
+      function onScroll() {
+        if (loading || windowEl.hidden) return;
+        const top = windowEl.scrollTop;
+        const view = windowEl.clientHeight;
+        const height = windowEl.scrollHeight;
+        if (top <= EDGE && firstPage > 1) {
+          load('up');
+        } else if (top + view >= height - EDGE && lastPage < totalPages) {
+          load('down');
+        }
+      }
+
+      windowEl.addEventListener('scroll', onScroll, { passive: true });
+      load('initial');
+    })();
+  </script>
 </body>
 </html>

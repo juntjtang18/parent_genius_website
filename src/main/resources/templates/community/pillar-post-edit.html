@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title th:text="${pillar.name} + ' – New Post'">New Post</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body{
+      font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background-color: #f0f2f5;
+      padding-top: 70px;
+    }
+    @media (min-width: 1200px){ body{ padding-top: 96px; } }
+    .pgai-posts-section{ padding: 50px 0; }
+    .pgai-post-panel{ max-width: 600px; margin: 0 auto; }
+    .pgai-create-post-panel{
+      background: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+    .pgai-pillar-name{
+      font-size: 14px;
+      color: #65676b;
+      margin: 0 0 10px;
+    }
+    #pgai-post-content-input{
+      width: 100%;
+      border: none;
+      resize: none;
+      min-height: 80px;
+      font-size: 1.1rem;
+      padding: 10px;
+    }
+    #pgai-post-content-input:focus{ outline: none; }
+    .pgai-media-preview-grid{
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .pgai-preview-item{
+      position: relative;
+      aspect-ratio: 1 / 1;
+    }
+    .pgai-preview-item img, .pgai-preview-item video{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    .pgai-remove-media-btn{
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: rgba(0,0,0,0.6);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      font-size: 14px;
+      line-height: 24px;
+      text-align: center;
+      cursor: pointer;
+      padding: 0;
+    }
+    .pgai-create-post-footer{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 15px;
+      border-top: 1px solid #e0e0e0;
+      padding-top: 10px;
+    }
+    #pgai-media-input{ display: none; }
+    .pgai-media-upload-label{
+      cursor: pointer;
+      font-size: 1.5rem;
+      color: #45bd62;
+    }
+    #pgai-submit-post-btn{
+      background-color: #0d6efd;
+      border-color: #0d6efd;
+      font-weight: bold;
+    }
+    .pgai-cancel{
+      color: #65676b;
+      text-decoration: none;
+      margin-right: auto;
+      margin-left: 12px;
+    }
+    .pgai-cancel:hover{ text-decoration: underline; }
+    .pgai-error{ color: #B91C1C; margin: 0 0 10px; }
+    .pgai-footer-actions{ display: flex; align-items: center; }
+  </style>
+</head>
+<body>
+  <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+  <div class="pgai-posts-section">
+    <div class="pgai-post-panel">
+      <form class="pgai-create-post-panel" id="pgai-new-post-form"
+            th:action="@{/community/pillar/{id}/new(id=${pillar.id})}"
+            method="post" enctype="multipart/form-data">
+        <p class="pgai-pillar-name" th:text="${pillar.name}">Communication &amp; Connection</p>
+        <p class="pgai-error" th:if="${postError == 'empty'}" th:text="#{community.posts.new.empty}">Please write something before saving.</p>
+        <p class="pgai-error" th:if="${postError == 'save'}" th:text="#{community.posts.new.error}">Could not save your post. Please try again.</p>
+        <textarea id="pgai-post-content-input" name="content" th:text="${content}"
+                  th:placeholder="#{posts.placeholder.cap1}" placeholder="What's on your mind?"></textarea>
+        <div id="pgai-media-preview" class="pgai-media-preview-grid"></div>
+        <div class="pgai-create-post-footer">
+          <label for="pgai-media-input" class="pgai-media-upload-label">
+            <i class="fas fa-photo-video"></i>
+          </label>
+          <input type="file" id="pgai-media-input" name="media" multiple accept="image/*,video/*">
+          <a class="pgai-cancel" th:href="@{/community/pillar/{id}(id=${pillar.id})}" th:text="#{community.posts.new.cancel}">Cancel</a>
+          <button id="pgai-submit-post-btn" class="btn btn-primary" type="submit" th:text="#{posts.cap2}">Post</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div th:replace="~{fragments/footer :: footer}"></div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    (function () {
+      const input = document.getElementById('pgai-media-input');
+      const preview = document.getElementById('pgai-media-preview');
+      const form = document.getElementById('pgai-new-post-form');
+      if (!input || !preview || !form) return;
+
+      const transfer = new DataTransfer();
+
+      function render() {
+        preview.innerHTML = '';
+        Array.from(transfer.files).forEach((file, index) => {
+          const item = document.createElement('div');
+          item.className = 'pgai-preview-item';
+          const url = URL.createObjectURL(file);
+          if (file.type.startsWith('image/')) {
+            const img = document.createElement('img');
+            img.src = url;
+            img.alt = 'Preview';
+            item.appendChild(img);
+          } else if (file.type.startsWith('video/')) {
+            const video = document.createElement('video');
+            video.src = url;
+            video.muted = true;
+            video.playsInline = true;
+            item.appendChild(video);
+          }
+          const remove = document.createElement('button');
+          remove.type = 'button';
+          remove.className = 'pgai-remove-media-btn';
+          remove.textContent = '×';
+          remove.addEventListener('click', function () {
+            const next = new DataTransfer();
+            Array.from(transfer.files).forEach((kept, i) => {
+              if (i !== index) next.items.add(kept);
+            });
+            transfer.items.clear();
+            Array.from(next.files).forEach((kept) => transfer.items.add(kept));
+            input.files = transfer.files;
+            render();
+          });
+          item.appendChild(remove);
+          preview.appendChild(item);
+        });
+      }
+
+      input.addEventListener('change', function () {
+        Array.from(input.files).forEach((file) => transfer.items.add(file));
+        input.files = transfer.files;
+        render();
+      });
+    })();
+  </script>
+</body>
+</html>

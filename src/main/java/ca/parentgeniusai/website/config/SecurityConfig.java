@@ -47,7 +47,7 @@ public class SecurityConfig {
                     "/tips", "/new-tip", "/tips/*/edit"
         	    ).hasAnyRole("EDITOR", "ADMIN") // <-- Change this line
                 // Require authentication for general user-specific pages
-                .requestMatchers("/function-article-list", "/article", "/posts").authenticated()
+                .requestMatchers("/function-article-list", "/article", "/posts", "/community/pillar/*/new").authenticated()
                 // Allow all other requests to be accessed publicly
                 .anyRequest().permitAll()
             )

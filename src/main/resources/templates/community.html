@@ -249,6 +249,46 @@ body{
   display: block;
 }
 
+.pc-ask{
+  background: #111;
+  padding: 22px 0 28px;
+}
+.pc-ask-bar{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fff;
+  border-radius: 9999px;
+  padding: 8px 8px 8px 22px;
+  max-width: 920px;
+  margin: 0 auto;
+}
+.pc-ask-bar input{
+  flex: 1;
+  border: 0;
+  outline: none;
+  font-size: 16px;
+  color: var(--gp-ink);
+  background: transparent;
+  min-width: 0;
+}
+.pc-ask-bar input::placeholder{ color: #9CA3AF; }
+.pc-ask-btn{
+  border: 0;
+  border-radius: 9999px;
+  background: #3EC8E8;
+  color: #fff;
+  font-weight: 600;
+  padding: .55rem 1.3rem;
+}
+.pc-ask-error{
+  color: #FCA5A5;
+  text-align: center;
+  margin: 0 auto 12px;
+  max-width: 920px;
+  font-size: 15px;
+}
+
 @media (max-width:991.98px){
   .comm-hero{ padding: 48px 0 56px; }
   .comm-hero-body{ max-width: none; }
@@ -276,6 +316,17 @@ body{
         </div>
       </div>
     </div>
+  </section>
+
+  <section class="pc-ask">
+    <p class="pc-ask-error" th:if="${askError}" th:text="#{community.ask.error}">Sorry, we could not match a community topic. Please try again.</p>
+    <form class="pc-ask-bar" th:action="@{/community/ask}" method="post">
+      <input type="text" name="question"
+             th:value="${askQuestion}"
+             th:placeholder="#{community.ask.placeholder}"
+             placeholder="Ask AI: 'What should I talk about with other parents...?'">
+      <button class="pc-ask-btn" type="submit" th:text="#{community.ask.button}">Ask AI</button>
+    </form>
   </section>
 
   <section class="comm-ai">
