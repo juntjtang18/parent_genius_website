@@ -65,13 +65,29 @@ def save_cache(lang_code: str, cache: dict):
             json.dump(cache, f, ensure_ascii=False, indent=0)
         os.replace(tmp, path)
 
+def is_poisoned_translation(text: str) -> bool:
+    if not text:
+        return False
+    lowered = text.lower()
+    return (
+        "error 500" in lowered
+        or "that's an error" in lowered
+        or "that\u2019s an error" in lowered
+        or ("please try again later" in lowered and "that's all we know" in lowered)
+        or ("please try again later" in lowered and "that\u2019s all we know" in lowered)
+    )
+
+
 def translate_with_retry(text: str, lang_code: str) -> str:
     if not text:
         return ""
     for attempt in range(1, RETRIES + 1):
         try:
             # Instantiate per call for thread-safety
-            return GoogleTranslator(source='auto', target=lang_code).translate(text)
+            translated = GoogleTranslator(source='auto', target=lang_code).translate(text)
+            if is_poisoned_translation(translated):
+                raise ValueError("translator returned an error page instead of a translation")
+            return translated
         except Exception as e:
             if attempt == RETRIES:
                 print(f"⚠️  Giving up after {RETRIES} tries on: {text[:60]}... ({e})")
@@ -106,7 +122,7 @@ def translate_properties_file(input_file: str, lang_code: str):
 
     for idx, item in enumerate(lines_to_process):
         v = item['value']
-        if v in cache and cache[v] is not None:
+        if v in cache and cache[v] is not None and not is_poisoned_translation(cache[v]):
             translated_values[idx] = cache[v]
         else:
             to_translate_indices.append(idx)
@@ -125,7 +141,8 @@ def translate_properties_file(input_file: str, lang_code: str):
                     print(f"⚠️  Unexpected error translating line: {original[:60]}... -> {exc}")
                     translated = original
                 translated_values[idx] = translated
-                cache[original] = translated  # update cache per English value
+                if not is_poisoned_translation(translated):
+                    cache[original] = translated
 
     # Persist updated cache
     save_cache(lang_code, cache)
