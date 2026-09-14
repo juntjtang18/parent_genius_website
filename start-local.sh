@@ -154,17 +154,34 @@ ensure_npm_modules() {
   fi
 }
 
+socket_accepts() {
+  python3 - "${SOCKET_FILE}" <<'PY'
+import socket
+import sys
+
+path = sys.argv[1]
+sock = socket.socket(socket.AF_UNIX)
+sock.settimeout(2)
+try:
+    sock.connect(path)
+except OSError:
+    raise SystemExit(1)
+finally:
+    sock.close()
+PY
+}
+
 wait_for_socket() {
   local seconds="${1:-45}"
   local i
   for ((i = 1; i <= seconds; i++)); do
-    if [[ -S "${SOCKET_FILE}" ]]; then
+    if socket_accepts; then
       log "Cloud SQL socket is ready: ${SOCKET_FILE}"
       return 0
     fi
     sleep 1
   done
-  die "Cloud SQL socket did not appear at ${SOCKET_FILE}"
+  die "Cloud SQL socket did not become usable at ${SOCKET_FILE}"
 }
 
 wait_for_http() {
@@ -223,12 +240,30 @@ start_logged() {
 }
 
 start_proxy() {
-  if [[ -S "${SOCKET_FILE}" ]]; then
+  if socket_accepts; then
     log "Cloud SQL proxy already running (${SOCKET_FILE})"
     return 0
   fi
-  [[ -x "${PROXY_SCRIPT}" ]] || die "Proxy script not found or not executable: ${PROXY_SCRIPT}"
-  start_logged cloud-sql-proxy "$(dirname "${PROXY_SCRIPT}")" "${PROXY_SCRIPT}"
+
+  local proxy_bin
+  proxy_bin="$(dirname "${PROXY_SCRIPT}")/cloud-sql-proxy"
+  if [[ ! -x "${proxy_bin}" ]]; then
+    proxy_bin="${PROXY_SCRIPT}"
+  fi
+  [[ -x "${proxy_bin}" ]] || die "Cloud SQL proxy not found or not executable: ${proxy_bin}"
+
+  if pgrep -x cloud-sql-proxy >/dev/null 2>&1; then
+    log "Stopping stale cloud-sql-proxy process"
+    pkill -x cloud-sql-proxy || true
+    sleep 1
+  fi
+  if [[ -e "${SOCKET_FILE}" ]]; then
+    log "Removing stale Cloud SQL socket: ${SOCKET_FILE}"
+    rm -f "${SOCKET_FILE}"
+  fi
+
+  start_logged cloud-sql-proxy "$(dirname "${proxy_bin}")" \
+    "${proxy_bin}" --unix-socket /cloudsql "${CLOUD_SQL_INSTANCE}"
   STARTED_PROXY=1
   wait_for_socket 45
 }

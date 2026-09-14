@@ -11,7 +11,9 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -179,6 +181,58 @@ public class CourseService {
             logger.error("Error fetching course categories: {}", e.getMessage(), e);
             return Collections.emptyList();
         }
+    }
+
+    public List<Course> getSuggestedCourses(List<String> challenges, String age) {
+        String challengeParam = challenges == null ? "" : String.join(",", challenges);
+        String ageParam = age == null ? "" : age;
+        URI url = UriComponentsBuilder
+            .fromHttpUrl(STRAPI_ROOTURL + "api/suggested-courses")
+            .queryParam("challenges", challengeParam)
+            .queryParam("age", ageParam)
+            .encode()
+            .build()
+            .toUri();
+        try {
+            logger.info("Fetching suggested courses: {}", url);
+            ResponseEntity<CourseListResponse> response = restTemplate.exchange(
+                url, HttpMethod.GET, authEntity(), CourseListResponse.class
+            );
+            if (response.getBody() == null || response.getBody().getData() == null) {
+                logger.warn("No suggested courses returned");
+                return Collections.emptyList();
+            }
+            List<Course> courses = response.getBody().getData().stream()
+                .map(resp -> toCourse(resp, false))
+                .collect(Collectors.toList());
+            logger.info("Mapped {} suggested courses from Strapi", courses.size());
+            return courses;
+        } catch (Exception e) {
+            logger.error("Error fetching suggested courses: {}", e.getMessage(), e);
+            return Collections.emptyList();
+        }
+    }
+
+    public List<Course> getPublishedCoursesByPillarIds(List<Long> pillarIds) {
+        if (pillarIds == null || pillarIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+        StringBuilder filter = new StringBuilder("filters[published][$eq]=true");
+        int index = 0;
+        for (Long pillarId : pillarIds) {
+            if (pillarId == null) {
+                continue;
+            }
+            filter.append("&filters[pillar][id][$in][").append(index++).append("]=").append(pillarId);
+        }
+        if (index == 0) {
+            return Collections.emptyList();
+        }
+        List<Course> courses = fetchCourses(filter.toString(), "pillars " + pillarIds, 1, 100);
+        courses.sort(Comparator
+            .comparing(Course::getOrder, Comparator.nullsLast(Integer::compareTo))
+            .thenComparing(Course::getTitle, Comparator.nullsLast(String::compareToIgnoreCase)));
+        return courses;
     }
 
     public List<Course> getCoursesByPillarId(Long pillarId) {

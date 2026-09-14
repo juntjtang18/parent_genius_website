@@ -106,14 +106,18 @@
   font-family:'Poppins',sans-serif; font-size:18px; line-height:30px; color:#374151;
 }
 .gp-quiz-option input{ position:absolute; opacity:0; pointer-events:none; }
-.gp-quiz-radio{
-  flex:0 0 22px; width:22px; height:22px; margin-top:2px; border-radius:50%;
+.gp-quiz-radio, .gp-quiz-check{
+  flex:0 0 22px; width:22px; height:22px; margin-top:2px;
   border:2px solid #D1D5DB; background:#fff; position:relative;
 }
-.gp-quiz-option input:checked + .gp-quiz-radio{
+.gp-quiz-radio{ border-radius:50%; }
+.gp-quiz-check{ border-radius:4px; }
+.gp-quiz-option input:checked + .gp-quiz-radio,
+.gp-quiz-option input:checked + .gp-quiz-check{
   border-color:#3B82F6; background:#3B82F6;
 }
-.gp-quiz-option input:checked + .gp-quiz-radio::after{
+.gp-quiz-option input:checked + .gp-quiz-radio::after,
+.gp-quiz-option input:checked + .gp-quiz-check::after{
   content:""; position:absolute; left:6px; top:3px; width:6px; height:10px;
   border:solid #fff; border-width:0 2px 2px 0; transform:rotate(45deg);
 }
@@ -145,7 +149,7 @@
 }
 .gp-quiz-result-title{
   font-family:'Poppins',sans-serif; font-weight:600;
-  font-size:30px; line-height:38px; color:#333; margin:0; max-width:18ch;
+  font-size:30px; line-height:38px; color:#333; margin:0; max-width:28ch;
 }
 .gp-quiz-result-copy hr{
   width:72%; border:0; border-top:1px solid #E5E7EB; margin:22px 0;
@@ -568,13 +572,13 @@
           <p class="gp-quiz-progress">Question 1 of 2</p>
           <h3 class="gp-quiz-question" th:text="#{home.quiz.q1}">What's your biggest parenting challenge today?</h3>
           <ul class="gp-quiz-options">
-            <li><label class="gp-quiz-option"><input type="radio" name="q1" value="foundations"><span class="gp-quiz-radio"></span><span th:text="#{home.quiz.q1.opt1}">Related to the foundation of trust, unconditional love, and healthy modeling for my child.</span></label></li>
-            <li><label class="gp-quiz-option"><input type="radio" name="q1" value="emotions"><span class="gp-quiz-radio"></span><span th:text="#{home.quiz.q1.opt2}">Related to understanding big emotions, learning to self-regulate, and handling challenging behaviors.</span></label></li>
-            <li><label class="gp-quiz-option"><input type="radio" name="q1" value="connection" checked><span class="gp-quiz-radio"></span><span th:text="#{home.quiz.q1.opt3}">Related to communicating deeply, strengthening our bond, and fostering my child's social skills.</span></label></li>
-            <li><label class="gp-quiz-option"><input type="radio" name="q1" value="learning"><span class="gp-quiz-radio"></span><span th:text="#{home.quiz.q1.opt4}">Related to my child's cognitive growth, curiosity, and academic success at home.</span></label></li>
-            <li><label class="gp-quiz-option"><input type="radio" name="q1" value="dailylife"><span class="gp-quiz-radio"></span><span th:text="#{home.quiz.q1.opt5}">Related to navigating daily routines, life transitions, and the pressures of modern family life together.</span></label></li>
-            <li><label class="gp-quiz-option"><input type="radio" name="q1" value="neurodiversity"><span class="gp-quiz-radio"></span><span th:text="#{home.quiz.q1.opt6}">Related to my neurodivergent child.</span></label></li>
-            <li><label class="gp-quiz-option"><input type="radio" name="q1" value="others"><span class="gp-quiz-radio"></span><span th:text="#{home.quiz.q1.opt7}">Others</span></label></li>
+            <li><label class="gp-quiz-option"><input type="checkbox" name="q1" value="foundations"><span class="gp-quiz-check"></span><span th:text="#{home.quiz.q1.opt1}">Related to the foundation of trust, unconditional love, and healthy modeling for my child.</span></label></li>
+            <li><label class="gp-quiz-option"><input type="checkbox" name="q1" value="emotions"><span class="gp-quiz-check"></span><span th:text="#{home.quiz.q1.opt2}">Related to understanding big emotions, learning to self-regulate, and handling challenging behaviors.</span></label></li>
+            <li><label class="gp-quiz-option"><input type="checkbox" name="q1" value="connection"><span class="gp-quiz-check"></span><span th:text="#{home.quiz.q1.opt3}">Related to communicating deeply, strengthening our bond, and fostering my child's social skills.</span></label></li>
+            <li><label class="gp-quiz-option"><input type="checkbox" name="q1" value="learning"><span class="gp-quiz-check"></span><span th:text="#{home.quiz.q1.opt4}">Related to my child's cognitive growth, curiosity, and academic success at home.</span></label></li>
+            <li><label class="gp-quiz-option"><input type="checkbox" name="q1" value="dailylife"><span class="gp-quiz-check"></span><span th:text="#{home.quiz.q1.opt5}">Related to navigating daily routines, life transitions, and the pressures of modern family life together.</span></label></li>
+            <li><label class="gp-quiz-option"><input type="checkbox" name="q1" value="neurodiversity"><span class="gp-quiz-check"></span><span th:text="#{home.quiz.q1.opt6}">Related to my neurodivergent child.</span></label></li>
+            <li><label class="gp-quiz-option"><input type="checkbox" name="q1" value="others"><span class="gp-quiz-check"></span><span th:text="#{home.quiz.q1.opt7}">Others</span></label></li>
           </ul>
           <div class="gp-quiz-actions">
             <button type="button" class="gp-quiz-submit" data-quiz-next th:text="#{home.quiz.submit}">Submit</button>
@@ -836,10 +840,23 @@
         steps.forEach((step, i) => { step.hidden = i !== index; });
       }
 
+      function selectedValues(name) {
+        return Array.from(form.querySelectorAll('input[name="' + name + '"]:checked')).map(function (input) {
+          return input.value;
+        });
+      }
+
+      function joinNames(names) {
+        if (!names.length) return '';
+        if (names.length === 1) return names[0];
+        if (names.length === 2) return names[0] + ' and ' + names[1];
+        return names.slice(0, -1).join(', ') + ', and ' + names[names.length - 1];
+      }
+
       function goNext(step, skip) {
         if (skip) {
-          step.querySelectorAll('input[type="radio"]').forEach(function (radio) {
-            radio.checked = false;
+          step.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(function (input) {
+            input.checked = false;
           });
         }
         const nextIndex = steps.indexOf(step) + 1;
@@ -857,7 +874,7 @@
       form.querySelectorAll('[data-quiz-next]').forEach(btn => {
         btn.addEventListener('click', function () {
           const current = btn.closest('.gp-quiz-step');
-          const selected = current.querySelector('input[type="radio"]:checked');
+          const selected = current.querySelector('input:checked');
           if (!selected) return;
           goNext(current, false);
         });
@@ -871,15 +888,24 @@
 
       form.addEventListener('submit', function (e) {
         e.preventDefault();
-        const challenge = (form.querySelector('input[name="q1"]:checked') || {}).value || 'others';
+        const chosen = selectedValues('q1').filter(function (value) { return value !== 'others'; });
+        if (!chosen.length) {
+          chosen.push('others');
+        }
+        const picks = chosen.map(function (key) { return suggestions[key] || suggestions.others; });
+        const primary = picks[0];
+        const names = picks.map(function (item) { return item.name; }).filter(function (name, index, list) {
+          return list.indexOf(name) === index;
+        });
         const age = (form.querySelector('input[name="q2"]:checked') || {}).value || '3-5';
-        const suggestion = suggestions[challenge] || suggestions.others;
         document.getElementById('gpQuizResultTitle').textContent =
-          'Focusing on ' + suggestion.name + ' for ' + (ageLabel[age] || 'your child') + '?';
-        document.getElementById('gpQuizResultTip').textContent = suggestion.tip;
+          'Focusing on ' + joinNames(names) + ' for ' + (ageLabel[age] || 'your child') + '?';
+        document.getElementById('gpQuizResultTip').textContent = primary.tip;
         document.getElementById('gpQuizResultCta').textContent =
-          'Jump directly into our full, privacy-first course on ' + suggestion.course + '!';
-        document.getElementById('gpQuizResultLink').setAttribute('href', suggestion.href);
+          'Jump directly into our full, privacy-first course on ' + primary.course + '!';
+        const suggested = '/courses/suggested?challenges=' + encodeURIComponent(chosen.join(','))
+          + '&age=' + encodeURIComponent(age);
+        document.getElementById('gpQuizResultLink').setAttribute('href', suggested);
         form.hidden = true;
         result.hidden = false;
       });

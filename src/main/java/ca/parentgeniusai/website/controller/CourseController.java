@@ -1,10 +1,12 @@
 package ca.parentgeniusai.website.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ca.parentgeniusai.website.model.Course;
 import ca.parentgeniusai.website.model.Pillar;
 import ca.parentgeniusai.website.service.CourseService;
+import ca.parentgeniusai.website.service.CourseSuggestionService;
 import ca.parentgeniusai.website.service.PillarService;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,10 +29,14 @@ public class CourseController {
     static final String SESSION_LOGIN_REDIRECT = "LOGIN_REDIRECT";
 
     private final CourseService courseService;
+    private final CourseSuggestionService courseSuggestionService;
     private final PillarService pillarService;
 
-    public CourseController(CourseService courseService, PillarService pillarService) {
+    public CourseController(CourseService courseService,
+            CourseSuggestionService courseSuggestionService,
+            PillarService pillarService) {
         this.courseService = courseService;
+        this.courseSuggestionService = courseSuggestionService;
         this.pillarService = pillarService;
     }
 
@@ -102,6 +108,19 @@ public class CourseController {
         return "course-list";
     }
 
+    @GetMapping("/courses/suggested")
+    public String suggestedCourses(
+            @RequestParam(name = "challenges", required = false) String challenges,
+            @RequestParam(name = "age", required = false) String age,
+            Model model) {
+        List<String> challengeIds = splitCsv(challenges);
+        List<Course> courses = courseSuggestionService.suggest(challengeIds, age);
+        model.addAttribute("courses", courses);
+        logger.info("Serving suggested courses for challenges={} age={} count={}",
+            challengeIds, age, courses.size());
+        return "courses/suggested-courses";
+    }
+
     @GetMapping("/courses/pillar/{pillarId}")
     public String pillarCourses(@PathVariable Long pillarId,
             @RequestParam(name = "askError", required = false) String askError,
@@ -157,6 +176,20 @@ public class CourseController {
         logger.info("[AskAI] controller: question='{}' -> course {}", q, matched);
         session.removeAttribute(SESSION_ASK_QUESTION);
         return "redirect:/courses/" + matched + "?fromPillar=" + fallback;
+    }
+
+    private List<String> splitCsv(String value) {
+        List<String> items = new ArrayList<>();
+        if (value == null || value.isBlank()) {
+            return items;
+        }
+        for (String part : value.split(",")) {
+            String trimmed = part.trim();
+            if (!trimmed.isEmpty()) {
+                items.add(trimmed);
+            }
+        }
+        return items;
     }
 
     private int heroIndexFor(Pillar pillar) {

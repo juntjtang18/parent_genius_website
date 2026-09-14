@@ -199,7 +199,6 @@
       font-size: 18px;
       padding: 48px 0;
     }
-
     @media (max-width: 991.98px){
       .pc-hero{ padding-top: 32px; }
       .pc-hero-title{ max-width: none; }
@@ -245,7 +244,7 @@
             </div>
             <h2 class="pc-card-title" th:text="${course.title}">Course title</h2>
             <a th:if="${course.published}" class="pc-card-btn"
-               th:href="@{/courses/{id}(id=${course.id}, fromPillar=${pillar.id})}" th:text="#{pillar.courses.cta}">View the Course</a>
+               th:href="@{/courses/{id}(id=${course.id}, fromPillar=${course.pillarId})}" th:text="#{pillar.courses.cta}">View the Course</a>
             <span th:unless="${course.published}" class="pc-card-btn is-disabled"
                   aria-disabled="true" th:text="#{pillar.courses.cta}">View the Course</span>
           </article>
